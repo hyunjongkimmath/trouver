@@ -23,7 +23,9 @@ from natsort import natsorted
 # %% auto 0
 __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
            'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
-           'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted']
+           'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
+           'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
+           'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -341,3 +343,124 @@ def files_of_format_sorted(
     sorted via `natsort`.
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
+
+# %% ../nbs/00_helper.ipynb 84
+def current_time_formatted_to_minutes(
+        ) -> str:
+    """Return the current time to minutes.
+
+    **Returns**
+
+    - str
+        - In UTC time, to minutes.
+    """
+    dt = datetime.datetime.now(timezone.utc)
+    formatted = dt.isoformat(timespec='minutes')
+    return formatted[:16]
+
+# %% ../nbs/00_helper.ipynb 92
+def containing_string_priority(str1: str, str2: str) -> int:
+    """Returns 1, 0, -1 depending on whether one string contains the other.
+    
+    TODO make the string containment criterion looser, e.g. finite Galois etale cover
+    "contains" finite etale cover.
+    
+    **Parameters**
+    - str1 - str
+    - str2 - str
+    """
+    if str2 in str1:
+        return -1
+    elif str1 in str2:
+        return 1
+    else:
+        # return len(str2) - len(str1)
+        return 0
+
+def default_str_comparison(str1: str, str2: str) -> int:
+    """
+    
+    **Parameters**
+    - str1 - str
+    - str2 - str
+    """
+    if str1 > str2:
+        return 1
+    elif str1 < str2:
+        return -1
+    else:
+        return 0
+
+def natsort_comparison(str1: str, str2: str) -> int:
+    """
+    
+    **Parameters**
+    - str1 - str
+    - str2 - str
+    """
+    if str1 == str2:
+        return 0
+    listy = [str1, str2]
+    natsorted(listy)
+    if listy[0] == str1:
+        return -1
+    else:
+        return 1
+
+# %% ../nbs/00_helper.ipynb 93
+def graph_for_topological_sort(
+        items_to_sort: Iterable[str],
+        key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
+    """
+    **Parameters**
+    - items_to_sort - Iterable[str]
+    - key_order: Callable[[str, str], int]
+        - Comparing str1 against str2 results in a positive number if
+        str1 is "greater" than str2 (i.e. str1 is of a later priority)
+    
+    **Returns**
+    - dict[str, set[str]]
+        - A dict whose keys are the elements `k` of `items_to_sort` and
+        whose values are sets of elements `k2` of `items_to_sort` such that
+        `key_order(k, k2) > 0`.
+    """
+    graph = dict()
+    for key_1, key_2 in product(items_to_sort, items_to_sort):
+        # print(key_1, key_2)
+        if key_1 == key_2:
+            continue
+        # print(key_1, key_2)
+        # print(key_order(key_1, key_2))
+        if key_1 not in graph:
+            graph[key_1] = set()
+        if key_order(key_1, key_2) > 0:
+            graph[key_1].add(key_2)
+    return graph
+
+# %% ../nbs/00_helper.ipynb 94
+def dict_with_keys_topologically_sorted(
+        dict_to_sort: dict[str],
+        key_order: Callable[[str, str], int],
+        reverse: bool = False) -> OrderedDict[str]:
+    """Returns an OrderedDict whose keys are sorted topologically by
+    the specified key order.
+    
+    **Parameters**
+    - dict_to_sort - dict[str]
+        - The dict whose keys need to be ordered.
+    - key_order
+        - The comparison function on the keys of `dict_to_sort`. Defaults to
+        the key function for the comparison ``containing_string_priority``.
+    - reverse - bool
+        - Defaults to `False`
+        
+    **Returns**
+    - OrderedDict[str]
+    """
+    graph = graph_for_topological_sort(dict_to_sort, key_order)
+    ts = TopologicalSorter(graph)
+    keys_ordered = list(ts.static_order())
+    if reverse:
+        keys_ordered = list(reversed(keys_ordered))
+    return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
+
