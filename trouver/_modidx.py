@@ -18,5 +18,7 @@ d = { 'settings': { 'branch': 'main',
                                 'trouver.helper.is_number': ('helper.html#is_number', 'trouver/helper.py'),
                                 'trouver.helper.latex_indices': ('helper.html#latex_indices', 'trouver/helper.py'),
                                 'trouver.helper.notation_asterisk_indices': ('helper.html#notation_asterisk_indices', 'trouver/helper.py'),
+                                'trouver.helper.path_name_no_ext': ('helper.html#path_name_no_ext', 'trouver/helper.py'),
+                                'trouver.helper.path_no_ext': ('helper.html#path_no_ext', 'trouver/helper.py'),
                                 'trouver.helper.replace_string_by_indices': ( 'helper.html#replace_string_by_indices',
                                                                               'trouver/helper.py')}}}

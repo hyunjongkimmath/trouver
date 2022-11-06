@@ -23,7 +23,7 @@ from natsort import natsorted
 # %% auto 0
 __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
            'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
-           'file_existence_test']
+           'file_existence_test', 'path_name_no_ext', 'path_no_ext']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -225,9 +225,13 @@ def existing_path(
     that exists.
 
     **Raises**
+
     - `FileNotFoundError`
         - If `relative_to` is not `None` but does not exist, or if
         `file` does not exist.
+    - `ValueError`
+        - If `relative_to` is not `None` and yet not an absolute path, or
+        if `relative_to` is `None` at yet `path` is not an absolute path.
     
     **Notes**
     - This function may add the string `'\\\\?\\'` in front, which identifies
@@ -244,7 +248,7 @@ def existing_path(
         path = Path(relative_to) / path
     elif not os.path.isabs(path):
         raise ValueError(
-            f'The parmaeter `path` is expected to be an absolute path,'
+            f'The parameter `path` is expected to be an absolute path,'
             f' but it is not: {path}')
     if not os.path.exists(path) and platform.system() == 'Windows':
         path = f'\\\\?\\{str(path)}'  # For long file names
@@ -259,7 +263,10 @@ def file_existence_test(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
         ) -> Path: # The path formed by `relative_to` adjoined with `path`.  Defaults to `None`
-    """Returns a path relative to a specified path as an absolute path
+    """
+    **Deprecated. Use `existing_path` instead.**
+    
+    Returns a path relative to a specified path as an absolute path
     that exists.
 
     **Raises**
@@ -290,3 +297,25 @@ def file_existence_test(
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
+
+# %% ../nbs/00_helper.ipynb 67
+def path_name_no_ext(
+        path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
+        ) -> str: # The name of the file or directory without the extension.
+    """Return the name of a file or directory from its path without the
+    extension.
+    
+    The file or directory does not have to exist.
+    """
+    name_with_extension = os.path.basename(path)
+    return os.path.splitext(name_with_extension)[0]
+
+# %% ../nbs/00_helper.ipynb 74
+def path_no_ext(
+    path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
+    ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
+    """Returns the path of a file or directory without the extension.
+    
+    The file or directory does not have to exist.
+    """
+    return os.path.splitext(str(path))[0]
