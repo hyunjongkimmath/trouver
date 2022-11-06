@@ -6,6 +6,7 @@ d = { 'settings': { 'branch': 'main',
                 'git_url': 'https://github.com/hyunjongkimmath/trouver',
                 'lib_path': 'trouver'},
   'syms': { 'trouver.core': {'trouver.core.foo': ('core.html#foo', 'trouver/core.py')},
-            'trouver.helper': { 'trouver.helper.find_regex_in_text': ('helper.html#find_regex_in_text', 'trouver/helper.py'),
+            'trouver.helper': { 'trouver.helper._str_parts': ('helper.html#_str_parts', 'trouver/helper.py'),
+                                'trouver.helper.find_regex_in_text': ('helper.html#find_regex_in_text', 'trouver/helper.py'),
                                 'trouver.helper.replace_string_by_indices': ( 'helper.html#replace_string_by_indices',
                                                                               'trouver/helper.py')}}}

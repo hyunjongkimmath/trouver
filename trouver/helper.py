@@ -37,7 +37,7 @@ def find_regex_in_text(
 # %% ../nbs/00_helper.ipynb 15
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
-        replace_ranges: Sequence[Sequence[int] | int], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
+        replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
         replace_with: Sequence[str] | str # The str(s) which will replace the substrings at `replace_ranges` in `string`. `replace_with` must be a str exactly when `replace_ranges` is a Sequence of a single Sequence of int.
         ) -> str:  # The str obtained by replacing the substrings at `replace_range` in `string` by the strs specified by `replace_with`.
     """Replace parts of ``string`` at the specified locations"
@@ -48,9 +48,9 @@ def replace_string_by_indices(
 
     - ``string`` - `str`
     - ``replace_ranges`` - `Sequence[Sequence[int] | int]`
-        - Each list or tuple is of one or two int's. In particular,
+        - Either a list of lists/tuples of one or two int's. A list/tuple
         ``[a,b]`` or ``(a,b)`` means that ``string[a:b]`` is to be replaced.
-        ``[a]`` means that ``string[a:]`` is to be replaced. The ranges should
+        ``[a]`` or ``(a)`` means that ``string[a:]`` is to be replaced. The ranges should
         not overlap and should be arranged in chronological order.
     - ``replace_with`` - `Sequence[str] | str`
         - The str's which will replace the parts represented by 
@@ -64,9 +64,12 @@ def replace_string_by_indices(
     if isinstance(replace_with, str):
         replace_ranges = [replace_ranges]
         replace_with = [replace_with]
+    # TODO: change assertion to valueerror
     assert len(replace_ranges) == len(replace_with)
     if len(replace_ranges) == 0:
         return string
+
+
     str_parts = []
     for i, replace_string in enumerate(replace_ranges):
         replace_string = replace_with[i]
@@ -87,3 +90,19 @@ def replace_string_by_indices(
         unreplaced_start_index = replace_ranges[-1][1]
     str_parts.append(string[unreplaced_start_index:])
     return "".join(str_parts)
+
+
+def _str_parts(string, replace_ranges, replace_with):
+    str_parts = []
+    for i, replace_string in enumerate(replace_ranges):
+        replace_string = replace_with[i]
+        if i > 0 and len(replace_ranges[i-1]) == 1:
+            unreplaced_start_index = len(string)
+        elif i > 0 and len(replace_ranges[i-1]) != 1:
+            unreplaced_start_index = replace_ranges[i-1][1]
+        else:
+            unreplaced_start_index = 0
+        unreplaced_end_index = replace_ranges[i][0]
+        str_parts.append(string[unreplaced_start_index:unreplaced_end_index])
+        str_parts.append(replace_string)
+    return
