@@ -15,12 +15,12 @@ from os import PathLike
 from pathlib import Path
 import platform
 import re
-from typing import Callable, Optional, Pattern, Union
+from typing import Callable, Optional, Pattern, Sequence, Union
 
 from natsort import natsorted
 
 # %% auto 0
-__all__ = ['find_regex_in_text']
+__all__ = ['find_regex_in_text', 'replace_string_by_indices']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -33,3 +33,57 @@ def find_regex_in_text(
     """
     matches = re.finditer(pattern, text)
     return [match.span() for match in matches]
+
+# %% ../nbs/00_helper.ipynb 15
+def replace_string_by_indices(
+        string: str, # String in which to make replacemenets 
+        replace_ranges: Sequence[Sequence[int] | int], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
+        replace_with: Sequence[str] | str # The str(s) which will replace the substrings at `replace_ranges` in `string`. `replace_with` must be a str exactly when `replace_ranges` is a Sequence of a single Sequence of int.
+        ) -> str:  # The str obtained by replacing the substrings at `replace_range` in `string` by the strs specified by `replace_with`.
+    """Replace parts of ``string`` at the specified locations"
+
+    Use this with `find_regex_in_text`.
+
+    **Parameters**
+
+    - ``string`` - `str`
+    - ``replace_ranges`` - `Sequence[Sequence[int] | int]`
+        - Each list or tuple is of one or two int's. In particular,
+        ``[a,b]`` or ``(a,b)`` means that ``string[a:b]`` is to be replaced.
+        ``[a]`` means that ``string[a:]`` is to be replaced. The ranges should
+        not overlap and should be arranged in chronological order.
+    - ``replace_with`` - `Sequence[str] | str`
+        - The str's which will replace the parts represented by 
+        ``replace_ranges``. ``replace_ranges`` and ``replace_with`` must be
+        both lists or both not lists. If they are lists, they must be of 
+        the same length.
+
+    **Returns**
+    - str
+    """
+    if isinstance(replace_with, str):
+        replace_ranges = [replace_ranges]
+        replace_with = [replace_with]
+    assert len(replace_ranges) == len(replace_with)
+    if len(replace_ranges) == 0:
+        return string
+    str_parts = []
+    for i, replace_string in enumerate(replace_ranges):
+        replace_string = replace_with[i]
+        if i > 0 and len(replace_ranges[i-1]) == 1:
+            unreplaced_start_index = len(string)
+        elif i > 0 and len(replace_ranges[i-1]) != 1:
+            unreplaced_start_index = replace_ranges[i-1][1]
+        else:
+            unreplaced_start_index = 0
+        unreplaced_end_index = replace_ranges[i][0]
+        str_parts.append(string[unreplaced_start_index:unreplaced_end_index])
+        str_parts.append(replace_string)
+
+    # Add the last (unreplaced) part to str_parts.
+    if len(replace_ranges[-1]) == 1:
+        unreplaced_start_index = len(string)
+    else:
+        unreplaced_start_index = replace_ranges[-1][1]
+    str_parts.append(string[unreplaced_start_index:])
+    return "".join(str_parts)
