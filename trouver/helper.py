@@ -20,7 +20,8 @@ from typing import Callable, Optional, Pattern, Sequence, Union
 from natsort import natsorted
 
 # %% auto 0
-__all__ = ['find_regex_in_text', 'replace_string_by_indices']
+__all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
+           'definition_asterisk_indices']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -66,11 +67,9 @@ def replace_string_by_indices(
     if isinstance(replace_with, str):
         replace_ranges = [replace_ranges]
         replace_with = [replace_with]
-    # TODO: change assertion to valueerror
     if len(replace_ranges) != len(replace_with):
         raise ValueError(
             'The lengths of `replace_ranges` and `replace_with` are different.')
-
     if len(replace_ranges) == 0:
         return string
 
@@ -100,3 +99,54 @@ def _str_parts(string, replace_ranges, replace_with):
         unreplaced_start_index = replace_ranges[-1][1]
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
+
+# %% ../nbs/00_helper.ipynb 22
+def double_asterisk_indices(
+        text: str # the str in which to find the indices of double asterisk surrounded text.
+        ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
+    # TODO: fix double asterisks in math mode.
+    """Return the indices in `str` of text surrounded by double asterisks.
+    
+    Assumes there no LaTeX math mode string has double asterisks.
+
+    **See Also**
+    
+    - `notation_asterisk_indices`
+    - `definition_asterisk_indices`
+    """
+    return find_regex_in_text(text, pattern='\*\*[^*]+\*\*')
+
+
+
+# %% ../nbs/00_helper.ipynb 24
+def notation_asterisk_indices(
+        text: str # the str in which to find the indices of notations surrounded by double asterisks.
+        ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
+    """Return the indices of notation text surrounded by double asterisks.
+    
+    A double-asterisk-surrounded-text is a notation almost always
+    when it is purely LaTeX math mode text. 
+
+    Assumes that no LaTeX math mode string has the dollar sign character
+    within it.
+    """
+    return find_regex_in_text(
+        text, pattern='\*\*\$\$[^$]+\$\$\*\*|\*\*\$[^$]+\$\*\*')
+    # I previous used this, but it was not picking up notation LaTeX str
+    # containing asterisks, e.g. `**$\pi^*$**``, `**$\pi_*$**`.`
+    return find_regex_in_text(
+        text, pattern='\*\*\$\$[^*$]+\$\$\*\*|\*\*\$[^*$]+\$\*\*')
+
+
+def definition_asterisk_indices(text: str) -> list[tuple[int]]:
+    """Returns the indices of definition text surrounded by double asterisks.
+    
+    A double-asterisk-surrounded-text is a definition almost always
+    when it is not purely LaTeX math mode text.
+    
+    Assumes that no LaTeX math mode string has double asterisks and that no
+    LaTeX math mode string has the dollar sign character within it.
+    """
+    all_double_asterisks = double_asterisk_indices(text)
+    notations = notation_asterisk_indices(text)
+    return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
