@@ -23,7 +23,7 @@ from natsort import natsorted
 # %% auto 0
 __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
            'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
-           'file_existence_test', 'path_name_no_ext', 'path_no_ext']
+           'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -319,3 +319,25 @@ def path_no_ext(
     The file or directory does not have to exist.
     """
     return os.path.splitext(str(path))[0]
+
+# %% ../nbs/00_helper.ipynb 78
+def text_from_file(
+        path: PathLike, # The absolute path of the file.
+        encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
+        ) -> str: # The entire text from a file
+    """Return the entire text from a file.
+    """
+    with open(path, 'r', encoding=encoding) as file:
+        text = file.read()
+        file.close()
+    return text
+
+# %% ../nbs/00_helper.ipynb 80
+def files_of_format_sorted(
+        directory: PathLike, # The directory in which to find the files
+        extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
+        ) -> list[str]:
+    """Return a list of path str of files in the directory (but not subdirectories)
+    sorted via `natsort`.
+    """
+    return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
