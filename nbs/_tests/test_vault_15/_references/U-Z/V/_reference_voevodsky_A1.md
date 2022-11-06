@@ -1,0 +1,1 @@
+- [[voevodsky_vladmir|Vladmir Voevodsky]], *$\mathbb{A}^1$-homotopy theory*, Proceedings of the international congress of mathematicians, Berlin, 1998.

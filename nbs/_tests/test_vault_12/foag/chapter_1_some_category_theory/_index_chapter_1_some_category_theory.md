@@ -1,0 +1,165 @@
+# 1.1. Motivation
+- [ ] [[foag_]], Page 23
+- [ ] [[foag_Motivation 1.1]], Motivation 1.1, Page 23
+# 1.2. Categories and functors
+- [ ] [[foag_Categories 1.2]], Categories 1.2, Page 25
+- [ ] [[foag_ 1.2.1|foag_Category]],  1.2.1, Page 25
+- [ ] [[foag_ 1.2.2|foag_Category_of_setes]],  1.2.2, Page 26
+- [ ] [[foag_ 1.2.3|foag_Category_of_vector_spaces_over_a_field]],  1.2.3, Page 26
+- [ ] [[foag_ 1.2.A|foag_Groupoid]],  1.2.A, Page 26
+- [ ] [[foag_ 1.2.B|foag_Automorphism_group_of_an_object_in_a_cateo]],  1.2.B, Page 26
+- [ ] [[foag_ 1.2.4|foag_Category_of_abelian_groups]],  1.2.4, Page 27
+- [ ] [[foag_ 1.2.5|foag_Category_of_modules_over_a_ring]],  1.2.5, Page 27
+- [ ] [[foag_ 1.2.6|foag_Category_of_rings]],  1.2.6, Page 27
+- [ ] [[foag_ 1.2.7]],  1.2.7, Page 27
+- [ ] [[foag_page_27|foag_Concrete_category]], Page 27
+- [ ] [[foag_ 1.2.8|foag_Partially_ordered_sets]],  1.2.8, Page 27
+- [ ] [[foag_ 1.2.9|foag_Category_of_open_subsets_of_a_topological_space]],  1.2.9, Page 28
+- [ ] [[foag_ 1.2.10|foag_Subcategory_of_a_category]],  1.2.10, Page 28
+- [ ] [[foag_ 1.2.11|foag_Covariant_functor]],  1.2.11, Page 28
+- [ ] [[foag_ 1.2.12|foag_Forgetful_functor]],  1.2.12, Page 28
+- [ ] [[foag_ 1.2.13|foag_Topological_functor_examples]],  1.2.13, Page 28
+- [ ] [[foag_ 1.2.14|foag_Representable_functor_example]],  1.2.14, Page 28
+- [ ] [[foag_ 1.2.15|foag_Composition_of_functors]],  1.2.15, Page 28
+- [ ] [[foag_ 1.2.16|foag_Contravariant_functor]],  1.2.16, Page 29
+- [ ] [[foag_ 1.2.17|foag_Dual_functor_example]],  1.2.17, Page 29
+- [ ] [[foag_ 1.2.18|foag_Cohomology_functor_is_an_example_of_a_contravariant_functor]],  1.2.18, Page 29
+- [ ] [[foag_ 1.2.19|foag_Real_valued_continuous_functions_functor_is_an_example_of_a_contravariant_functor]],  1.2.19, Page 29
+- [ ] [[foag_ 1.2.20|foag_Functor_of_points_is_an_example_of_a_contravariant_functor]],  1.2.20, Page 29
+- [ ] [[foag_ 1.2.21|foag_Natural_transformations_of_functors]],  1.2.21, Page 29
+- [ ] [[foag_ 1.2.C|foag_Double_dual_functor_on_the_category_of_finite_dimensional_vector_spaces_is_naturally_isomorphic_to_the_identity_functor]],  1.2.C, Page 30
+- [ ] [[foag_ 1.2.D]],  1.2.D, Page 30
+- [ ] [[foag_ 1.2.22|foag_A_covariant_functor_is_an_equivalence_of_categories_if_it_is_fully_faithful_and_essentially_surjective]],  1.2.22, Page 30
+# 1.3. Universal properties determine an object up to unique isomorphism
+- [ ] [[foag_Universal 1.3]], Universal 1.3, Page 31
+- [ ] [[foag_ 1.3.1]],  1.3.1, Page 31
+- [ ] [[foag_ 1.3.2|foag_Initial_and_final_objects_of_a_category]],  1.3.2, Page 31
+- [ ] [[foag_ 1.3.A|foag_Initial_and_final_objects_are_unique_up_to_unique_isomorphism]],  1.3.A, Page 31
+- [ ] [[foag_ 1.3.B|foag_Initial_and_final_objects_in_the_category_of_sets__rings__and_topological_spaces]],  1.3.B, Page 31
+- [ ] [[foag_ 1.3.3|foag_localization_of_a_ring_with_respect_to_a_multiplicative_subset]],  1.3.3, Page 31
+- [ ] [[foag_ 1.3.C|foag_Localization_map_is_injective_if_and_only_if_the_multiplicative_set_has_no_zerodivisors]],  1.3.C, Page 32
+- [[foag_page_32|foag_Fraction_field_of_an_integral_domain]], Page 32
+- [ ] [[foag_ 1.3.D|foag_Universal_property_of_localization_of_ring]],  1.3.D, Page 32
+- [ ] [[foag_ 1.3.E|foag_Explicit_construction_of_localization_of_module]],  1.3.E, Page 33
+- [ ] [[foag_ 1.3.F|foag_Localization_commutes_with_finite_products_and_arbitrary_direct_sums]],  1.3.F, Page 33
+- [ ] [[foag_ 1.3.4|foag_Localization_does_not_always_commute_with_Hom]],  1.3.4, Page 33
+- [ ] [[foag_ 1.3.5|foag_Tensor_product_of_modules]],  1.3.5, Page 33
+- [ ] [[foag_ 1.3.G]],  1.3.G, Page 34
+- [ ] [[foag_ 1.3.H|foag_Universal_property_of_tensor_product]],  1.3.H, Page 34
+- [ ] [[foag_ 1.3.I]],  1.3.I, Page 34
+- [ ] [[foag_ 1.3.J|foag_Construction_of_tensor_product_indeed_satisfies_the_universal_property]],  1.3.J, Page 35
+- [ ] [[foag_ 1.3.K|foag_Tensor_product_is_a_functor]],  1.3.K, Page 35
+- [ ] [[foag_ 1.3.L|foag_Tensor_product_respects_localization]],  1.3.L, Page 35
+- [ ] [[foag_ 1.3.M|foag_Tensor_products_commute_with_arbitrary_direct_sums]],  1.3.M, Page 35
+- [ ] [[foag_ 1.3.6|foag_Fibered_product_of_objects_in_a_category]],  1.3.6, Page 35
+- [ ] [[foag_ 1.3.N|foag_Fibered_product_of_sets]],  1.3.N, Page 36
+- [ ] [[foag_ 1.3.O|foag_Fibered_product_in_the_category_of_open_subsets_of_a_topological_space_is_the_intersection]],  1.3.O, Page 36
+- [ ] [[foag_ 1.3.P|foag_Fibered_product_over_final_object_in_a_category_is_the_product]],  1.3.P, Page 36
+- [ ] [[foag_ 1.3.Q|foag_Towers_of_cartesian_diagrams_are_cartesian_diagrams]],  1.3.Q, Page 36
+- [ ] [[foag_ 1.3.R|foag_Fibered_products_are_natural_over_base_change]],  1.3.R, Page 36
+- [ ] [[foag_ 1.3.S|foag_Magic_diagram]],  1.3.S, Page 36
+- [ ] [[foag_ 1.3.7|foag_fibered_coproduct_of_objects_in_a_category]],  1.3.7, Page 37
+- [ ] [[foag_ 1.3.T|foag_Coproduct_in_the_category_of_sets_is_disjoint_union]],  1.3.T, Page 37
+- [ ] [[foag_ 1.3.U|foag_Tensor_product_is_fibered_coproduct_in_the_category_of_rings]],  1.3.U, Page 37
+- [ ] [[foag_ 1.3.8]],  1.3.8, Page 37
+- [ ] [[foag_ 1.3.9|foag_Monomorphism_in_a_category]],  1.3.9, Page 37
+- [ ] [[foag_ 1.3.V|foag_Monomorphisms_are_closed_under_composition]],  1.3.V, Page 37
+- [ ] [[foag_ 1.3.W|foag_Morphism_is_monomorphism_if_and_only_if_diagonal_object_exists_and_the_diagonal_morphism_is_an_isomorphism]],  1.3.W, Page 38
+- [ ] [[foag_ 1.3.X|foag_Natural_map_of_fibered_product_over_monomorphism_base_change_is_an_isomorphism]],  1.3.X, Page 38
+- [[foag_page_38|foag_Epimorphism_in_a_category]], Page 38
+- [ ] [[foag_ 1.3.10]],  1.3.10, Page 38
+- [ ] [[foag_ 1.3.Y|foag_Yonedas_lemma]],  1.3.Y, Page 38
+- [ ] [[foag_ 1.3.Z|foag_Representable_functor]],  1.3.Z, Page 39
+- [ ] [[foag_ 1.3.11]],  1.3.11, Page 39
+# 1.4. Limits and colimits
+- [ ] [[foag_Limits 1.4]], Limits 1.4, Page 39
+- [ ] [[foag_ 1.4.1|foag_Limit_of_a_diagram]],  1.4.1, Page 39
+- [ ] [[foag_ 1.4.2|foag_Product_of_objects_in_a_category]],  1.4.2, Page 40
+- [ ] [[foag_ 1.4.A|foag_Limits_of_diagrams_indexed_by_a_partially_ordered_set_with_initial_object_exist]],  1.4.A, Page 40
+- [ ] [[foag_ 1.4.3|foag_p_adic_integers]],  1.4.3, Page 40
+- [[foag_page_40|foag_Limits_exist_for_categories_of_set_like_structures_with_arbitrary_products]]
+- [ ] [[foag_ 1.4.B|foag_Limit_of_a_diagram_in_the_category_of_sets],  1.4.B, Page 41
+- [ ] [[foag_ 1.4.4|foag_Colimit_of_a_diagram]],  1.4.4, Page 41
+- [ ] [[foag_ 1.4.5|foag_Colimits_behave_differently_from_limits]],  1.4.5, Page 41
+- [ ] [[foag_ 1.4.6|foag_Example_of_colimit]],  1.4.6, Page 42
+- [[foag_page_42|foag_Coproduct_of_objects_in_a_category]], Page 42
+- [ ] [[foag_ 1.4.C]],  1.4.C, Page 42
+- [ ] [[foag_ 1.4.7|foag_Filtered_set]],  1.4.7, Page 42
+- [ ] [[foag_ 1.4.D|foag_Explicit_construction_of_colimit_of_sets_of_a_filtered_diagram]],  1.4.D, Page 42
+- [ ] [[foag_ 1.4.E]],  1.4.E, Page 43
+- [ ] [[foag_ 1.4.F|foag_Localization_as_a_colimit]],  1.4.F, Page 43
+- [ ] [[foag_ 1.4.G|foag_Colimit_of_modules_is_direct_sum_modulo_relations]],  1.4.G, Page 43
+- [ ] [[foag_ 1.4.8]],  1.4.8, Page 43
+- [ ] [[foag_ 1.4.9|foag_Colimits_exist_in_the_category_of_sets_for_all_small_index_categories]],  1.4.9, Page 43
+# 1.5. Adjoints
+- [ ] [[foag_Adjoints 1.5|foag_Adjoint_functors]], Adjoints 1.5, Page 43
+- [ ] [[foag_ 1.5.A|foag_Commutative_diagram_for_adjoint_functors]],  1.5.A, Page 44
+- [ ] [[foag_ 1.5.B]],  1.5.B, Page 44
+- [ ] [[foag_ 1.5.C|foag_Tensor_Hom_adjunction]],  1.5.C, Page 44
+- [ ] [[foag_ 1.5.D|foag_Tensor_product_and_Hom_of_modules_are_adjoint_functors]],  1.5.D, Page 44
+- [ ] [[foag_ 1.5.E|foag_Induced_module_restriction_of_scalars_adjunction]],  1.5.E, Page 44
+- [ ] [[foag_ 1.5.1|foag_Adjoint_functors_determine_each_other_up_to_natural_isomorphism]],  1.5.1, Page 44
+- [ ] [[foag_ 1.5.2|foag_Frobenius_reciprocity_can_be_understood_in_terms_of_adjoints]],  1.5.2, Page 45
+- [ ] [[foag_ 1.5.3|foag_Groupification_of_an_abelian_semigroup]],  1.5.3, Page 45
+- [ ] [[foag_ 1.5.F|foag_An_abelian_group_is_its_own_groupification]],  1.5.F, Page 45
+- [ ] [[foag_ 1.5.G|foag_groupification_forgetful_functor_adjunction]],  1.5.G, Page 45
+- [ ] [[foag_ 1.5.H|foag_Localization_functor_of_a_ring_is_adjoint_to_forgetful_functor]],  1.5.H, Page 46
+- [ ] [[foag_ 1.5.4|foag_Left_adjoint_commutes_with_colimits_and_right_adjoint_commutes_with_limits]],  1.5.4, Page 47
+# 1.6. An introduction to abelian categories
+- [ ] [[foag_An 1.6]], An 1.6, Page 47
+- [ ] [[foag_ 1.6.1|foag_Additive_category]],  1.6.1, Page 47
+- [ ] [[foag_ 1.6.2|foag_Finite_direct_products_in_an_additive_category_are_finite_direct_sums]],  1.6.2, Page 48
+- [ ] [[foag_ 1.6.3|foag_Abelian_category]],  1.6.3, Page 48
+- [ ] [[foag_ 1.6.4|foag_Freyd_Mitchell_Embedding_Theorem]],  1.6.4, Page 49
+- [ ] [[foag_ 1.6.5|foag_Homology_of_a_complex]],  1.6.5, Page 49
+- [ ] [[foag_ 1.6.A|foag_Complexes_can_be_factored_into_short_exact_sequences_by_cohomology]],  1.6.A, Page 51
+- [ ] [[foag_ 1.6.B|foag_Alternating_sum_of_cohomological_dimensions_of_complexes_of_k_vector_spaces_are_additive_in_exact_sequences]],  1.6.B, Page 51
+- [ ] [[foag_ 1.6.C|foag_Category_of_complexes_of_an_abelian_category]],  1.6.C, Page 51
+- [ ] [[foag_ 1.6.D|foag_Map_of_complexes_induces_a_map_of_homology]],  1.6.D, Page 51
+- [ ] [[foag_ 1.6.6|foag_Short_exact_sequence_of_complexes_induces_a_long_exact_sequence_in_cohomology]],  1.6.6, Page 52
+- [ ] [[foag_ 1.6.7|foag_Exact_functors]],  1.6.7, Page 52
+- [ ] [[foag_ 1.6.E|foag_Exact_functor_preserves_exactness]],  1.6.E, Page 53
+- [ ] [[foag_ 1.6.F|foag_Exactness_of_module_functors]],  1.6.F, Page 53
+- [ ] [[foag_ 1.6.G|foag_Localization_of_Finitely_presented_A_module_respects_Hom_from_the_module]],  1.6.G, Page 53
+- [ ] [[foag_ 1.6.8|foag_Hom_does_not_always_commute_with_localization_example]],  1.6.8, Page 53
+- [ ] [[foag_ 1.6.9]],  1.6.9, Page 53
+- [ ] [[foag_ 1.6.10]],  1.6.10, Page 54
+- [ ] [[foag_ 1.6.H|foag_FHHF_theorem]],  1.6.H, Page 54
+- [ ] [[foag_ 1.6.11|foag_Flat_A_module]],  1.6.11, Page 54
+- [ ] [[foag_ 1.6.12|foag_Limits_commute_with_limits_and_right_adjoints]],  1.6.12, Page 54
+- [ ] [[foag_ 1.6.13|foag_Colimits_over_filtered_index_categories_are_not_generally_exact_in_abelian_categories]],  1.6.13, Page 54
+- [ ] [[foag_ 1.6.14]],  1.6.14, Page 55
+- [ ] [[foag_ 1.6.I|foag_Kernels_commute_with_limits]],  1.6.I, Page 55
+- [ ] [[foag_ 1.6.J|foag_Limits_commute_with_limits_in_a_general_category]],  1.6.J, Page 55
+- [ ] [[foag_ 1.6.15|foag_Right_adjoints_commute_with_limits]],  1.6.15, Page 55
+- [ ] [[foag_ 1.6.K|foag_Colimits_over_filtered_index_categories_are_exact_in_the_category_of_A_modules]],  1.6.K, Page 55
+- [ ] [[foag_ 1.6.L|foag_Filtered_colimits_commute_with_homology_in_the_category_of_A_modules]],  1.6.L, Page 56
+- [ ] [[foag_ 1.6.M|foag_Limit_of_inverse_system_of_exact_sequence_of_modules_with_surjective_transition_maps_of_the_left_term__yield_an_exact_sequence]],  1.6.M, Page 56
+- [ ] [[foag_ 1.6.16|foag_Right_exact_functors_might_not_commute_with_colimits]],  1.6.16, Page 56
+- [ ] [[foag_ 1.6.17|foag_Dreaming_of_derived_functors]],  1.6.17, Page 57
+# 1.7. ⋆ Spectral sequences
+- [ ] [[foag_ 1.7]],  1.7, Page 57
+- [ ] [[foag_ 1.7.1|foag_Double_complex]],  1.7.1, Page 57
+- [ ] [[foag_ 1.7.2|foag_Spectral_sequence_with_rightward_orientation]],  1.7.2, Page 58
+- [ ] [[foag_ 1.7.A]],  1.7.A, Page 61
+- [ ] [[foag_ 1.7.3|foag_Spectral_sequence_with_upward_orientation]],  1.7.3, Page 61
+- [ ] [[foag_ 1.7.4]],  1.7.4, Page 61
+- [ ] [[foag_ 1.7.5|foag_Snake_lemma]],  1.7.5, Page 62
+- [ ] [[foag_ 1.7.B|foag_Grafting_exact_sequence]],  1.7.B, Page 63
+- [ ] [[foag_ 1.7.6|foag_The_Five_Lemma]],  1.7.6, Page 63
+- [ ] [[foag_ 1.7.C|foag_A_subtler_five_lemma]],  1.7.C, Page 64
+- [ ] [[foag_ 1.7.D|foag_Another_subtle_version_of_the_five_lemma]],  1.7.D, Page 64
+- [ ] [[foag_ 1.7.E|foag_The_mapping_cone]],  1.7.E, Page 64
+- [ ] [[foag_ 1.7.F|foag_Short_exact_sequence_of_complexes_gives_a_long_exact_sequence_in_cohomology_via_spectral_sequences]],  1.7.F, Page 64
+- [[foag_page_64]], Page 64
+- [ ] [[foag_ 1.7.7]],  1.7.7, Page 64
+- [ ] [[foag_ 1.7.8|foag_Spectral_sequences_are_actually_spectral_functors]],  1.7.8, Page 65
+- [ ] [[foag_ 1.7.9|foag__p_q_strip_of_a_spectral_sequence]],  1.7.9, Page 65
+- [ ] [[foag_ 1.7.10|foag_Preliminary_definition_of_E_p_q_r]],  1.7.10, Page 66
+- [ ] [[foag_ 1.7.G|foag_E_p_q_0_is_canonically_isomorphic_to_E_p_q]],  1.7.G, Page 66
+- [ ] [[foag_ 1.7.H|foag_Exercises_on__p_q_strips]],  1.7.H, Page 66
+- [ ] [[foag_ 1.7.11|foag_E_r_p_q]],  1.7.11, Page 67
+- [ ] [[foag_ 1.7.I|foag_E_infty_p__k_p_GIVES_SUBQUOTIENTS_OF_H_kleft_E_bulletright]],  1.7.I, Page 67
+- [ ] [[foag_ 1.7.12|foag_Differential_map_of_spectral_sequence]],  1.7.12, Page 67
+- [ ] [[foag_ 1.7.J|foag_Specrtral_sequence_differential_exercise]],  1.7.J, Page 67
+- [ ] [[foag_ 1.7.13|foag_Verifying_that_the_cohomology_of_d_r_at_E_r_p_q_is_E_r1_p_q]],  1.7.13, Page 68

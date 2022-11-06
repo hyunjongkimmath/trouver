@@ -1,0 +1,2 @@
+- [[milne_james_s|James S. Milne]], *Fundamental Theorem of Complex Multiplication*, 2007.
+	- Available at https://www.jmilne.org/math/articles/2007c.pdf

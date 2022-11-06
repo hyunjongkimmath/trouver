@@ -1,0 +1,29 @@
+# 1.2. Categories and functors
+- [ ] [[foag_Categories 1.2]], Categories 1.2, Page 25
+- [ ] [[foag_ 1.2.1|foag_Category]],  1.2.1, Page 25
+- [ ] [[foag_ 1.2.2|foag_Category_of_setes]],  1.2.2, Page 26
+- [ ] [[foag_ 1.2.3|foag_Category_of_vector_spaces_over_a_field]],  1.2.3, Page 26
+- [ ] [[foag_ 1.2.A|foag_Groupoid]],  1.2.A, Page 26
+- [ ] [[foag_ 1.2.B|foag_Automorphism_group_of_an_object_in_a_cateo]],  1.2.B, Page 26
+- [ ] [[foag_ 1.2.4|foag_Category_of_abelian_groups]],  1.2.4, Page 27
+- [ ] [[foag_ 1.2.5|foag_Category_of_modules_over_a_ring]],  1.2.5, Page 27
+- [ ] [[foag_ 1.2.6|foag_Category_of_rings]],  1.2.6, Page 27
+- [ ] [[foag_ 1.2.7]],  1.2.7, Page 27
+- [ ] [[foag_page_27|foag_Concrete_category]], Page 27
+- [ ] [[foag_ 1.2.8|foag_Partially_ordered_sets]],  1.2.8, Page 27
+- [ ] [[foag_ 1.2.9|foag_Category_of_open_subsets_of_a_topological_space]],  1.2.9, Page 28
+- [ ] [[foag_ 1.2.10|foag_Subcategory_of_a_category]],  1.2.10, Page 28
+- [ ] [[foag_ 1.2.11|foag_Covariant_functor]],  1.2.11, Page 28
+- [ ] [[foag_ 1.2.12|foag_Forgetful_functor]],  1.2.12, Page 28
+- [ ] [[foag_ 1.2.13|foag_Topological_functor_examples]],  1.2.13, Page 28
+- [ ] [[foag_ 1.2.14|foag_Representable_functor_example]],  1.2.14, Page 28
+- [ ] [[foag_ 1.2.15|foag_Composition_of_functors]],  1.2.15, Page 28
+- [ ] [[foag_ 1.2.16|foag_Contravariant_functor]],  1.2.16, Page 29
+- [ ] [[foag_ 1.2.17|foag_Dual_functor_example]],  1.2.17, Page 29
+- [ ] [[foag_ 1.2.18|foag_Cohomology_functor_is_an_example_of_a_contravariant_functor]],  1.2.18, Page 29
+- [ ] [[foag_ 1.2.19|foag_Real_valued_continuous_functions_functor_is_an_example_of_a_contravariant_functor]],  1.2.19, Page 29
+- [ ] [[foag_ 1.2.20|foag_Functor_of_points_is_an_example_of_a_contravariant_functor]],  1.2.20, Page 29
+- [ ] [[foag_ 1.2.21|foag_Natural_transformations_of_functors]],  1.2.21, Page 29
+- [ ] [[foag_ 1.2.C|foag_Double_dual_functor_on_the_category_of_finite_dimensional_vector_spaces_is_naturally_isomorphic_to_the_identity_functor]],  1.2.C, Page 30
+- [ ] [[foag_ 1.2.D]],  1.2.D, Page 30
+- [ ] [[foag_ 1.2.22|foag_A_covariant_functor_is_an_equivalence_of_categories_if_it_is_fully_faithful_and_essentially_surjective]],  1.2.22, Page 30

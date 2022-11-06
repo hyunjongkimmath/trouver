@@ -1,0 +1,1 @@
+$A(\mathbb{F}_v)$ [[lombardo_av_NOTATION 4.2|denotes]] $\mathcal{A}(\mathbb{F}_v)$ where $\mathcal{A} \to \operatorname{Spec} (\mathcal{O}_{K,v})$ is an [[lombardo_av_DEFINITION 2.1|abelian scheme]] extending $A_{K_v}$ and where $A/K$ is an abelian variety over a number field.

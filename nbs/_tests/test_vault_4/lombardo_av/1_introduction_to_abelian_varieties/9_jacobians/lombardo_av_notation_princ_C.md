@@ -1,0 +1,1 @@
+$\operatorname{Princ}_C$ denotes the group of [[lombardo_av_DEFINITION 9.7|principal divisors]] of the curve $C/K$ (where $K$ is a [[18785_Definition 4.18|perfect field]]).

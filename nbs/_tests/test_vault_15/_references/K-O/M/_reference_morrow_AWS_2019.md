@@ -1,0 +1,2 @@
+- [[morrow_matthew|Matthew Morrow]], *Topological Hochschild homology in arithmetic geometry*, Arizona Winter School 2019
+	- Available at https://www.math.arizona.edu/~swc/aws/2019/index.html

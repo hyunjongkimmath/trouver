@@ -1,0 +1,201 @@
+{
+  "main": {
+    "id": "7b25d969bf8b07ab",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b8cb05e08335942",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_index_qiu_amsd.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":1},\"to\":{\"line\":0,\"ch\":1}}}"
+            },
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_notation_Index.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            },
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_common.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "_index_qiu_amsd.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "5b2a4562623c9bad",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "5b2a4562623c9bad",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"1_introduction_qiu_amsd/_index_1_introduction_qiu_amsd.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "1_introduction_qiu_amsd/_index_1_introduction_qiu_amsd.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c8176f3d94637c5b",
+    "type": "split",
+    "children": [
+      {
+        "id": "60668972a310f28e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6b58208a5afd5df",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "ab9f441e34772388",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "_research_orbits_of_burau_",
+                "matchingCase": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8bcd679402673a5d",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "recent-files",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 369.50397300720215
+  },
+  "right": {
+    "id": "0f8a2ceeaedb9bce",
+    "type": "split",
+    "children": [
+      {
+        "id": "d09904971f9ddeb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b246426e91c03db",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "1_introduction_qiu_amsd/_index_1_introduction_qiu_amsd.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": true,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "6e5f7a9a2b66e4a7",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "alphabetical",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "722cd5bd240d1481",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "1_introduction_qiu_amsd/_index_1_introduction_qiu_amsd.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 271
+  },
+  "active": "c6b58208a5afd5df",
+  "lastOpenFiles": [
+    "_index_qiu_amsd.md",
+    "1_introduction_qiu_amsd/6_holomorphic_projections/qiu_amsd_11.md",
+    "7_admissible__divisors/_index_7_admissible__divisors.md",
+    "6_proper_intersections/_index_6_proper_intersections.md",
+    "5_intersections_with_cm_cycles/_index_5_intersections_with_cm_cycles.md",
+    "4_generating_series_of_special_divisors/_index_4_generating_series_of_special_divisors.md",
+    "4_generating_series_of_special_divisors/2_green_functions/qiu_amsd_defn 4.9.md",
+    "4_generating_series_of_special_divisors/2_green_functions/qiu_amsd_51.md",
+    "4_generating_series_of_special_divisors/2_green_functions/qiu_amsd_lem 4.8.md",
+    "4_generating_series_of_special_divisors/2_green_functions/qiu_amsd_50.md"
+  ]
+}

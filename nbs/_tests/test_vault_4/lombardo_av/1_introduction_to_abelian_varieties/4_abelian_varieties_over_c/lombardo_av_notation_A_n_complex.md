@@ -1,0 +1,1 @@
+$A[n]$ [[lombardo_av_PROPOSITION 4.5|denotes]] the $n$-torsion subgroup of the complex [[lombardo_av_1.3|abelian variety]] $A$.

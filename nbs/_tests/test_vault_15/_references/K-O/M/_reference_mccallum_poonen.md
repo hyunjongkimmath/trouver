@@ -1,0 +1,2 @@
+- [[mccallum_william_g|William Mccallum]] and [[poonen_bjorn|Bjorn Poonen]], *The Method of Chabauty and Coleman*, 2010.
+	- available at http://www-math.mit.edu/~poonen/papers/chabauty.pdf

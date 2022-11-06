@@ -1,0 +1,1 @@
+$\deg \varphi$ [[lombardo_av_DEFINITION 5.3|denotes]] the degree of the [[lombardo_av_DEFINITION 5.3|isogeny]] $\varphi$ of abelian varieties.

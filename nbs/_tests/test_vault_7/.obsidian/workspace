@@ -1,0 +1,109 @@
+{
+  "main": {
+    "id": "73fcf63aec7a9759",
+    "type": "split",
+    "children": [
+      {
+        "id": "9d5e1f3d3681a639",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "some_reference/1_chapter/_index_1_chapter.md",
+            "mode": "source"
+          }
+        }
+      },
+      {
+        "id": "598eebe760916ebf",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "some_reference/1_chapter/1_section/some_reference_page_2.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f411813037ad37ff",
+    "type": "split",
+    "children": [
+      {
+        "id": "76fdef26af38a1eb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2fbf31d8e4fffadf",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "962f8b220a7edf6c",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "a628c4401c32243b",
+    "type": "split",
+    "children": [
+      {
+        "id": "66b216b619977c8f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "75fedf4a45343fd9",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "some_reference/1_chapter/1_section/some_reference_page_2.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "598eebe760916ebf",
+  "lastOpenFiles": [
+    "some_reference/1_chapter/1_section/some_reference_page_2.md",
+    "some_reference/1_chapter/1_section/some_reference_page_3.md",
+    "some_reference/1_chapter/_index_1_chapter.md",
+    "some_reference/1_chapter/1_section/some_reference_page 1.md",
+    "some_reference/_index_some_reference.md"
+  ]
+}

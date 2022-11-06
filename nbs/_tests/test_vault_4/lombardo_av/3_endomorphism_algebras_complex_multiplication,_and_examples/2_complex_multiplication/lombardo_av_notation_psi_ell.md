@@ -1,0 +1,1 @@
+$\psi_\ell$ [[lombardo_av_DEFINITION 2.9|denotes]] the composition of $N_{K/E^*}$ with the [[lombardo_av_DEFINITION 2.7|reflex norm]] $N_\Phi: E^* \to E$ where $E$ is a [[lombardo_av_DEFINITION 2.1_page_60|CM field]], $\Phi$ is a [[lombardo_av_DEFINITION 2.2|CM type]], and $(E^*, \Phi^*)$ is a [[lombardo_av_DEFINITION 2.5|reflex type]].

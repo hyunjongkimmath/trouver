@@ -1,0 +1,2 @@
+- [[mitchell_steve|Stephen Mitchell]], *Notes on principal bundles and classifying spaces*, ncatlab, 2011.
+	- Available at https://ncatlab.org/nlab/files/MitchellPrincipalBundles.pdf

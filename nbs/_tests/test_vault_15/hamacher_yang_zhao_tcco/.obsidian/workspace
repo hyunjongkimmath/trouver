@@ -1,0 +1,298 @@
+{
+  "main": {
+    "id": "7b25d969bf8b07ab",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b8cb05e08335942",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_index_hamacher_yang_zhao_tcco.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_notation_Index.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            },
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_common.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "_index_hamacher_yang_zhao_tcco.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "6b67c8667576a696",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"11_discriminants_which_become_nonreduced_modulo_p/_index_11_discriminants_which_become_nonreduced_modulo_p.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"10_further_remarks/_index_10_further_remarks.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"9_examples_of_general_or_fano_type/_index_9_examples_of_general_or_fano_type.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"8_elliptic_surfaces_with_p_g__q__1/_index_8_elliptic_surfaces_with_p_g__q__1.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"7_deforming_curves_on_parameter_spaces/_index_7_deforming_curves_on_parameter_spaces.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"6_proof_of_the_generic_case/_index_6_proof_of_the_generic_case.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":5},\"to\":{\"line\":3,\"ch\":5}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"5_period_morphisms/_index_5_period_morphisms.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":10,\"ch\":15},\"to\":{\"line\":10,\"ch\":15}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"6_proof_of_the_generic_case/_index_6_proof_of_the_generic_case.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"5_period_morphisms/_index_5_period_morphisms.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"4_p_adic_riemann_hilbert_correspondence_and_relative_de_rham_cycles/_index_4_p_adic_riemann_hilbert_correspondence_and_relative_de_rham_cycles.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"3_shimura_varieties/_index_3_shimura_varieties.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"2_preliminaries/_index_2_preliminaries.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":25,\"ch\":0},\"to\":{\"line\":25,\"ch\":0}},\"scroll\":5.019607843137255}"
+            },
+            {
+              "leaf": "6b67c8667576a696",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"1_introduction/_index_1_introduction.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":5},\"to\":{\"line\":0,\"ch\":5}}}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "11_discriminants_which_become_nonreduced_modulo_p/_index_11_discriminants_which_become_nonreduced_modulo_p.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "917f4e6c1799a134",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "917f4e6c1799a134",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"5_period_morphisms/hamacher_yang_zhao_tcco_section 5.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "5_period_morphisms/hamacher_yang_zhao_tcco_section 5.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c8176f3d94637c5b",
+    "type": "split",
+    "children": [
+      {
+        "id": "60668972a310f28e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6b58208a5afd5df",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "ab9f441e34772388",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "_research_orbits_of_burau_",
+                "matchingCase": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8bcd679402673a5d",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "recent-files",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 369.50397300720215,
+    "collapsed": true
+  },
+  "right": {
+    "id": "0f8a2ceeaedb9bce",
+    "type": "split",
+    "children": [
+      {
+        "id": "d09904971f9ddeb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b246426e91c03db",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "11_discriminants_which_become_nonreduced_modulo_p/_index_11_discriminants_which_become_nonreduced_modulo_p.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": true,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "6e5f7a9a2b66e4a7",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "alphabetical",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "722cd5bd240d1481",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "11_discriminants_which_become_nonreduced_modulo_p/_index_11_discriminants_which_become_nonreduced_modulo_p.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 271,
+    "collapsed": true
+  },
+  "active": "6b67c8667576a696",
+  "lastOpenFiles": [
+    "10_further_remarks/_index_10_further_remarks.md",
+    "9_examples_of_general_or_fano_type/_index_9_examples_of_general_or_fano_type.md",
+    "8_elliptic_surfaces_with_p_g__q__1/_index_8_elliptic_surfaces_with_p_g__q__1.md",
+    "7_deforming_curves_on_parameter_spaces/_index_7_deforming_curves_on_parameter_spaces.md",
+    "6_proof_of_the_generic_case/_index_6_proof_of_the_generic_case.md",
+    "5_period_morphisms/_index_5_period_morphisms.md",
+    "5_period_morphisms/hamacher_yang_zhao_tcco_section 5.md",
+    "4_p_adic_riemann_hilbert_correspondence_and_relative_de_rham_cycles/_index_4_p_adic_riemann_hilbert_correspondence_and_relative_de_rham_cycles.md",
+    "3_shimura_varieties/_index_3_shimura_varieties.md",
+    "2_preliminaries/_index_2_preliminaries.md"
+  ]
+}

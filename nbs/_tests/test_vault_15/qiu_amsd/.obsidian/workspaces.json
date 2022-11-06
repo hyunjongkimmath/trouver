@@ -1,0 +1,2054 @@
+{
+  "workspaces": {
+    "EVW_nonsplit": {
+      "main": {
+        "id": "d0304dc64b9c8a3c",
+        "type": "split",
+        "children": [
+          {
+            "id": "80dfbedb5e9480a8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_courses/848_Fall_2021/notes/10_26_2021_T/10_26_2021_T.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "80dfbedb5e9480a8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_references/K-O/N/_reference_neukirch.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+                },
+                {
+                  "leaf": "80dfbedb5e9480a8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_courses/848_Fall_2021/notes/10_26_2021_T/10_26_2021_T.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":75.61851462339743}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "4f3b7232b04cfadd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/3_the_ring_R_of_connected_components/pair_with_non_splitting_property.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "4f3b7232b04cfadd",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/3_the_ring_R_of_connected_components/pair_with_non_splitting_property.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "4f3b7232b04cfadd",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/_index_ellenberg_venkatesh_westerland.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":60.67753070688503}"
+                },
+                {
+                  "leaf": "4f3b7232b04cfadd",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/rational_union_of_conjugacy_classes.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "2a68062b5347f887",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/_index_research_EVW.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "2a68062b5347f887",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/_index_research_EVW.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "fd464f115004946b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_categorizing_nonsplit_conjugacy_classes.md",
+                "mode": "source"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "fd464f115004946b",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_categorizing_nonsplit_conjugacy_classes.md\",\"mode\":\"source\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "5ec4d036c5af80e9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/algebraic_number_theory/neukirch/II_the_theory_of_valuations/_index_II_the_theory_of_valuations.md",
+                "mode": "source"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 2,
+              "stack": [
+                {
+                  "leaf": "5ec4d036c5af80e9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/algebraic_number_theory/neukirch/II_the_theory_of_valuations/3_valuations/neukirch_Definition 3.1.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":23,\"ch\":36},\"to\":{\"line\":23,\"ch\":36}},\"scroll\":12.53578113532506}"
+                },
+                {
+                  "leaf": "5ec4d036c5af80e9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/algebraic_number_theory/neukirch/II_the_theory_of_valuations/3_valuations/neukirch_Definition 3.2_page_116.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "leaf": "5ec4d036c5af80e9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/algebraic_number_theory/neukirch/II_the_theory_of_valuations/_index_II_the_theory_of_valuations.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":44,\"ch\":20},\"to\":{\"line\":44,\"ch\":20}},\"scroll\":28.261184438857057}"
+                },
+                {
+                  "leaf": "5ec4d036c5af80e9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/algebraic_number_theory/neukirch/_index_neukirch.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "tag:#norm",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "066be001b7390c60",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_categorizing_nonsplit_conjugacy_classes.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "byCreatedTime",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_categorizing_nonsplit_conjugacy_classes.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271
+      },
+      "active": "fd464f115004946b"
+    },
+    "EVW_splitting_of_Hn_c_G_n": {
+      "main": {
+        "id": "d0304dc64b9c8a3c",
+        "type": "split",
+        "children": [
+          {
+            "id": "a76f8b2f970a3991",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/_index_research_EVW.md",
+                "mode": "source"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "a76f8b2f970a3991",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/emails/email_nonsplit_conjugacy_classes_of_a_group.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":9,\"ch\":0},\"to\":{\"line\":9,\"ch\":0}}}"
+                },
+                {
+                  "leaf": "a76f8b2f970a3991",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/_index_research_EVW.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":2,\"ch\":39},\"to\":{\"line\":2,\"ch\":39}}}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "d86ee82d74155e1b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/email_about_rationality_of_conjugacy_subgroup_in_EVW.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "d86ee82d74155e1b",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/bound_on_dimension_of_ell_adic_cohomology_of_hurwitz_scheme_of_tame_G_covers_with_monodromy.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":31.664570742433177}"
+                },
+                {
+                  "leaf": "d86ee82d74155e1b",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/email_about_rationality_of_conjugacy_subgroup_in_EVW.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":8.791208791208792}"
+                },
+                {
+                  "leaf": "d86ee82d74155e1b",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cbf1fdab4968c01a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/ellenberg_venkatesh_westerland_notation_HnGn.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "cbf1fdab4968c01a",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/ellenberg_venkatesh_westerland_notation_HnGn.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "51f7ed4fa7afb74b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/moduli/romagny_wewers/4_algebraic_construction/5_the_algebraic_hurwitz_space/romagny_wewers_Theorem 4.11.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "51f7ed4fa7afb74b",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/moduli/romagny_wewers/4_algebraic_construction/5_the_algebraic_hurwitz_space/romagny_wewers_Theorem 4.11.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":40.09569377990431}"
+                },
+                {
+                  "leaf": "51f7ed4fa7afb74b",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/hurwitz_scheme_of_tame_G_covers_of_P1_with_monodromy_of_type_c.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":25.9155672823219}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "7665683384db0120",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/rational_union_of_conjugacy_classes.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "7665683384db0120",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/rational_union_of_conjugacy_classes.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "6ec95fb5b5a1d8f8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/moduli/romagny_wewers/_index_romagny_wewers.md",
+                "mode": "preview"
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/moduli/romagny_wewers/_index_romagny_wewers.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":51.208333333333336}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"analysis/differential_equations/MATH_320_Fall_2021/Notes/MATH_320_11_10_2021.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"scroll\":3.777142857142857}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"analysis/differential_equations/MATH_320_Fall_2021/Notes/Untitled.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"analysis/differential_equations/MATH_320_Fall_2021/Notes/MATH_320_11_10_2021.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":3.787878787878788}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"analysis/differential_equations/MATH_320_Fall_2021/Notes/MATH_320_11_3_2021.md\",\"mode\":\"source\"}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":16,\"ch\":3},\"to\":{\"line\":16,\"ch\":3}},\"scroll\":0}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"analysis/differential_equations/MATH_320_Fall_2021/MATH_320_ideas.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/21_differentials/2_definitions_and_first_properties/foag_320.md\",\"mode\":\"preview\"}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/monodromy_type_for_tame_G_cover_of_P1.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/hurwitz_scheme_of_tame_G_covers_of_P1_with_monodromy_of_type_c.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":1.571939100599075}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/2_definitions/4_combinatorial_invariants/global_monodromy_of_a_branched_cover.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":8.837948354661524}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/EVW_tame_G_cover_of_P1.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":17.939037089445154}"
+                },
+                {
+                  "leaf": "6ec95fb5b5a1d8f8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/_index_ellenberg_venkatesh_westerland.md\",\"mode\":\"preview\"}}",
+                  "eState": "{\"scroll\":33.39336737271013}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "anabelian",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "8bcd679402673a5d",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269,
+        "collapsed": true
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/email_about_rationality_of_conjugacy_subgroup_in_EVW.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/7_homological_stability_for_hurwitz_schemes/email_about_rationality_of_conjugacy_subgroup_in_EVW.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271
+      },
+      "active": "d86ee82d74155e1b"
+    },
+    "research_EVW_cohen_lenstra": {
+      "main": {
+        "id": "7b25d969bf8b07ab",
+        "type": "split",
+        "children": [
+          {
+            "id": "3c56a9bd28d433d8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":63,\"ch\":68},\"to\":{\"line\":63,\"ch\":68}},\"scroll\":58.55555555555556}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.1.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "f6a42a9e61552134",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "f6a42a9e61552134",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":19.792857142857144}"
+                },
+                {
+                  "leaf": "f6a42a9e61552134",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":40,\"ch\":59},\"to\":{\"line\":40,\"ch\":59}},\"scroll\":37.714285714285715}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "d4d16ca8648e25f9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":2.6839826839826837}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":49,\"ch\":0},\"to\":{\"line\":49,\"ch\":0}},\"scroll\":0.1764705985475166}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.5.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.6.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.5.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":6.614035087719298}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "eceb4525b83f3852",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_page_37.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "eceb4525b83f3852",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_page_37.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":32.8}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "#latex",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "8bcd679402673a5d",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269,
+        "collapsed": true
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": true,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271,
+        "collapsed": true
+      },
+      "active": "f6a42a9e61552134"
+    },
+    "foag": {
+      "main": {
+        "id": "d0304dc64b9c8a3c",
+        "type": "split",
+        "children": [
+          {
+            "id": "22d9e0b12f3e2a9a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/_index_14_line_bundles_invertible_sheaves_and_divisors.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "22d9e0b12f3e2a9a",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/_index_14_line_bundles_invertible_sheaves_and_divisors.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "22d9e0b12f3e2a9a",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/K-O/L/_template_lam.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":14,\"ch\":11}}}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "ffb88a8862e69eb4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/2_line_bundles_and_weil_divisors/weil_divisor.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/2_line_bundles_and_weil_divisors/weil_divisor.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_14.1.D.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_14.1.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_14.1.C.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_14.1.Example.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_14.1.A.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/1_some_line_bundles_on_projective_space/foag_invertible_sheaf_on_projective_space.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "ffb88a8862e69eb4",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "tag:#norm",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/_index_14_line_bundles_invertible_sheaves_and_divisors.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "byCreatedTime",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "algebraic_geometry/foag/V_quasicoherent_sheaves/14_line_bundles_invertible_sheaves_and_divisors/_index_14_line_bundles_invertible_sheaves_and_divisors.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271,
+        "collapsed": true
+      },
+      "active": "22d9e0b12f3e2a9a"
+    },
+    "research_EVW_8.3": {
+      "main": {
+        "id": "7b25d969bf8b07ab",
+        "type": "split",
+        "children": [
+          {
+            "id": "3c56a9bd28d433d8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":63,\"ch\":41},\"to\":{\"line\":63,\"ch\":41}},\"scroll\":46.81875}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.1.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "2d03f4b40c4f4aa5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "2d03f4b40c4f4aa5",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.4_to_equivariant_surjections.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":3.75}"
+                },
+                {
+                  "leaf": "2d03f4b40c4f4aa5",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "adcebe8ee8b8bbd7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "adcebe8ee8b8bbd7",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":49.83203125}"
+                },
+                {
+                  "leaf": "adcebe8ee8b8bbd7",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "93e7cedfa86f2c10",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_page_37.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "93e7cedfa86f2c10",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_page_37.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":41.98347107438016}"
+                },
+                {
+                  "leaf": "93e7cedfa86f2c10",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "d4d16ca8648e25f9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":25.03669724770642}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":49,\"ch\":0},\"to\":{\"line\":49,\"ch\":0}},\"scroll\":0.1764705985475166}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.5.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.6.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.5.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":6.614035087719298}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.4.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.3.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "d4d16ca8648e25f9",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "#latex",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "8bcd679402673a5d",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ],
+            "currentTab": 2
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269,
+        "collapsed": true
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": true,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271,
+        "collapsed": true
+      },
+      "active": "adcebe8ee8b8bbd7"
+    },
+    "research_EVW_8.8": {
+      "main": {
+        "id": "7b25d969bf8b07ab",
+        "type": "split",
+        "children": [
+          {
+            "id": "3c56a9bd28d433d8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Proposition 8.3_to_equivariant_surjections.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":58,\"ch\":55},\"to\":{\"line\":58,\"ch\":55}},\"scroll\":49.30869398697817}"
+                },
+                {
+                  "leaf": "3c56a9bd28d433d8",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.1.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06db32f513fad3fd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "06db32f513fad3fd",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":134.69015984786185}"
+                },
+                {
+                  "leaf": "06db32f513fad3fd",
+                  "group": null,
+                  "state": "{\"type\":\"empty\",\"state\":{}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "737c0113b8946039",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "737c0113b8946039",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":126.1864406779661}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "53c3111358ccd37d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "53c3111358ccd37d",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":79,\"ch\":133},\"to\":{\"line\":79,\"ch\":133}},\"scroll\":69.62282572221669}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "#latex",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "8bcd679402673a5d",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269,
+        "collapsed": true
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": true,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/cohen_lenstra/cohen_lenstra_for_function_fields/ellenberg_venkatesh_westerland/8_the_cohen_lenstra_heuristics/ellenberg_venkatesh_westerland_ 8.8.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271,
+        "collapsed": true
+      },
+      "active": "737c0113b8946039"
+    },
+    "research_EVW_8.9": {
+      "main": {
+        "id": "7b25d969bf8b07ab",
+        "type": "split",
+        "children": [
+          {
+            "id": "82ff371d2fba0448",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "82ff371d2fba0448",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":152,\"ch\":0},\"to\":{\"line\":152,\"ch\":0}},\"scroll\":151.92244897959185}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "6e7d9ec9f7319bc5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "6e7d9ec9f7319bc5",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":170.9134948096886}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "859026d784ef1854",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.9_to_cubic_covers.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "859026d784ef1854",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.9_to_cubic_covers.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":36.659155992809765}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "5e4bd2c6c8dd4205",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.9_to_cubic_covers_2.md",
+                "mode": "source",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "5e4bd2c6c8dd4205",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Lemma 8.9_to_cubic_covers_2.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":24,\"ch\":103},\"to\":{\"line\":24,\"ch\":103}},\"scroll\":12.666667029809041}"
+                }
+              ]
+            }
+          },
+          {
+            "id": "432790b308ba0ec1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md",
+                "mode": "preview",
+                "source": true
+              }
+            },
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/_index_generalizing_EVW_to_cubic_covers.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":56.55450236966824}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_research/EVW/_index_research_EVW.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":17,\"ch\":19},\"to\":{\"line\":17,\"ch\":19}},\"scroll\":0}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebra/homological_algebra/weibel/2_derived_functor/_index_2_derived_functor.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":20.57085020242915}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_index_number_theory.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_glossary.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/P-T/R/_common_terms_ramification.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":48.740843803621026}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_18785.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/18785/10_extensions_of_complete_dvrs/_index_10_extensions_of_complete_dvrs.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":11.056089578852479}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/A-E/D/_common_terms_discriminant.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/P-T/R/_common_terms_regulator.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/P-T/R/_common_terms_regular.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/A-E/D/_common_terms_discriminant.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":6.148148148148148}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/A-E/D/_common_terms_degree.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"scroll\":0}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/K-O/N/_common_terms_numbers_field.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_common_terms/K-O/N/_common_terms_norm.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_glossary.md\",\"mode\":\"source\",\"source\":true}}",
+                  "eState": "{}"
+                },
+                {
+                  "leaf": "432790b308ba0ec1",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/computational_number_theory/cohen_icnt/_glossary_cohen_icnt.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{}"
+                }
+              ]
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "c8176f3d94637c5b",
+        "type": "split",
+        "children": [
+          {
+            "id": "60668972a310f28e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "c6b58208a5afd5df",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "ab9f441e34772388",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "detect_regex",
+                    "matchingCase": false,
+                    "explainSearch": true,
+                    "collapseAll": true,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "8bcd679402673a5d",
+                "type": "leaf",
+                "state": {
+                  "type": "recent-files",
+                  "state": {}
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 269
+      },
+      "right": {
+        "id": "0f8a2ceeaedb9bce",
+        "type": "split",
+        "children": [
+          {
+            "id": "d09904971f9ddeb0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4b246426e91c03db",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": true,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "6e5f7a9a2b66e4a7",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "useHierarchy": true
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              },
+              {
+                "id": "722cd5bd240d1481",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "number_theory/_research/EVW/research_notes/generalizing_EVW_to_cubic_covers/research_generalizing_EVW_Theorem 8.8_to_cubic_covers.md"
+                  }
+                },
+                "pane-relief:history-v1": {
+                  "pos": 0,
+                  "stack": []
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 271,
+        "collapsed": true
+      },
+      "active": "6e7d9ec9f7319bc5"
+    }
+  },
+  "active": "research_EVW_8.9"
+}

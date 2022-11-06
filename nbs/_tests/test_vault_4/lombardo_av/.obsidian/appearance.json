@@ -1,0 +1,7 @@
+{
+  "theme": "obsidian",
+  "baseFontSize": 10,
+  "enabledCssSnippets": [
+    "clean-embeds-all"
+  ]
+}

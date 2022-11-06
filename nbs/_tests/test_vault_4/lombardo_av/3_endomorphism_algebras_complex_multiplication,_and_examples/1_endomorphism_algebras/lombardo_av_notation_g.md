@@ -1,0 +1,1 @@
+$g$ [[lombardo_av_THEOREM 1.1|denotes]] $\dim(A)$ where $A$ is an [[lombardo_av_1.3|abelian variety]] (simple, over $\mathbb{C}$).

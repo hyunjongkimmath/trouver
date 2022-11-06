@@ -1,0 +1,1 @@
+$\operatorname{Princ}_C(K)$ [[lombardo_av_NOTATION 9.10|denotes]] the $\operatorname{Gal}(\bar{K}/K)$-invariant subgroup of [$\operatorname{Princ}_C(\bar{K})$](lombardo_av_notation_princ_C_bar_K)

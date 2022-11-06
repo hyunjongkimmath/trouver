@@ -1,0 +1,1 @@
+$\operatorname{Pic}^0(A)$ [[lombardo_av_page_18|denotes]] the set of [[foag_locally_free_sheaf_on_a_scheme#invertible sheaf 2|line bundles]] $\mathcal{L}$ on the abelian variety $A$ such that $\tau_a^* \mathcal{L} \cong \mathcal{L}$ for all $a \in A(K)$.

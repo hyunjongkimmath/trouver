@@ -1,0 +1,1 @@
+$\ker f$ [[lombardo_av_DEFINITION 5.1|denotes]] the kernel of the group scheme homomorphism $f$.

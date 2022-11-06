@@ -1,0 +1,1 @@
+$V_\ell(A)$ denotes the ($\ell$-adic) [[lombardo_av_DEFINITION 10.10#Rational Tate module of an abelian variety|rational TAte module]]

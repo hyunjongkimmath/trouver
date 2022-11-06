@@ -1,0 +1,1 @@
+$[n]$ [[lombardo_av_DEFINITION 5.11|denotes]] the multiplication-by-$n$ map $A \to A$ where $A$ is an [[lombardo_av_1.3|abelian variety]].

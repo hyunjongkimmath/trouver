@@ -21,7 +21,8 @@ from natsort import natsorted
 
 # %% auto 0
 __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
-           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices']
+           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number',
+           'file_existence_test']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -195,3 +196,58 @@ def latex_indices(text: str) -> list[tuple[int]]:
     # r'(?<!\\)\$.*(?<!\\)\$|(?<!\\)\$(?<!\\)\$.*(?<!\\)\$(?<!\\)\$'
     return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
     # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
+
+# %% ../nbs/00_helper.ipynb 50
+def is_number(
+        x: Union[float, int, complex, str]
+        ) -> bool:
+    """Return `True` if the input `x` represents a number.
+    
+    This function is different from Python's built-in `is_numeric`
+    function, which returns `True` when all characters of a string
+    are digits.
+    """
+    if isinstance(x, (float, int, complex)):
+        return True
+    #For the case where string is None
+    if x is None:
+        return False
+    if x and x[0] == '-': x = x[1:]
+    return x.replace(".", "1", 1).isdigit()
+
+# %% ../nbs/00_helper.ipynb 54
+def file_existence_test(
+        path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
+        relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `file` is an absolute path.
+        ) -> Path: # The path formed by `relative_to` adjoined with `file`.  Defaults to `None`
+    """Returns a path relative to a specified path as an absolute path
+    that exists.
+
+    **Raises**
+    - `FileNotFoundError`
+        - If `relative_to` is not `None` but does not exist, or if
+        `file` does not exist.
+    
+    **Notes**
+    - This function may add the string `'\\\\?\\'` in front, which identifies
+    very long paths.
+    """
+    if relative_to is not None:
+        if not os.path.isabs(relative_to):
+            raise ValueError(
+                f'The parameter `relative_to` is expected to be an'
+                f' absolute path, but it is not: {relative_to}')
+        if not os.path.exists(relative_to):
+            raise FileNotFoundError(
+                errno.ENOENT, os.strerror(errno.ENOENT), relative_to)
+        path = Path(relative_to) / path
+    elif not os.path.isabs(path):
+        raise ValueError(
+            f'The parmaeter `path` is expected to be an absolute path,'
+            f' but it is not: {path}')
+    if not os.path.exists(path) and platform.system() == 'Windows':
+        path = f'\\\\?\\{str(path)}'  # For long file names
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), path)
+    return Path(path)

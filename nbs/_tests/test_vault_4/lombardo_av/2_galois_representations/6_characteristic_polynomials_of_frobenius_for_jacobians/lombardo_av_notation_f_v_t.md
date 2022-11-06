@@ -1,0 +1,1 @@
+$f_v(t)$ denotes the characteristic polynomial [$f_{v,\ell}(t)$](lombardo_av_notation_f_v_ell_t) of Frobenius where $A/K$ is an abelian variety over a number field, $v$ is a place of a $K$ at which $A$ has [[lombardo_av_DEFINITION 4.1|good reduction]], and $\ell$ is not divisible by $v$.

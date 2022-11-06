@@ -1,0 +1,32 @@
+# 1. Endomorphism algebras
+- [x] [[lombardo_av_THEOREM 1.1|lombardo_av_albert_classification]], THEOREM 1.1, Page 55
+- [ ] [[lombardo_av_REMARK 1.2_page_55]], REMARK 1.2, Page 55
+- [ ] [[lombardo_av_PROPOSITION 1.3]], PROPOSITION 1.3, Page 55
+- [ ] [[lombardo_av_REMARK 1.4_page_56]], REMARK 1.4, Page 56
+- [ ] [[lombardo_av_EXAMPLE 1.5]], EXAMPLE 1.5, Page 56
+- [ ] [[lombardo_av_REMARK 1.6]], REMARK 1.6, Page 56
+- [x] [[lombardo_av_DEFINITION 1.7|lombardo_av_reduced_degree_of_a_Q_algebra]], DEFINITION 1.7, Page 56
+- [ ] [[lombardo_av_PROPOSITION 1.8]], PROPOSITION 1.8, Page 56
+- [x] [[lombardo_av_DEFINITION 1.9|lombardo_av_CM_abelian_variety]], DEFINITION 1.9, Page 56
+- [ ] [[lombardo_av_1.1_page_56]], 1.1, Page 56
+- [ ] [[lombardo_av_DEFINITION 1.11|lombardo_av_ordinary_abelian_variety]], DEFINITION 1.11, Page 57
+- [ ] [[lombardo_av_PROPOSITION 1.12]], PROPOSITION 1.12, Page 57
+- [x] [[lombardo_av_THEOREM 1.13]], THEOREM 1.13, Page 57
+- [ ] [[lombardo_av_1.2_page_57]], 1.2, Page 57
+- [ ] [[lombardo_av_EXAMPLE 1.14]], EXAMPLE 1.14, Page 57
+- [ ] [[lombardo_av_EXAMPLE 1.15]], EXAMPLE 1.15, Page 57
+- [ ] [[lombardo_av_EXAMPLE 1.16]], EXAMPLE 1.16, Page 58
+- [ ] [[lombardo_av_EXAMPLE 1.17]], EXAMPLE 1.17, Page 58
+- [ ] [[lombardo_av_EXAMPLE 1.18]], EXAMPLE 1.18, Page 59
+
+# 2. Complex multiplication
+- [x] [[lombardo_av_DEFINITION 2.1_page_60|lombardo_av_CM_field]], DEFINITION 2.1, Page 60
+- [x] [[lombardo_av_DEFINITION 2.2|lombardo_av_CM_type]], DEFINITION 2.2, Page 60
+- [ ] [[lombardo_av_DEFINITION 2.3|lombardo_av_CM_type_of_an_absolutely_simple_CM_abelian_variety]], DEFINITION 2.3, Page 61
+- [ ] [[lombardo_av_EXAMPLE 2.4]], EXAMPLE 2.4, Page 61
+- [ ] [[lombardo_av_DEFINITION 2.5|lombardo_av_reflex_type_of_a_CM_type]], DEFINITION 2.5, Page 61
+- [ ] [[lombardo_av_THEOREM 2.6]], THEOREM 2.6, Page 61
+- [ ] [[lombardo_av_DEFINITION 2.7|lombardo_av_reflex_norm_of_a_CM_type]], DEFINITION 2.7, Page 61
+- [ ] [[lombardo_av_EXAMPLE 2.8]], EXAMPLE 2.8, Page 62
+- [ ] [[lombardo_av_DEFINITION 2.9]], DEFINITION 2.9, Page 62
+- [ ] [[lombardo_av_EXAMPLE 2.10]], EXAMPLE 2.10, Page 62

@@ -1,0 +1,1 @@
+$I_v$ [[lombardo_av_page_46|denotes]] the [[18785_Definition 7.9#Inertia group 1|inertia group]] $I(\bar{v}/v)$ where $v$ is a place of a number field $K$ and $\bar{v}$ is a place of $\bar{K}$ extending $v$.

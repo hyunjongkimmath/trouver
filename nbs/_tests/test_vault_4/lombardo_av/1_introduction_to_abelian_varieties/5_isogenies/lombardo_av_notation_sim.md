@@ -1,0 +1,1 @@
+$\sim$ [[lombardo_av_DEFINITION 5.13|denotes]] that two abelian varieties are [[lombardo_av_DEFINITION 5.13|isogenous]]. 

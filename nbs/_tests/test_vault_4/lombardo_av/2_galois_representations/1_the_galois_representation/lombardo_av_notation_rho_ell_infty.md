@@ -1,0 +1,1 @@
+$\rho_{\ell^\infty}$ denotes the $\ell$[[lombardo_av_ell_adic_representation_of_an_abelian_variety|-adic representation]] of $\operatorname{Gal}(\bar{K}/K)$ where $A/K$ is an abelian variety and $\ell$ is a prime number different from $\operatorname{char} K$.

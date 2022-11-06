@@ -1,0 +1,2 @@
+- [[milne_james_s|James S. Milne]], *Introduction to Shimura Varieties*, 2017.
+	- available at https://www.jmilne.org/math/xnotes/svi.pdf

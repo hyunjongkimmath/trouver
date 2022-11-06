@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "7b25d969bf8b07ab",
+    "type": "split",
+    "children": [
+      {
+        "id": "c94291445da21594",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "c94291445da21594",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_generalizing_ELS_main_theorem_to_trielliptic_curves.md\",\"mode\":\"preview\",\"source\":true}}",
+              "eState": "{\"scroll\":0.09538002940342802}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_generalizing_ELS_main_theorem_to_trielliptic_curves.md",
+            "mode": "preview",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "9b8cb05e08335942",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_notation_Index.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            },
+            {
+              "leaf": "9b8cb05e08335942",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_templates/_template_common.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "_templates/_template_notation_Index.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "81624d19ab3eb83c",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "81624d19ab3eb83c",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_m_a_i_f_versus_number_of_surjections.md\",\"mode\":\"preview\",\"source\":true}}",
+              "eState": "{\"scroll\":1.8642484491521663}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_m_a_i_f_versus_number_of_surjections.md",
+            "mode": "preview",
+            "source": true
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c8176f3d94637c5b",
+    "type": "split",
+    "children": [
+      {
+        "id": "60668972a310f28e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6b58208a5afd5df",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "ab9f441e34772388",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "_research_orbits_of_burau_",
+                "matchingCase": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8bcd679402673a5d",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "recent-files",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 369.50397300720215
+  },
+  "right": {
+    "id": "0f8a2ceeaedb9bce",
+    "type": "split",
+    "children": [
+      {
+        "id": "d09904971f9ddeb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b246426e91c03db",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "_templates/_template_notation_Index.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": true,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "6e5f7a9a2b66e4a7",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "alphabetical",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "722cd5bd240d1481",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "_templates/_template_notation_Index.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 271
+  },
+  "active": "9b8cb05e08335942",
+  "lastOpenFiles": [
+    "_templates/_template_common.md",
+    "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_generalizing_ELS_main_theorem_to_trielliptic_curves.md",
+    "_ml_data/ml_data_note_division.md",
+    "algebraic_geometry/hodge_theory/arapura_CAV/2_generalities_about_sheaves/_index_2_generalities_about_sheaves.md",
+    "_ml_data/ml_data_definition_and_notation_in_sentence.md",
+    "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_m_a_i_f_versus_number_of_surjections.md",
+    "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_generalizing_ELS_Lemma_3.1_to_trielliptic_curves.md",
+    "algebraic_geometry/_notes/notes_characteristic_polynomial_of_geometric_frobenius_on_jacobians_of_curves.md",
+    "number_theory/zeta_functions/ellenberg_li_shusterman/3_application_to_nonvanishing_of_l_functions/ellenberg_li_shusterman_theorem 3.2.md",
+    "_journal/2022/journal_07_2022.md"
+  ]
+}

@@ -1,0 +1,1 @@
+- [[milne_james_s|James S. Milne]], *Lectures on Étale Cohomology*, Course Notes, Version 2.21, 2013.

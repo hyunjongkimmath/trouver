@@ -1,0 +1,2 @@
+- [[milne_james_s|James S. Milne]], *Lie Algebras, Algebraic Groups, and Lie Groups*, Version 2.00, 2013
+	- Available at https://www.jmilne.org/math/CourseNotes/ala.html

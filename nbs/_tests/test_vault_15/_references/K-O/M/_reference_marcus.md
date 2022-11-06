@@ -1,0 +1,1 @@
+- [[marcus_daniel|Daniel A. Marcus]], *Number Fields*, 2nd ed., Springer International Publishing, 2018.

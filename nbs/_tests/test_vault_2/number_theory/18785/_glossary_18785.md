@@ -1,0 +1,976 @@
+# New terms
+
+
+
+
+# Terms to link
+- (discrete) valuation
+	- [[18785_Definition 1.10#Valuation on a field 1 2|(discrete) valuation]]
+- -action
+	- [[definition.group_action|-action]]
+- -adic absolute value
+	- [[18785_Definition 1.7#p -adic absolute value on mathbb Q 2|-adic absolute value]]
+- -algebra
+	- [[algebra_of_a_commutative_ring|-algebra]]
+- -ideles
+	- [[18785_Definition 26.6|-ideles]]
+- -lattice
+	- [[18785_Definition 5.9|-lattice]]
+- -module
+	- [[G_module_of_a_group|-module]]
+	- [[G_module_of_a_group#G -module 1|-module]]
+	- [[module_of_a_ring#Module of a commutative ring|-module]]
+- -modules
+	- [[serre_galois_cohomology_G_group_of_a_profinite_group#G -module|-modules]]
+- -order
+	- [[18785_Definition 6.20|-order]]
+- AKLB
+	- [[18785_AKLB|AKLB]]
+	- [[number_theory/18785/5_dedekind_extensions/2_extensions_of_dedekind_domains/AKLB|AKLB]]
+- AKLBG
+	- [[18785_AKLBG|AKLBG]]
+- Artin map
+	- [[18785_Definition 7.20|Artin map]]
+	- [[artin_map#For moduli in number fields 3|Artin map]]
+- Artin symbol
+	- [[18785_Definition 7.17|Artin symbol]]
+	- [[18785_page_68|Artin symbol]]
+- Borel measure
+	- [[borel_measure|Borel measure]]
+- Borel sets
+	- [[borel_measurable_set#Borel measurable set 1|Borel sets]]
+- Cauchy sequences
+	- [[convergence_in_a_metric_space#Cauchy sequence|Cauchy sequences]]
+- Corollary 9.7
+	- [[properties_of_local_fields#Completion of global field is local 4|Corollary 9.7]]
+- Corollary 9.21
+	- [[18785_hensel_kurschak_lemma#Field extension element over fraction field of DVR is integral iff norm is in DVR 2|Corollary 9.21]]
+- Corollary 10.13
+	- [[maximal_ideals_of_simple_extension_of_local_noetherian_ring|Corollary 10.13]]
+- Corollary 10.20
+	- [[18785_Corollary 10.20|Corollary 10.20]]
+- Corollary 20.7
+	- [[18785_Corollary 20.7|Corollary 20.7]]
+- Corollary 22.7
+	- [[#Every congruence subgroup class has a unique congruence subgroup of minimal modulus 4|Corollary 22.7]]
+- DVR
+	- [[18785_Definition 1.10#Discrete valuation ring|DVR]]
+- Dedekind Kummer theorem
+	- [[18785_Theorem 6.14|Dedekind Kummer theorem]]
+- Dedekind domain
+	- [[marcus_dedekind_domain|Dedekind domain]]
+- Dirichlet density
+	- [[dirichlet_density#For global fields 2|Dirichlet density]]
+	- [[dirichlet_density|Dirichlet density]]
+- Eisenstein
+	- [[18785_Definition 11.1|Eisenstein]]
+- Eisenstein polynomial
+	- [[18785_Definition 11.1|Eisenstein polynomial]]
+- Eisenstein polynomials
+	- [[18785_Definition 11.1|Eisenstein polynomials]]
+- Extending absolute value for complete DVRs
+	- [[extending_absolute_value_on_complete_dvr|Extending absolute value for complete DVRs]]
+- Frobenius automorphism
+	- [[18785_frobenius_automorphism|Frobenius automorphism]]
+- Frobenius class
+	- [[18785_Definition 7.16|Frobenius class]]
+- Frobenius element
+	- [[18785_Defini|Frobenius element]]
+	- [[18785_Definition 7.13|Frobenius element]]
+	- [[18785_Defini#For abelian extensions 3|Frobenius element]]
+- Frobenius elements
+	- [[18785_Defini|Frobenius elements]]
+- Galois
+	- [[galois_field_extension|Galois]]
+- Galois extension
+	- [[galois_field_extension#Galois field extension 1|Galois extension]]
+	- [[galois_field_extension|Galois extension]]
+- Galois group
+	- [[galois_group_of_galois_field_extension|Galois group]]
+- Galois theory
+	- [[18785_Theorem 26.22|Galois theory]]
+- Global Artin homomorphism
+	- [[18785_Definition 28.2|Global Artin homomorphism]]
+- Global Artin reciprocity
+	- [[18785_Theorem 28.4|Global Artin reciprocity]]
+- HILBERT's THEOREM 90
+	- [[18785_hilbert_theorem_90|HILBERT's THEOREM 90]]
+- Haar measure
+	- [[haar_measure|Haar measure]]
+- Hensel's Lemma
+	- [[18785_hensels_lemma|Hensel's Lemma]]
+- Hensel's Lemma 9.15
+	- [[18785_hensels_lemma#I 1|Hensel's Lemma 9.15]]
+- Hilbert class field
+	- [[hilbert_class_field|Hilbert class field]]
+- Inertia field
+	- [[18785_Proposition 7.11|Inertia field]]
+- Krull topology
+	- [[18785_Definition 26.20|Krull topology]]
+- Kummer pairing
+	- [[18785_Definition 20.10|Kummer pairing]]
+	- [[18785_Definition 20.10#Kummer pairing 1|Kummer pairing]]
+- L1-norm of polynomials over
+	- [[l1_norm_of_polynomials_over_a_field|L1-norm of polynomials over]]
+- Lemma 3.13
+	- [[18785_Lemma 3.13|Lemma 3.13]]
+- Lemma 9.15
+	- [[18785_hensels_lemma#I 1|Lemma 9.15]]
+- Lemma 9.16
+	- [[18785_hensels_lemma#II 2|Lemma 9.16]]
+- Lemma 11.2
+	- [[18785_Lemma 11.2|Lemma 11.2]]
+- Lemma 11.4
+	- [[18785_Lemma 11.4|Lemma 11.4]]
+- Lemma 20.9
+	- [[18785_Lemma 20.9|Lemma 20.9]]
+- Local field
+	- [[18785_Definition 9.1|Local field]]
+- Noetherian
+	- [[foag_noetherian_ring|Noetherian]]
+- PID
+	- [[principal_ideal_ring|PID]]
+- Proposition 10.5
+	- [[norms_on_finite_dimensional_vector_space_over_a_complete_field_induce_the_same_topology|Proposition 10.5]]
+- Proposition 13.16
+	- [[haar_measure_on_local_field_with_finite_residue_field_scales_by_a_unique_absolute_value|Proposition 13.16]]
+- Radon measure
+	- [[radon_measure_on_a_locally_compact_space|Radon measure]]
+- Ray group
+	- [[18785_Definition 21.2#Ray group|Ray group]]
+- Theorem 5.20
+	- [[18785_Theorem 5.20|Theorem 5.20]]
+- Theorem 6.10
+	- [[18785_Theorem 6.10#On primes 1|Theorem 6.10]]
+- Theorem 8.20
+	- [[valuations_at_primes_extend_over_aklb|Theorem 8.20]]
+- Theorem 9.9
+	- [[properties_of_local_fields#Classification of local fields|Theorem 9.9]]
+- Theorem 10.1
+	- [[18785_Theorem 10.1|Theorem 10.1]]
+- Theorem 10.6
+	- [[extending_absolute_value_on_complete_dvr|Theorem 10.6]]
+- Theorem 10.15
+	- [[18785_Theorem 10.15|Theorem 10.15]]
+	- [[18785_Theorem 10.15#Category of finite unramified extensions of dvr is the same as category of separable extensions of residue field 1|Theorem 10.15]]
+- Theorem 11.5
+	- [[18785_Theorem 11.5|Theorem 11.5]]
+- Theorem 13.14
+	- [[haar_measures_exist_and_are_unique_up_to_scaling|Theorem 13.14]]
+- Theorem 21.18
+	- [[number_theory/18785/21_class_field_theory_ray_class_groups_and_ray_class_fields/4_polar_density/18785_Theorem 21.18|Theorem 21.18]]
+- Theorem 26.21
+	- [[18785_Theorem 26.21|Theorem 26.21]]
+- Theorem 27.2
+	- [[18785_Theorem 27.2|Theorem 27.2]]
+- Weil
+	- [[andre_weil|Weil]]
+- abelian
+	- [[abelian_extension_of_fields|abelian]]
+- abelian extension
+	- [[abelian_extension_of_fields|abelian extension]]
+- abelian extensions
+	- [[abelian_extension_of_fields|abelian extensions]]
+- abelian group
+	- [[abelian_group|abelian group]]
+- absolute
+	- [[18785_Definition 1.2|absolute]]
+- absolute value
+	- [[18785_Definition 1.2|absolute value]]
+	- [[18785_Definition 1.2#Absolute value on a field 1|absolute value]]
+	- [[18785_Definition 1.2#Absolute value on a field 1 2|absolute value]]
+	- [[number_theory/18785/1_absolute_values_and_discrete_valuations/2_absolute_values/absolute_value#Absolute value on a field 1|absolute value]]
+	- [[absolute_value_on_a_field#Absolute value on a field 1|absolute value]]
+- absolute values
+	- [[absolute_value_on_a_field#Absolute value on a field 1|absolute values]]
+	- [[18785_Definition 1.2#Absolute value on a field 1 2|absolute values]]
+- acts continuously
+	- [[continuous_group_actions#Continuous group action 1|acts continuously]]
+- adele ring
+	- [[18785_Definition 25.7|adele ring]]
+- algebra
+	- [[algebra_of_a_commutative_ring|algebra]]
+- algebraic extension
+	- [[algebraic_field_extension|algebraic extension]]
+- algebraic field extension
+	- [[algebraic_field_extension|algebraic field extension]]
+- algebraically closed field
+	- [[diamond_shurman_algebraic_field_extensions|algebraically closed field]]
+- archimedean
+	- [[absolute_value_on_a_field#Archimedean absolute value|archimedean]]
+	- [[18785_Definition 1.2#Archimedean absolute value|archimedean]]
+- archimedean absolute value
+	- [[18785_Definition 1.2#Archimedean absolute value|archimedean absolute value]]
+- archimedean_absolute_value
+	- [[18785_Definition 1.2#Archimedean absolute value|archimedean_absolute_value]]
+- augmentation map
+	- [[18785_augmentation_map_and_ideal#Augmentation map 1|augmentation map]]
+- basis
+	- [[basis_of_a_topology|basis]]
+- bilinear pairing
+	- [[husemoller_milnor_bilinear_form#Bilinear form 1|bilinear pairing]]
+- characteristic
+	- [[characteristic_of_a_ring|characteristic]]
+- class group
+	- [[18785_Definition 3.5|class group]]
+- coboundaries
+	- [[n_cocyles_and_coboundaries#n -coboundary|coboundaries]]
+- coboundary
+	- [[nth_coboundary_map_on_groups_of_cochains_on_G_module#n th-coboundary map 1|coboundary]]
+- cochain complex
+	- [[weibel_cochain_complex#Cochain complex 1|cochain complex]]
+	- [[weibel_cochain_complex|cochain complex]]
+- cochains
+	- [[n_cochains|cochains]]
+- cocycles
+	- [[n_cocyles_and_coboundaries#n -cocycle 1|cocycles]]
+- cohomology group
+	- [[n_cocyles_and_coboundaries#n th-cohomology group with coefficients in A|cohomology group]]
+	- [[weibel_homology_of_chain_complex#Homology module 1|cohomology group]]
+- coinduced
+	- [[coinduced_G_module_associated_to_an_abelian_group|coinduced]]
+- coinvariants
+	- [[group_of_G_coinvariants|coinvariants]]
+- colon ideal
+	- [[18785_page_14|colon ideal]]
+- complete
+	- [[convergence_in_a_metric_space#Complete metric space 1 3|complete]]
+	- [[convergence_in_a_metric_space#Complete metric space|complete]]
+	- [[completion_of_a_metric_space#For a metric coming from a discrete valuation|complete]]
+- complete metric space
+	- [[convergence_in_a_metric_space#Complete metric space|complete metric space]]
+- completion
+	- [[completion_of_a_metric_space#For a field|completion]]
+	- [[completion_of_a_metric_space#For a metric coming from a discrete valuation|completion]]
+	- [[completion_of_a_metric_space#Completion of a metric space that is a ring|completion]]
+- completion_of_global_field_is_local
+	- [[completion_of_global_field_is_local]]
+- completions
+	- [[completion_of_a_metric_space#For a metric coming from a discrete valuation|completions]]
+- complex
+	- [[weibel_cochain_complex|complex]]
+- complex place
+	- [[place_of_a_global_field#|complex place]]
+	- [[place_of_a_global_field#Types of places|complex place]]
+- complex places
+	- [[place_of_a_global_field#Types of places|complex places]]
+- conductor
+	- [[equivalent_congruence_subgroups_are_equivalent_to_another_congruent_subgroup_of_gcd_modulus#Conductor of a congruence subgroup 5|conductor]]
+	- [[conductor_of_a_ray_class_character|conductor]]
+	- [[the_conductor_of_an_abelian_extension|conductor]]
+	- [[18785_Definition 6.16|conductor]]
+	- [[conductor_of_a_ring|conductor]]
+- conductor of the
+	- [[conductor_of_a_ray_class_character|conductor of the]]
+- congruence subgroup
+	- [[18785_Definition 22.1#Congruence subgroup for a modulus 1|congruence subgroup]]
+	- [[18785_Definition 22.1|congruence subgroup]]
+- congruence subgroups
+	- [[18785_Definition 22.1|congruence subgroups]]
+- congruence subgroups of moduli
+	- [[18785_Definition 22.1|congruence subgroups of moduli]]
+- congruence_subgroup
+	- [[18785_Definition 22.1|congruence_subgroup]]
+- conjugate
+	- [[conjugate_subgroups|conjugate]]
+- corresponding
+	- [[18785_Theorem 10.15|corresponding]]
+- countably additive function
+	- [[countably_additive_function|countably additive function]]
+- decomposition field
+	- [[18785_Proposition 7.11|decomposition field]]
+- decomposition group
+	- [[18785_Definition 7.6#Decomposition group 1|decomposition group]]
+- decomposition groups
+	- [[18785_Definition 7.6|decomposition groups]]
+- define
+	- [[#Topology induced by an absolute value 2|define]]
+- degree
+	- [[degree_of_an_algebraic_field_extension|degree]]
+- different
+	- [[18785_Definition 12.2|different]]
+- different ideal
+	- [[18785_Definition 12.2|different ideal]]
+- dimension
+	- [[foag_11.1.1#Dimension of a ring|dimension]]
+	- [[dimension_of_a_vector_space|dimension]]
+	- [[dimension_of_a_topological_spacedimension_of_a_topological_space#Dimension of a ring 1|dimension]]
+- dimension one
+	- [[foag_11.1.1#Dimension of a ring|dimension one]]
+- directed set
+	- [[18785_Definition 8.7|directed set]]
+- dirichlet density
+	- [[dirichlet_density|dirichlet density]]
+- discrete valuation
+	- [[18785_Definition 1.10#Discrete valuation|discrete valuation]]
+	- [[#Discrete valuation|discrete valuation]]
+	- [[valuation_on_a_field#Discrete valuation|discrete valuation]]
+	- [[18785_Definition 1.10|discrete valuation]]
+- discrete valuation ring
+	- [[18785_Definition 1.10#Discrete valuation ring|discrete valuation ring]]
+- discrete valuations
+	- [[[valuation_on_a_field#Discrete valuation|discrete valuations]]
+- discriminant
+	- [[18785_Definition 12.5|discriminant]]
+	- [[18785_Definition 12.7#Discriminant of polynomial 1|discriminant]]
+	- [[18785_Definition 12.12|discriminant]]
+	- [[18785_Definition 12.9|discriminant]]
+	- [[discriminant_of_aklb|discriminant]]
+- discriminants
+	- [[18785_Definition 12.9|discriminants]]
+- domain
+	- [[integral_domain|domain]]
+- dual lattice
+	- [[18785_Definition 5.11|dual lattice]]
+	- [[18785_Definition 5.11#Dual lattice 1|dual lattice]]
+- dual module
+	- [[18785_Definition 5.1|dual module]]
+- element
+	- [[norm_element|element]]
+- equivalence
+	- [[18785_Definition 22.3|equivalence]]
+- equivalence class
+	- [[18785_Definition 22.3|equivalence class]]
+- equivalently
+	- [[18785_Corollary 7.3|equivalently]]
+- extending
+	- [[place_extension|extending]]
+- étale
+	- [[milne_lec_etale_homomorphism_of_rings|étale]]
+	- [[18785_Definition 4.29|étale]]
+	- [[milne_lec_etale_homomorphism_of_rings#|étale]]
+- étale algebra
+	- [[18785_Definition 4.29|étale algebra]]
+	- [[milne_lec_etale_homomorphism_of_rings|étale algebra]]
+- field
+	- [[field|field]]
+	- [[field]]
+- field extension
+	- [[field_extension|field extension]]
+- field extensions
+	- [[field_extension|field extensions]]
+- field norm
+	- [[18785_Definition 4.46#Relative norm|field norm]]
+- finite
+	- [[finite_field_extension|finite]]
+	- [[absolute_value_on_a_field[[finite_field_extension|finite]]
+- finite dimension
+	- [[finite_field_extension#Finite field extension|finite dimension]]
+	- [[finite_dimensional_vector_space|finite dimension]]
+- finite extension
+	- [[finite_field_extension|finite extension]]
+- finite extension of fields
+	- [[finite_field_extension|finite extension of fields]]
+- finite étale
+	- [[18785_Definition 4.29|finite étale]]
+- finite field extension
+	- [[finite_field_extension|finite field extension]]
+- finite place
+	- [[place_of_a_global_field#Types of places|finite place]]
+- finitely generated
+	- [[finite_module#Finite module 1|finitely generated]]
+- fraction field
+	- [[fraction_field_of_an_integral_domain|fraction field]]
+	- [[foag_fraction_field_of_an_integral_domain|fraction field]]
+- fractional ideal
+	- [[18785_Definition 2.14|fractional ideal]]
+	- [[18785_Definition 2.14#Fractional ideal 1|fractional ideal]]
+- fractional ideals
+	- [[18785_Definition 2.14|fractional ideals]]
+- free
+	- [[free_module|free]]
+- free abelian group
+	- [[free_abelian_group|free abelian group]]
+- global Artin homomorphism
+	- [[18785_Definition 28.2|global Artin homomorphism]]
+- global Kronecker-Weber theorem
+	- [[kronecker_weber_theorems#Global 1|global Kronecker-Weber theorem]]
+- global field
+	- [[18785_page_13|global field]]
+	- [[18785_page_13#Global Field 1|global field]]
+- global fields
+	- [[18785_page_13|global fields]]
+- global function fields
+	- [[rosen_global_function_field|global function fields]]
+- group
+	- [[group|group]]
+	- [[group]]
+- group of
+	- [[group_of_G_invariants|group of]]
+- has a unique unramified extension of degree
+	- [[18785_Corollary 10.19#When the residue field is finite 3|has a unique unramified extension of degree]]
+- hence
+	- [[18785_Theorem 12.18|hence]]
+	- [[18785_Proposition 7.8|hence]]
+- hilbert_class_field
+	- [[hilbert_class_field]]
+- homomorphism of rings
+	- [[ring_homomorphism#Ring homomorphism|homomorphism of rings]]
+- husemoller_milnor_nondegenerate_bilinear_form
+	- [[husemoller_milnor_nondegenerate_bilinear_form]]
+- ideal class group
+	- [[18785_Definition 3.5|ideal class group]]
+- ideal group
+	- [[18785_Definition 3.4|ideal group]]
+- ideal norm
+	- [[18785_Definition 6.5#Ideal Norm 1|ideal norm]]
+	- [[18785_Definition 6.5|ideal norm]]
+- idele class group
+	- [[18785_Definition 26.2|idele class group]]
+- idele group
+	- [[18785_Definition 26.2|idele group]]
+	- [[18785_Definition 26.2#Idele group of a global field 1|idele group]]
+- ideles
+	- [[18785_Definition 26.6|ideles]]
+- inert
+	- [[18785_Definition 5.36#Remains inert|inert]]
+- inertia degree
+	- [[18785_Definition 5.28#Residue degree|inertia degree]]
+- inertia field
+	- [[18785_Proposition 7.11|inertia field]]
+- inertia group
+	- [[18785_Definition 7.9#Inertia group 1|inertia group]]
+- inertia groups
+	- [[18785_Definition 7.9|inertia groups]]
+- inertia subgroup
+	- [[18785_Definition 7.9|inertia subgroup]]
+- infinite places
+	- [[place_of_a_global_field#Types of places|infinite places]]
+- inseparable
+	- [[18785_Definition 4.1#Separable polynomial 1|inseparable]]
+- inseparable degree
+	- [[18785_Definition 4.8#Separable and inseparable degrees 1|inseparable degree]]
+- inseparable_degree
+	- [[18785_Definition 4.8|inseparable_degree]]
+- integral
+	- [[18785_Definition 1.16#Integral element 1|integral]]
+- integral closure
+	- [[18785_Definition 1.18|integral closure]]
+	- [[18785_Definition 1.18#Integral closure 1|integral closure]]
+	- [[18785_Definition 1.18#Integral closure|integral closure]]
+	- [[integral_closure#Integral closure|integral closure]]
+- integral domain
+	- [[integral_domain|integral domain]]
+- integral over
+	- [[18785_Definition 1.16#Integral element 1|integral over]]
+	- [[18785_Definition 1.16#Integral ring morphism|integral over]]
+- integrally closed
+	- [[18785_Definition 1.18#Integrally closed|integrally closed]]
+- inverse limit
+	- [[18785_Definition 8.9|inverse limit]]
+- inverse system
+	- [[18785_Definition 8.8|inverse system]]
+- invertible
+	- [[18785_Definition 3.1|invertible]]
+- invertible fractional ideal
+	- [[18785_Definition 3.1|invertible fractional ideal]]
+- invertible fractional ideals
+	- [[18785_Definition 3.1|invertible fractional ideals]]
+- invertible modules
+	- [[invertible_module|invertible modules]]
+- irreducible polynomial
+	- [[irreducible_polynomial|irreducible polynomial]]
+- kernel
+	- [[kernel_of_a_group_homomorphism|kernel]]
+- lattice
+	- [[18785_Definition 5.9|lattice]]
+	- [[18785_lattice|lattice]]
+- lattices
+	- [[18785_Definition 5.9#Lattice 1|lattices]]
+	- [[18785_Definition 5.9|lattices]]
+- limit points
+	- [[rudin_principles_Definition 2.18#Topological definitions on metric spaces 1|limit points]]
+- local
+	- [[local_ring_commutative|local]]
+- local Artin homomorphism
+	- [[18785_Theorem 27.2#Local Artin reciprocity 1|local Artin homomorphism]]
+	- [[18785_Theorem 27.2|local Artin homomorphism]]
+- local Kronecker-Weber theorem
+	- [[kronecker_weber_theorems#Local 2|local Kronecker-Weber theorem]]
+- local field
+	- [[18785_Definition 9.1|local field]]
+- local fields
+	- [[18785_Definition 9.1|local fields]]
+	- [[local_field|local fields]]
+- local module index
+	- [[18785_Definition 6.1#Module index for DVR|local module index]]
+- local ring
+	- [[local_ring_commutative|local ring]]
+- local rings
+	- [[local_ring_commutative#Local ring|local rings]]
+- localization
+	- [[foag_localization_of_a_ring#At a prime ideal|localization]]
+- locally compact
+	- [[bredon_locally_compact|locally compact]]
+	- [[locally_compact_group|locally compact]]
+- locally compact group
+	- [[locally_compact_group|locally compact group]]
+- lying above
+	- [[global_field_place_lying_over|lying above]]
+	- [[place_extension#Extension of places 1|lying above]]
+- lying above a prime
+	- [[prime_lying_over|lying above a prime]]
+- maximal abelian extension
+	- [[18785_Definition 27.1|maximal abelian extension]]
+- maximal abelian extensions
+	- [[18785_Definition 27.1|maximal abelian extensions]]
+- maximal ideal
+	- [[maximal_ideal_of_a_commutative_ring|maximal ideal]]
+- maximal ideals
+	- [[maximal_ideal_of_a_commutative_ring|maximal ideals]]
+- maximal unramified
+	- [[number_theory/18785/10_extensions_of_complete_dvrs/2_unramified_extensions_of_a_complete_dvr/maximal_unramified_extension|maximal unramified]]
+- maximal unramified extension
+	- [[maximal_unramified_extension#Maximal unramified extension|maximal unramified extension]]
+- measurable
+	- [[borel_measurable_set|measurable]]
+- measurable set
+	- [[borel_measurable_set#Borel measurable set 1|measurable set]]
+- measurable sets
+	- [[borel_measurable_set#Borel measurable set 1|measurable sets]]
+- measure
+	- [[borel_measure|measure]]
+- metric
+	- [[18785_metric_space|metric]]
+- metric space
+	- [[18785_metric_space|metric space]]
+- minimal polynomial
+	- [[minimal_polynomial_of_a_field_extension_element|minimal polynomial]]
+- module
+	- [[G_module_of_a_group#G -module 1|module]]
+	- [[G_module_of_a_group|module]]
+	- [[G_group_profinite#G -module|module]]
+- module index
+	- [[18785_Definition 6.1#Module index for Dedekind domain|module index]]
+	- [[18785_Definition 6.1#Module index for DVR|module index]]
+	- [[18785_Definition 6.1|module index]]
+- moduli
+	- [[18785_Definition 21.2|moduli]]
+- moduli of number fields
+	- [[18785_Definition 21.2#gcd and operatorname lcm|moduli of number fields]]
+- modulus
+	- [[18785_Definition 21.2#Modulus of a number field 1|modulus]]
+	- [[18785_Definition 21.2|modulus]]
+	- [[ray_class_characters#Ray class characters 1|modulus]]
+- natural density
+	- [[natural_density#For rational primes|natural density]]
+	- [[natural_density|natural density]]
+	- [[natural_density#For global fields 2|natural density]]
+- noetherian
+	- [[foag_noetherian_ring|noetherian]]
+- noetherian ring
+	- [[foag_noetherian_ring|noetherian ring]]
+- nonarchimedean
+	- [[18785_Definition 1.2#Nonarchimedean absolute value|nonarchimedean]]
+- nonarchimedean absolute value
+	- [[18785_Definition 1.2#Nonarchimedean absolute value|nonarchimedean absolute value]]
+- nonarchimedean,
+	- [[18785_Definition 1.2#Nonarchimedean absolute value|nonarchimedean,]]
+- norm
+	- [[norm_on_vector_space|norm]]
+- norm element
+	- [[norm_element|norm element]]
+- norm group
+	- [[norm_group#Norm group 1|norm group]]
+- norm group/Takagi group
+	- [[norm_group#Norm group 1|norm group/Takagi group]]
+- norm on
+	- [[norm_on_vector_space|norm on]]
+	- [[norm_on_vector_space#Norm on a vector space|norm on]]
+- normal
+	- [[normal_field_extension|normal]]
+- normal closure
+	- [[normal_closure_of_field_extension|normal closure]]
+- normal extensions
+	- [[normal_field_extension|normal extensions]]
+- normalized absolute value
+	- [[normalized_absolute_value_for_a_global_field_at_a_place|normalized absolute value]]
+- number field
+	- [[number_field|number field]]
+	- [[definition.number_field|number field]]
+- number fields
+	- [[number_field|number fields]]
+- number_field
+	- [[number_field]]
+- order
+	- [[18785_Definition 6.19|order]]
+- partial Dedekind zeta function
+	- [[18785_Definition 21.10|partial Dedekind zeta function]]
+- perfect
+	- [[18785_Definition 4.18|perfect]]
+- perfect pairing
+	- [[18785_bilinear_pairing_induces_morphism_from_module_to_dual#Perfect bilinear pairing|perfect pairing]]
+	- [[18785_bilinear_pairing_induces_morphism_from_module_to_dual|perfect pairing]]
+- place
+	- [[place_of_a_global_field#Place of a global field 1|place]]
+	- [[place_of_a_global_field|place]]
+	- [[global_field_place_lying_over|place]]
+- places
+	- [[place_of_a_global_field|places]]
+- polar density
+	- [[18785_Definition 21.11|polar density]]
+- prime
+	- [[18785_prime_of_a_dedekind_domain|prime]]
+- prime ideal
+	- [[prime_ideal_of_a_commutative_ring#Prime ideal of a commutative ring|prime ideal]]
+- prime ideals
+	- [[prime_ideal_of_a_commutative_ring|prime ideals]]
+- prime of
+	- [[18785_prime_of_a_dedekind_domain|prime of]]
+- primes
+	- [[18785_prime_of_a_dedekind_domain|primes]]
+- primitive
+	- [[ray_class_character_induced_by_another#Primitive ray class character|primitive]]
+	- [[equivalent_congruence_subgroups_are_equivalent_to_another_congruent_subgroup_of_gcd_modulus#Primitive congruence subgroup|primitive]]
+- primitive ray class character
+	- [[ray_class_character_induced_by_another#Primitive ray class character|primitive ray class character]]
+- principal
+	- [[principal_ideal|principal]]
+- principal fractional ideals
+	- [[18785_Definition 2.14#Prinicipal fractional ideal 2|principal fractional ideals]]
+	- [[18785_Definition 2.14#Prinicipal fractional ideal |principal fractional ideals]]
+- principal ideal ring
+	- [[principal_ideal_ring|principal ideal ring]]
+- product
+	- [[product_of_rings|product]]
+- profinite completion
+	- [[profinite_completion_of_the_integers|profinite completion]]
+- profinite completions
+	- [[18785_Definition 26.11_2|profinite completions]]
+- profinite group
+	- [[18785_Definition 26.11|profinite group]]
+- purely inseparable
+	- [[18785_Definition 4.22|purely inseparable]]
+- ramification index
+	- [[18785_Definition 5.28#Ramification index 1|ramification index]]
+- ramification indices are multiplicative in towers
+	- [[ramification_index_and_inertia_degree_are_multiplicative_in_towers|ramification indices are multiplicative in towers]]
+- ramified
+	- [[18785_Definition 5.36#Unramified above mathfrak p|ramified]]
+	- [[18785_Definition 5.28|ramified]]
+	- [[18785_Definition 5.36#Types of ramification 3|ramified]]
+- ramified prime
+	- [[18785_Definition 5.36#Unramified at mathfrak q|ramified prime]]
+	- [[18785_Definition 5.36#Unramified above mathfrak p|ramified prime]]
+- ramified primes
+	- [[18785_Definition 5.36#Unramified at mathfrak q|ramified primes]]
+- ramify
+	- [[18785_Definition 5.36#Unramified at mathfrak q|ramify]]
+	- [[18785_Definition 5.36#Unramified above mathfrak p|ramify]]
+- ray class character
+	- [[ray_class_characters|ray class character]]
+- ray class characters
+	- [[ray_class_characters|ray class characters]]
+- ray class field
+	- [[18785_Definition 21.3#Ray class field|ray class field]]
+	- [[18785_Definition 21.3|ray class field]]
+- ray class group
+	- [[18785_Definition 21.3|ray class group]]
+	- [[18785_Definition 21.3#Ray class group 1|ray class group]]
+- ray group
+	- [[18785_Definition 21.2#Ray group|ray group]]
+- real place
+	- [[place_of_a_global_field#Types of places|real place]]
+- real places
+	- [[place_of_a_global_field#Types of places|real places]]
+- reduced
+	- [[foag_reduced_ring|reduced]]
+- regular
+	- [[foag_regular_rings_and_schemes#Regular ring 1|regular]]
+- relative norm
+	- [[18785_Definition 4.46#Relative norm|relative norm]]
+- relative trace
+	- [[18785_Definition 4.46#Relative trace|relative trace]]
+- residue field
+	- [[18785_Definition 1.12|residue field]]
+- residue field degree
+	- [[18785_Definition 5.28#Residue degree|residue field degree]]
+- residue field degrees
+	- [[18785_Definition 5.28#Residue degree|residue field degrees]]
+- restricted product
+	- [[18785_Definition 25.1|restricted product]]
+- ring
+	- [[ring#Commutative ring|ring]]
+	- [[_misc/ring#Commutative ring|ring]]
+- ring of integers
+	- [[18785_Definition 1.25|ring of integers]]
+	- [[ring_of_integers_of_a_number_field|ring of integers]]
+	- [[18785_Definition 1.25#Ring of integers in a number field 1|ring of integers]]
+- semisimple
+	- [[18785_simple_ring#Semi-simple ring|semisimple]]
+- separable
+	- [[18785_Definition 4.3|separable]]
+	- [[18785_Definition 4.1|separable]]
+	- [[18785_Definition 4.3#Separable extension|separable]]
+	- [[18785_Definition 4.3#Separable element 1|separable]]
+	- [[18785_Definition 4.1#Separable polynomial 1|separable]]
+- separable closure
+	- [[18785_Definition 4.17#Separable closure 7|separable closure]]
+	- [[18785_Definition 4.17#Separable closure|separable closure]]
+- separable degree
+	- [[18785_Definition 4.8#Separable and inseparable degrees 1|separable degree]]
+- separable elements
+	- [[18785_Definition 4.3#Separable element 1|separable elements]]
+- separable extension
+	- [[18785_Definition 4.3|separable extension]]
+	- [[18785_Definition 4.3#Separable extension|separable extension]]
+- separable extensions
+	- [[18785_Definition 4.3|separable extensions]]
+- separable field extensions
+	- [[18785_Definition 4.3#Separable extension|separable field extensions]]
+- separable polynomial
+	- [[18785_Definition 4.1#Separable polynomial 1|separable polynomial]]
+	- [[18785_Definition 4.1|separable polynomial]]
+- separable_closure
+	- [[18785_Definition 4.17#Separable closure 7|separable_closure]]
+- set of places
+	- [[place_of_a_global_field#Set of places M_K|set of places]]
+- simple root
+	- [[simple_root#Simple root 1|simple root]]
+- split completely
+	- [[18785_Definition 5.36#Splits completely|split completely]]
+- splits
+	- [[18785_Definition 5.36#Splits completely|splits]]
+- splits completely
+	- [[18785_Definition 5.36#Splits completely|splits completely]]
+- standard resolution
+	- [[18785_standard_resolution_of_Z_by_G_modules|standard resolution]]
+- subfield
+	- [[field_extension|subfield]]
+- subspace topology
+	- [[bredon_subspace_topology|subspace topology]]
+- surjective
+	- [[surjective_set_map|surjective]]
+	- [[18785_Proposition 7.8|surjective]]
+- symmetric bilinear pairing
+	- [[husemoller_milnor_symmetric_skew_symmetric_alternating_bilinear_forms#Symmetric bilinear form 1|symmetric bilinear pairing]]
+- tamely ramified
+	- [[18785_Definition 11.7#Tame ramification 1|tamely ramified]]
+- tensor product
+	- [[tensor_product_of_modules#Over commutative rings|tensor product]]
+- topological
+	- [[18785_topological_group#Topological group 1|topological]]
+- topological group
+	- [[18785_topological_group#Topological group 1|topological group]]
+	- [[18785_topological_group|topological group]]
+- topological groups
+	- [[18785_topological_group|topological groups]]
+- topological space
+	- [[topological_space|topological space]]
+	- [[topological_space[[topological_space[[topological_space|topological space]]
+- topology
+	- [[topological_space#Topological space|topology]]
+- torsion-free
+	- [[foag_torsion#Torsion-free module 1|torsion-free]]
+- totally ramified
+	- [[18785_Definition 5.36#Totally ramified at mathfrak q|totally ramified]]
+- totally tamely ramified
+	- [[18785_Definition 11.7#Totally wildly ramified|totally tamely ramified]]
+	- [[18785_Definition 11.7#Totally tamely ramified|totally tamely ramified]]
+- trace
+	- [[18785_Definition 4.46#Relative trace|trace]]
+- trace pairing
+	- [[18785_Definition 5.19|trace pairing]]
+- transitively
+	- [[transitive_group_action#Transitive group action 1|transitively]]
+- trivial modulus
+	- [[18785_Definition 21.2#Trivial modulus|trivial modulus]]
+- trivial one
+	- [[18785_Example 1.3#Trivial absolute value on a field 1|trivial one]]
+- uniformizer
+	- [[18785_uniformizer_of_a_dvr|uniformizer]]
+	- [[18785_uniformizer_of_a_dvr#Uniformizer of a DVR 1|uniformizer]]
+- unique
+	- [[haar_measures_exist_and_are_unique_up_to_scaling|unique]]
+- unit group
+	- [[group_of_units_of_a_ring#Group of units of a ring|unit group]]
+- unramified
+	- [[18785_Definition 5.36#Unramified above mathfrak p|unramified]]
+	- [[18785_Definition 5.36#Unramified at mathfrak q|unramified]]
+	- [[everywhere_unramified_extension|unramified]]
+- unramified above
+	- [[18785_Definition 5.36#Unramified above mathfrak p|unramified above]]
+- unramified extension
+	- [[18785_Definition 5.36#Unramified above mathfrak p|unramified extension]]
+- unramified prime
+	- [[18785_Definition 5.36#Unramified at mathfrak q|unramified prime]]
+- valuation ring
+	- [[18785_Definition 1.10#Valuation ring of a field with respect to a valuation|valuation ring]]
+	- [[18785_Definition 1.11#Valuation ring 1|valuation ring]]
+- valuation ring of its fraction field
+	- [[#Valuation ring of a field with respect to a valuation|valuation ring of its fraction field]]
+- vector space
+	- [[vector_space|vector space]]
+- wild inertia groups
+	- [[wild_inertia_group|wild inertia groups]]
+# Terms to not link
+- 
+- 18785_AKLB
+	- [[18785_AKLB]]
+- 18785_Definition 5.9
+	- [[18785_Definition 5.9]]
+- 18785_Definition 5.19
+	- [[18785_Definition 5.19]]
+- 18785_Definition 7.13
+	- [[18785_Definition 7.13]]
+- 18785_Definition 7.17
+	- [[18785_Definition 7.17]]
+- 18785_augmentation_map_and_ideal > Augmentation ideal 1 3
+	- [[18785_augmentation_map_and_ideal#Augmentation ideal 1 3]]
+- 18785_metric_space
+	- [[18785_metric_space]]
+- 18785_notation_N_B_A_relative_norm
+	- [[18785_notation_N_B_A_relative_norm]]
+- 18785_notation_T_B_A_relative_trace
+	- [[18785_notation_T_B_A_relative_trace]]
+- 18785_page_13
+	- [[18785_page_13]]
+- As noted above
+	- [[18785_Definition 12.12|As noted above]]
+- In particular
+	- [[normal_closure_of_finite_separable_field_extension_is_galois|In particular]]
+- In the example above
+	- [[18785_Example 12.13|In the example above]]
+- It is
+	- [[18785_Proposition 26.4|It is]]
+	- [[18785_Theorem 28.4|It is]]
+	- [[18785_Proposition 7.8|It is]]
+	- [[18785_Proposition 7.14|It is]]
+- Moreover
+	- [[18785_Proposition 7.12|Moreover]]
+- Note that
+	- [[18785_Proposition 7.11|Note that]]
+- Recall
+	- [[18785_Definition 4.17#Separable closure 7|Recall]]
+	- [[18785_Corollary 7.10|Recall]]
+	- [[inertia_field_is_maximal_unramified_field|Recall]]
+	- [[aklbg_decomposes_by_inertia_and_decomposition_fields|Recall]]
+- T
+	- [[T]]
+- There is
+	- [[18785_Proposition 7.8|There is]]
+- There is a short exact sequence
+	- [[18785_Theorem 21.8|There is a short exact sequence]]
+- We now give another characterization of
+	- [[18785_Proposition 8.11|We now give another characterization of]]
+- X, Y
+	- [[X, Y]]
+- X, Y, Z
+	- [[X, Y, Z]]
+- _notation_wiese_galois_representations > operatorname Frob L_ mathfrak P K_ mathfrak p operatorname Frob mathfrak P mathfrak p 2
+	- [[_notation_wiese_galois_representations_old#operatorname Frob L_ mathfrak P K_ mathfrak p operatorname Frob mathfrak P mathfrak p 2]]
+- always a free
+	- [[18785_Remark 5.10|always a free]]
+- are
+	- [[18785_lemma 7.7|are]]
+- are conjugate
+	- [[18785_Proposition 7.15|are conjugate]]
+- are in
+	- [[18785_Definition 12.5|are in]]
+- arises
+	- [[nonarchimedean_absolute_value_from_discrete_valuation|arises]]
+- because it is a torsion-free module over a PID and therefore a free module
+	- [[18785_Remark 5.10|because it is a torsion-free module over a PID and therefore a free module]]
+- becomes
+	- [[18785_page_66_2|becomes]]
+- belongs to
+	- [[elements_of_algebraic_closure_with_absolute_value_belonging_to_each_other|belongs to]]
+- denote
+	- [[18785_Definition 21.2#Modulus of a number field 1|denote]]
+	- [[18785_page_66|denote]]
+- denotes
+	- [[extending_absolute_value_on_complete_dvr|denotes]]
+	- [[18785_page_106|denotes]]
+	- [[place_of_a_global_field|denotes]]
+	- [[normalized_absolute_value_for_a_global_field_at_a_place|denotes]]
+	- [[18785_Definition 1.7#Archimedean absolute value 1|denotes]]
+	- [[18785_page_198|denotes]]
+	- [[18785_Corollary 21.9|denotes]]
+	- [[18785_Definition 21.2|denotes]]
+	- [[18785_Definition 21.2#Fractional ideal coprime to a modulus|denotes]]
+	- [[18785_Example 21.6|denotes]]
+	- [[18785_Definition 21.2#Ray group|denotes]]
+	- [[18785_Theorem 21.15|denotes]]
+	- [[18785_Definition 22.1#Congruence subgroup for a modulus 1|denotes]]
+	- [[18785_standard_resolution_of_Z_by_G_modules#Standard resolution of mathbb Z by G -modules 1|denotes]]
+	- [[coboundary_map_for_contravariant_hom_on_standard_resolution_by_G_modules#Coboundary map for contravariant Hom on standard resolution by G -modules 1|denotes]]
+	- [[18785_Definition 25.1|denotes]]
+	- [[18785_page 251|denotes]]
+	- [[18785_page_259|denotes]]
+	- [[18785_Definition 26.9|denotes]]
+	- [[18785_Definition 26.6|denotes]]
+	- [[18785_Definition 26.11_2|denotes]]
+	- [[18785_Definition 27.1|denotes]]
+	- [[18785_Theorem 27.2|denotes]]
+	- [[18785_Definition 28.1|denotes]]
+	- [[18785_page 276|denotes]]
+	- [[18785_Proposition 28.3|denotes]]
+	- [[18785_Theorem 28.7|denotes]]
+	- [[18785_Theorem 28.4|denotes]]
+	- [[18785_page_279|denotes]]
+	- [[18785_Page_18|denotes]]
+	- [[18785_Corollary 6.9#Alternative definition of ideal norm in terms of field norm|denotes]]
+	- [[18785_Definition 6.30|denotes]]
+	- [[18785_page_63|denotes]]
+	- [[18785_Corollary 7.3|denotes]]
+	- [[18785_Corollary 7.2|denotes]]
+	- [[18785_Theorem 7.1|denotes]]
+	- [[18785_page_64|denotes]]
+	- [[18785_Proposition 7.19|denotes]]
+	- [[18785_page_66_2|denotes]]
+	- [[18785_page_68|denotes]]
+	- [[nonarchimedean_absolute_value_from_discrete_valuation|denotes]]
+	- [[completion_of_global_field_is_local|denotes]]
+- determines a discrete valuation
+	- [[18785_Page_18|determines a discrete valuation]]
+- extends
+	- [[discrete_valuation_extension|extends]]
+- following theorem
+	- [[completing_a_separable_extension_of_dedekind_domains|following theorem]]
+- ideal it generates
+	- [[18785_Definition 12.12|ideal it generates]]
+- if and only if
+	- [[18785_Proposition 7.18|if and only if]]
+- in fact, this property characterizes unramified extensions
+	- [[finite_extension_of_complete_dvr_with_finite_residue_field_is_unramified_iff_norm_of_integers_is_integers|in fact, this property characterizes unramified extensions]]
+- in the following sense
+	- [[18785_Theorem 28.8|in the following sense]]
+- induced
+	- [[induced_G_module_associated_to_an_abelian_group#Induced G -module associated to an abelian group 1|induced]]
+- induced by
+	- [[metric_vs_norm|induced by]]
+- is a DVR
+	- [[18785_Theorem 3.30|is a DVR]]
+- is a Dedekind domain
+	- [[18785_Theorem 5.24|is a Dedekind domain]]
+- is an
+	- [[18785_Proposition 5.21|is an]]
+	- [[18785_Corollary 7.3|is an]]
+- it is given by
+	- [[18785_Corollary 21.9|it is given by]]
+- localize with respect to any multiplicative subset
+	- [[foag_localization_of_a_ring#At a general multiplicative set|localize with respect to any multiplicative subset]]
+- main theorem above
+	- [[#Main theorem of local class field theory 1|main theorem above]]
+- morphism induced by
+	- [[norm_element_induces_a_morphism|morphism induced by]]
+- multiplicativity of ramification indices
+	- [[ramification_index_and_inertia_degree_are_multiplicative_in_towers|multiplicativity of ramification indices]]
+- otherwise
+	- [[18785_Definition 1.2#Nonarchimedean absolute value|otherwise]]
+- ring of the
+	- [[18785_Definition 25.7#Subring of S -adeles|ring of the]]
+- see Definition 21.2
+	- [[18785_Definition 21.2|see Definition 21.2]]
+- since
+	- [[18785_Lemma 4.4#For characteristic p 2|since]]
+- so
+	- [[galois_group_over_compositum_is_intersection_of_galois_groups|so]]
+- t
+	- [[t]]
+- thus
+	- [[18785_Proposition 12.11|thus]]
+- we have
+	- [[18785_Corollary 7.10#Galois group of residue fields is quotient D_ mathfrak q I_ mathfrak q 3|we have]]
+- with respect to
+	- [[metric_induced_by_an_absolute_value|with respect to]]

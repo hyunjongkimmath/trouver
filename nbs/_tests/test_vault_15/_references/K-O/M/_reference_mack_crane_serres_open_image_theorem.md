@@ -1,0 +1,2 @@
+- [[mack-crane_sander|Sander Mack-Crane]], *Serre's Open Image Theorem*, 2016.
+	-   available at https://math.berkeley.edu/~sander/speaking/12October2016%20Talk.pdf

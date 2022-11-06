@@ -1,0 +1,1 @@
+$\mathcal{O}_K$ [[lombardo_av_1.1|denotes]] the [[18785_Definition 1.25|ring of integers]] of the [[number_field|number field]] $K$ (or the [[18785_Definition 9.1|local field]] $K$).

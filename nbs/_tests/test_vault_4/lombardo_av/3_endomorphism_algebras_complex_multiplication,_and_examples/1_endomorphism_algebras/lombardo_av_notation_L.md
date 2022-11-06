@@ -1,0 +1,1 @@
+$L$ [[lombardo_av_THEOREM 1.1|denotes]] the [[center_of_a_ring|center]] of [$D$](lombardo_av_notation_D), where $A/\mathbb{C}$ is a (simple) [[lombardo_av_1.3|abelian variety]]. It is a number field.
