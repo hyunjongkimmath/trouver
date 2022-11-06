@@ -21,7 +21,7 @@ from natsort import natsorted
 
 # %% auto 0
 __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
-           'definition_asterisk_indices']
+           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices']
 
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
@@ -150,3 +150,48 @@ def definition_asterisk_indices(text: str) -> list[tuple[int]]:
     all_double_asterisks = double_asterisk_indices(text)
     notations = notation_asterisk_indices(text)
     return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
+
+# %% ../nbs/00_helper.ipynb 38
+def defs_and_notats_separations(
+        text: str 
+        )-> list[tuple[int, bool]]:
+    """Finds the indices in the text where double asterisks occur and
+    categorizes whether each index is for a definition or a notation.
+    
+    **Parameters**
+
+    - text - str
+
+    **Returns**
+
+    - list[tuple[int, bool]]
+        - Each tuple is of the form `(start, end, is_notation)`, where
+        `text[start:end]` is the double-asterisk surrounded string,
+        including the double asterisks.
+    """
+    all_double_asterisks = double_asterisk_indices(text)
+    notations = notation_asterisk_indices(text)
+    return [(start, end, (start, end) in notations)
+            for start, end in all_double_asterisks]
+
+# %% ../nbs/00_helper.ipynb 42
+def latex_indices(text: str) -> list[tuple[int]]:
+    """Returns the indices in the text containing LaTeX str.
+    
+    This may not work correctly if the text has a LaTeX
+    formatting issue or if any LaTeX string has a dollar sign `\$`.
+    
+    **Parameters**
+
+    - text - str
+
+    **Returns**
+
+    - tuple[int]
+        - Each tuple is of the form `(start, end)` where
+        `text[start:end]` is a LaTeX string, including any leading trailing
+        dollar signs (`$` or `$$`).
+    """
+    # r'(?<!\\)\$.*(?<!\\)\$|(?<!\\)\$(?<!\\)\$.*(?<!\\)\$(?<!\\)\$'
+    return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
+    # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
