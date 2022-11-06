@@ -1,2 +1,0 @@
-- [[morrow_matthew|Matthew Morrow]], *Aspects of motivic cohomology*, [[_index_PCMI_2021|PCMI 2021]]
-	- Available at https://www.ias.edu/sites/default/files/Morrow%20lectures%201%2B2.pdf

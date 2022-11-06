@@ -1,1 +1,0 @@
-- [[morel_fabien|Fabien Morel]], *A1-Algebraic Topology over a Field*, Lecture Notes in Mathematics, Springer, Berlin, Heidelberg, 2012.

@@ -1,1 +1,0 @@
-$\sim$ [[lombardo_av_DEFINITION 9.9|denotes]] that two [[lombardo_av_DEFINITION 9.1|divisors]] are [[lombardo_av_DEFINITION 9.9|linearly equivalent]].

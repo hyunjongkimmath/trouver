@@ -1,2 +1,0 @@
-- [[morel_fabien|Fabien Morel]] and [[voevodsky_vladmir|Vladmir Voevodsky]], *$\mathbb{A}^1$-homotopy theory of schemes*, Inst. Hautes Études Sci. Publ. Math. (90), 45-143 (1999).
-	- Available at http://www.numdam.org/article/PMIHES_1999__90__45_0.pdf

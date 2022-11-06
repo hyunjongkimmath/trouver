@@ -1,4 +1,0 @@
-- [[_index_1_introduction_to_abelian_varieties]]
-- [[_index_2_galois_representations]]
-- [[_index_3_endomorphism_algebras_complex_multiplication_and_examples]]
-- [[_index_4_exercises]]

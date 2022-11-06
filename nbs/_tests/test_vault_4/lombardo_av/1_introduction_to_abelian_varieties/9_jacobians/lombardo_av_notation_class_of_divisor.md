@@ -1,1 +1,0 @@
-$[D]$ [[lombardo_av_DEFINITION 9.9|denotes]] the [[lombardo_av_DEFINITION 9.1|divisor class]] of the divisor $D$.

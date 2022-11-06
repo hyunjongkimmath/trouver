@@ -1,1 +1,0 @@
-$\operatorname{deg}(f)$ [[lombardo_av_DEFINITION 5.9|denotes]] the degree of the [[lombardo_av_DEFINITION 5.9|endomorphism]] $f: A \to A$ of the abelian variety $A/K$.

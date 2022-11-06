@@ -1,1 +1,0 @@
-$e_\mathfrak{q}$ denotes the [[18785_Definition 5.28#Ramification index 1|ramification index]] of the [[18785_prime_of_a_dedekind_domain|prime]] $\mathfrak{q}$ of the [[marcus_dedekind_domain|Dedekind domain]] $B$ assuming [[18785_AKLB|AKLB]].

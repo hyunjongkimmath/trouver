@@ -1,1 +1,0 @@
-$\mathcal{O}_{K,v}$ [[lombardo_av_1.1|denotes]] the completion of $\mathcal{O}_K$ at the [[place_of_a_global_field#Types of places|finite place]] $v$ of $\mathcal{O}_K$ where $K$ is a number field.

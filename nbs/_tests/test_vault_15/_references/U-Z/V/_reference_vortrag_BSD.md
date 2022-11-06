@@ -1,1 +1,0 @@
-- [[keller_timo|Timo Keller]], *Exact verification of the strong BSD conjecture for some absolutely simple modular abelian surfaces*, talk at the [Groningen algebra](https://www.math.rug.nl/algebra/Main/HomePage) seminar, March 31, 2021.

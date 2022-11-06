@@ -1,1 +1,0 @@
-$\operatorname{Hom}_{K}(A, B)$ [[lombardo_av_DEFINITION 5.1|denotes]] the set/group of $K$[[lombardo_av_DEFINITION 5.1|-homomorphisms]] $A \to B$ of [[lombardo_av_1.3|abelian varieties]].

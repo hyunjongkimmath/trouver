@@ -1,1 +1,0 @@
-$\hat{T}(A)$ denotes the [[lombardo_av_DEFINITION 10.10#Adelic Tate module of an abelian variety 1|adelic Tate module]] of the abelian variety $A$.

@@ -1,1 +1,0 @@
-$\varphi^\dagger$ denotes the [[lombardo_av_DEFINITION 6.13|Rosati involution]] of the [[lombardo_av_DEFINITION 5.9|endomorphism]] $\varphi: A \to A$ where $A$ is an [[lombardo_av_1.3|abelian variety]].

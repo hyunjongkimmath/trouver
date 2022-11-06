@@ -1,2 +1,0 @@
-$E^*$ [[lombardo_av_DEFINITION 2.5|denotes]] the [[fixed_field_by_group|fixed field]] of $\{\sigma \in \mathrm{Gal}(\overline{\mathbb{Q}} / \mathbb{Q}): \sigma \Phi=\Phi\}$
-where $\Phi$ is a [[lombardo_av_DEFINITION 2.2|CM type]] on the [[lombardo_av_DEFINITION 2.1_page_60|CM field]] $E$.

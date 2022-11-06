@@ -1,1 +1,0 @@
-$A[n]$ [[lombardo_av_DEFINITION 5.12|denotes]] the group of $n$-torsion points of the [[lombardo_av_1.3|abelian variety]] $A$.

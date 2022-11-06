@@ -1,1 +1,0 @@
-$0_A=0$ [[lombardo_av_NOTATION 1.7|denotes]] the neutral element of the [[lombardo_av_1.3|abelian variety]] $A$.

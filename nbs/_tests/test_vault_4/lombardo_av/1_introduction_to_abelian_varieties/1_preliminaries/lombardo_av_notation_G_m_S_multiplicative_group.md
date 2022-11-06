@@ -1,1 +1,0 @@
-$\mathbb{G}_{m,S}$ [[lombardo_av_EXAMPLE 1.2|denotes]] the multiplicative group over the [[foag_scheme]] $S$.

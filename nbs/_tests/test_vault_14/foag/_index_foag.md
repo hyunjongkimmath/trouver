@@ -1,1 +1,0 @@
-- [[_index_chapter_1_some_category_theory]]

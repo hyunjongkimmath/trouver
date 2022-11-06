@@ -1,1 +1,0 @@
-$N_\Phi$ denotes the [[lombardo_av_DEFINITION 2.7|reflex norm]] associated to the [[lombardo_av_DEFINITION 2.2|CM type]] $\Phi$ of a [[lombardo_av_DEFINITION 2.1_page_60|CM field]]

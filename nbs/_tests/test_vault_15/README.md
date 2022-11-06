@@ -1,1 +1,0 @@
-Feel free to just delete this vault; I was using it as a testing playground for latex.convert.

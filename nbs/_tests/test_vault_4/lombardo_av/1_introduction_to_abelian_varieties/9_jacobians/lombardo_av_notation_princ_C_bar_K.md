@@ -1,1 +1,0 @@
-$\operatorname{Princ}_C(\bar{K})$ [[lombardo_av_NOTATION 9.10|denotes]]  [$\operatorname{Princ}_C$](lombardo_av_notation_princ_C) considered as a set where $C/K$ is a curve over a perfect field..

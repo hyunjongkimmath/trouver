@@ -1,1 +1,0 @@
-$J$ [[lombardo_av_1.1|denotes]] the [[lombardo_av_notation_J_jacobian|Jacobian variety]] of the [[lombardo_av_1.1|nice curve]] $C/K$.  

@@ -1,3 +1,0 @@
-$d(H)$ [[lombardo_av_DEFINITION 4.10|denotes]] $\prod d_i$ where $H: V \times V \to \mathbb{C}$ is a [[lombardo_av_DEFINITION 4.8|polarization]] of the lattice $\Lambda \subset V$ on $V = \mathbb{C}^g$ where $V/\Lambda$ is a complex abelian variety and where $(d_1,\ldots,d_g)$ is the [[lombardo_av_DEFINITION 4.10|type]] of $H$.
-
-$d(H) = 1$ [[lombardo_av_REMARK 4.11|if and only if]] $H$ is [[lombardo_av_REMARK 4.11|principally polarized]]. 

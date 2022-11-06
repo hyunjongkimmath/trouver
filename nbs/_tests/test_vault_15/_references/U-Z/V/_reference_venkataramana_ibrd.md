@@ -1,2 +1,0 @@
-- Tyakal N. Venkataramana, *Image of the Burau Representation at $d$-th Roots of Unity*, Ann. of Math (2), 179 no. 3, 1041-1083, 2014.
-	- Available at https://arxiv.org/abs/1205.6543

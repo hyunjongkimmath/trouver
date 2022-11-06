@@ -1,1 +1,0 @@
-$[D:\mathbb{Q}]_{\text{red}}$ denotes the [[lombardo_av_DEFINITION 1.7|reduced degree]] of the [[18785_simple_ring#Semi-simple ring|semisimple]] $\mathbb{Q}$-algebra $D$ of finite dimension.

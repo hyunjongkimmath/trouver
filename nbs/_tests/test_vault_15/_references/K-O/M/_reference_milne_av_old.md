@@ -1,2 +1,0 @@
-- [[milne_james_s|James S. Milne]], *Abelian Varieties*, Course Notes, Version 2.0, 2008.
-	- Available at https://www.jmilne.org/math/CourseNotes/AV.pdf

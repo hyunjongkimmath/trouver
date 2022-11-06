@@ -1,3 +1,0 @@
-- [[some_reference_page 1]]
-- [[some_reference_page_2]]
-- [[some_reference_page_3]]

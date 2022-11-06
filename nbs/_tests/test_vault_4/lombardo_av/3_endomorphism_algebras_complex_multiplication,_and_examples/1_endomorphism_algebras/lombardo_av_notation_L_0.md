@@ -1,1 +1,0 @@
-$L_0$ [[lombardo_av_THEOREM 1.1|denotes]] the subfield of [$L$](lombardo_av_notation_L) fixed by the [[lombardo_av_DEFINITION 6.13|Rosati involution]].

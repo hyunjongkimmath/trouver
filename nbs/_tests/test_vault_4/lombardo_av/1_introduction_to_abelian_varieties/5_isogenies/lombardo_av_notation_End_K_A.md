@@ -1,1 +1,0 @@
-$\operatorname{End}_K(A)$ [[lombardo_av_DEFINITION 5.9|denotes]] the endomorphism ring of the [[lombardo_av_1.3|abelian variety]] $A/K$.

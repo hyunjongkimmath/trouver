@@ -1,1 +1,0 @@
-- [[vistoli_angelo|Angelo Vistoli]], *Notes on Grothendieck topologies, fibered categories and descent theory*, Available at http://homepage.sns.it/vistoli/descent.pdf, updated September 2, 2008.

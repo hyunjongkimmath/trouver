@@ -1,1 +1,0 @@
-- [[miyake_toshitsune|Toshitsune Miyake]], *Modular Forms*. Springer Monographs in Mathematics, Springer-Verlag Berlin Heidelberg, 1989.

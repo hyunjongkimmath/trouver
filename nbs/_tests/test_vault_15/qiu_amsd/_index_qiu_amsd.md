@@ -1,7 +1,0 @@
-- [[_index_1_introduction_qiu_amsd]]
-- [[_index_2_some_notations_and_conventions]]
-- [[_index_3_theta_eisenstein_series]]
-- [[_index_4_generating_series_of_special_divisors]]
-- [[_index_5_intersections_with_cm_cycles]]
-- [[_index_6_proper_intersections]]
-- [[_index_7_admissible__divisors]]

@@ -1,1 +1,0 @@
-$\operatorname{div}(f)$ [[lombardo_av_DEFINITION 9.5|denotes]] the divisor of the rational function $f$ of the curve $C/K$ (where $K$ is a [[18785_Definition 4.18|perfect field]]).

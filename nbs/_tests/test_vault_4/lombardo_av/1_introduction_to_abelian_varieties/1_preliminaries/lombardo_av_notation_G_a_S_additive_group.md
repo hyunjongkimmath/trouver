@@ -1,1 +1,0 @@
-$\mathbb{G}_{a,S}$ [[lombardo_av_EXAMPLE 1.2|denotes]] the additive group over the [[foag_scheme|scheme]] $S$.

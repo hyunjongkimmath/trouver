@@ -1,1 +1,0 @@
-$D$ [[lombardo_av_THEOREM 1.1|denotes]] $\operatorname{End}^0_\mathbb{C}(A) = \operatorname{End}_\mathbb{C}(A) \otimes_\mathbb{Z} \mathbb{Q}$ where $A/\mathbb{C}$ is an (simple) [[lombardo_av_1.3#Abelian variety 1|abelian variety]].

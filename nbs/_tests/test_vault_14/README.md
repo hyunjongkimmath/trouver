@@ -1,1 +1,0 @@
-This is a test vault for testing some methods in the trove.markdown.obsidian.personal.glossary module.
