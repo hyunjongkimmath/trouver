@@ -24,7 +24,7 @@ from natsort import natsorted
 # %% ../nbs/00_helper.ipynb 6
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
-        pattern: str | Pattern[str] # The regex pattern
+        pattern: Union[str, Pattern[str]] # The regex pattern
         ) -> list[tuple[int]]: # Each tuple is of the form `(a,b)` where `text[a:b]` is the regex match.
     # TODO: rename into regex_indices_in_text
     # TODO: swap parameters.
