@@ -59,17 +59,28 @@ def replace_string_by_indices(
         the same length.
 
     **Returns**
+
     - str
+
     """
     if isinstance(replace_with, str):
         replace_ranges = [replace_ranges]
         replace_with = [replace_with]
     # TODO: change assertion to valueerror
-    assert len(replace_ranges) == len(replace_with)
+    if len(replace_ranges) != len(replace_with):
+        raise ValueError(
+            'The lengths of `replace_ranges` and `replace_with` are different.')
+
     if len(replace_ranges) == 0:
         return string
 
+    str_parts = _str_parts(string, replace_ranges, replace_with)
+    return "".join(str_parts)
 
+
+def _str_parts(string, replace_ranges, replace_with):
+    """Divide `string` into parts divided outside of `replace_ranges`
+    and with `replace_with` inserted."""
     str_parts = []
     for i, replace_string in enumerate(replace_ranges):
         replace_string = replace_with[i]
@@ -82,27 +93,10 @@ def replace_string_by_indices(
         unreplaced_end_index = replace_ranges[i][0]
         str_parts.append(string[unreplaced_start_index:unreplaced_end_index])
         str_parts.append(replace_string)
-
     # Add the last (unreplaced) part to str_parts.
     if len(replace_ranges[-1]) == 1:
         unreplaced_start_index = len(string)
     else:
         unreplaced_start_index = replace_ranges[-1][1]
     str_parts.append(string[unreplaced_start_index:])
-    return "".join(str_parts)
-
-
-def _str_parts(string, replace_ranges, replace_with):
-    str_parts = []
-    for i, replace_string in enumerate(replace_ranges):
-        replace_string = replace_with[i]
-        if i > 0 and len(replace_ranges[i-1]) == 1:
-            unreplaced_start_index = len(string)
-        elif i > 0 and len(replace_ranges[i-1]) != 1:
-            unreplaced_start_index = replace_ranges[i-1][1]
-        else:
-            unreplaced_start_index = 0
-        unreplaced_end_index = replace_ranges[i][0]
-        str_parts.append(string[unreplaced_start_index:unreplaced_end_index])
-        str_parts.append(replace_string)
-    return
+    return str_parts
