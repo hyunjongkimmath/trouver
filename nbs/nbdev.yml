@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "trouver"
+  site-url: "https://hyunjongkimmath.github.io/trouver"
+  description: "Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models"
+  repo-branch: main
+  repo-url: "https://github.com/hyunjongkimmath/trouver"
