@@ -27,7 +27,7 @@ __all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_i
            'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
            'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted']
 
-# %% ../nbs/00_helper.ipynb 6
+# %% ../nbs/00_helper.ipynb 5
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
         pattern: str | Pattern[str] # The regex pattern
@@ -39,7 +39,7 @@ def find_regex_in_text(
     matches = re.finditer(pattern, text)
     return [match.span() for match in matches]
 
-# %% ../nbs/00_helper.ipynb 15
+# %% ../nbs/00_helper.ipynb 14
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -104,7 +104,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../nbs/00_helper.ipynb 22
+# %% ../nbs/00_helper.ipynb 21
 def double_asterisk_indices(
         text: str # the str in which to find the indices of double asterisk surrounded text.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
@@ -122,7 +122,7 @@ def double_asterisk_indices(
 
 
 
-# %% ../nbs/00_helper.ipynb 24
+# %% ../nbs/00_helper.ipynb 23
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -155,7 +155,7 @@ def definition_asterisk_indices(text: str) -> list[tuple[int]]:
     notations = notation_asterisk_indices(text)
     return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
 
-# %% ../nbs/00_helper.ipynb 38
+# %% ../nbs/00_helper.ipynb 37
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
@@ -178,7 +178,7 @@ def defs_and_notats_separations(
     return [(start, end, (start, end) in notations)
             for start, end in all_double_asterisks]
 
-# %% ../nbs/00_helper.ipynb 42
+# %% ../nbs/00_helper.ipynb 41
 def latex_indices(text: str) -> list[tuple[int]]:
     """Returns the indices in the text containing LaTeX str.
     
@@ -200,7 +200,7 @@ def latex_indices(text: str) -> list[tuple[int]]:
     return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
     # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
 
-# %% ../nbs/00_helper.ipynb 50
+# %% ../nbs/00_helper.ipynb 49
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -218,7 +218,7 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../nbs/00_helper.ipynb 54
+# %% ../nbs/00_helper.ipynb 53
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -300,7 +300,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../nbs/00_helper.ipynb 67
+# %% ../nbs/00_helper.ipynb 66
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -312,7 +312,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../nbs/00_helper.ipynb 74
+# %% ../nbs/00_helper.ipynb 73
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -322,7 +322,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../nbs/00_helper.ipynb 78
+# %% ../nbs/00_helper.ipynb 77
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -334,7 +334,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../nbs/00_helper.ipynb 80
+# %% ../nbs/00_helper.ipynb 79
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -344,7 +344,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../nbs/00_helper.ipynb 84
+# %% ../nbs/00_helper.ipynb 83
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -358,7 +358,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 92
+# %% ../nbs/00_helper.ipynb 91
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -377,6 +377,7 @@ def containing_string_priority(str1: str, str2: str) -> int:
         # return len(str2) - len(str1)
         return 0
 
+
 def default_str_comparison(str1: str, str2: str) -> int:
     """
     
@@ -390,6 +391,7 @@ def default_str_comparison(str1: str, str2: str) -> int:
         return -1
     else:
         return 0
+
 
 def natsort_comparison(str1: str, str2: str) -> int:
     """
@@ -407,7 +409,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 93
+# %% ../nbs/00_helper.ipynb 92
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -437,7 +439,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 94
+# %% ../nbs/00_helper.ipynb 93
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],

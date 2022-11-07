@@ -3,3 +3,6 @@ website:
     contents:
       - index.ipynb
       - 00_helper.ipynb
+      - 01_markdown.__init__.ipynb
+      - 02_markdown.obsidian.__init__.ipynb
+      - 03_markdown.obsidian.vault.ipynb
