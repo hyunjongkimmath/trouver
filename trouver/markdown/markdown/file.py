@@ -13,9 +13,9 @@ import yaml
 from trouver.helper import (
     find_regex_in_text 
 )
-# from trouver.markdown.markdown.heading import (
-#     heading_level, heading_title
-# )
+from trouver.markdown.markdown.heading import (
+    heading_level, heading_title
+)
 # from trouver.markdown.obsidian.links import (
 #     ObsidianLink, 
 #     remove_links_from_text, EMBEDDED_PATTERN, replace_embedded_links_with_text
