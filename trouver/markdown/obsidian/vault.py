@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'path_to_obs_id', 'all_paths_to_notes_in_vault',
-           'all_note_paths_by_name']
+           'all_note_paths_by_name', 'note_path_by_name', 'note_name_unique']
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 3
 from pathlib import Path
@@ -72,11 +72,11 @@ def path_to_obs_id(
     path_without_extension = path_no_ext(rel_path)
     return path_without_extension.replace('\\', '/')
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 18
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 19
 def all_paths_to_notes_in_vault(
         vault: PathLike, as_dict: bool = False)\
         -> Union[list[str], dict[str, list[str]]]:
-    """Returns the paths, relative to the Obsidian vault, of notes 
+    """Return the paths, relative to the Obsidian vault, of notes 
     in the Obsidian vault.
        
     This may not actually return all of the paths to the notes, see
@@ -112,29 +112,18 @@ def all_paths_to_notes_in_vault(
         return paths
 
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 24
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 25
 def all_note_paths_by_name(
-        name: str, vault: PathLike,
-        subdirectory: Union[PathLike, None] = None) -> list[Path]:
-    """Returns the relative paths to all notes in the Obsidian vault 
+        name: str,  # Name of the note(s) to find
+        vault: PathLike,  # The path to the Obsidian vault directory
+        subdirectory: Union[PathLike, None] = None # The path to a subdirectory in the Obsidian vault, relative to `vault`. If `None`, then denotes the root of the vault.
+        ) -> list[Path]: # Each item is a path to a note of the given name, relative to `vault`.
+    """Return the relative paths to all notes in the Obsidian vault 
     with the specified name in the specified subdirectory.
     
     This function does not assume that the specified subdirectory in the vault
     has at most one note of the specified name.
     
-    **Parameters**
-    - `name` - str
-    - `vault` - PathLike
-        - The path to the Obsidian vault directory
-    - `subdirectory` - Union[PathLike, None]
-        - The path to a subdirectory in the Obsidian vault, relative
-        to `vault. If `None`, then denotes the root of the vault. 
-        Defaults to `None`.
-        
-    **Returns**
-    - list[Path]
-        - Each item is a path to a note of the given name, relative to
-        `vault`.
     """
     vault = vault if vault != None else ''
     vault = Path(vault)
@@ -143,3 +132,54 @@ def all_note_paths_by_name(
     all_notes_of_name = directory_path.glob(f'**/{name}.md')
     all_notes_of_name = list(all_notes_of_name)
     return [note_path.relative_to(vault) for note_path in all_notes_of_name]
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 30
+# TODO: include examples of `hints` parameter.
+def note_path_by_name(
+        name: str, # The path to the Obsidian vault directory.
+        vault: PathLike, # The path to a subdirectory in the Obsidian vault. If `None`, then denotes the root of the vault.
+        subdirectory: Union[PathLike, None] = None, # The path to a subdirectory in the Obsidian vault. If `None`, then denotes the root of the vault.
+        hints: Union[list[PathLike], None] = None # Hints of which directories, relative to `subdirectory` that the note may likely be in. This is for speedup. The directories will be searched in the order listed.
+        ) -> Path: # The note of the specified name in the specified subdirectory of the vault.
+    """Return the path, relative to a subdirectory in the vault, 
+    of the note of the specified name.
+
+    **Raises**
+
+    - NoteNotUniqueError
+        - If the note of the specified name is not unique in the subdirectory.
+    - NoteDoesNotExistError
+        - If the note of the specified name does not exist in the subdirectory.
+
+    **See Also**
+
+    - The constructor of the `VaultNote` class
+        - passing an argument to the `name` parameter of this constructor
+        method essentially does the same thing as this function, except the
+        constructor method uses a cache.
+    """
+    if not subdirectory:
+        subdirectory = ''
+    if not hints:
+        hints = []
+    vault = Path(vault)
+    subdirectory = Path(subdirectory)
+    # absolute_subdirectory = vault / subdirectory
+    hints.append('')  # Search in subdirectory if all else fails
+    for hint in hints:
+        search_results = all_note_paths_by_name(name, vault, subdirectory / hint)
+        if len(search_results) > 1:
+            raise NoteNotUniqueError.from_note_names(name, search_results)
+        elif len(search_results) == 1:
+            return search_results[0]
+    raise NoteDoesNotExistError.from_note_name(name)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 39
+def note_name_unique(
+        name: str, # Name of the note.
+        vault: PathLike # Path to the vault.
+        ) -> bool: 
+    """Return `True` if a note of the specified name exists and 
+    is unique in the Obsidian vault.
+    """
+    return len(all_note_paths_by_name(name, vault)) == 1
