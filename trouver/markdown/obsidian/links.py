@@ -146,10 +146,8 @@ class ObsidianLink:
     def from_text(text: str) -> ObsidianLink:
         """Returns an ObsidianLink object from text.
                 
-        **Parameters**
-        - `text` - str
-        
         **Raises**
+
         - InteralLinkFormatError
             - If the text is not properly formatted as an Obsidian internal link.
         """
