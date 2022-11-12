@@ -16,20 +16,25 @@ from typing import Union
 
 
 # %% auto 0
-__all__ = ['INTERNAL_LINK_PATTERN', 'WIKILINK_PATTERN', 'EMBEDDED_WIKILINK_PATTERN', 'MARKDOWNLINK_PATTERN',
-           'EMBEDDED_MARKDOWNLINK_PATERN', 'EMBEDDED_PATTERN', 'find_links_in_markdown_text', 'LinkFormatError',
-           'LinkType', 'ObsidianLink']
+__all__ = ['WIKILINK_PATTERN', 'EMBEDDED_WIKILINK_PATTERN', 'WIKILINK_CAPTURE_PATTERN', 'MARKDOWNLINK_PATTERN',
+           'EMBEDDED_MARKDOWNLINK_PATERN', 'MARKDOWNLINK_CAPTURE_PATTERN', 'EMBEDDED_PATTERN',
+           'find_links_in_markdown_text', 'LinkFormatError', 'LinkType', 'ObsidianLink', 'links_from_text',
+           'remove_links_from_text', 'all_custom_text_for_links_in_vault', 'all_links_in_vault']
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 4
 # TODO Make it so that these patterns don't capture latex code
-INTERNAL_LINK_PATTERN = r'!?\[\[.*?\]\]' 
+# WIKILINK_PATTERN = r'!?\[\[.*?\]\]' 
 WIKILINK_PATTERN = r'!?\[\[[^\]]+\]\]'
 EMBEDDED_WIKILINK_PATTERN = r'!\[\[[^\]]+\]\]'
-# WIKILINK_CAPTURE = r'!?\[\[([^#\]\|]+)(#[^\]\|]+)?(\|[^\]]+)?\]\]'
+WIKILINK_CAPTURE_PATTERN = r'!?\[\[([^#\|]*?)(#(.*?))?(\|(.*?))?\]\]'
+
 # Note that MARKDOWNLINK_PATTERN captures whitespace characters in its link, even though Obsidian
 # does not. This is implmeneted to find if any misformats in the Obsidian Markdown files.
 MARKDOWNLINK_PATTERN = r'!?\[[^\]]+\]\([^)]+\)'  
 EMBEDDED_MARKDOWNLINK_PATERN = r'!\[[^\]]+\]\([^)]+\)'
+MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[([^\]]*)\]\(([^)#]+)(#([^)]+))?\)'
+
+
 EMBEDDED_PATTERN = f'{EMBEDDED_WIKILINK_PATTERN}|{EMBEDDED_MARKDOWNLINK_PATERN}'
 # MARKDOWNLINK_CAPTURE = r'!?\[([^\]]+)\]\(([^)#])+(#[^)]+)?\)'
 
@@ -37,11 +42,10 @@ EMBEDDED_PATTERN = f'{EMBEDDED_WIKILINK_PATTERN}|{EMBEDDED_MARKDOWNLINK_PATERN}'
 def find_links_in_markdown_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is an obsidian internal link.
-    """Returns ranges in the markdown text string
-    where internal links occur.
-
     # TODO: rename this function, say to link_ranges_in_text, 
     # because it is confusing when there is a links_from_text function below.
+    """Return ranges in the markdown text string
+    where internal links occur.
 
     **See Also**
 
@@ -51,7 +55,7 @@ def find_links_in_markdown_text(
     return find_regex_in_text(text, pattern=regex)
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 16
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 15
 class LinkFormatError(Exception):
     """Error that is raised when a string cannot be parsed as an
     `ObsidianLink` object.
@@ -64,7 +68,7 @@ class LinkFormatError(Exception):
         self.text = text
         super().__init__(f'Obsidian Markdown link is not formatted properly: {text}')
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 18
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 16
 class LinkType(Enum):
     """An Enumeration indicating whether an `ObsidianLink` object is a
     Wikilink or a Markdown-style link.
@@ -81,7 +85,7 @@ class LinkType(Enum):
 
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 19
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 17
 # TODO: implment equality, copy
 class ObsidianLink:
     """Object representing an obsidian link
@@ -144,15 +148,15 @@ class ObsidianLink:
 
     @staticmethod
     def from_text(text: str) -> ObsidianLink:
-        """Returns an ObsidianLink object from text.
+        """Return an ObsidianLink object from text.
                 
         **Raises**
 
         - InteralLinkFormatError
-            - If the text is not properly formatted as an Obsidian internal link.
+            - If `text` is not properly formatted as an Obsidian internal link.
         """
         is_embedded = text.startswith("!")
-        regex_object = re.compile(r"!?\[\[([^#\|]*?)(#(.*?))?(\|(.*?))?\]\]")
+        regex_object = re.compile(WIKILINK_CAPTURE_PATTERN)
         matches = regex_object.match(text)
         if matches:
             file_name = matches.group(1)
@@ -160,7 +164,7 @@ class ObsidianLink:
             custom_text = matches.group(5)
             link_type = LinkType.WIKILINK
         else:
-            regex_object = re.compile(r'!?\[([^\]]*)\]\(([^)#]+)(#([^)]+))?\)')
+            regex_object = re.compile(MARKDOWNLINK_CAPTURE_PATTERN)
             matches = regex_object.match(text)
             if not matches:
                 raise LinkFormatError(text)
@@ -176,21 +180,27 @@ class ObsidianLink:
             custom_text = 0
         return ObsidianLink(is_embedded, file_name, anchor, custom_text, link_type)
 
+    def _parse_text_as_wikilink(text: str):
+        """
+        Return details about the link `text` if `text` is a Wikilink or `None` if
+        `text is not a Wikilink.
 
-    def to_regex(self) -> str:
-        """Returns the regex for that this `Link` object represents
+        This is a helper method for `from_text`.
+        """
+        # TODO
+        return
+
+    def to_regex(self
+            )-> str: # Represents a regex.
+        """Return the regex for that this `ObsidianLink` object represents.
 
         Assumes that `self.file_name`, `self.anchor`, and `self.custom_text` are
-        regex-formatted strings, e.g. if self.custom_text is `denotes?`, then the
+        regex-formatted strings, e.g. if `self.custom_text` is `denotes?`, then the
         outputted regex-pattern matches links whose custom text is either `denote`
         or `denotes`.
 
         If neither `self.file_name`, `self.anchor` nor `self.custom_text` is `-1`,
         then the regex will in fact be a concrete string.
-
-        **Returns**
-        - str
-            - Representing a regex.
         """
         embedding = '!' if self.is_embedded else ''
 
@@ -230,16 +240,16 @@ class ObsidianLink:
         # TODO: Choose what to do about | vs. \|.
         return self.to_string()
 
-    def to_string(self) -> str:
-        """Returns the string for the link if it is concrete.
-        
-        **Returns**
-        - str
-        
+    def to_string(self
+            ) -> str: # The string for the link
+        """
+        Return the string for the link if it is concrete.
+ 
         **Raises**
+
         - ValueError
             - If `self.file_name`, `self.anchor` or `self.custom_text`
-            is -1, i.e.  ambiguously represents an anchor or custom text.
+            is -1, i.e. ambiguously represents an anchor or custom text.
         """
         if self.is_abstract():
             raise ValueError(
@@ -270,18 +280,21 @@ class ObsidianLink:
             anchoring = anchoring.replace(' ', '%20')
             return fr'{embedding}[{customing}]({file_name}{anchoring})'
     
-    def convert_link_type(self, link_type: LinkType) -> ObsidianLink:
-        """Returns an equivalent Link object which has the specified
-        ``LinkType``.
-        
-        **Parameters**
-        - link_type - ``LinkType``
+    def convert_link_type(
+            self,
+            link_type: LinkType
+            ) -> ObsidianLink:
+        """
+        Return an equivalent Link object which has the specified
+        `LinkType`.
         """
         # TODO
         return
     
-    def displayed_text(self) -> str:
-        """Returns the displayed str of this link.
+    def displayed_text(self
+            ) -> str: # The displayed text
+        # TODO: implement error if any of the attributes is -1
+        """Returns the displayed text of this link.
         
         `self.file_name`, `self.custom_text` and `self.anchor` are
         assumed to be not `-1`.
@@ -296,8 +309,169 @@ class ObsidianLink:
 
     def is_abstract(self) -> bool:
         """
-        Returns `True` if self is abstract, i.e. file_name, anchor,
+        Return `True` if self is abstract, i.e. file_name, anchor,
         or custom_text is `-1`.
         """
         return self.anchor == -1 or self.file_name == -1 or self.anchor == -1
     
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 54
+def links_from_text(
+        text: str
+        ) -> list[ObsidianLink]: # The `ObsidianLink` objects are ordered by appearance.
+    """
+    Return a list of `ObsidianLink` objects corresponding to links
+    found in the text.
+    """
+    ranges = find_links_in_markdown_text(text)
+    link_strs = [text[start:end] for start, end in ranges]
+    return [ObsidianLink.from_text(link_str) for link_str in link_strs]
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 58
+def remove_links_from_text(
+        text: str,
+        exclude: list[ObsidianLink] = None, # A list of `ObsidianLink` objects of links to not be removed.
+        remove_embedded_note_links: bool = False # If `True`, remove links to embedded notes as well. Note that embedded links are replaced by their "display" text in the same manner as non-embedded links and are not replaced the content of the embedding. If `False`, does not modify embedded note links.
+        ) -> str:
+    """
+    Return a text with all Obsidian links removed and replaced with
+    the display texts of the links.
+    """
+    if not exclude:
+        exclude = []
+    exclude_patterns = [re.compile(exclude_link.to_regex())
+                        for exclude_link in exclude]
+    link_indices = find_links_in_markdown_text(text)
+    new_text = text
+    for start, end in reversed(link_indices):
+        if _do_not_remove_link(text[start:end], exclude_patterns):
+            continue
+        link_object = ObsidianLink.from_text(text[start:end])
+        if link_object.is_embedded and not remove_embedded_note_links:
+            continue
+        replace_with = link_object.displayed_text()
+        # link_object.custom_text if link_object.custom_text else link_object.file_name
+        new_text = new_text[0:start] + replace_with + new_text[end:]
+    return new_text
+
+
+def _do_not_remove_link(text: str, exclude_patterns: list[re.Pattern]) -> bool:
+    """
+    Return `True` if text fully matches any of `re.Pattern`'s in `exclude_patterns`.
+
+    This is a helper method for `remove_links_from_text`. 
+    """
+    for exclude_pattern in exclude_patterns:
+        if exclude_pattern.fullmatch(text):
+            return True
+    return False
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 67
+def all_custom_text_for_links_in_vault(
+        note: VaultNote, # The note to find the custom text for.
+        vault: PathLike, # The path to the Obsidian vault directory
+        anchor: Union[str, int] = -1 # The anchor in the note to find the custom text for. If 0, then returns only the custom texts for internal links without anchors. If -1, then returns the custom texts for all of the internal links of the specified note.
+        ) -> dict[Union[str, int], str]: # Each key is the custom text used and each value is a set of paths relative to `vault` to the notes where the custom text is used.  The key `0` means that no custom text is used.
+    """
+    Return all custom text used in the Obsidian vault for the specified
+    note and anchor.
+    """
+    vault = Path(vault)
+    name = note.name
+    wiki_gen = ObsidianLink(
+        is_embedded=False, file_name=name, anchor=anchor, custom_text=-1,
+        link_type=LinkType.WIKILINK)
+    wiki_regex = wiki_gen.to_regex()
+    mark_gen = ObsidianLink(
+        is_embedded=False, file_name=name, anchor=anchor, custom_text=-1,
+        link_type=LinkType.MARKDOWN)
+    mark_regex = mark_gen.to_regex()
+    regex = f'{wiki_regex}|{mark_regex}'
+    all_note_paths = all_paths_to_notes_in_vault(vault)
+    # I am creating a generator as opposed to a list so that the program
+    # does not store the contents of all the text files.
+    texts = ((path, text_from_file(vault / path, encoding='utf8'))
+             for path in all_note_paths)
+    regex_object = re.compile(regex)
+    custom_text_usage = {}
+    for path, text in texts:
+        custom_texts = _custom_text_for_links_in_text(text, regex_object)
+        for custom_text in custom_texts:
+            if custom_text not in custom_text_usage:
+                custom_text_usage[custom_text] = set()
+            custom_text_usage[custom_text].add(path)
+    return custom_text_usage
+
+
+def _custom_text_for_links_in_text(
+        text: str, regex_object: re.Pattern) -> list[str]:
+    """Helper function for finding custom text for links in a single file.
+    
+    **Parameters**
+    - text - str
+    - regex_object - re.Pattern
+        - An object returned with the `re.compile` function. Matches
+        wikilinks and markdown links.
+        
+    **Returns**
+    - list[str]
+    """
+    link_matches = regex_object.finditer(text)
+    match_ranges = [match.span() for match in link_matches]
+    links = [ObsidianLink.from_text(text[start:end])
+             for start, end in match_ranges]
+    return [link.custom_text for link in links]
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 69
+def all_links_in_vault(
+        vault: PathLike, backlinks: bool = False, 
+        multiplicities: bool = False) -> dict[str, list[str]]:
+    """Returns a dict keeping track of which notes contain 
+    links to which notes.
+    
+    TODO: currently, the regex capture regex code. Change them
+    so that this does not happen.
+    
+    **Parameters**
+    - vault - PathLike
+    - backlinks - bool
+        - If `True`, then keeps track of the links in each note.
+        If `False`, then keeps track of the backlinks in each note,
+        i.e. which other notes link to each note. Defaults to `False`.
+    - multiplicties - bool
+        - If `True`, then keeps track of multiple links to the same note
+        for each note. Otherwise, only keeps track of whether or not
+        a note links to a(nother) note. Defaults to `False`.
+  
+    **Returns**
+    - dict[str, list[str]]
+        - Each key is a str, referring to the name of a note. 
+        Each corresponding value is a list. The list contains 
+        the names of all the notes which the key note references to if
+        `backlinks` is `True`, and contains the names of all the notes which
+        reference the key note if `backlinks` is `False`. The list can contain
+        multiple occurrences of the same note if `multiplicities` is `True`.
+    """
+    vault = Path(vault)
+    all_note_paths = all_paths_to_notes_in_vault(vault, as_dict=True)
+    links = {}
+    for name, path in all_note_paths.items():
+        text = text_from_file(vault / path, encoding='utf8')
+        try:
+            links_in_note = links_from_text(text)
+        except LinkFormatError:
+            print(name)
+        if not multiplicities:
+            links_in_note = set(links_in_note)
+        if backlinks:
+            if name not in links:
+                links[name] = []
+            for link in links_in_note:
+                if link.file_name not in links:
+                    links[link.file_name] = []
+                links[link.file_name].append(name)
+        else:
+            if name not in links:
+                links[name] = []
+            links[name] += [link.file_name for link in links_in_note]
+    return links
