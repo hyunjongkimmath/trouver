@@ -9,4 +9,6 @@ website:
       - 04_markdown.markdown.file.ipynb
       - 05_markdown.markdown.heading.ipynb
       - 06_markdown.obsidian.links.ipynb
+      - 07_markdown.obsidian.tags.ipynb
       - TODO.ipynb
+      - using_regex.ipynb
