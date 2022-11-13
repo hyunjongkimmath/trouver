@@ -14,5 +14,6 @@ website:
       - 09_markdown.obsidian.personal.__init__.ipynb
       - 10_markdown.obsidian.personal.reference.ipynb
       - 11_markdown.obisidian.personal.authors.ipynb
+      - 12_markdown.obsidian.personal.index_notes.ipynb
       - TODO.ipynb
       - using_regex.ipynb
