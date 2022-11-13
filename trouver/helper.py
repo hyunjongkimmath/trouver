@@ -21,11 +21,14 @@ from deprecated import deprecated
 from natsort import natsorted
 
 # %% auto 0
-__all__ = ['find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
+__all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'find_regex_in_text',
+           'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
            'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
            'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
            'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
-           'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted']
+           'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted',
+           'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
+           'alphabet_or_latex_command_to_alphabet_group']
 
 # %% ../nbs/00_helper.ipynb 5
 def find_regex_in_text(
@@ -466,3 +469,42 @@ def dict_with_keys_topologically_sorted(
         keys_ordered = list(reversed(keys_ordered))
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
+
+# %% ../nbs/00_helper.ipynb 96
+ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
+ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
+def alphabet_to_alphabet_group(character) -> str:
+    """
+    Returns the alphabet group
+    
+    In my vaults, I often alphabetize things and also group
+    the alphabet as follows:
+    - A-E
+    - F-J
+    - K-O
+    - P-T
+    - U-V
+    
+    **Parameters**
+    - character - str
+    
+    **Returns**
+    - str or `None`
+        - Returns `None` if `character` is not an alphabet.
+    """
+    character = character.upper()
+    if character in ALPHABET_TO_ALPHABET_GROUP_DICT:
+        return ALPHABET_TO_ALPHABET_GROUP_DICT[character]
+    else:
+        return None
+
+def alphabet_or_latex_command_to_alphabet(character):
+    """Returns the alphabet that the character "corresponds to".
+    
+    """
+    # TODO
+    return
+
+def alphabet_or_latex_command_to_alphabet_group(character):
+    return alphabet_to_alphabet_group(
+        alphabet_or_latex_command_to_alphabet(character))

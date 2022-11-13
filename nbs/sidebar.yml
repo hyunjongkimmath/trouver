@@ -11,5 +11,8 @@ website:
       - 06_markdown.obsidian.links.ipynb
       - 07_markdown.obsidian.tags.ipynb
       - 08_markdown.obsidian.footnotes.ipynb
+      - 09_markdown.obsidian.personal.__init__.ipynb
+      - 10_markdown.obsidian.personal.reference.ipynb
+      - 11_markdown.obisidian.personal.authors.ipynb
       - TODO.ipynb
       - using_regex.ipynb
