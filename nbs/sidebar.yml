@@ -10,5 +10,6 @@ website:
       - 05_markdown.markdown.heading.ipynb
       - 06_markdown.obsidian.links.ipynb
       - 07_markdown.obsidian.tags.ipynb
+      - 08_markdown.obsidian.footnotes.ipynb
       - TODO.ipynb
       - using_regex.ipynb
