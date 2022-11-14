@@ -233,7 +233,12 @@ class MarkdownFile:
         **Returns**
 
         - dict[Union[str, int], Union[str, dict]]
-            - The keys are 1. line numbers or 2. the str `'title'`.  The values are dict or str (the blank str if root node) respectively. The dicts in themselves recursively represent trees and the str are headings, including the leading sharps.
+            - The keys are 1. line numbers or 2. the str `'title'`.  The values
+            are dict or str (the blank str if root node) respectively. The
+            dicts in themselves recursively represent trees and the str are
+            headings, including the leading sharps. In particular, the root
+            level dict also has the blank string `''` associated to the key
+            `'title'`.
         """
         headings_dict = self.get_headings_by_line_number(include_start=False)
         root_dict = {'title': ''}
