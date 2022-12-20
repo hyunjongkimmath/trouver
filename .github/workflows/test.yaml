@@ -10,5 +10,5 @@ jobs:
       # Copies /nbs/_tests to the base directory of this workflow
       - name: Copy test files
         run: |
-          cp -r ${GITHUB_WORKSPACE}/nbs/_tests .
+          cp -r ${GITHUB_WORKSPACE}/nbs .
       - uses: fastai/workflows/nbdev-ci@master
