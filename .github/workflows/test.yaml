@@ -4,11 +4,4 @@ on:  [workflow_dispatch, pull_request, push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:
-      - name: List directory contents
-        run: echo "$(ls)"
-      # Copies /nbs/_tests to the base directory of this workflow
-      - name: Copy test files
-        run: |
-          cp -r ${GITHUB_WORKSPACE}/nbs .
-      - uses: fastai/workflows/nbdev-ci@master
+    steps: [uses: fastai/workflows/nbdev-ci@master]
