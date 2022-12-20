@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: List directory contents
-        run: ls
+        run: echo "$(ls)"
       # Copies /nbs/_tests to the base directory of this workflow
       - name: Copy test files
         run: |
