@@ -5,10 +5,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: List directory contents
+        run: ls
       # Copies /nbs/_tests to the base directory of this workflow
       - name: Copy test files
         run: |
-          ls
-          ls "${GITHUB_WORKSPACE}"
-          cp -r "${GITHUB_WORKSPACE}/nbs/_tests" .
+          cp -r /nbs/_tests .
       - uses: fastai/workflows/nbdev-ci@master
