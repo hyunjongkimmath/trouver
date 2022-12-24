@@ -35,10 +35,10 @@ def find_front_matter_meta_in_markdown_text(
         text: str
         ) -> Union[tuple[int], None]: # Each tuple is of the form `(a,b)` where `text[a:b]` is a markdown front matter. This list will be of length at most 1 because the front matter must come at the start of the markdown document.
     """
-    Return ranges in the markdown text string where front matter meta occurs
+    Return ranges in the markdown text string where front matter meta occurs.
     
     `text` is assumed to start with the front matter meta.
-    The front mtatter meta is of the YAML format
+    The front matter meta is of the following YAML format.
     
     ```markdown
     ---

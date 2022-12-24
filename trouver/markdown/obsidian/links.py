@@ -55,7 +55,7 @@ def find_links_in_markdown_text(
     return find_regex_in_text(text, pattern=regex)
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 15
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 12
 class LinkFormatError(Exception):
     """Error that is raised when a string cannot be parsed as an
     `ObsidianLink` object.
@@ -68,7 +68,7 @@ class LinkFormatError(Exception):
         self.text = text
         super().__init__(f'Obsidian Markdown link is not formatted properly: {text}')
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 16
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 13
 class LinkType(Enum):
     """An Enumeration indicating whether an `ObsidianLink` object is a
     Wikilink or a Markdown-style link.
@@ -85,7 +85,7 @@ class LinkType(Enum):
 
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 17
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 14
 # TODO: implment equality, copy
 class ObsidianLink:
     """Object representing an obsidian link
@@ -315,7 +315,7 @@ class ObsidianLink:
         return self.anchor == -1 or self.file_name == -1 or self.anchor == -1
     
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 54
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 51
 def links_from_text(
         text: str
         ) -> list[ObsidianLink]: # The `ObsidianLink` objects are ordered by appearance.
@@ -327,7 +327,7 @@ def links_from_text(
     link_strs = [text[start:end] for start, end in ranges]
     return [ObsidianLink.from_text(link_str) for link_str in link_strs]
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 58
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 55
 def remove_links_from_text(
         text: str,
         exclude: list[ObsidianLink] = None, # A list of `ObsidianLink` objects of links to not be removed.
@@ -366,7 +366,7 @@ def _do_not_remove_link(text: str, exclude_patterns: list[re.Pattern]) -> bool:
             return True
     return False
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 67
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 64
 def all_custom_text_for_links_in_vault(
         note: VaultNote, # The note to find the custom text for.
         vault: PathLike, # The path to the Obsidian vault directory
@@ -422,7 +422,7 @@ def _custom_text_for_links_in_text(
              for start, end in match_ranges]
     return [link.custom_text for link in links]
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 69
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 66
 def all_links_in_vault(
         vault: PathLike, backlinks: bool = False, 
         multiplicities: bool = False) -> dict[str, list[str]]:

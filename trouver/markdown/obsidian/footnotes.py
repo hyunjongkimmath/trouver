@@ -17,7 +17,7 @@ from trouver.markdown.obsidian.links import (
 
 from typing import Union
 
-# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 9
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 8
 def find_footnote_descriptions_in_markdown_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is the full substring of a markdown footnote description.
@@ -34,7 +34,7 @@ def find_footnote_descriptions_in_markdown_text(
     """
     return find_regex_in_text(text, pattern=r'\[\^.+?\]:.*')
 
-# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 14
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 13
 def find_footnote_mentions_in_markdown_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is a markdown footnote description.
@@ -52,7 +52,7 @@ def find_footnote_mentions_in_markdown_text(
     """
     return find_regex_in_text(text, pattern=r'\[\^[^\[\]]+?\](?!:)')
 
-# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 17
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 16
 def remove_footnote_mentions_in_markdown_text(
         text: str
         ) -> str:
@@ -62,7 +62,7 @@ def remove_footnote_mentions_in_markdown_text(
     footnote_indices = find_footnote_mentions_in_markdown_text(text)
     return replace_string_by_indices(text, footnote_indices, ['']*len(footnote_indices))
 
-# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 20
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 19
 def embedded_note_of_footnote(
         footnote: str # The full footnote description. May start and end with `'\n'` and other whitespace characters
         ) -> Union[str, None]: # The name of the note of the footnote, if applicable. `None` otherwise.
@@ -80,7 +80,7 @@ def embedded_note_of_footnote(
         return match.group(1)
 
 
-# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 22
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 21
 def footnote_is_simple_embedded_note(
         footnote: str # The full footnote description. May start and end with `'\n'` and other whitespace characters.
         ) -> bool:

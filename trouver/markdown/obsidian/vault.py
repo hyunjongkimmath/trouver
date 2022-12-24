@@ -61,7 +61,7 @@ class NoteDoesNotExistError(FileNotFoundError):
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 10
 def path_to_obs_id(
         rel_path: PathLike # A path representation the path of an Obsidian note relative to its vault. This does not have to be an existing path.
-        ) -> str: # The obsidian url of the hypothetical note within its vault.
+        ) -> str: # The obsidian url of the hypothetical note within its vault. Note that this does not end with the file extension `.md`.
     """Convert a relative path of an Obsidian note to the Obsidian identifying
     str.
     
@@ -378,7 +378,7 @@ class VaultNote:
             name: str # The name
             ) -> None:
         """
-        Raises `NoteNotUniqueError` or `NoteDoesNotExistError if the note of
+        Raise `NoteNotUniqueError` or `NoteDoesNotExistError` if the note of
         the specified name is not unique or does not exist in the cache.
         
         **Parameters**
@@ -399,17 +399,10 @@ class VaultNote:
     @classmethod
     def _check_if_cache_needs_to_update(
             cls, vault: PathLike, name: str) -> bool:
-        """Returns `True` if 
+        """Returns `True` if the cache needs to update 
         
         This function is intended to be used in the constructor of a `VaultNote`
         instance.
-
-        **Parameters**
-        - vault - PathLike
-        - name - str
-
-        **Returns**
-        - bool
         """
         if str(vault) not in cls.cache:
             return True
