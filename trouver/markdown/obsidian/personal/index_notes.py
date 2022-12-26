@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['subsections_listed_in_index_note', 'subsection_folders', 'get_alphanumeric', 'correspond_headings_with_folder',
-           'information_notes_linked_in_index_note']
+           'information_notes_linked_in_index_note', 'move_information_notes_to_correct_folder']
 
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 3
 import glob
@@ -91,8 +91,10 @@ def get_alphanumeric(
 
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 14
 def correspond_headings_with_folder(
-        index_note: VaultNote, vault: PathLike,
-        include_non_heading: bool = True) -> dict[str, str]:
+        index_note: VaultNote,
+        vault: PathLike,
+        include_non_heading: bool = True # If `True`, and if there is text before any heading, then treat such text as being under a "blank" heading.
+        ) -> dict[str, str]:
     """
     Return tuples of corresponding headings in an index note
     with folder names.
@@ -100,13 +102,6 @@ def correspond_headings_with_folder(
     Assumes that each folder is titled
     `'{alphanumeric}_{folder_title}'` and each heading is titled
     `'{alphanumeric}. {heading_title}'`
-    
-    **Parameters**
-    - index_note - VaultNote
-    - vault - PathLike
-    - include_non_heading - bool
-        - If `True`, and if there is text before any heading, then treat
-        such text as being under a "blank" heading. Defaults to `True`.
     
     **Returns**
     - dict[str, str]
@@ -167,3 +162,33 @@ def information_notes_linked_in_index_note(
                          for heading_index, note_names in note_names_by_headings.items()}
     return notes_by_headings
     
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 20
+def move_information_notes_to_correct_folder(
+        index_note: VaultNote,
+        vault: PathLike,
+        hints: list[PathLike] = None # Hints on where the information notes are likely to be found at.  Each path is relative to `vault` and points to a directory. Defaults to `None`.
+        ) -> None:
+    """Moves the information notes indexed by `index_note` to the correct folder.
+
+    The "correct folder" is a folder in the same directory as `index_note`
+    corresponding to the heading under which the information note is indexed.
+    The current implementation just looks at level 1 headings.
+    """
+    parent_folder = os.path.dirname(index_note.path(relative=True))
+    linked_notes = information_notes_linked_in_index_note(index_note, vault, hints)
+    headings_folders = correspond_headings_with_folder(index_note, vault)
+    for heading_index, notes in linked_notes.items():
+        _move_notes_under_heading(heading_index, notes,
+                                  parent_folder, headings_folders)
+
+
+def _move_notes_under_heading(
+        heading_index, notes: list[VaultNote], parent_folder, headings_folders):
+    destination_folder = headings_folders[heading_index][1]
+    for note in notes:
+        note_folder = os.path.dirname(note.rel_path)
+        if destination_folder == note_folder:
+            continue
+        note.move_to_folder(Path(parent_folder) / destination_folder)
+
