@@ -348,6 +348,22 @@ def files_of_format_sorted(
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
 # %% ../nbs/00_helper.ipynb 83
+def _test_directory() -> Path:
+    """Returns the `nbs/_tests` directory of the `trouver` repository.
+    
+    Assumes that the current working directory is either the root of the
+    repository or the `nbs` folder and the `nbs/_tests` folder exists in the
+    repository but the root of the repository does not have a folder named
+    `_tests`.
+    """
+    cwd = os.getcwd()
+    cwd_name = path_name_no_ext(cwd)
+    if cwd_name == 'nbs':
+        return Path(cwd) / '_tests'
+    else:
+        return Path(cwd) / 'nbs'/ '_tests'
+
+# %% ../nbs/00_helper.ipynb 89
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -361,7 +377,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 91
+# %% ../nbs/00_helper.ipynb 97
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -412,7 +428,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 92
+# %% ../nbs/00_helper.ipynb 98
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -442,7 +458,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 93
+# %% ../nbs/00_helper.ipynb 99
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -470,7 +486,7 @@ def dict_with_keys_topologically_sorted(
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
 
-# %% ../nbs/00_helper.ipynb 96
+# %% ../nbs/00_helper.ipynb 102
 ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
 ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
 def alphabet_to_alphabet_group(character) -> str:

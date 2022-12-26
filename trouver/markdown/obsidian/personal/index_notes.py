@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['subsections_listed_in_index_note', 'subsection_folders', 'get_alphanumeric', 'correspond_headings_with_folder',
-           'information_notes_linked_in_index_note', 'move_information_notes_to_correct_folder']
+           'information_notes_linked_in_index_note', 'move_information_notes_to_correct_folder',
+           'move_information_notes_to_correct_folder_for_all_indices']
 
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 3
 import glob
@@ -192,3 +193,24 @@ def _move_notes_under_heading(
             continue
         note.move_to_folder(Path(parent_folder) / destination_folder)
 
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 30
+def move_information_notes_to_correct_folder_for_all_indices(
+        index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
+        vault: PathLike,
+        hints: list[PathLike] = None # Hints on where the information notes are likely to be found at.  Each path is relative to `vault` and points to a directory. Defaults to `None`.
+        ) -> None:
+    """
+    Moves the information notes for all index notes belonging to the reference as
+    specified by `index_of_index_notes`.
+    """
+    index_of_index_file = MarkdownFile.from_vault_note(index_of_index_notes)
+    text = str(index_of_index_file)
+    index_files = find_links_in_markdown_text(text)
+    index_files = [ObsidianLink.from_text(text[start:end])
+                   for start, end in index_files]
+    for link in index_files:
+        index_note_name = link.file_name
+        index_note = VaultNote(vault, name=index_note_name)
+        move_information_notes_to_correct_folder(
+            index_note, vault, hints=hints+[index_note.rel_path])
