@@ -33,3 +33,7 @@ Fill me in please! Don’t forget code examples:
 ```
 
     2
+
+## How the examples are structured
+
+TODO: add how the `nbs` folder has a `_tests` folder.
