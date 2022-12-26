@@ -43,7 +43,7 @@ def subsections_listed_in_index_note(
     mf_file = MarkdownFile.from_vault_note(index_note)
     return mf_file.get_headings_tree()
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 11
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 9
 def subsection_folders(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike,
@@ -68,7 +68,7 @@ def subsection_folders(
     elif output_type == 'name':
         return [Path(dir).name for dir in glob_result]
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 16
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 12
 def get_alphanumeric(
         title: str, # The title of either a folder or a heading. Must start with an alphanumeric.
         title_type: str # Either `folder` or `heading`.
@@ -89,7 +89,7 @@ def get_alphanumeric(
     
 
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 18
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 14
 def correspond_headings_with_folder(
         index_note: VaultNote, vault: PathLike,
         include_non_heading: bool = True) -> dict[str, str]:
@@ -131,7 +131,7 @@ def correspond_headings_with_folder(
     return correspond_dict
     
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 22
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 18
 def information_notes_linked_in_index_note(
         index_note: VaultNote, # The note indexing the information notes.
         vault: PathLike,
