@@ -1,0 +1,1 @@
+The **exponential function** is the function sending a complex number $z$ to **$$e^{z} = \sum_{n=0}^\infty \frac{z^n}{n!}$$**. It converges for all $z \in \mathbb{C}$.
