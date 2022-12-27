@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "folder_2/reference_3/1_chapter_reference_3/_index_1_chapter_reference_3.md",
+                "file": "folder_1/reference_2/2_chapter_reference_2/1_section_2_chapter_reference_2/a_note_belonging_in_3_section_1_chapter_reference_1.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "folder_2/reference_3/1_chapter_reference_3/_index_1_chapter_reference_3.md",
+                "file": "folder_1/reference_2/2_chapter_reference_2/1_section_2_chapter_reference_2/a_note_belonging_in_3_section_1_chapter_reference_1.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "folder_2/reference_3/1_chapter_reference_3/_index_1_chapter_reference_3.md",
+                "file": "folder_1/reference_2/2_chapter_reference_2/1_section_2_chapter_reference_2/a_note_belonging_in_3_section_1_chapter_reference_1.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "folder_2/reference_3/1_chapter_reference_3/_index_1_chapter_reference_3.md"
+                "file": "folder_1/reference_2/2_chapter_reference_2/1_section_2_chapter_reference_2/a_note_belonging_in_3_section_1_chapter_reference_1.md"
               }
             }
           }
@@ -147,15 +147,15 @@
   },
   "active": "b4ac68f817eeb9ab",
   "lastOpenFiles": [
+    "folder_1/reference_1/1_chapter_reference_1/_index_1_chapter_reference_1.md",
+    "folder_2/reference_3/1_chapter_reference_3/_index_1_chapter_reference_3.md",
     "folder_2/reference_3/_index_reference_3.md",
     "folder_2/_index_folder_2.md",
     "folder_1/reference_1/2_chapter_reference_1/_index_2_chapter_reference_1.md",
     "folder_1/reference_1/1_chapter_reference_1/4_section_1_chapter_reference_1/a_note_belonging_in_1_section_2_chapter_reference_1.md",
     "folder_1/reference_1/1_chapter_reference_1/3_section_1_chapter_reference_1/note_42.md",
-    "folder_1/reference_1/1_chapter_reference_1/_index_1_chapter_reference_1.md",
     "folder_1/reference_1/1_chapter_reference_1/4_section_1_chapter_reference_1/a_note_belonging_in_1_section_1_chapter_reference_2.md",
     "folder_1/reference_1/_index_reference_1.md",
-    "folder_1/reference_2/1_chapter_reference_2/_index_1_chapter_reference_2.md",
-    "folder_1/reference_2/2_chapter_reference_2/_index_2_chapter_reference_2.md"
+    "folder_1/reference_2/1_chapter_reference_2/_index_1_chapter_reference_2.md"
   ]
 }
