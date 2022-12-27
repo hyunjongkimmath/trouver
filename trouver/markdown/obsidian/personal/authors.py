@@ -11,7 +11,8 @@ from typing import Union
 
 # %% ../../../../nbs/11_markdown.obisidian.personal.authors.ipynb 4
 def just_last_name(author_name) -> bool:
-    """Return `True` if the author's name is formatted to only have 
+    """Return `True` if the author's name is formatted to only
+    have the last name.
     """
     return '_' not in author_name
 

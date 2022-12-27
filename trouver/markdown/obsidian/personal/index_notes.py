@@ -194,7 +194,7 @@ def _move_notes_under_heading(
         note.move_to_folder(Path(parent_folder) / destination_folder)
 
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 30
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 21
 def move_information_notes_to_correct_folder_for_all_indices(
         index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
         vault: PathLike,
