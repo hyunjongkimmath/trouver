@@ -10,7 +10,7 @@
 # 3. Section
 - [[note_31]]
 - [[note_32]]
-- [[a_note_belonging_in_reference_1_chapter_1]]
+- [[a_note_belonging_in_3_section_1_chapter_reference_1]]
 
 # 4. Section
 - [[note_41]]

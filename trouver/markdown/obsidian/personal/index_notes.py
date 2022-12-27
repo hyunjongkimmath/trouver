@@ -198,7 +198,7 @@ def _move_notes_under_heading(
 def move_information_notes_to_correct_folder_for_all_indices(
         index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
         vault: PathLike,
-        hints: list[PathLike] = None # Hints on where the information notes are likely to be found at.  Each path is relative to `vault` and points to a directory. Defaults to `None`.
+        hints: list[PathLike] = [] # Hints on where the information notes are likely to be found at.  Each path is relative to `vault` and points to a directory.
         ) -> None:
     """
     Moves the information notes for all index notes belonging to the reference as
