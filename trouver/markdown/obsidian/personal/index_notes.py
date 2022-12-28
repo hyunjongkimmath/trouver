@@ -217,7 +217,7 @@ def move_information_notes_to_correct_folder_for_all_indices(
         move_information_notes_to_correct_folder(
             index_note, vault, hints=hints+[index_note.rel_path])
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 29
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 30
 def convert_title_to_folder_name(title: str) -> str:
     # TODO: remove left/right
     """
@@ -243,7 +243,7 @@ def convert_title_to_folder_name(title: str) -> str:
         title = title.replace(character, '_')
     return title
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 31
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 32
 def convert_heading_to_folder_name(
         heading: str # Matches regex `\# (\w+?)\. (.*?)`
         ) -> str:
@@ -266,7 +266,7 @@ def convert_heading_to_folder_name(
         #print(heading)
     return f'{alphanumeric}_{convert_title_to_folder_name(title)}'    
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 33
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 34
 def make_folders_from_index_note_headers(
         index_note: VaultNote
         ) -> None:
@@ -288,7 +288,7 @@ def make_folders_from_index_note_headers(
         except OSError as error:
             pass
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 36
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 37
 # TODO: do an example of the `include_embedded_notes` paramtere.
 def get_notes_from_index_note(
         vault: PathLike, # The path to the Obsidian vault directory
@@ -316,7 +316,7 @@ def get_notes_from_index_note(
                        for index_note in index_notes]
     return index_notes
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 42
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 43
 def add_link_in_index_note_after_note_link(
         index_note: VaultNote,
         note_to_add_link_after: VaultNote,
