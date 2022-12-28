@@ -3,7 +3,9 @@
 # %% auto 0
 __all__ = ['subsections_listed_in_index_note', 'subsection_folders', 'get_alphanumeric', 'correspond_headings_with_folder',
            'information_notes_linked_in_index_note', 'move_information_notes_to_correct_folder',
-           'move_information_notes_to_correct_folder_for_all_indices']
+           'move_information_notes_to_correct_folder_for_all_indices', 'convert_title_to_folder_name',
+           'convert_heading_to_folder_name', 'make_folders_from_index_note_headers', 'get_notes_from_index_note',
+           'add_link_in_index_note_after_note_link']
 
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 3
 import glob
@@ -26,7 +28,7 @@ from trouver.markdown.obsidian.vault import (
     VaultNote, note_name_unique, note_path_by_name
 )
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 7
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 6
 def subsections_listed_in_index_note(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike
@@ -44,7 +46,7 @@ def subsections_listed_in_index_note(
     mf_file = MarkdownFile.from_vault_note(index_note)
     return mf_file.get_headings_tree()
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 9
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 8
 def subsection_folders(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike,
@@ -69,7 +71,7 @@ def subsection_folders(
     elif output_type == 'name':
         return [Path(dir).name for dir in glob_result]
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 12
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 11
 def get_alphanumeric(
         title: str, # The title of either a folder or a heading. Must start with an alphanumeric.
         title_type: str # Either `folder` or `heading`.
@@ -90,7 +92,7 @@ def get_alphanumeric(
     
 
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 14
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 13
 def correspond_headings_with_folder(
         index_note: VaultNote,
         vault: PathLike,
@@ -127,7 +129,7 @@ def correspond_headings_with_folder(
     return correspond_dict
     
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 18
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 17
 def information_notes_linked_in_index_note(
         index_note: VaultNote, # The note indexing the information notes.
         vault: PathLike,
@@ -164,7 +166,7 @@ def information_notes_linked_in_index_note(
     return notes_by_headings
     
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 20
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 19
 def move_information_notes_to_correct_folder(
         index_note: VaultNote,
         vault: PathLike,
@@ -194,7 +196,7 @@ def _move_notes_under_heading(
         note.move_to_folder(Path(parent_folder) / destination_folder)
 
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 21
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 20
 def move_information_notes_to_correct_folder_for_all_indices(
         index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
         vault: PathLike,
@@ -214,3 +216,124 @@ def move_information_notes_to_correct_folder_for_all_indices(
         index_note = VaultNote(vault, name=index_note_name)
         move_information_notes_to_correct_folder(
             index_note, vault, hints=hints+[index_note.rel_path])
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 29
+def convert_title_to_folder_name(title: str) -> str:
+    # TODO: remove left/right
+    """
+    Returns a folder name for the given string, e.g. replaces spaces
+    with underscore.
+    
+    **Parameters**
+    - `title` - str
+    
+    **Returns**
+    - str
+    """
+    characters_to_remove = [
+        '.', '\'', '$', '(', ')', '{', '}', ':', '?', '!', ',', '#', '%', '&',
+        '\\', '<', '>', '*', '?', '/', '"', '@', '+', '`', '|', '=', '[', ']',
+        'mathscr', 'mathbf', 'mathrm', ]
+    characters_to_turn_to_underscore = [' ', '-', '^']
+    title = title.strip()
+    title = title.lower()
+    for character in characters_to_remove:
+        title = title.replace(character, '')
+    for character in characters_to_turn_to_underscore:
+        title = title.replace(character, '_')
+    return title
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 31
+def convert_heading_to_folder_name(
+        heading: str # Matches regex `\# (\w+?)\. (.*?)`
+        ) -> str:
+    """Converts a heading to a valid name for a folder.
+    
+    TODO Might not work correctly.
+
+    **Parameters**
+    - heading: str
+        
+    """
+    regex_match = re.match('\# (\w+?)\. (.*)', heading)
+    try:
+        alphanumeric = regex_match.group(1)
+        title = regex_match.group(2)
+    except AttributeError:
+        raise ValueError(
+            f"`convert_heading_to_folder_name` unsuccessfully attempted"
+            f" to match the following: {heading}")
+        #print(heading)
+    return f'{alphanumeric}_{convert_title_to_folder_name(title)}'    
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 33
+def make_folders_from_index_note_headers(
+        index_note: VaultNote
+        ) -> None:
+    """
+    Make folders in the same directory as index note whose names
+    are the titles of the headers of the index note.
+
+    The headers of the index note must match the regex pattern `\# (\w+?)\. (.*?)`.
+    """
+    mfile = MarkdownFile.from_vault_note(index_note)
+    headings = mfile.get_headings_by_line_number(levels=1)
+    pattern = re.compile('\# (\w+?)\. (.*?)')
+    folder_names = [convert_heading_to_folder_name(heading)
+                    for _, heading in headings.items() if heading]
+    directory = Path(os.path.dirname(index_note.path()))
+    for folder_name in folder_names:
+        try:
+            os.mkdir(directory / folder_name)
+        except OSError as error:
+            pass
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 36
+# TODO: do an example of the `include_embedded_notes` paramtere.
+def get_notes_from_index_note(
+        vault: PathLike, # The path to the Obsidian vault directory
+        index_note: VaultNote, # The VaultNote object for the index note.
+        as_vault_notes: bool = True, # If `True`, returns the ``VaultNote`` objects for the index notes. Otherwise, returns the names of these notes 
+        include_embedded_notes: bool = False # If `True`, include in the list the embedded notes. Defaults to `False`.
+        ) -> list[Union[str, VaultNote]]: # Either of the names of the index notes in the vault or of the index notes as VaultNote objects, depending on `as_vault_notes`.
+    """Returns the list of notes listed in the index note in the order that
+    they are listed in.
+    
+    Asssumes that the index note is "formatted correctly".
+    
+    **See Also**
+    - ``get_index_notes_from_index_note`` in 
+    ``markdown.obsidian.personal.reference``.
+    """
+    vault = Path(vault)
+    text = index_note.text()
+    links = links_from_text(text)
+    if not include_embedded_notes:
+        links = [link for link in links if not link.is_embedded]
+    index_notes = [link.file_name for link in links]
+    if as_vault_notes:
+        index_notes = [VaultNote(vault, name=index_note)
+                       for index_note in index_notes]
+    return index_notes
+
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 42
+def add_link_in_index_note_after_note_link(
+        index_note: VaultNote,
+        note_to_add_link_after: VaultNote,
+        link_to_add: ObsidianLink) -> None:
+    """
+    Adds a link in the index note.
+
+    The link is added after the first link to `note_to_add_link_after`. 
+    If no link to `note_to_add_link_after` is found, then a link is added
+    at the end.
+    """
+    link_to_find = ObsidianLink(False, note_to_add_link_after.name, -1, -1)
+    pattern = link_to_find.to_regex()
+    mf = MarkdownFile.from_vault_note(index_note)
+    for i, part in enumerate(mf.parts):
+        if re.search(pattern, part['line']):
+            break
+    mf.insert_line(i + 1, {'type': MarkdownLineEnum.UNORDERED_LIST,
+                           'line': f'- {link_to_add.to_string()}'})
+    mf.write(index_note)
