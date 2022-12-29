@@ -37,3 +37,7 @@ Fill me in please! Don’t forget code examples:
 ## How the examples are structured
 
 TODO: add how the `nbs` folder has a `_tests` folder.
+
+## For developers
+### Troubleshooting
+- In the `nbs/_tests` folder, make sure that the folders that you want to test are not empty; since git does not track empty folders, empty folders will not be pushed in GitHub and the tests in GitHub Actions may yield different results than in a local computer.
