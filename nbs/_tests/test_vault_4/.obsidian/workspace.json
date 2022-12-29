@@ -59,12 +59,40 @@
             "id": "77260e7843310d07",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c55fee0d9a30d3bb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_common_terms/_index_common_terms.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "6520375467b29130",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 6
       }
     ],
     "direction": "vertical"
@@ -130,6 +158,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -146,6 +175,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -167,7 +197,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md"
+              }
             }
           }
         ]
@@ -187,14 +219,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "77260e7843310d07",
+  "active": "6520375467b29130",
   "lastOpenFiles": [
-    "number_theory/number_theory_reference_1/Untitled.md",
-    "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
-    "_templates/_template_glossary.md",
-    "number_theory/number_theory_reference_1/_TODO_number_theory_reference_1.md",
-    "number_theory/number_theory_reference_1/_template_number_theory_reference_1_2.md",
+    "_references/_reference_number_theory_reference_1.md",
     "_templates/_template_number_theory_reference_1.md",
-    "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md"
+    "_common_terms/_common_terms_ring.md",
+    "_common_terms/_index_common_terms.md",
+    "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_notation_Z_nZ_ring_of_integers_modulo_n.md",
+    "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
+    "number_theory/number_theory_reference_1/_index_number_theory_reference_1.md",
+    "_templates/_template_notation_index.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md"
   ]
 }
