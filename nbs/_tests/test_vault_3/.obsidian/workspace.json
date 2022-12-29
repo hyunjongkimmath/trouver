@@ -20,6 +20,18 @@
             }
           },
           {
+            "id": "6a677591e6a9237f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "i_am_an_independent_note_who_does_not_need_a_folder_and_that_is_okay_too.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
             "id": "30998ab420186d3b",
             "type": "leaf",
             "state": {
@@ -43,7 +55,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -72,7 +85,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:this_is_a_tag",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -89,7 +102,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -109,7 +123,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
+                "file": "i_am_an_independent_note_who_does_not_need_a_folder_and_that_is_okay_too.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +140,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
+                "file": "i_am_an_independent_note_who_does_not_need_a_folder_and_that_is_okay_too.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -149,7 +163,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md"
+                "file": "i_am_an_independent_note_who_does_not_need_a_folder_and_that_is_okay_too.md"
               }
             }
           }
@@ -170,12 +184,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "d4a6d0985c480674",
+  "active": "6a677591e6a9237f",
   "lastOpenFiles": [
+    "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
     "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
     "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note names are just file names.md",
     "reference_1/1_chapter_reference_1/4_section_1_chapter_reference_1/note_112.md",
-    "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
     "reference_1/3_chapter_reference_1/1_this_is_some_title/this_is_a_note.md",
     "reference_1/3_chapter_reference_1/another_note_without_a_section.md",
     "reference_1/2_chapter_reference_1/_index_2_chapter_reference_1.md",
