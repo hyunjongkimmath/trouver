@@ -26,9 +26,9 @@ from trouver.markdown.obsidian.links import (
     ObsidianLink, LinkType, links_from_text
 )
 from .authors import find_author_file
-# from trouver.markdown.obsidian.personal.index_notes import ( 
-#     convert_title_to_folder_name
-# )
+from trouver.markdown.obsidian.personal.index_notes import ( 
+    convert_title_to_folder_name
+)
 # from trouver.markdown.obsidian.personal.notes import (
 #     notes_linked_in_note
 # )

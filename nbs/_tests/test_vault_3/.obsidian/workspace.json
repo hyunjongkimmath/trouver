@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
+                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
                 "mode": "source",
                 "source": false
               }
@@ -109,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
+                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
+                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -149,7 +149,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md"
+                "file": "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md"
               }
             }
           }
@@ -172,9 +172,9 @@
   },
   "active": "d4a6d0985c480674",
   "lastOpenFiles": [
+    "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
     "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note names are just file names.md",
     "reference_1/1_chapter_reference_1/4_section_1_chapter_reference_1/note_112.md",
-    "reference_1/3_chapter_reference_1/_index_3_chapter_reference_1.md",
     "reference_1/3_chapter_reference_1/2_dun_dun_duuuuun/note_titles don't really need much structure.md",
     "reference_1/3_chapter_reference_1/1_this_is_some_title/this_is_a_note.md",
     "reference_1/3_chapter_reference_1/another_note_without_a_section.md",
