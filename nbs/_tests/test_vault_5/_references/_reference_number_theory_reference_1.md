@@ -1,0 +1,2 @@
+- [[kim_hyun_jong|Hyun Jong Kim]], *Number theory reference 1*, some identifying information, 2022.
+    - Some miscellaneous information, such as links if available online

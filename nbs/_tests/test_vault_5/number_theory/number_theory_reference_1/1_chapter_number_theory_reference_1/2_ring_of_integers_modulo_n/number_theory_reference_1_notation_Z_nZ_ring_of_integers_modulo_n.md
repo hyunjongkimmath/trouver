@@ -1,0 +1,3 @@
+$\mathbb{Z}/n\mathbb{Z}$ [[number_theory_reference_1_Definition 1.7|denotes]] the ring of integers modulo $n$. 
+
+It is defined as the ring whose underlying set is...
