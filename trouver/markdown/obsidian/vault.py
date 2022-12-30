@@ -413,6 +413,15 @@ class VaultNote:
         Path(self.path()).touch(exist_ok=False)
         self.__class__._add_single_entry_to_cache(
             self.vault, self.rel_path)
+
+    def delete(self):
+        """Delete the note if it exists.
+        
+        This updates the cache if necessary
+        """
+        if self.exists(update_cache=True):
+            os.remove(self.path())
+            self.__class__._remove_single_entry_from_cache(self.vault, self.rel_path)
         
     def move_to(self,
                 rel_path: PathLike # The path in which to rename the path to `self` as, relative to `self.vault`.
