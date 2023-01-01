@@ -1,1 +1,2 @@
+- [[_index_algebra]]
 - [[_index_number_theory]]
