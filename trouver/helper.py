@@ -285,7 +285,7 @@ def _unicodedecodeerror_to_non_utf8_chars_and_Positions(
     
 
 
-# %% ../nbs/00_helper.ipynb 67
+# %% ../nbs/00_helper.ipynb 66
 ACCENT_REGEX = {
     r'\`': u'\u0300', # Grave acccent
     r'\'': u'\u0301', # Accute accent
@@ -324,7 +324,7 @@ def replace_latex_accented_characters(
 
 
 
-# %% ../nbs/00_helper.ipynb 71
+# %% ../nbs/00_helper.ipynb 69
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -406,7 +406,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../nbs/00_helper.ipynb 84
+# %% ../nbs/00_helper.ipynb 82
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -418,7 +418,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../nbs/00_helper.ipynb 91
+# %% ../nbs/00_helper.ipynb 89
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -428,7 +428,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../nbs/00_helper.ipynb 95
+# %% ../nbs/00_helper.ipynb 93
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -442,7 +442,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../nbs/00_helper.ipynb 98
+# %% ../nbs/00_helper.ipynb 96
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -452,7 +452,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../nbs/00_helper.ipynb 102
+# %% ../nbs/00_helper.ipynb 100
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -466,7 +466,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 110
+# %% ../nbs/00_helper.ipynb 108
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -517,7 +517,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 111
+# %% ../nbs/00_helper.ipynb 109
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -547,7 +547,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 112
+# %% ../nbs/00_helper.ipynb 110
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -575,7 +575,7 @@ def dict_with_keys_topologically_sorted(
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
 
-# %% ../nbs/00_helper.ipynb 115
+# %% ../nbs/00_helper.ipynb 113
 ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
 ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
 def alphabet_to_alphabet_group(character) -> str:

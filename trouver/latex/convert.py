@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'divide_preamble', 'NoDocumentNodeError', 'find_document_node',
-           'environment_names_used']
+           'environment_names_used', 'divide_latex_text']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
 from collections import OrderedDict
@@ -104,3 +104,203 @@ def environment_names_used(
     document_node = find_document_node(text)
     return {node.environmentname for node in document_node.nodelist
             if node.isNodeType(LatexEnvironmentNode)}        
+
+# %% ../../nbs/16_latex.convert.ipynb 42
+# TODO: numbering convention could be theorems separate (e.g. theorem 1, 2, ...)
+# and subsections separate.
+def divide_latex_text(
+        text, # The text of a latex document.
+        numbered_environments: list[str] = DEFAULT_NUMBERED_ENVIRONMENTS, # A list of the names of environments which are numbered in the latex code.
+        numbering_convention: str = 'separate',
+        section_name: str = 'section',
+        subsection_name: str = 'subsection',
+        proof_name: str = 'proof') -> list:
+    """Divides latex text to convert into Obsidian notes.
+    
+    **Parameters**
+    - text - str
+    - numbered_environments = list
+    - numbering_convention - str
+        - One of
+            
+            - 'separate' - Subsections of a section have separate numberings, 
+            e.g. 'Lemma 1.2.1, Proposition 1.2.2, Figure 1.2.3, Theorem 1.3.1'
+            - 'shared' - Subsections of a section share numberings, e.g.
+            'Lemma 1.1, Proposition 1.2, Figure 1.3, Theorem 1.4'
+            
+    - section_name - str
+        - The macronames for "sections". Defaults to `'section'`.
+        For example, SGA has chapters and sections. For the purposes of this function,
+        it is appropriate to regard them as sections and subsections, respectively.
+    - subsection_name - str
+        - Defaults to `'subsection'`.
+    - proof_name - str
+        - The environment names for proofs. Defaults to `'proof'`.
+        
+    **Returns**
+    - list of list
+        - Each list corresponds to an Obsidian note to be constructed.
+        Such a list is of the form `[<node_type & numbering>, <text>]` where 
+        `node_type & numbering` is a string which serves as a title for the
+        text making up the note, and `text` is the content of the note.
+    """
+    document_node = find_document_node(text)
+    section_num = 0
+    subsection_num = 0
+    environment_num = 0
+    outside_num = 1  # Since not everything is in a nice environment, many 
+                     # notes will need their own numbers.
+    parts = []
+    accumulation = ''
+    for node in document_node.nodelist:
+        if len(parts) > 102 and parts[-1][0] == 'subsection 6.1':
+            print('hi')
+        # if '\\begin{proof}' in node.latex_verbatim():
+        #     print(node.environmentname)
+        #    print(node.latex_verbatim())
+        #if 'Gal' in accumulation:
+        #    print(accumulation)
+        (section_num, subsection_num, environment_num, outside_num,
+         accumulation)\
+            = _process_node(
+                section_num, subsection_num, environment_num, outside_num,
+                accumulation, parts, node, section_name, subsection_name,
+                proof_name, numbered_environments, numbering_convention)
+        # if len(parts) > 20:    
+            
+    outside_num += 1
+    parts.append([str(outside_num), accumulation])
+    return parts
+            
+def _process_node(
+        section_num: int, subsection_num: int, environment_num: int,
+        outside_num: int, accumulation: str, parts: list, node: LatexNode,
+        section_name: str, subsection_name: str, proof_name: str,
+        numbered_environments: list[str], numbering_convention: str) -> tuple:
+    """
+    Choose the node-processing method, if the node is a section/subsection or environment
+    and
+
+    """
+    if node.latex_verbatim().startswith('\\begin{proof}\nLet $\\mathscr{H} := \\math'):
+        print('hi')
+    process_method_to_run = None
+    if node.isNodeType(LatexMacroNode) and node.macroname == section_name:
+        process_method_to_run = _process_section
+    elif node.isNodeType(LatexMacroNode) and node.macroname == subsection_name:
+        process_method_to_run = _process_subsection
+    elif (node.isNodeType(LatexEnvironmentNode)
+          and node.environmentname in numbered_environments):
+        process_method_to_run = _process_environment_node
+    if process_method_to_run:
+        (section_num, subsection_num, environment_num, outside_num,
+        accumulation)\
+            = process_method_to_run(
+            section_num, subsection_num, environment_num, outside_num,
+            accumulation, parts, node, section_name, subsection_name,
+            numbering_convention)
+    elif (node.isNodeType(LatexEnvironmentNode)
+          and node.environmentname == proof_name):
+          # TODO: if the environment is a proof, and if it starts a section/subsection,
+          # Then the proof is appended into the title of the section/subsection, see
+          # landesman_litt_ipwc, around line 1858-1863 for example.
+        parts[-1][1] += f'\n{node.latex_verbatim()}'
+    else:
+        accumulation += node.latex_verbatim()
+    return (section_num, subsection_num, environment_num, outside_num,
+            accumulation)
+
+
+def _process_section(
+        section_num: int, subsection_num: int, environment_num: int,
+        outside_num: int, accumulation: str, parts: list[list],
+        node: LatexMacroNode, section_name: str, subsection_name: str,
+        numbering_convention: str) -> tuple:
+    """Do stuff when the node is a section node. Return updated
+    section_num, subsection_num, environment_num
+    """
+    numbered, title  = _section_title(
+        node.latex_verbatim(), section_name, subsection_name)
+    section_num += 1 if numbered else 0
+    subsection_num = 0
+    environment_num = 0
+    if accumulation.strip() != '':
+        parts.append([str(outside_num), accumulation])
+        outside_num += 1
+        accumulation = ''
+    parts.append([f'{section_name} {section_num}', title])
+    return (section_num, subsection_num, environment_num, outside_num,
+            accumulation)
+    
+
+def _process_subsection(
+        section_num: int, subsection_num: int, environment_num: int,
+        outside_num: int, accumulation: str, parts: list[list],
+        node: LatexMacroNode, section_name: str, subsection_name: str,
+        numbering_convention: str) -> tuple:
+    """Do stuff when the node is a subsection node.
+    """
+    numbered, title  = _section_title(
+        node.latex_verbatim(), section_name, subsection_name)
+    subsection_num += 1 if numbered else 0
+    if numbering_convention == 'separate':
+        environment_num = 0
+    if accumulation.strip() != '':
+        parts.append([str(outside_num), accumulation])
+        outside_num += 1
+        accumulation = ''
+    parts.append([f'{subsection_name} {section_num}.{subsection_num}', title])
+    return (section_num, subsection_num, environment_num, outside_num,
+            accumulation)
+
+
+def _process_environment_node(
+        section_num: int, subsection_num: int, environment_num: int,
+        outside_num: int, accumulation: str, parts: list[list],
+        node: LatexMacroNode, section_name: str, subsection_name: str,
+        numbering_convention: str) -> tuple:
+    """
+    """
+    environment_num += 1
+    if accumulation.strip() != '':
+        parts.append([str(outside_num), accumulation])
+        outside_num += 1
+        accumulation = ''
+    if numbering_convention == 'separate':
+        pointed_numbering = f'{section_num}.{subsection_num}.{environment_num}'
+        numbering = f'{node.environmentname} {pointed_numbering}'
+    elif numbering_convention == 'shared':
+        numbering = f'{node.environmentname} {section_num}.{environment_num}'
+    parts.append([numbering, node.latex_verbatim()])
+    return (section_num, subsection_num, environment_num, outside_num,
+            accumulation)
+
+
+def _section_title(text: str, section_name, subsection_name) -> str:
+    """Returns the title of a section or subsection from a latex str
+    and whether or not the section/subsection is numbered.
+    
+    **Parameters**
+    - text - str
+    - section_name - str
+    - subsection_name - str
+    
+    **Returns**
+    - str, bool
+    """
+    # TODO: test things like `\\section {Generating series of special divisors}`
+    # See qiu_amsd for example.
+    # TODO: deal with the possibility of multi-line sections/subsections,
+    # e.g. \subsection{Arithmetic intersrection\n pairing},
+    # see qiu_amsd for example
+    regex_search = re.search(r'\\' + fr'(?:{section_name}|{subsection_name}) *?'
+                             + r'(?:\[.*\])?(\*)?\{(.*)\}', text)
+    # regex_search = re.search(r'\\' + fr'(?:{section_name}|{subsection_name})'
+    #                          + r'(?:\[.*\])?(\*)?\{(.*)\}', text)
+    # print(text)
+    # print(section_name, subsection_name)
+    if regex_search is None:
+        print(text, section_name, subsection_name)
+    return not bool(regex_search.group(1)), regex_search.group(2)
+
+
