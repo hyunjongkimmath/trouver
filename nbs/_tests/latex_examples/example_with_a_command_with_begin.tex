@@ -1,0 +1,65 @@
+% This is a comment in a LaTeX preamble
+\documentclass[12pt]{amsart}
+\usepackage{mathpazo}
+\usepackage{hyperref}
+\usepackage{cleveref}
+%\usepackage{showkeys}
+\usepackage{bm}
+%\usepackage{comment}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amssymb,amsmath,latexsym,amsthm}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\cO}{\mathcal{O}}
+\DeclareMathOperator{\Hom}{Hom}
+
+\newcommand{\field}[1]{\mathbb{#1}}
+
+\newcommand{\hmg}[1]{\Gamma(\dif^{-1} \oplus \ic{#1}^{-1})}
+\newcommand{\hmgc}[2]{\Gamma_{00}(\dif^{-1} \oplus \ic{#1}^{-1};{#2})}
+
+\newcommand{\mat}[4]{\left[\begin{array}{cc}#1 & #2 \\
+                                         #3 & #4\end{array}\right]}
+\newcommand{\GalK}{\Gal(\bar{K}/K)}
+\newcommand{\beq}{\begin{displaymath}} % This command might confuse the pylatexenc module.
+\newcommand{\eeq}{\end{displaymath}}
+
+\DeclareMathOperator{\Mor}{Mor}
+
+\numberwithin{equation}{section}
+\newtheorem{theorem}[equation]{Theorem}
+\newtheorem{remark}[equation]{Remark}
+\newtheorem{lemma}[equation]{Lemma}
+\newtheorem{project}[equation]{Project}
+\newtheorem{question}[equation]{Question}
+\newtheorem{conjecture}[equation]{Conjecture}
+\newtheorem{corollary}[equation]{Corollary}
+\newtheorem{proposition}[equation]{Proposition}
+
+\newcommand{\hyunjong}[1]{{\color{Purple} \sf Hyun Jong: [#1]}}
+
+\title{I am a LaTeX article title}
+\author{Hyun Jong Kim}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+I am an abstract
+\end{abstract}
+\section{Introduction}
+I introduce the article!
+
+\section{Notations and conventions}
+\begin{definition}
+\end{definition}
+
+\section{Getting to the exciting parts}
+\subsection{I am a subsection}
+\begin{theorem}
+\end{theorem}
+
+\bibliographystyle{amsplain}
+\bibliography{somebib}
+
+\end{document}
