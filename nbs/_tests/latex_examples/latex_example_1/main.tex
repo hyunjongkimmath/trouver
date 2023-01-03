@@ -1,0 +1,309 @@
+\documentclass[oneside,english]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+\usepackage{color}
+\usepackage{babel}
+\usepackage{verbatim}
+\usepackage{mathrsfs}
+\usepackage{enumitem}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]
+ {hyperref}
+
+\makeatletter
+\newcommand{\p}{\mathbf{P}}
+\newcommand{\gl}{\mathfrak{gl}}
+\newcommand{\HH}{\mathbf{H}}
+\newcommand{\ac}{\mathrm{acosh }}
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\ol}{\overline}
+\newcommand{\ul}{\underline}
+\newcommand{\ZZ}{{\mathbb Z}}
+\newcommand{\NN}{{\mathbb N}}
+\newcommand{\QQ}{{\mathbb Q}}
+\newcommand{\RR}{{\mathbb R}}
+\newcommand{\CC}{{\mathbb C}}
+\newcommand{\EE}{{\mathbb E}}
+\renewcommand{\AA}{{\mathbb A}}
+\renewcommand{\SS}{{\mathbb S}}
+\newcommand{\calO}{{\mathcal O}}
+\newcommand{\calE}{{\mathcal E}}
+\newcommand{\calL}{{\mathcal L}}
+\newcommand{\mcW}{\mathcal{W}}
+\newcommand{\mcH}{\mathcal{H}}
+\newcommand{\mcX}{\mathcal{X}}
+\newcommand{\calM}{{\mathcal M}}
+\newcommand{\calN}{{\mathcal N}}
+\newcommand{\calF}{{\mathcal F}}
+\newcommand{\calG}{{\mathcal G}}
+\newcommand{\calI}{{\mathcal I}}
+\newcommand{\calJ}{{\mathcal J}}
+\newcommand{\calD}{{\mathcal D}}
+\newcommand{\calP}{{\mathcal P}}
+\newcommand{\calH}{{\mathcal H}}
+\newcommand{\calC}{{\mathcal C}}
+\newcommand{\calX}{{\mathcal X}}
+\newcommand{\calY}{{\mathcal Y}}
+\newcommand{\calV}{{\mathcal V}}
+\newcommand{\calB}{{\mathcal B}}
+\newcommand{\calS}{{\mathcal S}}
+\newcommand{\calU}{{\mathcal U}}
+\newcommand{\calK}{{\mathcal K}}
+\newcommand{\calR}{{\mathcal R}}
+\newcommand{\calA}{{\mathcal A}}
+\newcommand{\calT}{{\mathcal T}}
+\newcommand{\rH}{\mathrm{H}}
+
+\newcommand{\scrM}{\mathscr{M}}
+\newcommand{\scrN}{\mathscr N}
+
+
+\newcommand{\Ag}{\mathscr A_g}
+ 
+\newcommand{\Ar}{\mathrm{Ar}}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\NS}{NS}
+\DeclareMathOperator{\Pf}{Pf}
+ 
+\DeclareMathOperator{\Ann}{Ann}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\Fal}{Fal}
+\DeclareMathOperator{\gr}{gr}
+\DeclareMathOperator{\inff}{inf}
+\DeclareMathOperator{\fin}{fin}
+\DeclareMathOperator{\Tor}{Tor}
+\DeclareMathOperator{\CH}{CH}
+\DeclareMathOperator{\Sch}{Sch}
+\DeclareMathOperator{\Set}{Set}
+\DeclareMathOperator{\Gr}{Gr}
+\DeclareMathOperator{\Proj}{Proj}
+\DeclareMathOperator{\Ch}{ch}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\Td}{td}
+\DeclareMathOperator{\td}{td}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\length}{length}
+%\DeclareMathOperator{\char}{char}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\Coh}{Coh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\divv}{div}
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\Div}{Div}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\codim}{codim}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\End}{\textrm{End}}
+\newcommand{\h}{\mathbf{H}}
+\newcommand{\Divv}{\widehat{\Div}}
+\newcommand{\SO}{\textrm{SO}}
+\newcommand{\F}{\mathbf{F}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\Lie}{\textrm{Lie}}
+\newcommand{\Ss}{\mathbf{S}}
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\LE}{\Lambda^\cdot(T^\ast X) \otimes_\R E}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\Q}{\mathbf{Q}}
+\newcommand{\CG}{\mathcal{O}(G)}
+\newcommand{\CX}{\mathcal{O}(X)}
+\newcommand{\cx}{\mathcal{C}(X,\R)}
+%\newcommand{\C}{\mathbf{C}}
+\newcommand{\FF}{\mathbb{F}}
+\newcommand{\Fq}{\mathbb{F}_q}
+\newcommand{\Fp}{\mathbb{F}_p}
+\newcommand{\GG}{\mathcal{G}}
+\newcommand{\II}{\mathcal{I}}
+\newcommand{\f}{\forall}
+\newcommand{\el}{\textbf{E}(\x,t)}
+\newcommand{\bl}{\textbf{B}(\x,t)}
+\newcommand{\cc}{\mathcal{C}^{\infty}}
+\newcommand{\A}{\textbf{A}}
+\newcommand{\mcY}{\mathcal{Y}}
+\newcommand{\J}{\textbf{J}}
+\newcommand{\E}{\textbf{E}}
+\newcommand{\B}{\textbf{B}}
+\newcommand{\pa}{\displaystyle \partial}
+\newcommand{\e}{\exists}
+\newcommand{\lh}{\langle}
+\newcommand{\rh}{\rangle}
+\newcommand{\la}{\leftarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\fmunu}{F_{\mu\nu}}
+\newcommand{\GL}{\textrm{GL}}
+\newcommand{\Der}{\textrm{Der}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\Qbar}{\overline{\mathbf{Q}}}
+%\newcommand{\cc}{\mathcal{C}}
+\newcommand{\ti}{\widetilde}
+\newcommand{\bs}{\backslash}
+\newcommand{\fraka}{\textfrak{a}}
+\newcommand{\frakb}{\textfrak{b}}
+\newcommand{\frakc}{\textfrak{c}}
+\newcommand{\frakm}{\textfrak{m}}
+\newcommand{\mb}{\mathbf}
+\newcommand{\dom}{\textrm{dom}}
+\newcommand{\Ob}{\textrm{Ob}}
+\newcommand{\Aut}{\textrm{Aut}}
+\newcommand{\Hom}{\textrm{Hom}}
+%\newcommand{\hom}{\textrm{hom}}
+\newcommand{\cod}{\textrm{cod}}
+\newcommand{\im}{\mathrm{im}}
+\newcommand{\kar}{\mathrm{kar}}
+\newcommand{\ord}[2]{\mathrm{ord_{#1}(#2)}}
+\newcommand{\mcP}{\mathcal{P}}
+\newcommand{\isomto}{\overset{\sim}{\longrightarrow}}
+\newcommand{\uhr}{\upharpoonright}
+\newcommand{\ran}{\mathrm{ran}}
+\newcommand{\cinf}{\mathcal{C}^{\infty}(X,\R)}
+\newcommand{\cd}{\C[x,y]_{d}}
+\newcommand{\ce}{\C[x,y]_{e}}
+\newcommand{\kd}{k[x,y]_{d}}
+\newcommand{\g}{\mathfrak{g}}
+\newcommand{\sett}[2]{\{\ #1\ |\ #2\ \}}
+\newcommand{\isomlto}{\;\tilde{\longrightarrow}\;}
+\newcommand{\cl}{\textrm{cl}}
+\newcommand{\Pic}{\textrm{Pic}}
+\newcommand{\PIC}{\mathbf{Pic}}
+
+
+
+
+
+
+%l and p-adic commands
+\newcommand{\Zp}{\mathbb{Z}_p}
+\newcommand{\Zl}{\mathbb{Z}_l}
+\newcommand{\Qp}{\mathbb{Q}_p}
+\newcommand{\Qpbar}{\overline{\mathbb Q}_p}
+\newcommand{\Ql}{\mathbb{Q}_l}
+\newcommand{\Qlbar}{\overline{\mathbb{Q}}_l}
+\newcommand{\Qlambar}{\overline{\mathbb Q}_{\lambda}}
+\newcommand{\Qlambarp}{\overline{\mathbb Q}_{\lambda'}}
+\newcommand{\fisoc}[1]{\textbf{F-Isoc}(#1)}
+\newcommand{\fisocd}[1]{\textbf{F-Isoc}^{\dagger}(#1)}
+\newcommand{\weil}[1]{\textbf{Weil}(#1)}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+\theoremstyle{plain}
+\newtheorem{thm}{\protect\theoremname}[section]
+\theoremstyle{empty}
+\newtheorem{namedtheorem}{}
+\theoremstyle{plain}
+\newtheorem{conjecture}[thm]{\protect\conjecturename}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{\protect\remarkname}
+\theoremstyle{plain}
+\newtheorem*{thm*}{\protect\theoremname}
+\theoremstyle{plain}
+\newtheorem*{cor*}{\protect\corollaryname}
+\theoremstyle{remark}
+\newtheorem*{acknowledgement*}{\protect\acknowledgementname}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{\protect\definitionname}
+\theoremstyle{plain}
+\newtheorem{fact}[thm]{\protect\factname}
+\theoremstyle{remark}
+\newtheorem{notation}[thm]{\protect\notationname}
+\theoremstyle{definition}
+\newtheorem{example}[thm]{\protect\examplename}
+\theoremstyle{plain}
+\newtheorem{cor}[thm]{\protect\corollaryname}
+\theoremstyle{remark}
+\newtheorem*{rem*}{\protect\remarkname}
+\theoremstyle{plain}
+\newtheorem{lem}[thm]{\protect\lemmaname}
+\newlist{casenv}{enumerate}{4}
+\setlist[casenv]{leftmargin=*,align=left,widest={iiii}}
+\setlist[casenv,1]{label={{\itshape\ \casename} \arabic*.},ref=\arabic*}
+\setlist[casenv,2]{label={{\itshape\ \casename} \roman*.},ref=\roman*}
+\setlist[casenv,3]{label={{\itshape\ \casename\ \alph*.}},ref=\alph*}
+\setlist[casenv,4]{label={{\itshape\ \casename} \arabic*.},ref=\arabic*}
+
+\theoremstyle{plain}
+\newtheorem{prop}[thm]{\protect\propositionname}
+\theoremstyle{plain}
+\newtheorem{question}[thm]{\protect\questionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage[all]{xy}
+\usepackage{url}
+\theoremstyle{definition}
+\newtheorem{setup}[thm]{Setup}
+\numberwithin{equation}{thm}
+%\numberwithin{equation}{lem}
+
+\makeatother
+
+\providecommand{\acknowledgementname}{Acknowledgement}
+\providecommand{\casename}{Case}
+\providecommand{\conjecturename}{Conjecture}
+\providecommand{\corollaryname}{Corollary}
+\providecommand{\definitionname}{Definition}
+\providecommand{\examplename}{Example}
+\providecommand{\factname}{Fact}
+\providecommand{\lemmaname}{Lemma}
+\providecommand{\notationname}{Notation}
+\providecommand{\propositionname}{Proposition}
+\providecommand{\questionname}{Question}
+\providecommand{\remarkname}{Remark}
+\providecommand{\theoremname}{Theorem}
+
+\newcommand{\rev}[1]{\color{magenta}{#1}\color{black}}
+
+\begin{document}
+
+\title{This is a title}
+
+\author{Ekaf Eman}
+\email{hopefully_not_a_real_email@hopefully_not_a_real_domain_name.edu}  
+\address{Department of Mathematics, University that does not exist, Fictional town, ST 00000, USA}
+\author{Gildong Hong}
+\email{another_fake_email@another_fake_domain_name.edu}
+\address{Department of Mathematics, Fictional Institute of Technology, Imaginationsville, ST 00001, USA}
+\begin{abstract}
+Soome abstract
+\end{abstract}
+
+\maketitle
+
+\tableofcontents{}
+
+
+\section{Introduction}
+
+
+This is an introduction. Introductions often talk about a main theorem.
+
+\begin{thm}
+This theorem environment is done with `thm`.
+\end{thm}
+
+\bibliographystyle{alphaurl}
+\bibliography{extending_abelian}
+
+
+
+
+\end{document}
+ 

@@ -17,5 +17,7 @@ website:
       - 12_markdown.obsidian.personal.index_notes.ipynb
       - 13_markdown.obsidian.personal.notes.ipynb
       - 14_markdown.obsidian.personal.note_type.ipynb
+      - 15_latex.__init__.ipynb
+      - 16_latex.convert.ipynb
       - TODO.ipynb
       - using_regex.ipynb

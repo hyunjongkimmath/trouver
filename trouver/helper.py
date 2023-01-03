@@ -21,16 +21,33 @@ from deprecated import deprecated
 from natsort import natsorted
 
 # %% auto 0
-__all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'find_regex_in_text',
+__all__ = ['ACCENT_REGEX', 'ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'find_regex_in_text',
            'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
-           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
-           'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
+           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number',
+           'non_utf8_chars_in_file', 'replace_latex_accented_characters', 'existing_path', 'file_existence_test',
+           'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
            'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
            'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted',
            'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
            'alphabet_or_latex_command_to_alphabet_group']
 
 # %% ../nbs/00_helper.ipynb 5
+def _test_directory() -> Path:
+    """Returns the `nbs/_tests` directory of the `trouver` repository.
+    
+    Assumes that the current working directory is either the root of the
+    repository or the `nbs` folder and the `nbs/_tests` folder exists in the
+    repository but the root of the repository does not have a folder named
+    `_tests`.
+    """
+    cwd = os.getcwd()
+    cwd_name = os.path.basename(cwd)
+    if cwd_name == 'nbs':
+        return Path(cwd) / '_tests'
+    else:
+        return Path(cwd) / 'nbs'/ '_tests'
+
+# %% ../nbs/00_helper.ipynb 11
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
         pattern: str | Pattern[str] # The regex pattern
@@ -42,7 +59,7 @@ def find_regex_in_text(
     matches = re.finditer(pattern, text)
     return [match.span() for match in matches]
 
-# %% ../nbs/00_helper.ipynb 14
+# %% ../nbs/00_helper.ipynb 20
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -107,7 +124,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../nbs/00_helper.ipynb 21
+# %% ../nbs/00_helper.ipynb 27
 def double_asterisk_indices(
         text: str # the str in which to find the indices of double asterisk surrounded text.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
@@ -125,7 +142,7 @@ def double_asterisk_indices(
 
 
 
-# %% ../nbs/00_helper.ipynb 23
+# %% ../nbs/00_helper.ipynb 29
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -158,7 +175,7 @@ def definition_asterisk_indices(text: str) -> list[tuple[int]]:
     notations = notation_asterisk_indices(text)
     return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
 
-# %% ../nbs/00_helper.ipynb 37
+# %% ../nbs/00_helper.ipynb 43
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
@@ -181,7 +198,7 @@ def defs_and_notats_separations(
     return [(start, end, (start, end) in notations)
             for start, end in all_double_asterisks]
 
-# %% ../nbs/00_helper.ipynb 41
+# %% ../nbs/00_helper.ipynb 47
 def latex_indices(text: str) -> list[tuple[int]]:
     """Returns the indices in the text containing LaTeX str.
     
@@ -203,7 +220,7 @@ def latex_indices(text: str) -> list[tuple[int]]:
     return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
     # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
 
-# %% ../nbs/00_helper.ipynb 49
+# %% ../nbs/00_helper.ipynb 55
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -221,7 +238,93 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../nbs/00_helper.ipynb 53
+# %% ../nbs/00_helper.ipynb 61
+def non_utf8_chars_in_file(
+        file: PathLike
+        ) -> tuple(bytes, list[tuple(str, int)]): # The contents of `file` along with a list of tuples of non-unicode characters and their positions in the contents.
+    """Obtains the contents of `file` as bytes and non-unicode characters and their
+    positions in the contents.
+
+    The positions are so that each non-unicode character ends at the specified position.
+    """
+
+    with open(file, 'rb') as reader:
+        contents = reader.read()
+    return contents, _identify_non_utf8_chars(contents)
+    
+
+def _identify_non_utf8_chars(
+        contents: bytes # Bytes read from a file.
+        ) -> list[tuple(str, int)]: # Each tuple consists of a character and its index in `byte`.
+    """
+    """
+    # Convert the bytes object to a string using the utf-8 encoding
+    # and the 'strict' error handling mode
+    non_utf8_chars = []
+    i = 0
+    while i < len(contents):
+        try:
+            s = contents[i:].decode(encoding='utf-8', errors='strict')
+        except UnicodeDecodeError as error:
+            # If a UnicodeDecodeError is raised, extract the characters
+            # that are not unicode characters and their positions from
+            # the exception object
+            i += error.end
+            non_utf8_chars.extend(
+                _unicodedecodeerror_to_non_utf8_chars_and_Positions(i, error))
+        else:
+            i += len(s)
+
+    return non_utf8_chars
+
+
+def _unicodedecodeerror_to_non_utf8_chars_and_Positions(
+        i: int, error: UnicodeDecodeError) -> list[tuple(str, int)]:
+    return [(chr(c), i + j - 1) for j, c in enumerate(error.object[error.start:error.end])
+            if c > 127]
+    
+
+
+# %% ../nbs/00_helper.ipynb 67
+ACCENT_REGEX = {
+    r'\`': u'\u0300', # Grave acccent
+    r'\'': u'\u0301', # Accute accent
+    r'\\^': u'\u0302', # Circumflex
+    r'\v': u'\u030C',
+    r'\"': u'\u0308', # Umlaut
+    r'\c': u'\u0327', # Cedilla
+    r'\~': u'\u0303', # tilde
+    r'\k': u'\u0328', # Ogonek
+    r'\H': u'\u030B', # Double acute
+    r'\t': u'\u0324', # Tie after
+    r'\b': u'\u0304', # Bar above
+    r'\d': u'\u0307', # Dot above
+    r'\r': u'\u030A', # Ring above
+    r'\u': u'\u0306' # Combining breve
+    } 
+
+
+def replace_latex_accented_characters(
+        text: str, # The LaTeX str
+        replace_using : dict[str, str] = ACCENT_REGEX  # A dict specifying what latex accents are in unicode.
+        ) -> str: # The str in which the latex accents are replaced with unicode combining accents
+    """
+    Replace characters in a latex 
+    **Parameters**
+    - text - str
+        - LaTeX text
+    
+    **Returns**
+    - str
+    """
+    for latex, unicode in replace_using.items():
+        text, _ = re.subn('\\' + latex + r'\{?(\w)\}?', r'\1' + unicode, text)
+    return text
+    
+
+
+
+# %% ../nbs/00_helper.ipynb 71
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -303,7 +406,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../nbs/00_helper.ipynb 66
+# %% ../nbs/00_helper.ipynb 84
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -315,7 +418,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../nbs/00_helper.ipynb 73
+# %% ../nbs/00_helper.ipynb 91
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -325,19 +428,21 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../nbs/00_helper.ipynb 77
+# %% ../nbs/00_helper.ipynb 95
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
         ) -> str: # The entire text from a file
     """Return the entire text from a file.
+
+    Assuems that the file can be encoded in the specified `encoding`
     """
     with open(path, 'r', encoding=encoding) as file:
         text = file.read()
         file.close()
     return text
 
-# %% ../nbs/00_helper.ipynb 79
+# %% ../nbs/00_helper.ipynb 98
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -347,23 +452,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../nbs/00_helper.ipynb 83
-def _test_directory() -> Path:
-    """Returns the `nbs/_tests` directory of the `trouver` repository.
-    
-    Assumes that the current working directory is either the root of the
-    repository or the `nbs` folder and the `nbs/_tests` folder exists in the
-    repository but the root of the repository does not have a folder named
-    `_tests`.
-    """
-    cwd = os.getcwd()
-    cwd_name = path_name_no_ext(cwd)
-    if cwd_name == 'nbs':
-        return Path(cwd) / '_tests'
-    else:
-        return Path(cwd) / 'nbs'/ '_tests'
-
-# %% ../nbs/00_helper.ipynb 89
+# %% ../nbs/00_helper.ipynb 102
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -377,7 +466,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 97
+# %% ../nbs/00_helper.ipynb 110
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -428,7 +517,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 98
+# %% ../nbs/00_helper.ipynb 111
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -458,7 +547,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 99
+# %% ../nbs/00_helper.ipynb 112
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -486,7 +575,7 @@ def dict_with_keys_topologically_sorted(
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
 
-# %% ../nbs/00_helper.ipynb 102
+# %% ../nbs/00_helper.ipynb 115
 ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
 ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
 def alphabet_to_alphabet_group(character) -> str:
