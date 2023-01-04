@@ -494,7 +494,6 @@ def _obsidian_vault_plugin_configs_file(
         return Path(vault) / '.obsidian' / f'{plugin_name}.json'
     else:
         return Path(vault) / '.obsidian' / plugin_name / 'data.json'
-    return 
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 45
 def get_obsidian_vault_plugin_configs(
