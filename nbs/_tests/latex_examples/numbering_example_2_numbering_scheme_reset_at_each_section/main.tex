@@ -1,0 +1,53 @@
+% This is an example of a LaTeX document whose theorem-like environments are numbered with subsections.
+
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{amsmath}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{remark*}{Remark}
+
+\numberwithin{theorem}{section}
+
+\begin{document}
+
+This document resets its `theorem` counter whenever a new section begins.
+
+\section{Introduction}
+
+\begin{theorem}
+This is Theorem 1.1.
+\end{theorem}
+
+\begin{corollary}
+This is Corollary 1.2.
+\end{corollary}
+
+\begin{remark*}
+This is a remark. It is unnumbered and it does not affect the numberings of other environments.
+\end{remark*}
+
+
+\begin{definition}
+This is Definition 1.3.
+\end{definition}
+
+
+
+\section{Another Section}
+
+\begin{theorem}
+This is Theorem 2.1.
+\end{theorem}
+
+\begin{corollary}
+This is Corollary 2.2.
+\end{corollary}
+
+\begin{definition}
+This is Definition 2.3.
+\end{definition}
+
+\end{document}

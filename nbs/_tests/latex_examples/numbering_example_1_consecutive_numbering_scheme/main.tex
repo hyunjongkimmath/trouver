@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{amsthm}
+%\usepackage{amsmath}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{remark*}{Remark}
+
+%\numberwithin{theorem}{part}
+
+\begin{document}
+For this document, the `theorem` counter is not reset whenever a new section begins.
+
+A similar numbering scheme can be accomplished by importing \verb|amsmath| and invoking the code \verb|\numberwithin{theorem}{part}| in the preamble.
+
+\section{Introduction}
+
+\begin{theorem}
+This is Theorem 1.
+\end{theorem}
+
+\begin{corollary}
+This is Corollary 2.
+\end{corollary}
+
+\begin{remark*}
+This is a remark. It is unnumbered and it does not affect the numberings of other environments.
+\end{remark*}
+
+\begin{definition}
+This is Definition 3.
+\end{definition}
+
+
+
+\section{Another Section}
+
+\begin{theorem}
+This is Theorem 4.
+\end{theorem}
+
+\begin{corollary}
+This is Corollary 5.
+\end{corollary}
+
+\begin{definition}
+This is Definition 6.
+\end{definition}
+
+\end{document}

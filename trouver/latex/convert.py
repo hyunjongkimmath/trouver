@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'divide_preamble', 'NoDocumentNodeError', 'find_document_node',
-           'environment_names_used', 'divide_latex_text']
+           'environment_names_used', 'counters_for_environments', 'divide_latex_text']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
 from collections import OrderedDict
@@ -105,7 +105,70 @@ def environment_names_used(
     return {node.environmentname for node in document_node.nodelist
             if node.isNodeType(LatexEnvironmentNode)}        
 
-# %% ../../nbs/16_latex.convert.ipynb 42
+# %% ../../nbs/16_latex.convert.ipynb 45
+def counters_for_environments(
+        text: str # The LaTeX document
+        ) -> dict:  
+    r"""Return the dict specifying the counters for each theorem-like environment.
+
+    This function uses two separate regex patterns, one to detect the invocations of `\newtheorem`
+    in which the optional parameter is the second parameter and one to detect those in which
+    the optional parameter is the third parameter.
+
+    Assumes that
+    - invocations of the `\newtheorem` command are exclusively in the
+    preamble of the LaTeX document.
+    - theorem-like environments are defined using the `\newtheorem` command.
+    - no environments of the same name are defined twice.
+
+    """
+    preamble, _ = divide_preamble(text)
+    second_parameter_pattern = re.compile(
+        # r'\\newtheorem\s*\{\s*(\w+)\s*\}\s*(\[\s*(\w+)\s*\])?\s*\{\s*(.*)\s*\}')
+        # In this case, the optional parameter (if any) should not follow the newtheorem.
+        r'\\newtheorem\s*\{\s*(\w+)\s*\}\s*(\[\s*(\w+)\s*\])?\s*\{\s*(.*)\s*\}(?!\s*\[\s*(\w+)\s*\])')
+    third_parameter_pattern = re.compile(
+        r'\\newtheorem\s*\{\s*(\w+)\s*\}\s*\{\s*(.*)\s*\}\s*(\[\s*(\w+)\s*\])?')
+    second_results = _search_counters_by_pattern(preamble, second_parameter_pattern, 3)
+    third_results = _search_counters_by_pattern(preamble, third_parameter_pattern, 4)
+    return second_results | third_results
+    
+
+def _search_counters_by_pattern(
+        preamble: str,
+        newtheorem_regex: re.Pattern,
+        counter_group: int # This depends on which `newtheorem_regex` is used, and is either 3 or 4. 
+        ) -> dict:
+    """
+    Capture the newly defined theorem-like environment names as well as the
+    counters that they belong to"""
+    counters = {}
+    for match in newtheorem_regex.finditer(preamble):
+        env_name = match.group(1)
+        counter = match.group(counter_group)
+        # If no counter was specified, use the environment name as the counter
+        if counter is None:
+            counter = env_name
+        counters[env_name] = counter
+    return counters
+
+# %% ../../nbs/16_latex.convert.ipynb 50
+def divide_latex_text(
+        text: str, # The text of a LaTeX document
+        environments_to_divide_along: list[str], # A list of the names of environments that warrant a new note
+        numbered_environments: list[str], # A list of the names of environments that do not warrant a new note
+        numbering_convention: str,
+        section_name: str = 'section', # The command name for sections
+        subsection_name: str= 'subsection', # The command name for subsections
+        proof_name: str = 'proof', # The environment name for proofs
+        ) -> list[tuple[str, str]]: 
+    """Divide LaTeX text to convert into Obsidian.md notes.
+    
+
+    """
+    return
+
+# %% ../../nbs/16_latex.convert.ipynb 51
 # TODO: numbering convention could be theorems separate (e.g. theorem 1, 2, ...)
 # and subsections separate.
 def divide_latex_text(
@@ -149,8 +212,6 @@ def _process_node(
     and
 
     """
-    if node.latex_verbatim().startswith('\\begin{proof}\nLet $\\mathscr{H} := \\math'):
-        print('hi')
     process_method_to_run = None
     if node.isNodeType(LatexMacroNode) and node.macroname == section_name:
         process_method_to_run = _process_section
