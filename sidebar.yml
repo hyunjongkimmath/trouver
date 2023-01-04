@@ -1,0 +1,25 @@
+website:
+  sidebar:
+    contents:
+      - section: nbs
+        contents:
+          - nbs\index.ipynb
+          - nbs\00_helper.ipynb
+          - nbs\01_markdown.__init__.ipynb
+          - nbs\02_markdown.obsidian.__init__.ipynb
+          - nbs\03_markdown.obsidian.vault.ipynb
+          - nbs\04_markdown.markdown.file.ipynb
+          - nbs\05_markdown.markdown.heading.ipynb
+          - nbs\06_markdown.obsidian.links.ipynb
+          - nbs\07_markdown.obsidian.tags.ipynb
+          - nbs\08_markdown.obsidian.footnotes.ipynb
+          - nbs\09_markdown.obsidian.personal.__init__.ipynb
+          - nbs\10_markdown.obsidian.personal.reference.ipynb
+          - nbs\11_markdown.obisidian.personal.authors.ipynb
+          - nbs\12_markdown.obsidian.personal.index_notes.ipynb
+          - nbs\13_markdown.obsidian.personal.notes.ipynb
+          - nbs\14_markdown.obsidian.personal.note_type.ipynb
+          - nbs\15_latex.__init__.ipynb
+          - nbs\16_latex.convert.ipynb
+          - nbs\TODO.ipynb
+          - nbs\using_regex.ipynb

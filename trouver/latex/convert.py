@@ -110,39 +110,14 @@ def environment_names_used(
 # and subsections separate.
 def divide_latex_text(
         text, # The text of a latex document.
-        numbered_environments: list[str] = DEFAULT_NUMBERED_ENVIRONMENTS, # A list of the names of environments which are numbered in the latex code.
-        numbering_convention: str = 'separate',
-        section_name: str = 'section',
-        subsection_name: str = 'subsection',
-        proof_name: str = 'proof') -> list:
+        numbered_environments: list[str] = DEFAULT_NUMBERED_ENVIRONMENTS, # A list of the names of environments which are numbered in the latex code. 
+        numbering_convention: str = 'separate', # One of <br><br> - 'separate': Subsections of a section have separate numberings, e.g. 'Lemma 1.2.1, Proposition 1.2.2, Figure 1.2.3, Theorem 1.3.1' <br> - 'shared': Subsections of a section share numberings, e.g.  'Lemma 1.1, Proposition 1.2, Figure 1.3, Theorem 1.4'
+        section_name: str = 'section', # The command name for sections. For example, SGA has chapters and sections. For the purposes of this function, it is appropriate to regard them as sections and subsections, respectively.
+        subsection_name: str = 'subsection', # The commmand name for subsections
+        proof_name: str = 'proof' # The environment name for proofs
+        ) -> list[tuple[str, str]]: # Each tuple corresponds to an Obsidian note to be constructed.  Such a tuple is of the form `[<node_type & numbering>, <text>]` where `node_type & numbering` is a string which serves as a title for the text making up the note, and `text` is the content of the note.
     """Divides latex text to convert into Obsidian notes.
     
-    **Parameters**
-    - text - str
-    - numbered_environments = list
-    - numbering_convention - str
-        - One of
-            
-            - 'separate' - Subsections of a section have separate numberings, 
-            e.g. 'Lemma 1.2.1, Proposition 1.2.2, Figure 1.2.3, Theorem 1.3.1'
-            - 'shared' - Subsections of a section share numberings, e.g.
-            'Lemma 1.1, Proposition 1.2, Figure 1.3, Theorem 1.4'
-            
-    - section_name - str
-        - The macronames for "sections". Defaults to `'section'`.
-        For example, SGA has chapters and sections. For the purposes of this function,
-        it is appropriate to regard them as sections and subsections, respectively.
-    - subsection_name - str
-        - Defaults to `'subsection'`.
-    - proof_name - str
-        - The environment names for proofs. Defaults to `'proof'`.
-        
-    **Returns**
-    - list of list
-        - Each list corresponds to an Obsidian note to be constructed.
-        Such a list is of the form `[<node_type & numbering>, <text>]` where 
-        `node_type & numbering` is a string which serves as a title for the
-        text making up the note, and `text` is the content of the note.
     """
     document_node = find_document_node(text)
     section_num = 0
@@ -153,20 +128,12 @@ def divide_latex_text(
     parts = []
     accumulation = ''
     for node in document_node.nodelist:
-        if len(parts) > 102 and parts[-1][0] == 'subsection 6.1':
-            print('hi')
-        # if '\\begin{proof}' in node.latex_verbatim():
-        #     print(node.environmentname)
-        #    print(node.latex_verbatim())
-        #if 'Gal' in accumulation:
-        #    print(accumulation)
         (section_num, subsection_num, environment_num, outside_num,
          accumulation)\
             = _process_node(
                 section_num, subsection_num, environment_num, outside_num,
                 accumulation, parts, node, section_name, subsection_name,
                 proof_name, numbered_environments, numbering_convention)
-        # if len(parts) > 20:    
             
     outside_num += 1
     parts.append([str(outside_num), accumulation])
