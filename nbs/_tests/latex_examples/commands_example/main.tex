@@ -1,0 +1,53 @@
+\documentclass{amsart} % This seems to be necessary to have \newcommand's
+
+\usepackage{amsmath,amsthm}
+% Basic commands
+\DeclareMathOperator{\Hom}{Hom}
+\newcommand{\con}{\mathcal{C}}
+
+\newcommand{\Gsharp}{G^{\sharp}}
+\newcommand{\modmod}{/\!\!/}
+
+% Note that defining commands with spaces is not valid:
+% \newcommand{\ spacey1}{Spacey}
+% \newcommand{\s pacey1}{Spacey}
+
+% Commands with parameters
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\mat}[4]{\left[\begin{array}{cc}#1 & #2 \\
+                                         #3 & #4\end{array}\right]}
+\newcommand{\dual}[1]{#1^{\vee}}
+\newcommand{\compl}[1]{\hat{#1}}
+
+% \newcommand{\badspace}[1]{# 1} This is bad.
+
+% TODO: commands with optional parameters
+
+\newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+%plusbinomial is the name of the new command.
+%[3] is the number of parameters the command will take, in this case 3.
+%[2] is the default value for the first parameter. This is what makes the first parameter optional, if not passed it will use this default value.
+%(#2 + #3)^#1 is what the command does. In this case it will put the second and third parameters in a "binomial format" to the power represented by the first parameter.
+
+% It looks like multiple optional arguments are not allowed by default, although this can be
+% changed through various means, cf. https://tex.stackexchange.com/questions/29973/more-than-one-optional-argument-for-newcommand
+% So for example something like
+%\newcommand{\hi}[4][a][b]{#1, #2, #3, #4}
+% Is not a valid command.
+
+
+\begin{document}
+
+$\field{Q}$
+
+\[\plusbinomial{x}{y}\]  % The first argument is given by the default value 2, the second argument is x, and the third argument is y.
+
+\[\plusbinomial[4]{x}{y}\] % The first argument is 4, the second argument is x, and the third argument is y.
+
+
+
+
+
+\end{document}
+
+

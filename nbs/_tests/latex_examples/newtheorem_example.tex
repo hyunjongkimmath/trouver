@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition} % Note that `theorem`, `lemma`, and `definition` all have `theorem` as their counter.
+\newtheorem{corollary}{Corollary} % Note that `corollary` has its own counter.
+\newtheorem{remark}{Remark}[theorem] % `remark` has `theorem` as its counter
+\newtheorem*{conjecture*}{Conjecture} % `conjecture*` has no counter
+
+\begin{document}
+
+\section{Introduction}
+
+\begin{theorem}
+This is Theorem 1.
+\end{theorem}
+
+\begin{lemma}
+This is Lemma 2.
+\end{lemma}
+
+\begin{definition}
+This is Definition 3.
+\end{definition}
+
+\end{document}
