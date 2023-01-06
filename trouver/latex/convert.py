@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'remove_comments', 'divide_preamble', 'NoDocumentNodeError', 'find_document_node',
            'environment_names_used', 'counters_for_environments', 'display_names_of_environments', 'divide_latex_text',
-           'custom_newcommands', 'custom_mathoperators', 'regex_pattern_detecting_command',
+           'custom_commands', 'regex_pattern_detecting_command', 'replace_command_in_text',
            'replace_commands_in_latex_document']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
@@ -388,12 +388,12 @@ def _section_title(text: str, section_name, subsection_name) -> str:
 
 
 # %% ../../nbs/16_latex.convert.ipynb 68
-def custom_newcommands(
+def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
-        ) -> dict[str, tuple[int, Union[str, None], str]]: # The keys are the names of the newly defined commands and the values are tuples consisting of 1. the number of parameters 2. The default argument if specified or `None` otherwise, and 3. the display text of the command.
+        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
     """
-    Return a dict mapping commands defined in `preamble` to the number of arguments
-    display text of the commands.
+    Return a dict mapping commands (and math operators) defined in `preamble` to
+    the number of arguments display text of the commands.
 
     Assumes that the newcommands only have at most one default parameter (newcommands with
     multiple default parameters are not valid in LaTeX).
@@ -402,10 +402,10 @@ def custom_newcommands(
     """
     preamble = remove_comments(preamble)
     newcommand_regex = regex.compile(
-        r'(?<!%)\s*\\(?:re)?newcommand\s*\{\\\s*(\w+)\s*\}\s*(\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?5)\})*)\}', re.MULTILINE)
+        r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*\{\\\s*(\w+)\s*\}\s*(\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?5)\})*)\}', re.MULTILINE)
     # newcommand_regex = regex.compile(
     #     r'(?<!%)\s*\\(?:re)?newcommand\s*\{\\\s*(\w+)\s*\}\s*(\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{\s*(.*)\s*\}', re.MULTILINE)
-    commands = {}
+    commands = []
     for match in newcommand_regex.finditer(preamble):
         name = match.group(1)
         num_args = match.group(3)
@@ -418,32 +418,14 @@ def custom_newcommands(
         else:
             num_args = 0
 
-        commands[name] = (num_args, optional_default_arg, definition)
+        commands.append((name, num_args, optional_default_arg, definition))
     return commands
 
 
-
-# %% ../../nbs/16_latex.convert.ipynb 70
-def custom_mathoperators(
-        preamble: str, # The preamble of a LaTeX document.
-        ) -> dict[str, tuple[int, None, str]]: # The keys are the names of the newly defined commands and the values are tuples consisting of 1. the number of arguments and 2. the display text of the command.
-    """
-    Return a dict mapping commands defined in `preamble` to the number of arguments
-    display text of the commands.
-    """
-    declaremathoperator_regex = re.compile(r'\\DeclareMathOperator\s*\{\\\s*(\w+)\s*\}\s*\{\s*(.*)\s*\}')
-    commands = {}
-    for match in declaremathoperator_regex.finditer(preamble):
-        name = match.group(1)
-        definition = match.group(2)
-
-        commands[name] = (0, None, definition)
-    return commands
 
 # %% ../../nbs/16_latex.convert.ipynb 73
 def regex_pattern_detecting_command(
-        command_name: str,
-        command_tuple: tuple[int, Union[None, str], str], # Consists of 1. the number of parameters 2. The default argument if specified or `None`, and 3. the display text of the command.
+        command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
     """Return a `regex.pattern` object (not a `re.pattern` object) detecting
     the command with the specified number of parameters, optional argument,
@@ -453,15 +435,14 @@ def regex_pattern_detecting_command(
     are balanced and properly nested. Assumes that there are no two commands
     of the same name.
     """
-    num_parameters, optional_arg, _ = command_tuple
+    command_name, num_parameters, optional_arg, _ = command_tuple
     backslash_name = fr"\\{command_name}"
     optional_argument_detection = fr"(?:\[(.*?)\])?" if optional_arg is not None else ""
     argument_detection = r""
     if optional_arg is not None:
-        pattern = f"{backslash_name}\\s*(?:{optional_argument_detection})"
         trailing_arguments = [_argument_detection(i) for i in range(2, 1+num_parameters)]
         trailing_args_pattern = "\\s*".join(trailing_arguments)
-        pattern = (f"{pattern}\\s*{trailing_args_pattern}")
+        pattern = (f"{backslash_name}\\s*{optional_argument_detection}\\s*{trailing_args_pattern}")
     elif num_parameters > 0:
         arguments = [_argument_detection(i) for i in range(1, 1+num_parameters)]
         args_pattern = "\\s*".join(arguments)
@@ -475,9 +456,77 @@ def _argument_detection(group_num: int):
     
 
 # %% ../../nbs/16_latex.convert.ipynb 75
+def replace_command_in_text(
+        text: str,
+        command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+    ):
+    """
+    Replaces all invocations of the specified command in `text` with the display text
+    with the arguments used in the display text.
+
+    Assumes that '\1', '\2', '\3', etc. are not part of the display text. 
+    """
+    command_name, num_parameters, optional_arg, display_text = command_tuple
+    command_pattern = regex_pattern_detecting_command(command_tuple)
+    replace_pattern = display_text.replace('\\', r'\\')
+    # if optional_arg is not None:
+    #     replace_pattern = replace_pattern.replace('#1', optional_arg)
+    replace_pattern = re.sub(r'#(\d)', r'\\\1', replace_pattern)
+    text = regex.sub(
+        command_pattern,
+        lambda match: _replace_command(match, command_tuple, command_pattern, replace_pattern),
+        text)
+    return text
+    # if optional_arg is not None:
+    #     trailing_arguments = [_argument_detection(i) for i in range(2, 1+num_parameters)]
+    #     trailing_args_pattern = "\\s*".join(trailing_arguments)
+    #     pattern = (f"{pattern}\\s*{trailing_args_pattern}")
+    # elif num_parameters > 0:
+    #     arguments = [_argument_detection(i) for i in range(1, 1+num_parameters)]
+    #     args_pattern = "\\s*".join(arguments)
+    #     pattern = f"{backslash_name}\\s*{args_pattern}"
+    # else:
+    #     pattern = f"{backslash_name}"
+    # return regex.compile(pattern)
+
+def _replace_command(
+        match: regex.match,
+        command_tuple: [str, int, Union[None, str], str],
+        command_pattern: regex.Pattern,
+        replace_pattern: re.Pattern) -> str:
+    """Replace the matched command with the display text"""
+    command_name, num_parameters, optional_arg, display_text = command_tuple
+    start, end = match.span()
+    matched_string_to_replace = match.string[start:end]
+    if len(match.groups()) > 0 and match.group(1) is None:
+        replace_pattern = replace_pattern.replace(r'\1', optional_arg)
+        replaced_string = regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
+        return replaced_string
+    else:
+        return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
+
+
+
+# %% ../../nbs/16_latex.convert.ipynb 77
 def replace_commands_in_latex_document(
-        docment: str, 
-        command_dict: dict[str, tuple[int, Union[None, str], str]]
+        docment: str
         ) -> str:
-    return
+    """Return the latex document (without the preamble) with invocations
+    of custom commands/operators replaced with their display text.
+
+    Assumes that all custom commands and operators are defined in the
+    preamble.
+
+    Assumes that, if commands with the same name are defined multiple times,
+    only the finally defined command is used. 
+
+    Even replaces these invocations incommented out text.
+    """
+    preamble, document = divide_preamble(docment)
+    commands = custom_commands(preamble)
+    # Note that `command_tuple[0]` is the name of the command.
+    unique_commands = {command_tuple[0]: command_tuple for command_tuple in commands} 
+    for _, command_tuple in unique_commands.items():
+        document = replace_command_in_text(document, command_tuple)
+    return document
     

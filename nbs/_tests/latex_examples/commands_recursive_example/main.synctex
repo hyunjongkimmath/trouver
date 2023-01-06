@@ -1,0 +1,64 @@
+SyncTeX Version:1
+Input:1:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\commands_recursive_example\main.tex
+Input:2:C:\Program Files\MiKTeX 2.9\tex\latex\amscls\amsart.cls
+Input:3:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty
+Input:4:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty
+Input:5:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty
+Input:6:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty
+Input:7:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty
+Input:8:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd
+Input:9:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty
+Input:10:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amscd.sty
+Input:11:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty
+Input:12:C:\Program Files\MiKTeX 2.9\tex\latex\url\url.sty
+Input:13:C:\Program Files\MiKTeX 2.9\tex\latex\l3backend\l3backend-pdftex.def
+Input:14:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\commands_recursive_example\main.aux
+Input:15:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd
+Input:16:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd
+Output:pdf
+Magnification:1000
+Unit:1
+X Offset:0
+Y Offset:0
+Content:
+!1251
+{1
+[1,30:4736286,46693416:27189412,41957130,0
+[1,30:8332738,46693416:23592960,40501248,0
+[1,30:8332738,6716456:23592960,524288,0
+(1,30:8332738,6716456:23592960,0,0
+h1,30:8332738,6716456:23592960,0,0
+)
+]
+[1,30:8332738,45906984:23592960,38273024,0
+(1,29:8332738,8289320:23592960,451470,109226
+h1,24:8332738,8289320:786432,0,0
+$1,24:9119170,8289320
+x1,24:9810941,8289320
+$1,24:9810941,8289320
+g1,24:10029394,8289320
+$1,28:10029394,8289320
+x1,28:10539120,8289320
+$1,28:10539120,8289320
+k1,29:10539120,8289320:0
+k1,29:31925698,8289320:21386578
+g1,29:31925698,8289320
+)
+]
+(1,30:8332738,46693416:23592960,295640,0
+(1,30:8332738,46693416:23592960,295640,0
+k1,30:19998600,46693416:11665862
+x1,30:20259835,46693416
+k1,30:31925697,46693416:11665862
+)
+)
+]
+]
+!752
+}1
+Input:17:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\commands_recursive_example\main.aux
+!131
+Postamble:
+Count:33
+!25
+Post scriptum:
