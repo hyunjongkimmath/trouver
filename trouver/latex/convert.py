@@ -115,7 +115,7 @@ def environment_names_used(
     return {node.environmentname for node in document_node.nodelist
             if node.isNodeType(LatexEnvironmentNode)}        
 
-# %% ../../nbs/16_latex.convert.ipynb 48
+# %% ../../nbs/16_latex.convert.ipynb 49
 def counters_for_environments(
         text: str # The LaTeX document
         ) -> dict:  
@@ -162,7 +162,7 @@ def _search_counters_by_pattern(
         counters[env_name] = counter
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 54
+# %% ../../nbs/16_latex.convert.ipynb 55
 def display_names_of_environments(
         text: str # The LaTeX document
         ) -> dict:  
@@ -205,7 +205,7 @@ def _search_display_names_by_pattern(
         display_names[env_name] = display_name
     return display_names
 
-# %% ../../nbs/16_latex.convert.ipynb 58
+# %% ../../nbs/16_latex.convert.ipynb 59
 def divide_latex_text(
         text: str, # The text of a LaTeX document
         environments_to_divide_along: list[str], # A list of the names of environments that warrant a new note
@@ -221,7 +221,7 @@ def divide_latex_text(
     """
     return
 
-# %% ../../nbs/16_latex.convert.ipynb 59
+# %% ../../nbs/16_latex.convert.ipynb 60
 # TODO: numbering convention could be theorems separate (e.g. theorem 1, 2, ...)
 # and subsections separate.
 # TODO: fix up this method
@@ -387,7 +387,7 @@ def _section_title(text: str, section_name, subsection_name) -> str:
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 68
+# %% ../../nbs/16_latex.convert.ipynb 69
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -423,7 +423,7 @@ def custom_commands(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 73
+# %% ../../nbs/16_latex.convert.ipynb 74
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -455,7 +455,7 @@ def _argument_detection(group_num: int):
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 75
+# %% ../../nbs/16_latex.convert.ipynb 76
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -507,7 +507,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 77
+# %% ../../nbs/16_latex.convert.ipynb 78
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:

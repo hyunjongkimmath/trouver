@@ -1,0 +1,57 @@
+\documentclass{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsfonts, amssymb, amsthm, amsopn}
+
+\numberwithin{equation}{section}
+
+\theoremstyle{plain}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{theoremA}{Theorem A}
+\newtheorem*{theoremB}{Theorem B}
+\newtheorem{theorem}[equation]{Theorem}
+\newtheorem{proposition}[equation]{Proposition}
+\newtheorem{lemma}[equation]{Lemma}
+\newtheorem{corollary}[equation]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[equation]{Definition}
+\newtheorem{example}[equation]{Example}
+\newtheorem*{acknowledgements}{Acknowledgements}
+\newtheorem*{conventions}{Conventions}
+
+\theoremstyle{remark}
+\newtheorem{remark}[equation]{Remark}
+
+\begin{document}
+
+\section{Introduction}
+
+\begin{theorem}
+This is Theorem 1.1. This is because the \verb|\numberwithin{equation}{section}| makes the section number included in the equation counter and because the \\
+\verb|\newtheorem{theorem}[equation]{Theorem}| command makes the environment \verb|theorem| be counted by the equation counter.
+\end{theorem}
+
+The following makes an equation labeled 1.2; 
+\begin{equation}
+5 + 7 = 12
+\end{equation}
+
+\begin{theorem*}
+This Theorem is unnumbered
+\end{theorem*}
+
+\begin{corollary}
+This is Corollary 1.3.
+\end{corollary}
+
+\section{Another section}
+\begin{theorem}
+This is theorem 2.1
+\end{theorem}
+
+The following is labeled 2.2:
+\begin{equation}
+3+5 = 8.
+\end{equation}
+
+\end{document}
