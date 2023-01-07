@@ -1,0 +1,78 @@
+\documentclass{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsfonts, amssymb, amsthm, amsopn}
+
+
+
+
+\theoremstyle{plain}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{theoremA}{Theorem A}
+\newtheorem*{theoremB}{Theorem B}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{acknowledgements}{Acknowledgements}
+\newtheorem*{conventions}{Conventions}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{theorem}{section}
+
+
+\begin{document}
+
+\section{This is section 1}
+
+\begin{theorem}
+This is Theorem 1.1.
+\end{theorem}
+
+\subsection{This is a subsection 1.1}
+
+The following makes an equation labeled 1; 
+\begin{equation}
+5 + 7 = 12
+\end{equation}
+
+\begin{theorem*}
+This Theorem is unnumbered
+\end{theorem*}
+
+\subsection{This is subsection 1.2}
+
+\begin{corollary}
+This is Corollary 1.2.
+\end{corollary}
+
+\section*{Unnumbered section}
+
+\subsection{This is subsection 1.3}
+\subsubsection{This is subsubsection 1.3.1}
+
+\begin{theorem}
+This is Theorem 1.3.
+\end{theorem}
+
+
+\section{Another section}
+
+\subsection{This is subsection 2.1}
+
+\begin{theorem}
+This is Theorem 2.1
+\end{theorem}
+
+The following is labeled 2; note that the equation counter was not reset by section:
+\begin{equation}
+3+5 = 8.
+\end{equation}
+
+\end{document}

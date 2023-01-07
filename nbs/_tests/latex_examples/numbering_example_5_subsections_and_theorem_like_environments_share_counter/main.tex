@@ -1,0 +1,78 @@
+\documentclass[10pt]{amsart}
+
+\usepackage{amsmath,amscd,amsfonts,amsthm,amssymb,url}
+
+\numberwithin{equation}{subsection}
+\renewcommand{\theequation}{\thesubsection.\arabic{equation}}
+
+%\newenvironment{enumrom}
+%{\renewcommand{\theenumi}{\roman{enumi}} \begin{enumerate}}
+%{\end{enumerate} \renewcommand{\theenumi}{\arabic{enumi}}}
+
+\swapnumbers
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsection]{Theorem}
+\newtheorem{prop}[subsection]{Proposition}
+\newtheorem{cor}[subsection]{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem{conj}[subsection]{Conjecture}
+\newtheorem*{conj*}{Conjecture}
+
+\newtheorem{lem}[subsection]{Lemma}
+\newtheorem*{sublem}{Sublemma}
+
+\newtheorem*{intro}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsection]{Definition}
+\newtheorem*{defn*}{Definition}
+\newtheorem*{prop*}{Proposition}
+\newtheorem*{cor*}{Corollary}
+\newtheorem*{lem*}{Lemma}
+\newtheorem{exmp}[subsection]{Example}
+
+\theoremstyle{remark}
+\newtheorem{rem}[subsection]{Remark}
+\newtheorem*{rem*}{Remark}
+\newtheorem{rems}[subsection]{Remarks}
+\newtheorem{note}[subsection]{Note}
+\newtheorem{warn}[subsection]{Warning}
+
+\begin{document}
+
+\section{This is section 1}
+
+\begin{thm}
+This is 1.1 Theorem. Note that the \verb|\swapnumbers| command is invoked in the preamble.
+\end{thm}
+
+\subsection{This is 1.2 subsection.}
+
+Note that the equation counter is numbered within the subsection counter and that the theorem-like environments are numbered with the equation counter.
+
+\subsubsection{This is 1.2.1 Subsubsection}
+
+\begin{remark}
+This is an unnumbered remark.
+\end{remark}
+
+\begin{prop}
+This is 1.3 Proposition.
+\end{prop}
+
+\section*{Unnumbered section}
+
+\begin{thm}
+This is 1.4 Theorem.
+\end{thm}
+
+
+\section{This is Section 2}
+
+\begin{thm}
+This is 2.1 Theorem
+\end{thm}
+
+
+\end{document}
