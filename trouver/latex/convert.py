@@ -5,7 +5,8 @@ __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'remove_comments', 'divide_preamble'
            'environment_names_used', 'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble',
            'display_names_of_environments', 'get_node_from_simple_text', 'swap_numbers_invoked', 'divide_latex_text',
            'section_and_subsection_titles_from_latex_parts', 'custom_commands', 'regex_pattern_detecting_command',
-           'replace_command_in_text', 'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown']
+           'replace_command_in_text', 'replace_commands_in_text', 'replace_commands_in_latex_document',
+           'adjust_common_syntax_to_markdown', 'setup_reference_from_latex_parts']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
 from collections import OrderedDict
@@ -14,7 +15,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import re
-from typing import Union
+from typing import Optional, Union
 
 from pylatexenc import latexwalker, latex2text
 from pylatexenc.latexwalker import (
@@ -50,12 +51,12 @@ DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/16_latex.convert.ipynb 16
+# %% ../../nbs/16_latex.convert.ipynb 14
 def remove_comments(text: str) -> str:
     # Find all occurrences of the comment pattern %[^\n]*
     return re.sub(r"%[^\n]*", "", text)
 
-# %% ../../nbs/16_latex.convert.ipynb 23
+# %% ../../nbs/16_latex.convert.ipynb 21
 def divide_preamble(
         text: str, # LaTeX document
         document_environment_name: str = "document"
@@ -70,7 +71,7 @@ def divide_preamble(
 
     
 
-# %% ../../nbs/16_latex.convert.ipynb 26
+# %% ../../nbs/16_latex.convert.ipynb 24
 class NoDocumentNodeError(Exception):
     """Exception raised when a LatexEnvironmentNode corresponding to the document 
     environment is expected in a LaTeX string, but no such node exists.
@@ -87,7 +88,7 @@ class NoDocumentNodeError(Exception):
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 27
+# %% ../../nbs/16_latex.convert.ipynb 25
 def find_document_node(
         text: str, # LaTeX str
         document_environment_name: str = "document" # The name of the document environment.
@@ -106,7 +107,7 @@ def find_document_node(
             return node
     raise NoDocumentNodeError(text)
 
-# %% ../../nbs/16_latex.convert.ipynb 38
+# %% ../../nbs/16_latex.convert.ipynb 36
 def environment_names_used(
         text: str # LaTeX document
         ) -> set[str]: # The set of all environment names used in the main document.
@@ -117,7 +118,7 @@ def environment_names_used(
     return {node.environmentname for node in document_node.nodelist
             if node.isNodeType(LatexEnvironmentNode)}        
 
-# %% ../../nbs/16_latex.convert.ipynb 47
+# %% ../../nbs/16_latex.convert.ipynb 45
 def numbered_newtheorems_counters_in_preamble(
         document: str # The LaTeX document
         ) -> dict[str, str]: # The keys are the command names of the environments. The values are the counters that the environments belong to, which can be custom defined or predefined in LaTeX.
@@ -170,7 +171,7 @@ def _search_counters_by_pattern(
         counters[env_name] = counter
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 55
+# %% ../../nbs/16_latex.convert.ipynb 53
 def numberwithins_in_preamble(
         document: str # The LaTeX document
     ) -> dict[str, str]: # The keys are the first arguments of `numberwithin` invocations and the values ar ethe second arguments of `numberwithin` invocations.
@@ -190,7 +191,7 @@ def numberwithins_in_preamble(
 
     return numberwithins
 
-# %% ../../nbs/16_latex.convert.ipynb 61
+# %% ../../nbs/16_latex.convert.ipynb 57
 def display_names_of_environments(
         document: str # The LaTeX document
         ) -> dict[str, str]:  
@@ -233,7 +234,7 @@ def _search_display_names_by_pattern(
         display_names[env_name] = display_name
     return display_names
 
-# %% ../../nbs/16_latex.convert.ipynb 64
+# %% ../../nbs/16_latex.convert.ipynb 60
 def _setup_counters(
         numbertheorem_counters: dict[str, str]
         ) -> dict[str, int]:
@@ -277,7 +278,7 @@ def _setup_counters(
     counters[''] = 0
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 66
+# %% ../../nbs/16_latex.convert.ipynb 62
 def _setup_numberwithins(
         explicit_numberwithins: dict[str, str]
         ) -> dict[str, str]: # The keys are counters and the values are all counters that the key is immediately numbered within.
@@ -324,7 +325,7 @@ def _is_numberedwithin(
         numberwithins[counter_1], counter_2, numberwithins)
 
 
-# %% ../../nbs/16_latex.convert.ipynb 72
+# %% ../../nbs/16_latex.convert.ipynb 68
 def _is_section_node(node):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
@@ -336,7 +337,7 @@ def _is_subsection_node(node):
 def _is_environment_node(node):
     return node.isNodeType(LatexEnvironmentNode)
 
-# %% ../../nbs/16_latex.convert.ipynb 74
+# %% ../../nbs/16_latex.convert.ipynb 70
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, str]
@@ -349,7 +350,7 @@ def _is_numbered(
     else:
         return False
 
-# %% ../../nbs/16_latex.convert.ipynb 76
+# %% ../../nbs/16_latex.convert.ipynb 72
 def _change_counters(
         node,
         counters,
@@ -392,13 +393,13 @@ def _change_counters(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 77
+# %% ../../nbs/16_latex.convert.ipynb 73
 def get_node_from_simple_text(text):
     w = LatexWalker(text)
     nodelist, _, _ = w.get_latex_nodes(pos=0)
     return nodelist[0]
 
-# %% ../../nbs/16_latex.convert.ipynb 79
+# %% ../../nbs/16_latex.convert.ipynb 75
 def _node_numbering(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -442,7 +443,7 @@ def _numbering_helper(
         counters)
     
 
-# %% ../../nbs/16_latex.convert.ipynb 81
+# %% ../../nbs/16_latex.convert.ipynb 77
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -497,7 +498,7 @@ def _title_for_environment_node(
         return f'{display_names[environment]} {numbering}.'
         
 
-# %% ../../nbs/16_latex.convert.ipynb 83
+# %% ../../nbs/16_latex.convert.ipynb 79
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
@@ -508,13 +509,13 @@ def swap_numbers_invoked(
     preamble = remove_comments(preamble)
     return '\swapnumbers' in preamble
 
-# %% ../../nbs/16_latex.convert.ipynb 85
+# %% ../../nbs/16_latex.convert.ipynb 81
 def divide_latex_text(
         document: str, 
         # environments_to_divide_along: list[str], # A list of the names of environments that warrant a new note
         # numbered_environments: list[str], # A list of the names of environments which are numbered in the latex code. 
         environments_to_not_divide_along: list[str] = ['equation', 'equation*', 'proof', 'align', 'align*'], # A list of the names of the environemts along which to not make a new note, unless the environment starts a section (or the entire document).
-        ) -> list[tuple[str, str]]: # Each tuple is of the form (<note_type_and_or_numbering>, <text>)
+        ) -> list[tuple[str, str]]: # Each tuple is of the form `(note_title, text)`, where `note_title` often encapsulates the note type (i.e. section/subsection/display text of a theorem-like environment) along with the numbering and `text` is the text of the part. Sometimes `title` is just a number, which means that `text` is not of a `\section` or `\subsection` command and not of a theorem-like environment.
     r"""Divide LaTeX text to convert into Obsidian.md notes.
 
     Assumes that the counters in the LaTeX document are either the
@@ -556,7 +557,7 @@ def _process_node(
         node, environments_to_not_divide_along, accumulation,
         numbertheorem_counters,
         numberwithins, all_numberwithins, counters,
-        display_names, swap_numbers, parts):
+        display_names, swap_numbers, parts) -> str:
     """
     Update `accumulation`, `counter`, and `parts` based on the contents of `node`.
 
@@ -612,10 +613,10 @@ def _node_warrants_new_part(
     return node.environmentname not in environments_to_not_divide_along
 
 
-# %% ../../nbs/16_latex.convert.ipynb 96
+# %% ../../nbs/16_latex.convert.ipynb 92
 def _part_is_of_section(
         part: tuple[str, str]):
-    """Return `True` if `part` specifies a section, cf. ``divide_latex_text``."""
+    """Return `True` if `part` specifies a section, cf. `divide_latex_text`."""
     return part[1].startswith(r'\section')
     # node = get_node_from_simple_text(part[1])
     # return _is_section_node(node)
@@ -623,14 +624,14 @@ def _part_is_of_section(
 
 def _part_is_of_subsection(
         part: tuple[str, str]):
-    """Return `True` if `part` specifies a subsection, cf. ``divide_latex_text``."""
+    """Return `True` if `part` specifies a subsection, cf. `divide_latex_text`."""
     return part[1].startswith(r'\subsection')
     # node = get_node_from_simple_text(part[1])
     # return _is_subsection_node(node)
 
-# %% ../../nbs/16_latex.convert.ipynb 98
+# %% ../../nbs/16_latex.convert.ipynb 94
 def section_and_subsection_titles_from_latex_parts(
-        parts: list[tuple[str, str]], # An output of ``divide_latex_text``
+        parts: list[tuple[str, str]], # An output of `divide_latex_text`
         # verbose_sections: bool = False, # 
         # short_subsections: bool = False,
         # section_name: str = 'section',
@@ -659,7 +660,7 @@ def _consider_part_to_add(
         
 
 
-# %% ../../nbs/16_latex.convert.ipynb 104
+# %% ../../nbs/16_latex.convert.ipynb 100
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -695,7 +696,7 @@ def custom_commands(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 107
+# %% ../../nbs/16_latex.convert.ipynb 103
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -727,7 +728,7 @@ def _argument_detection(group_num: int):
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 109
+# %% ../../nbs/16_latex.convert.ipynb 105
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -779,7 +780,22 @@ def _replace_command(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 111
+# %% ../../nbs/16_latex.convert.ipynb 107
+def replace_commands_in_text(
+        text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
+        command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+    ) -> str:
+    """
+    Replaces all invocations of the specified commands in `text` with the
+    display text with the arguments used in the display text.
+
+    Assumes that '\1', '\2', '\3', etc. are not part of the display text. 
+    """
+    for command_tuple in command_tuples:
+        text = replace_command_in_text(text, command_tuple)
+    return text
+
+# %% ../../nbs/16_latex.convert.ipynb 109
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:
@@ -803,12 +819,65 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/16_latex.convert.ipynb 115
+# %% ../../nbs/16_latex.convert.ipynb 113
 def adjust_common_syntax_to_markdown(
         text):
     """
-    Adjust some common syntax, such as math mode delimiters and equation/align environments,
-    for Markdown.
+    Adjust some common syntax, such as math mode delimiters and equation/align
+    environments, for Markdown.
+
+    Assumes that the tokens for math mode delimiters (e.g. `\( \)` and `\[ \]`)
+    are not used otherwise.
     """
     # TODO
     return
+
+# %% ../../nbs/16_latex.convert.ipynb 116
+def _create_notes_from_parts(
+        parts: list[tuple[str, str]],
+        index_note: VaultNote # The index note of the reference that was created
+        ):
+    """Create notes for the vault from `parts`."""
+    for part in parts:
+        return
+
+# %% ../../nbs/16_latex.convert.ipynb 117
+def setup_reference_from_latex_parts(
+        parts: list[tuple[str, str]], # Output of `divide_latex_text`
+        custom_commands: list[tuple[str, int, Union[str, None], str]],
+        vault: PathLike, # An Obsidian.md vault,
+        location: PathLike, # The path to make the new reference folder. Relative to `vault`.
+        reference_name: PathLike, # The name of the new reference.
+        authors: Union[str, list[str]], # Each str is the family name of each author.
+        author_folder: PathLike = '_mathematicians', # The directory where the author files are stored in. Relative to `vault`.
+        references_folder: PathLike = '_references', # The directory where the references files are stored in. Relative to `vault`.
+        templates_folder: PathLike = '_templates', # The directory where the template files are stored in. Relative to `vault`.
+        template_file_name: str = '_template_common', # The template file from which to base the template file of the new reference.
+        notation_index_template_file_name: str = '_template_notation_index', # The template file from which to base the notation index file of the new reference.
+        glossary_template_file_name: str = '_template_glossary', # The template file from which to base the glossary file of the new reference.
+        setup_temp_folder: bool = True, # If `True`, creates a `_temp` folder with an index file. This folder serves to house notes auto-created from LaTeX text files before moving them to their correct directories. Defaults to `True`.
+        make_second_template_file_in_reference_directory: bool = True, # If `True`, creates a copy of the template note within the directory for the reference.
+        copy_obsidian_configs: Optional[PathLike] = '.obsidian', # The folder relative to `vault` from which to copy obsidian configs.  If `None`, then no obsidian configs are copied to the reference folder. Defaults to `.obsidian`. 
+        overwrite: Union[str, None] = None, # Specifies if and how to overwrite the reference folder if it already exists.  - If `'w'`, then deletes the contents of the existing reference folder, as well as the template and reference file before setting up the reference folder before creating the new reference folder.  - If `'a'`, then overwrites the contents of the reference folder, but does not remove existing files/folders.  - If `None`, then does not modify the existing reference folder and raises a `FileExistsError`.
+        confirm_overwrite: bool = True, # Specifies whether or not to confirm the deletion of the reference folder if it already exists and if `overwrite` is `'w'`. Defaults to `True`.
+        verbose: bool = False,
+        replace_custom_commands: bool = True # If `True`, replace the custom commands in 
+        ) -> None:
+    """Set up a reference folder in `vault` using an output of `divide_latex_text`.
+
+    cf. `setup_folder_for_new_reference` for the way that 
+
+    """
+
+    chapters = section_and_subsection_titles_from_latex_parts(parts)
+    setup_reference_from_latex_parts(
+        reference_name, location, authors, vault, author_folder, references_folder,
+        templates_folder, template_file_name, notation_index_template_file_name, 
+        glossary_template_file_name, chapters, setup_temp_folder,
+        make_second_template_file_in_reference_directory,
+        copy_obsidian_configs, overwrite, confirm_overwrite, verbose)
+    index_note = VaultNote(vault, rel_path=Path(location) / f'_index_{reference_name}.md')
+    
+    _create_latex_files_from_parts(parts, index_note)
+
+    return 
