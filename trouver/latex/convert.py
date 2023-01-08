@@ -750,17 +750,6 @@ def replace_command_in_text(
         lambda match: _replace_command(match, command_tuple, command_pattern, replace_pattern),
         text)
     return text
-    # if optional_arg is not None:
-    #     trailing_arguments = [_argument_detection(i) for i in range(2, 1+num_parameters)]
-    #     trailing_args_pattern = "\\s*".join(trailing_arguments)
-    #     pattern = (f"{pattern}\\s*{trailing_args_pattern}")
-    # elif num_parameters > 0:
-    #     arguments = [_argument_detection(i) for i in range(1, 1+num_parameters)]
-    #     args_pattern = "\\s*".join(arguments)
-    #     pattern = f"{backslash_name}\\s*{args_pattern}"
-    # else:
-    #     pattern = f"{backslash_name}"
-    # return regex.compile(pattern)
 
 def _replace_command(
         match: regex.match,
@@ -821,7 +810,7 @@ def replace_commands_in_latex_document(
 
 # %% ../../nbs/16_latex.convert.ipynb 113
 def adjust_common_syntax_to_markdown(
-        text):
+        text) -> str:
     """
     Adjust some common syntax, such as math mode delimiters and equation/align
     environments, for Markdown.
@@ -830,7 +819,11 @@ def adjust_common_syntax_to_markdown(
     are not used otherwise.
     """
     # TODO
-    return
+    text = re.sub(r'\\\(|\\\)', '$', text)
+    text = re.sub(r'\\\[|\\]', '$$', text)
+    text = re.sub(r'(\\begin\{(?:align|equation)\*?\})', r'$$\1', text)
+    text = re.sub(r'(\\end\{(?:align|equation)\*?\})', r'\1$$', text)
+    return text
 
 # %% ../../nbs/16_latex.convert.ipynb 116
 def _create_notes_from_parts(
@@ -842,9 +835,24 @@ def _create_notes_from_parts(
         return
 
 # %% ../../nbs/16_latex.convert.ipynb 117
+def _replace_custom_commands_in_parts(
+        parts: list[tuple[str, str]],
+        custom_commands: list[tuple[str, int, Union[str, None], str]]
+        ) -> list[tuple[str, str]]:
+    return [(title, replace_commands_in_text(text, custom_commands))
+            for title, text in parts]
+
+
+def _adjust_common_syntax_to_markdown_in_parts(
+        parts: list[tuple[str, str]]
+        ) -> list[tuple[str, str]]:
+    return [(title, adjust_common_syntax_to_markdown(text))
+            for title, text in parts]
+
+# %% ../../nbs/16_latex.convert.ipynb 118
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
-        custom_commands: list[tuple[str, int, Union[str, None], str]],
+        custom_commands: list[tuple[str, int, Union[str, None], str]], # Output of `custom_commands` applied to the preamble of the LaTeX ddocument.`
         vault: PathLike, # An Obsidian.md vault,
         location: PathLike, # The path to make the new reference folder. Relative to `vault`.
         reference_name: PathLike, # The name of the new reference.
@@ -861,11 +869,15 @@ def setup_reference_from_latex_parts(
         overwrite: Union[str, None] = None, # Specifies if and how to overwrite the reference folder if it already exists.  - If `'w'`, then deletes the contents of the existing reference folder, as well as the template and reference file before setting up the reference folder before creating the new reference folder.  - If `'a'`, then overwrites the contents of the reference folder, but does not remove existing files/folders.  - If `None`, then does not modify the existing reference folder and raises a `FileExistsError`.
         confirm_overwrite: bool = True, # Specifies whether or not to confirm the deletion of the reference folder if it already exists and if `overwrite` is `'w'`. Defaults to `True`.
         verbose: bool = False,
-        replace_custom_commands: bool = True # If `True`, replace the custom commands in 
+        replace_custom_commands: bool = True, # If `True`, replace the custom commands in the text of `parts` when making the notes.
+        adjust_common_latex_syntax_to_markdown: bool = True, # If `True`, apply `adjust_common_syntax_to_markdown` to the text in `parts` when making the notes.`
         ) -> None:
     """Set up a reference folder in `vault` using an output of `divide_latex_text`.
 
-    cf. `setup_folder_for_new_reference` for the way that 
+    `parts` itself is not modified, even if `replace_custom_commands` and/or
+    `adjust_common_latex_syntax_to_markdown` are set to `True`.
+
+    cf. `setup_folder_for_new_reference`.
 
     """
 
@@ -877,7 +889,10 @@ def setup_reference_from_latex_parts(
         make_second_template_file_in_reference_directory,
         copy_obsidian_configs, overwrite, confirm_overwrite, verbose)
     index_note = VaultNote(vault, rel_path=Path(location) / f'_index_{reference_name}.md')
-    
-    _create_latex_files_from_parts(parts, index_note)
 
-    return 
+    if replace_custom_commands:
+        parts = _replace_custom_commands_in_parts(parts)
+    if adjust_common_latex_syntax_to_markdown:
+        parts = adjust_common_latex_syntax_to_markdown(parts)
+    
+    _create_notes_from_parts(parts, index_note)
