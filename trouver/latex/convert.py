@@ -5,7 +5,7 @@ __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'remove_comments', 'divide_preamble'
            'environment_names_used', 'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble',
            'display_names_of_environments', 'get_node_from_simple_text', 'swap_numbers_invoked', 'divide_latex_text',
            'section_and_subsection_titles_from_latex_parts', 'custom_commands', 'regex_pattern_detecting_command',
-           'replace_command_in_text', 'replace_commands_in_latex_document']
+           'replace_command_in_text', 'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
 from collections import OrderedDict
@@ -802,3 +802,13 @@ def replace_commands_in_latex_document(
         document = replace_command_in_text(document, command_tuple)
     return document
     
+
+# %% ../../nbs/16_latex.convert.ipynb 115
+def adjust_common_syntax_to_markdown(
+        text):
+    """
+    Adjust some common syntax, such as math mode delimiters and equation/align environments,
+    for Markdown.
+    """
+    # TODO
+    return
