@@ -4,8 +4,8 @@
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'remove_comments', 'divide_preamble', 'NoDocumentNodeError', 'find_document_node',
            'environment_names_used', 'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble',
            'display_names_of_environments', 'get_node_from_simple_text', 'swap_numbers_invoked', 'divide_latex_text',
-           'custom_commands', 'regex_pattern_detecting_command', 'replace_command_in_text',
-           'replace_commands_in_latex_document']
+           'section_and_subsection_titles_from_latex_parts', 'custom_commands', 'regex_pattern_detecting_command',
+           'replace_command_in_text', 'replace_commands_in_latex_document']
 
 # %% ../../nbs/16_latex.convert.ipynb 3
 from collections import OrderedDict
@@ -580,23 +580,6 @@ def _process_node(
         # This offsets the incorrectly incrementation.
     return accumulation
 
-    # if (_is_section_node(node)
-    #         or _is_subsection_node(node)
-    #         or _is_environment_node(node)):
-    #     accumulation =  _append_non_environment_accumulation_to_parts_if_non_empty(
-    #         accumulation, counters, parts)
-        
-    #     parts.append([
-    #         _title(
-    #             node, numbertheorem_counters, numberwithins, all_numberwithins,
-    #             display_names, counters, swap_numbers),
-    #         node.latex_verbatim()])
-    # else:
-    #     accumulation += node.latex_verbatim()
-    #     # In _change_counters`, the '' counter is incremented by default.
-    #     # This offsets the incorrectly incrementation.
-    # return accumulation
-
 
 def _append_non_environment_accumulation_to_parts_if_non_empty(
         accumulation: str, counters, parts):
@@ -629,7 +612,54 @@ def _node_warrants_new_part(
     return node.environmentname not in environments_to_not_divide_along
 
 
+# %% ../../nbs/16_latex.convert.ipynb 96
+def _part_is_of_section(
+        part: tuple[str, str]):
+    """Return `True` if `part` specifies a section, cf. ``divide_latex_text``."""
+    return part[1].startswith(r'\section')
+    # node = get_node_from_simple_text(part[1])
+    # return _is_section_node(node)
+
+
+def _part_is_of_subsection(
+        part: tuple[str, str]):
+    """Return `True` if `part` specifies a subsection, cf. ``divide_latex_text``."""
+    return part[1].startswith(r'\subsection')
+    # node = get_node_from_simple_text(part[1])
+    # return _is_subsection_node(node)
+
 # %% ../../nbs/16_latex.convert.ipynb 98
+def section_and_subsection_titles_from_latex_parts(
+        parts: list[tuple[str, str]], # An output of ``divide_latex_text``
+        # verbose_sections: bool = False, # 
+        # short_subsections: bool = False,
+        # section_name: str = 'section',
+        # subsection_name: str = 'subsection')\
+        ) -> list[list[str]]: # Each list corresponds to a section. The first entry of the list is the title of the section and the other entries are the titles of the subsections. 
+    """
+    Return a list of lists of titles for the sections and subsections in `parts`
+
+    Unnumbered sections get their own list. Unnumbered subsections are also included in lists.
+    """
+    sections_and_subsections = []
+    for part in parts:
+       _consider_part_to_add(part, sections_and_subsections) 
+    return sections_and_subsections
+
+
+def _consider_part_to_add(
+        part: list[tuple[str, str]],
+        sections_and_subsections: list[list[str]]):
+    """Add the title of part appropriately if part is of a section or subsection."""
+    if _part_is_of_section(part):
+        sections_and_subsections.append([part[0]])
+    elif _part_is_of_subsection(part):
+        sections_and_subsections[-1].append(part[0])
+    
+        
+
+
+# %% ../../nbs/16_latex.convert.ipynb 104
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -665,7 +695,7 @@ def custom_commands(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 101
+# %% ../../nbs/16_latex.convert.ipynb 107
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -697,7 +727,7 @@ def _argument_detection(group_num: int):
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 103
+# %% ../../nbs/16_latex.convert.ipynb 109
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -749,7 +779,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 105
+# %% ../../nbs/16_latex.convert.ipynb 111
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:
