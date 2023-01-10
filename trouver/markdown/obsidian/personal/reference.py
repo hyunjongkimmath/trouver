@@ -616,7 +616,10 @@ def setup_folder_for_new_reference(
     
     1. The folder
     2. An index file
-    3. Chapter folders and indices
+    3. Chapter folders and indices; the folder names are given by
+      `convert_title_to_folder_name(<title_with_numbering>)` where
+      `title_with_numbering` is the title of the chapter with its
+      numbering if available, e.g. `1. Introduction`.
     4. Files in the `Mathematicians` folder, if applicable.
     5. A reference file
         - For embedding in the standard information notes for the reference
