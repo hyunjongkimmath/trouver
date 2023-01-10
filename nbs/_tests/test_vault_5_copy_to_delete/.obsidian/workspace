@@ -1,0 +1,308 @@
+{
+  "main": {
+    "id": "7b25d969bf8b07ab",
+    "type": "split",
+    "children": [
+      {
+        "id": "7ae4465ce2f072b8",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "7ae4465ce2f072b8",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"_journal/2022/journal_10_2022.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":25,\"ch\":166},\"to\":{\"line\":25,\"ch\":166}},\"scroll\":9.46543465506664}"
+            },
+            {
+              "leaf": "7ae4465ce2f072b8",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_seminars/UW_Madison_GNTS/fall_2022/_index_GNTS_fall_2022.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            },
+            {
+              "leaf": "7ae4465ce2f072b8",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"number_theory/_seminars/UW_Madison_GNTS/_index_UW_Madison_GNTS.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":1,\"ch\":26},\"to\":{\"line\":1,\"ch\":26}}}"
+            },
+            {
+              "leaf": "7ae4465ce2f072b8",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/_index_research_ELS.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "_journal/2022/journal_10_2022.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "6b4b4d8d6e057fba",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "6b4b4d8d6e057fba",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md\",\"mode\":\"preview\",\"source\":true}}",
+              "eState": "{\"scroll\":739.4651988636364}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md",
+            "mode": "preview",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "8e03d2eb3f87a3f4",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "8e03d2eb3f87a3f4",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/_index_research_generalizing_the_main_theorem_of_ELS_to_superelliptic_curve.md\",\"mode\":\"source\",\"source\":true}}",
+              "eState": "{\"cursor\":{\"from\":{\"line\":25,\"ch\":46},\"to\":{\"line\":25,\"ch\":46}},\"scroll\":18.635244018218653}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/_index_research_generalizing_the_main_theorem_of_ELS_to_superelliptic_curve.md",
+            "mode": "source",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "21ca5fd0b1860769",
+        "type": "leaf",
+        "pane-relief:history-v1": {
+          "pos": 0,
+          "stack": [
+            {
+              "leaf": "21ca5fd0b1860769",
+              "group": null,
+              "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_graded_ring_of_EVW_for_Z_ell_Z_zeta_3_rtimes_zeta_3.md\",\"mode\":\"preview\",\"source\":true}}",
+              "eState": "{}"
+            }
+          ]
+        },
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_graded_ring_of_EVW_for_Z_ell_Z_zeta_3_rtimes_zeta_3.md",
+            "mode": "preview",
+            "source": true
+          }
+        }
+      },
+      {
+        "id": "57d8beeadf16f412",
+        "type": "split",
+        "children": [
+          {
+            "id": "4ac454e5303e0e36",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "4ac454e5303e0e36",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":531.2138097426471}"
+                }
+              ]
+            },
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md",
+                "mode": "preview",
+                "source": true
+              }
+            }
+          },
+          {
+            "id": "f7c6c527cebcbe1e",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "leaf": "f7c6c527cebcbe1e",
+                  "group": null,
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md\",\"mode\":\"preview\",\"source\":true}}",
+                  "eState": "{\"scroll\":752.7210607394367}"
+                }
+              ]
+            },
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md",
+                "mode": "preview",
+                "source": true
+              }
+            }
+          }
+        ],
+        "direction": "horizontal"
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c8176f3d94637c5b",
+    "type": "split",
+    "children": [
+      {
+        "id": "60668972a310f28e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6b58208a5afd5df",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "ab9f441e34772388",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "_research_orbits_of_burau_",
+                "matchingCase": false,
+                "explainSearch": true,
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8bcd679402673a5d",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "recent-files",
+              "state": {}
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "horizontal",
+    "width": 369.50397300720215,
+    "collapsed": true
+  },
+  "right": {
+    "id": "0f8a2ceeaedb9bce",
+    "type": "split",
+    "children": [
+      {
+        "id": "d09904971f9ddeb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b246426e91c03db",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_graded_ring_of_EVW_for_Z_ell_Z_zeta_3_rtimes_zeta_3.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": true,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "6e5f7a9a2b66e4a7",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "alphabetical",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "722cd5bd240d1481",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": []
+            },
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_graded_ring_of_EVW_for_Z_ell_Z_zeta_3_rtimes_zeta_3.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 271
+  },
+  "active": "21ca5fd0b1860769",
+  "lastOpenFiles": [
+    "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/_index_research_generalizing_the_main_theorem_of_ELS_to_superelliptic_curve.md",
+    "algebraic_geometry/_research/ELS/generalizing_the_main_theorem_to_superelliptic_curve/research_burau_representation_is_unitary.md",
+    "_references/A-E/E/_reference_ellenberg_venkatesh_westerland.md",
+    "_references/A-E/E/_reference_ellenberg_li_shusterman.md",
+    "number_theory/18785/20_the_kronecker_weber_theorem/3_a_brief_introduction_to_kummer_theory/18785_page_194.md",
+    "number_theory/18785/6_ideal_norms_and_the_dedekind_kummer_theorem/5_the_dedekind_kummer_theorem/18785_Theorem 6.14.md",
+    "_journal/2022/journal_10_2022.md",
+    "number_theory/_seminars/UW_Madison_GNTS/fall_2022/GNTS_10_11_2022.md",
+    "_templates/K-O/M/_template_mumford_av.md",
+    "_references/K-O/M/_reference_mumford_av.md"
+  ]
+}

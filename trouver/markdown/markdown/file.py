@@ -115,7 +115,7 @@ class MarkdownLineEnum(Enum):
     INLINE_LATEX_END = 14  # End line of inline latex
     INLINE_LATEX = 15  # All other inline latex lines
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 18
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 20
 class MarkdownFile:
     r"""
     Parses and represents the contents of an Obsidian styled Markdown
@@ -201,8 +201,6 @@ class MarkdownFile:
             ) -> dict[str, str]: # Each key is the entire str of the heading, including the leading sharps `'#'`, but not including leading or trailing whitespace characters Each value is the str under that heading until the next heading, including at trailing next line characters `\n`.  If `include_start` is `True`, then one of the keys is the empty str and the corresponding value is the start of the text that is not under any heading.
         # TODO I think there is a bug, e.g. when all headers are level 1 and 
         # level = 2, include_start = True, everything is treated like the start.
-        # See `_index_29_the_lefschetz_fixed_point_formula_for_nonconstant_sheaves`
-        # for an example.
         """
         Return a list of headings and the text under each heading.
         
@@ -970,7 +968,7 @@ class MarkdownFile:
         list_to_copy_with = self.parts
         if deep:
             list_to_copy_with = copy.deepcopy(list_to_copy_with)
-        self.__class__.from_list(list_to_copy_with)
+        return self.__class__(list_to_copy_with)
 
     @classmethod
     def _look_at_start_of_file(cls, list_of_lines: list[str])\

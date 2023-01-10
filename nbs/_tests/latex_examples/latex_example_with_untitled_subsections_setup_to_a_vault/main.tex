@@ -1,0 +1,238 @@
+% The following is an example latex document on which to apply
+% `setup_reference_from_latex_parts`.
+% It is based on https://arxiv.org/abs/0912.0325.
+
+\documentclass[10pt]{amsart}
+
+\usepackage{amsmath,amscd,amsfonts,amsthm,amssymb,url}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+
+
+
+
+ \DeclareFontFamily{OT1}{rsfs}{}
+ \newcommand{\tors}{\mathrm{tors}}
+\DeclareFontShape{OT1}{rsfs}{n}{it}{<-> rsfs10}{}
+\DeclareMathAlphabet{\mathscr}{OT1}{rsfs}{n}{it}
+
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\car}{char}
+\newcommand{\con}{\mathcal{C}}
+\newcommand{\triv}{\mathrm{triv}}
+\newcommand{\Gsharp}{G^{\sharp}}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\PGL}{PGL}
+\newcommand{\GSp}{\mathrm{GSp}}
+\newcommand{\agCHur}{\mathbf{CHur}}
+\newcommand{\order}{\mathrm{o}}
+\newcommand{\mrk}{\mathrm{m}}
+\newcommand{\lgp}{\mathcal{L}}
+\newcommand{\Sur}{\mathrm{Sur}}
+\newcommand{\bagCHur}{\overline{\mathbf{CHur}}}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Sp}{Sp}
+\newcommand{\dusspant}{gluing pant}
+\newcommand{\baseR}{R}
+\DeclareMathOperator{\Cl}{Cl}
+\newcommand{\Mod}{\mathrm{Mod}}
+\newcommand{\Rbar}{\bar{R}}
+\newcommand{\geom}{\mathrm{geom}}
+\newcommand{\Aone}{A(R)}
+\newcommand{\Atwo}{A(R) +   \deg(U)}
+\DeclareMathOperator{\Rea}{Re}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Lie}{Lie}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Proj}{Proj}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\NS}{NS}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Tate}{Tate}
+%\DeclareMathOperator{\Mod}{Mod}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\Ind}{Ind}
+\newcommand{\Hn}{\mathsf{Hn}}
+\newcommand{\PHn}{\mathsf{PHn}}
+\newcommand{\Hm}{\mathsf{Hm}}
+\newcommand{\Ho}{\mathsf{Ho}}
+\newcommand{\Hf}{\mathsf{Hf}}
+%\newcommand{\CHn}{\mathsf{CHn}}
+\newcommand{\CHm}{\mathsf{CHm}}
+\newcommand{\CHo}{\mathsf{CHo}}
+\newcommand{\CHf}{\mathsf{CHf}}
+\newcommand{\SConf}{\mathsf{Conf'}}
+\newcommand{\SPConf}{\mathsf{PConf}}
+\newcommand{\AConf}{\mathsf{Conf}}
+\newcommand{\PreHn}{\mathsf{H}}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Div}{Div}
+\DeclareMathOperator{\Ord}{ord}
+\DeclareMathOperator{\Conf}{Conf}
+\DeclareMathOperator{\tConf}{\widetilde{Conf}}
+\DeclareMathOperator{\Hur}{Hur}
+\DeclareMathOperator{\CHur}{CHur}
+\newcommand{\Duniv}{D_{\mathrm{univ}}}
+\DeclareMathOperator{\Tor}{Tor}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\gr}{gr}
+\DeclareMathOperator{\Aff}{Aff}
+
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\del}{\delta}
+\newcommand{\Ql}{\field{Q}_\ell}
+\newcommand{\Qp}{\field{Q}_p}
+\newcommand{\GG}{\mathcal{G}}
+\newcommand{\G}{\mathbb{G}}
+%\newcommand{\Aff}{\mathrm{Aff}}
+\newcommand{\Q}{\field{Q}}
+\newcommand{\A}{\field{A}}
+\newcommand{\Zp}{\field{Z}_p}
+\newcommand{\Zhat}{\hat{\field{Z}}}
+\newcommand{\Z}{\field{Z}}
+\newcommand{\F}{\field{F}}
+\newcommand{\CHHur}{\mathbf{CHur}}
+\DeclareMathOperator{\ind}{ind}
+
+\newcommand{\modmod}{/\!\!/}
+
+\newcommand{\Fp}{\field{F}_p}
+\newcommand{\Quads}{\mathfrak{S}}
+\newcommand{\Fpbar}{\bar{\field{F}}_p}
+ \newcommand{\Pop}{\mathcal{G}}
+\newcommand{\Popt}{\widetilde{\mathcal{G}}}
+\newcommand{\R}{\field{R}}
+\newcommand{\C}{\field{C}}
+\renewcommand{\P}{\field{P}}
+\newcommand{\ord}{\mbox{ord}}
+\newcommand{\EE} {\mathbb{E}}
+\newcommand{\XX} {\mathcal{X}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\Gm}{\mathbb{G}_m}
+\newcommand{\Tr}{\mbox{\textnormal Tr}}
+\newcommand{\Norm}{\mbox{\normalfont \bf N}}
+\newcommand{\arc}{\mathcal{A}}
+\newcommand{\id}{\mbox{id}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\mat}[4]{\left[\begin{array}{cc}#1 & #2 \\
+                                         #3 & #4\end{array}\right]}
+\newcommand{\iso} {\stackrel{\sim}{\ra}}
+\newcommand{\inj}{\hookrightarrow}
+\newcommand{\tensor} {\otimes}
+\newcommand{\ww}{\underline{\omega}}
+\newcommand{\dual}[1]{#1^{\vee}}
+\newcommand{\II}{\mathcal{I}}
+\newcommand{\ru}{\mathbf{\mu}}
+\newcommand{\bs}{\backslash}
+\newcommand{\compl}[1]{\hat{#1}}
+\newcommand{\MM}{\mathcal{M}}
+\newcommand{\Fqbar}{\overline{\mathbb{F}}_q}
+\newcommand{\HHur}{\mathbf{Hur}}
+\newcommand{\bHHur}{\overline{\mathbf{Hur}}}
+\newcommand{\SHom}{\mathrm{Sur}}
+\newcommand{\GalK}{\Gal(\bar{K}/K)}
+\newcommand{\GalQ}{\Gal(\bar{\Q}/\Q)}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\Koszul}{\mathcal{K}}
+\newcommand{\Disc}{\mathcal{D}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\ff}{f_{F'/F}}
+\newcommand{\FF}{\mathcal{F}}
+\newcommand{\notdiv}{\not | \,}
+\newcommand{\beq}{\begin{displaymath}}
+\newcommand{\eeq}{\end{displaymath}}
+\newcommand{\beqn}{\begin{equation}}
+\newcommand{\eeqn}{\end{equation}}
+\newcommand{\Conj}{\mathcal{C}}
+\newcommand{\Diff}{\mathrm{Diff}}
+\newcommand{\Cyl}{\mathrm{Cyl}}
+\newcommand{\Jac}{\mathrm{Jac}}
+\newcommand{\Surj}{\mathrm{Sur}}
+\newcommand{\Inj}{\mathrm{Inj}}
+
+\newcommand{\attn}[1]{\begin{center}\framebox{\begin{minipage}{8cm}#1
+\end{minipage}}\end{center}}
+%
+%
+%
+%
+%
+
+%
+
+\numberwithin{equation}{subsection}
+\renewcommand{\theequation}{\thesubsection.\arabic{equation}}
+
+\newenvironment{enumrom}
+{\renewcommand{\theenumi}{\roman{enumi}} \begin{enumerate}}
+{\end{enumerate} \renewcommand{\theenumi}{\arabic{enumi}}}
+
+\swapnumbers
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsection]{Theorem}
+\newtheorem{prop}[subsection]{Proposition}
+\newtheorem{cor}[subsection]{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem{conj}[subsection]{Conjecture}
+\newtheorem*{conj*}{Conjecture}
+
+\newtheorem{lem}[subsection]{Lemma}
+\newtheorem*{sublem}{Sublemma}
+
+\newtheorem*{intro}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsection]{Definition}
+\newtheorem*{defn*}{Definition}
+\newtheorem*{prop*}{Proposition}
+\newtheorem*{cor*}{Corollary}
+\newtheorem*{lem*}{Lemma}
+\newtheorem{exmp}[subsection]{Example}
+
+\theoremstyle{remark}
+\newtheorem{rem}[subsection]{Remark}
+\newtheorem*{rem*}{Remark}
+\newtheorem{rems}[subsection]{Remarks}
+\newtheorem{note}[subsection]{Note}
+\newtheorem{warn}[subsection]{Warning}
+
+\setcounter{tocdepth}{1} 
+
+\begin{document}
+
+\section{A section with some untitled subsections} \label{Rhomology}
+
+
+Some description of the section is going on. Note that the theorem-like environments share the same counter as subsections. 
+
+
+\subsection{} \label{kcomplex}
+
+Note that this subsection is unnumbered. I have to be careful with implementing \verb|setup_reference_from_latex_parts| to make sure that the text before this subsection is included in some Markdown note and that the note is index in the appropriate index note.
+
+ The following is an equation:
+
+\begin{equation} \label{koszuldef} 
+5+7 = 12
+\end{equation} 
+
+Maybe we describe this equation.
+ 
+\begin{thm} \label{Koszulbound}
+Here is a theorem. Maybe it also has an equation:
+
+\begin{equation} \label{koszuldef} 
+5+7 = 12
+\end{equation} 
+
+ \end{thm}
+ 
+Maybe some more things tare discussed.
+\end{document}

@@ -1,0 +1,606 @@
+
+% Based on https://arxiv.org/abs/2209.00718
+
+\documentclass[12 pt]{amsart}
+
+\usepackage{hyperref}
+\usepackage{etex}
+\usepackage[shortlabels]{enumitem}
+\usepackage{amsmath}
+\usepackage{amsxtra}
+\usepackage{amscd}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{eucal}
+\usepackage[all]{xy}
+\usepackage{graphicx}
+\usepackage{tikz-cd}
+\usepackage{mathrsfs}
+\usepackage{subfiles}
+\usepackage{mathpazo}
+%\usepackage{euler}
+\usepackage[colorinlistoftodos, textsize=tiny]{todonotes}
+\setlength{\marginparwidth}{2cm}
+\usepackage{morefloats}
+\usepackage{pdfpages}
+\usepackage{thm-restate}
+\usepackage[utf8]{inputenc}
+\usepackage{epigraph}
+\usepackage{csquotes}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{adjustbox}
+\usepackage{scalerel}
+\usepackage{stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}% 
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+
+
+
+
+\graphicspath{ {images/} }
+
+\RequirePackage{color}
+\definecolor{myred}{rgb}{0.75,0,0}
+\definecolor{mygreen}{rgb}{0,0.5,0}
+\definecolor{myblue}{rgb}{0,0,0.65}
+
+\usepackage{color}
+\newcommand{\daniel}[1]{{\color{blue} \sf
+    $\spadesuit\spadesuit\spadesuit$ DANIEL: [#1]}}
+\newcommand{\rboxed}[1]{\boxed{#1}}
+%\renewcommand{\rboxed}[1]{#1}
+\newcommand{\aaron}[1]{{\color{red} \sf
+    $\spadesuit\spadesuit\spadesuit$ AARON: [#1]}}
+
+
+
+\usepackage{hyperref}
+\hypersetup{citecolor=blue}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows,decorations.pathmorphing}
+
+%\numberwithin{equation}{subsection} 
+%\numberwithin{figure}{subsection} 
+
+\theoremstyle{plain}
+\newtheorem{theorem}[subsection]{Theorem}
+\newtheorem{slogan}[subsection]{Slogan}
+\newtheorem{proposition}[subsection]{Proposition}
+\newtheorem{lemma}[subsection]{Lemma}
+\newtheorem{corollary}[subsection]{Corollary}
+\newtheorem{situation}[subsection]{Situation}
+\newtheorem{problem}[subsection]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[subsection]{Definition}
+\newtheorem{remark}[subsection]{Remark}
+\newtheorem{example}[subsection]{Example}
+\newtheorem{exercise}[subsection]{Exercise}
+\newtheorem{counterexample}[subsection]{Counterexample}
+\newtheorem{convention}[subsection]{Convention}
+\newtheorem{question}[subsection]{Question}
+\newtheorem{conjecture}[subsection]{Conjecture} 
+\newtheorem{goal}[subsection]{Goal}
+\newtheorem{warn}[subsection]{Warning}
+\newtheorem{fact}[subsection]{Fact}
+\theoremstyle{remark}
+\newtheorem{notation}[subsection]{Notation}
+\newtheorem{construction}[subsection]{Construction}
+\numberwithin{equation}{section}
+\newcommand\nc{\newcommand}
+\nc\on{\operatorname}
+\nc\renc{\renewcommand}
+\newcommand\se{\section}
+\newcommand\ssec{\subsection}
+\newcommand\sssec{\subsubsection}
+
+
+  
+\newcommand\ba{\mathbb A}
+\newcommand\bb{\mathbb B}
+\newcommand\bc{\mathbb C}
+\newcommand\bd{\mathbb D}
+\newcommand\be{\mathbb E}
+\newcommand\bbf{\mathbb F}
+\newcommand\bg{\mathbb G}
+\newcommand\bh{\mathbb H}
+\newcommand\bi{\mathbb I}
+\newcommand\bj{\mathbb J}
+\newcommand\bl{\mathbb L}
+\newcommand\bm{\mathbb M}
+\newcommand\bn{\mathbb N}
+\newcommand\bo{\mathbb O}
+\newcommand\bp{\mathbb P}
+\newcommand\bq{\mathbb Q}
+\newcommand\br{\mathbb R}
+\newcommand\bs{\mathbb S}
+\newcommand\bt{\mathbb T}
+\newcommand\bu{\mathbb U}
+\newcommand\bv{\mathbb V}
+\newcommand\bw{\mathbb W}
+\newcommand\bx{\mathbb X}
+\newcommand\by{\mathbb Y}
+\newcommand\bz{\mathbb Z}
+
+\newcommand\fp{{\mathbb F_p}}
+\newcommand\fq{{\mathbb F_q}}
+
+\newcommand\fa{{\mathfrak a}}
+\newcommand\fm{{\mathfrak m}}
+\newcommand\fg{{\mathfrak g}}
+\newcommand\fh{{\mathfrak h}}
+\newcommand\fgl{{\mathfrak {gl}}}
+\newcommand\fsu{{\mathfrak {su}}}
+\newcommand\fsl{{\mathfrak {sl}}}
+\newcommand\fso{{\mathfrak {so}}}
+\newcommand\fo{{\mathfrak {o}}}
+\newcommand\fu{{\mathfrak {u}}}
+\newcommand\fsp{{\mathfrak {sp}}}
+\newcommand\fgsp{{\mathfrak {gsp}}}
+
+
+
+\newcommand\sca{\mathscr A}
+\newcommand\scb{\mathscr B}
+\newcommand\scc{\mathscr C}
+\newcommand\scd{\mathscr D}
+\newcommand\sce{\mathscr E}
+\newcommand\scf{\mathscr F}
+\newcommand\scg{\mathscr G}
+\newcommand\sch{\mathscr H}
+\newcommand\sci{\mathscr I}
+\newcommand\scj{\mathscr J}
+\newcommand\sck{\mathscr K}
+\newcommand\scl{\mathscr L}
+\newcommand\scm{\mathscr M}
+\newcommand\scn{\mathscr N}
+\newcommand\sco{\mathscr O}
+\newcommand\scp{\mathscr P}
+\newcommand\scq{\mathscr Q}
+\newcommand\scs{\mathscr S}
+\newcommand\sct{\mathscr T}
+\newcommand\scu{\mathscr U}
+\newcommand\scv{\mathscr V}
+\newcommand\scw{\mathscr W}
+\newcommand\scx{\mathscr X}
+\newcommand\scy{\mathscr Y}
+\newcommand\scz{\mathscr Z}
+
+\newcommand \ra{\rightarrow}
+\newcommand \xra{\xrightarrow}
+\newcommand \la{\rightarrow}
+\newcommand \xla{\xrightarrow}
+\DeclareMathOperator\spec{\text{Spec}}
+\DeclareMathOperator\proj{\text{Proj}}
+\DeclareMathOperator\rspec{\textit{Spec }}
+\DeclareMathOperator\rproj{\textit{Proj }}
+\newcommand*{\shom}{\mathscr{H}\kern -.5pt om}
+\newcommand*{\stor}{\mathscr{T}\kern -.5pt or}
+\newcommand*{\sext}{\mathscr{E}\kern -.5pt xt}
+\newcommand \mg{{\mathscr M_g}}
+
+\makeatletter
+\providecommand\@dotsep{5}
+\renewcommand{\listoftodos}[1][\@todonotes@todolistname]{%
+\@starttoc{tdo}{#1}}
+\makeatother
+
+\makeatletter
+\newcommand{\customlabel}[2]{\protected@write \@auxout {}{\string \newlabel {#1}{{#2}{\thepage}{#2}{#1}{}} }\hypertarget{#1}{#2}}
+%\newcommand\sh[1]{\sco_{#1}^{\rm{sh}}}
+\newcommand\bundle[1]{{\mathscr E}_{#1}}
+\newcommand\fbundle[1]{E_{#1}}
+\DeclareMathOperator\id{id}
+\DeclareMathOperator\sh{sh}
+\DeclareMathOperator\tor{Tor}
+\DeclareMathOperator\ext{Ext}
+\DeclareMathOperator\red{red}
+\renewcommand\hom{\mathrm{Hom}}
+\DeclareMathOperator\coker{coker}
+\DeclareMathOperator\ord{ord}
+\DeclareMathOperator\hilb{Hilb}
+\DeclareMathOperator\conf{Conf}
+\DeclareMathOperator\rk{rk}
+\DeclareMathOperator\di{div}
+\DeclareMathOperator\pic{Pic}
+\DeclareMathOperator\lcm{lcm}
+\DeclareMathOperator\rank{rank}
+\DeclareMathOperator\codim{codim}
+\DeclareMathOperator\vol{Vol}
+\DeclareMathOperator\supp{Supp}
+\DeclareMathOperator\spn{Span}
+\DeclareMathOperator\im{im}
+\DeclareMathOperator\End{End}
+\DeclareMathOperator\sym{Sym}
+\DeclareMathOperator\pgl{PGL}
+\DeclareMathOperator\sat{Sat}
+\DeclareMathOperator\blow{Bl}
+\renewcommand\sp{\mathrm{Sp}}
+\DeclareMathOperator\gsp{GSp}
+\DeclareMathOperator\sgn{sgn}
+\DeclareMathOperator\triv{triv}
+\DeclareMathOperator\ab{ab}
+\DeclareMathOperator\std{std}
+\DeclareMathOperator\perm{perm}
+\DeclareMathOperator\gal{Gal}
+\DeclareMathOperator\tr{tr}
+\DeclareMathOperator\frob{Frob}
+\DeclareMathOperator\chr{\text{char}}
+\newcommand\bk{{\Bbbk}}
+\newcommand\ul{\underline}
+\newcommand\ol{\overline}
+\DeclareMathOperator\pr{pr}
+\DeclareMathOperator\ev{ev}
+\DeclareMathOperator\cl{Cl}
+\DeclareMathOperator\res{Res}
+\DeclareMathOperator\prob{Prob}
+\DeclareMathOperator\Mod{Mod}
+\DeclareMathOperator\HMod{HMod}
+\DeclareMathOperator\I{I}
+\DeclareMathOperator\PW{PW}
+\DeclareMathOperator\HPW{HPW}
+\DeclareMathOperator\maj{maj}
+\DeclareMathOperator\inv{inv}
+\DeclareMathOperator\isom{isom}
+\DeclareMathOperator\mor{mor}
+\DeclareMathOperator\aut{Aut}
+\DeclareMathOperator\gl{GL}
+\DeclareMathOperator\spin{Spin}
+\DeclareMathOperator\pin{Pin}
+\renewcommand\sl{\mathrm{SL}}
+\DeclareMathOperator\asl{\mathrm{ASL}}
+\DeclareMathOperator\mat{Mat}
+\DeclareMathOperator\stab{Stab}
+\DeclareMathOperator\so{SO}
+\DeclareMathOperator\su{SU}
+\renewcommand\u{\mathrm{U}}
+\DeclareMathOperator\lie{Lie}
+\DeclareMathOperator\ad{ad}
+\DeclareMathOperator\Ad{Ad}
+\renewcommand\o{{\rm{O}}}
+\newcommand\osp{{\rm{O^*}}}
+\DeclareMathOperator\sel{Sel}
+\DeclareMathOperator\Br{Br}
+\DeclareMathOperator\val{val}
+\DeclareMathOperator\quo{Quo}
+\DeclareMathOperator\diag{diag}
+\DeclareMathOperator\out{Out}
+\DeclareMathOperator\orbits{Orbits}
+\DeclareMathOperator\sm{sm}
+\DeclareMathOperator\shf{shf}
+\DeclareMathOperator\disc{disc}
+\DeclareMathOperator\average{Average}
+\DeclareMathOperator\spinor{sp}
+\DeclareMathOperator\grp{grp}
+\DeclareMathOperator\gr{Gr}
+\DeclareMathOperator\et{\acute et}
+\DeclareMathOperator\tame{tame}
+\DeclareMathOperator\sing{sing}
+\DeclareMathOperator\an{an}
+\DeclareMathOperator\jac{Jac}
+\DeclareMathOperator\colim{colim}
+
+\renewcommand\top{\mathrm{top}}
+\DeclareFontFamily{U}{wncy}{}
+\DeclareFontShape{U}{wncy}{m}{n}{<->wncyr10}{}
+\DeclareSymbolFont{mcy}{U}{wncy}{m}{n}
+\DeclareMathSymbol{\Sha}{\mathord}{mcy}{"58} 
+
+\renewcommand{\sectionautorefname}{\S$\!$}
+\renewcommand{\subsectionautorefname}{\S$\!$}
+\renewcommand{\subsubsectionautorefname}{\S$\!$}
+
+
+\setcounter{MaxMatrixCols}{20}
+
+\def\listtodoname{List of Todos}
+\def\listoftodos{\@starttoc{tdo}\listtodoname}
+
+\title[Applications around the Putman-Wieland conjecture]{Applications of the algebraic geometry of the Putman-Wieland conjecture}
+\author{Aaron Landesman and Daniel Litt}
+
+\usepackage{microtype}
+\begin{document}
+
+
+
+\section{Isotypicity and non-unitarity}\label{section:bilinear-pairing}
+The main result of this section is \autoref{theorem:isotypic}, which states that
+counterexamples to Putman-Wieland in genus $\geq 3$ cannot be isotypic, i.e.,
+there exists an element of 
+$H^1(\Sigma_{g'}, \mathbb C)^\rho$ with infinite orbit under the action of a finite
+index subgroup of the mapping class group. We show more, namely \autoref{theorem:non-unitary}: if $X\to Y$ is an $H$-cover, where $Y$ has genus at least $3$, the virtual action of the mapping class group of $Y$ on an $H$-isotypic component of the cohomology of $X$ is non-unitary.
+
+In \autoref{corollary:boggi-looijenga} we use this to show how a
+ result from the retracted paper of Boggi-Looijenga \cite{boggiL:curves-with-prescribed-symmetry} would imply the Putman-Wieland conjecture.
+
+Our main tool for proving this is a natural bilinear pairing, which we
+next introduce.
+Let $C$ be a smooth proper connected curve of genus $g$, $D\subset C$ a reduced
+divisor, $E_\star$
+a parabolic vector bundle on $(C,D)$, and $E := E_0$. 
+As described in \cite[(4.5)]{landesmanL:canonical-representations}, there is a bilinear pairing
+\begin{align}
+	\label{equation:bilinear-pairing}
+	B_E:
+(E \otimes \omega_C(D))\times (E^\vee\otimes \omega_C) \to
+\omega_C^{\otimes 2}(D)
+\end{align}
+given as the composition $$B_E: (E \otimes \omega_C(D))\times (E^\vee\otimes \omega_C)\overset{\otimes}{\longrightarrow} (E\otimes E^\vee)\otimes \omega_C^{\otimes 2}(D)\overset{\on{tr}\otimes \on{id}}{\longrightarrow} \omega_C^{\otimes 2}(D),$$
+where $\on{tr}$ denotes the trace pairing ${E}\otimes {E}^\vee\to
+\mathscr{O}_C.$ 
+By restriction to $H^0(C, \widehat{E}_0 \otimes \omega_C(D)) \subset H^0(C, E \otimes
+\omega_C(D))$, we also obtain an induced pairing
+\begin{align*}
+	H^0(C, \widehat{E}_0 \otimes \omega_C(D)) \times H^0(C, E^\vee \otimes
+	\omega_C) \to H^0(C, \omega^{\otimes 2}_C(D)).
+\end{align*}
+
+%\begin{proposition}\label{proposition:pairing-result}
+%	Let $E_\star$ be a semistable parabolic bundle on $(C,D)$ of parabolic
+%	degree zero, with underlying vector bundle $E$. 
+%	Suppose $S \subset E \otimes \omega_C(D)$ is a subbundle of rank $c$ with sections
+%	$s_1, \ldots, s_c: \mathscr O \to E \otimes \omega_C(D)$ so that
+%	generically generate $S$, for which the
+%	corresponding pairings
+%	\begin{align*}
+%		H^0(C, B_E(s_i, \bullet)): H^0(C, E^\vee \otimes \omega_C) \to
+%		H^0(C, \omega_C^{\otimes 2}(D))
+%	\end{align*}
+%	induced by $B_E$ of \eqref{equation:bilinear-pairing} on global sections
+%	have rank $r_i$.
+%	Then $\on{rk}(E)\geq cg-\sum_{i=1}^c r_i.$
+%\end{proposition}
+%\begin{proof}
+%	Let $f_i := E^\vee \otimes \omega_C \to \omega_C^{\otimes 2}(D)$ denote
+%	the map adjoint to the section $s_i$
+%	and let $U_i := \ker f_i$.
+%	By definition of $r_i$ and the long exact sequence on cohomology
+%	\begin{equation}
+%		\label{equation:}
+%		\begin{tikzcd}
+%			0 \ar {r} & H^0(C, U_i) \ar {r} & H^0(C, E \otimes
+%			\omega_C) \ar {r} & H^0(C, \omega_C^{\otimes 2}(D)) 
+%	\end{tikzcd}\end{equation}
+%	we find $h^0(C, U_i) = H^0(C, E \otimes \omega_C) - r_i$.
+%	For $m \leq c$, a diagram chase yields
+%	$h^0(C, \cap_{i=1}^m U_i) \geq H^0(C, \cap_{i=1}^{m-1} U_i) - r_m$.
+%	Hence, induction on $m$ implies
+%	$h^0(C, \cap_{i=1}^m U_i) \geq h^0(C, E^\vee \otimes \omega_C) - \sum_{i=1}^c r_i$.
+%
+%	We will conclude by explaining how to apply
+%\autoref{proposition:generic-parabolic-global-generation}(II) with $\delta = r$,
+%and
+%$U = \cap_{i=1}^c U_i$, so that the corank of $U$ is $c$.
+%Set $n=\deg D$. 
+%Consider the coparabolic bundle $\reallywidehat{(E_\star)^\vee \otimes
+%\omega_C(D)}$, which is the Serre dual coparabolic bundle
+%to $E_\star$ as in \cite[Proposition 2.6.6]{LL:geometric-local-systems}.
+%This is coparabolically stable by definition and
+%has slope $\mu(\reallywidehat{(E_\star)^\vee \otimes
+%\omega_C(D)}) = 2g - 2+n$,
+%since $E_\star$ has parabolic slope $0$.
+%
+%By unwinding the definition of the Serre dual coparabolic bundle, one may verify $\reallywidehat{(E_\star)^\vee \otimes
+%\omega_C(D)}_0=E^\vee \otimes \omega_C.$
+%Therefore, the assumption of the proposition implies
+%\begin{align*}
+%	h^0(C,\reallywidehat{(E_\star)^\vee \otimes
+%\omega_C(D)}_0) - h^0(C, U) = 
+%h^0(C,E^\vee \otimes \omega_C) - h^0(C, U) = 
+%\sum_{i=1}^c r_i.
+%\end{align*}
+%Applying \autoref{proposition:generic-parabolic-global-generation}(II) 
+%to the coparabolic bundle
+%$\reallywidehat{(E_\star)^\vee \otimes
+%\omega_C(D)}$
+%with $U = \cap \ker(f_i)$ as defined above so that $\delta = r$ we find 
+%$\rk E=\rk \reallywidehat{(E_\star)^\vee \otimes \omega_C(D)} \geq cg -
+%\sum_{i=1}^c r_i.$
+%\end{proof}
+
+\begin{theorem}
+	\label{theorem:isotypic-derivative}
+	Let $E_\star$ be a semistable parabolic bundle on $(C,D)$ of parabolic
+	degree zero, with underlying vector bundle $E := E_0$. 
+	Suppose $g \geq 2$ and that the pairing $H^0(\widehat{E}_0 \otimes \omega_C(D)) \otimes H^0(E^\vee
+	\otimes \omega_C) \to H^0(C, \omega_C^{\otimes 2}(D))$ vanishes.
+	Then $g = 2$.
+\end{theorem}
+\begin{proof}
+	First, we may assume $\rk E > 1$ by \cite[Proposition
+	4.2.3]{landesmanL:canonical-representations}, as $g \geq 2$.
+	If $F_\star$ is a parabolic sheaf, we call the image of $H^0(C, F_0)
+	\otimes \mathscr O_C \to F_0 \subset F_\star$ the globally generated
+	subsheaf of
+	$F_\star$, which is by definition also a subsheaf of $F_0$.
+	Let $U \subset \widehat{E}_\star \otimes \omega_C(D)$ denote the globally generated
+	subsheaf of $\widehat{E}_\star \otimes \omega_C(D)$ and
+	$V$ denote the globally generated subsheaf  
+	of $\reallywidehat{((E_\star)^\vee \otimes \omega_C(D))}_0$.
+	Under the identifications 
+\begin{align*}
+	\left(\widehat{E}_\star \otimes \omega_C(D)\right)_0 &= \widehat{E}_0 \otimes \omega_C(D) \\
+\reallywidehat{((E_\star)^\vee \otimes \omega_C(D))}_0 &= E^\vee \otimes
+\omega_C,
+\end{align*}
+(see \cite[Definition 2.6.1]{LL:geometric-local-systems} for the notion of a dual of a parabolic bundle)
+$U$ and $V$ are also the globally generated subsheaves of
+$\widehat{E}_0 \otimes \omega_C(D)$ and $E^\vee \otimes \omega_C$ respectively.
+
+Let $c_V := \rk E - \rk V$ and $c_U := \rk E - \rk U.$
+Using \autoref{proposition:generic-parabolic-global-generation}
+applied to the bundles
+$E_\star \otimes \omega_C(D)$ and
+$E_\star^\vee \otimes \omega_C(D)$,
+we know $\rk E \geq g c_V$ and $\rk E \geq g c_U$.
+
+On the other hand, we claim $\rk U + \rk V \leq \rk E$.
+Granting this claim, we find $c_V + c_U \geq \rk E$.
+Since $\rk E \geq g c_V$ and $\rk E \geq g c_{U}$, adding these gives
+\begin{align*}
+	2 \rk E \geq g(c_V + c_U) \geq g \rk E,
+\end{align*}
+implying $2 \geq g$.
+
+It remains to show $\rk U + \rk V \leq \rk E$.
+We will argue this using the fact that an isotropic subsheaf for a non-degenerate quadratic
+form
+on a vector bundle of rank $2\rk E$ has rank at most $\rk E$.
+Indeed, consider the quadratic form $q_E$ on $E \otimes \omega_C(D) \oplus
+E^\vee \otimes \omega_C$ associated to the nondegenerate bilinear form $B_E$ of
+\eqref{equation:bilinear-pairing}:
+\begin{align*}
+	q_E : E \otimes \omega_C(D) \oplus
+	E^\vee \otimes \omega_C &\to \omega_C^{\otimes 2}(D) \\
+	(v,w) &\mapsto B_E(v,w).
+\end{align*}
+Any vector bundle subsheaf of $E \otimes \omega_C(D) \oplus E^\vee \otimes \omega_C$ 
+isotropic for this quadratic form has rank at most $\rk E$, as may be verified
+on the generic fiber using that isotropic subspaces of a rank $2 \rk E$
+non-degenerate quadratic space have dimension at most $\rk E$.
+Therefore, it is enough to
+show $U \oplus V$ is killed under $q_E$.
+Using $q_E(U \oplus V) = B_E(U \times V)$,
+it is enough to show $B_E(U \times V) = 0$.
+We have a commutative diagram
+\begin{equation}
+	\label{equation:}
+	\begin{tikzcd} 
+		(H^0(C, U) \otimes \mathscr O_C)\times  (H^0(C, V) \otimes \mathscr O_C) \ar {r} \ar {d}
+		& H^0(C, \omega_C^{\otimes 2}(D)) \otimes \mathscr O_C \ar {d} \\
+		U \times V \ar {r}{B_E} & \omega_C^{\otimes 2}(D)
+\end{tikzcd}\end{equation}
+where the top horizontal map vanishes by assumption.
+Since the vertical maps are surjective, the bottom horizontal map satisfies $B_E(U \times
+V) = 0$, as desired.
+\end{proof}
+
+\subsection{Proof of isotypicity}
+\label{subsection:isotypic-proof}
+
+We now deduce our desired isotypicity consequence, \autoref{theorem:isotypic} and \autoref{theorem:non-unitary}, 
+for the Putman-Wieland conjecture.
+With setup as in \autoref{conjecture:putman-wieland-intro},
+we have a cover $\Sigma_{g',n'} \to \Sigma_{g,n}$ and 
+an action of a finite index subgroup $\Gamma \subset \on{Mod}_{g,n+1}$
+on $H^1(\Sigma_{g',n'}, \mathbb C)$. We aim to show that if $\rho$ is any
+irreducible $H$ representation
+so that every element of the
+characteristic subspace
+$H^1(\Sigma_{g'}, \mathbb C)^\rho \subset H^1(\Sigma_{g',n'}, \mathbb C)$ has
+finite orbit under $\Gamma$,
+then $g \leq 2$.
+
+\begin{proof}[Proof of \autoref{theorem:isotypic} and \autoref{theorem:non-unitary}]
+We first prove \autoref{theorem:non-unitary}.
+
+	Assume to the contrary that the virtual action of  
+the mapping class group on $H^1(\Sigma_{g'}, \mathbb
+	C)^\rho$ is unitary. Let 
+	$\mathscr{X}^\circ\xrightarrow{\widetilde{f}^\circ}
+	\mathscr{C}^\circ\xrightarrow{\pi^\circ} \mathscr{M}$ be a versal
+	family of $H$-covers, and $\mathscr{X}\to \mathscr{C}\to \mathscr{M}$ the associated families of proper curves. Let $m\in \mathscr{M}$ be a point, and $X\to Y$ the fiber over $\mathscr{M}$ 
+	Let $E^\rho_\star$ be the parabolic bundle on $Y$ corresponding to the
+	representation $\rho$ as in \autoref{notation:rep-to-vector-bundle}.
+	
+	We claim the map
+	$\overline\nabla_m^\rho$ vanishes identically, as $W^1R^1\pi^\circ_*\rho$, the variation of Hodge structure on $\mathscr{M}$ associated to $H^1(X, \mathbb
+	C)^\rho$, is unitary by assumption. Indeed, by
+	\cite[1.13]{deligne1987theoreme}, we may write
+	$$W^1R^1\pi^\circ_*\rho=\bigoplus_i \mathbb{V}_i\otimes W_i,$$ where the
+	$\mathbb{V}_i$ are complex variations of Hodge structure with
+	irreducible monodromy and the $W_i$ are constant variations. The
+	$\mathbb{V}_i$ carry a unique structure of a $\mathbb{C}$-VHS, up to
+	renumbering. As $W^1R^1\pi^\circ_*\rho$ is unitary by assumption, the
+	same is true of each $\mathbb{V}_i$, and so the Hodge filtration of each
+	$\mathbb V_i$ has length at most one. This proves the claim that
+	$\overline\nabla_m^\rho = 0$.
+	
+%	By the last part of \autoref{lemma:period-map-kernel},
+%	$\overline{\nabla}^\rho_m$ vanishes identically for each $m\in \mathscr{M}$.
+Note that $\overline{\nabla}^\rho_m$ is the weight $1$ part of
+the map adjoint to the multiplication map
+\begin{align*}
+	H^0(Y, E^\rho_0 \otimes \omega_Y(D)) \otimes H^0((E^\rho_0)^\vee
+	\otimes \omega_Y) \to H^0(Y, \omega_Y^{\otimes 2}(D))
+\end{align*}
+	by \cite[Theorem 4.1.6]{landesmanL:canonical-representations}.
+	Since the 
+	subspace of $H^0(Y, E^\rho_0 \otimes \omega_Y(D))$ corresponding to $W^1\cap F^1$
+	is $H^0(Y, \widehat{E}_0^\rho \otimes \omega_Y(D))$ by
+	\autoref{lemma:weight-1-sections},
+	we obtain that the multiplication map
+	\begin{align*}
+		H^0(Y, \widehat{E}_0^\rho \otimes \omega_Y(D)) \otimes H^0((E^\rho_0)^\vee
+	\otimes \omega_Y) \to H^0(Y, \omega_Y^{\otimes 2}(D))
+	\end{align*}
+	also vanishes.
+	Using \autoref{theorem:isotypic-derivative}, this implies $g \leq 2$.
+	
+	\autoref{theorem:isotypic} is immediate, as representations with finite image are unitary.
+\end{proof}
+
+As a consequence, we show how a claimed result from a paper of Boggi-Looijenga (which has since been retracted by the authors) implies the
+Putman-Wieland conjecture.
+
+\begin{corollary}
+	\label{corollary:boggi-looijenga}
+	Suppose \cite[Theorem
+	B(i)]{boggiL:curves-with-prescribed-symmetry} were
+	true.
+	Then the Putman-Wieland conjecture,
+	\autoref{conjecture:putman-wieland-intro}, would hold for all
+	 $g \geq 3$.
+\end{corollary}
+\begin{remark}
+	\label{remark:}
+	We note that, unfortunately, there is a fatal error in the
+	proof of \cite[Theorem
+	B(i)]{boggiL:curves-with-prescribed-symmetry},
+	appearing in \cite[Lemma 1.6]{boggiL:curves-with-prescribed-symmetry}
+	(which is used in the proof of 
+\cite[Theorem 1.1]{boggiL:curves-with-prescribed-symmetry},
+and hence of
+\cite[Theorem B(i)]{boggiL:curves-with-prescribed-symmetry}).
+The error comes in the penultimate sentence of the proof of \cite[Lemma
+1.6]{boggiL:curves-with-prescribed-symmetry},
+where is it claimed
+that ``It follows\dots,'' but in fact no argument is given for this claim. It is for this reason that the authors of \cite{boggiL:curves-with-prescribed-symmetry} retracted that paper.
+\end{remark}
+
+
+\begin{proof}
+	Suppose $g \geq 3$, and we are
+	given a finite \'etale $H$-cover of Riemann surfaces
+	$f: \Sigma_{g',n'} \to \Sigma_{g,n}$ furnishing a counterexample to
+	Putman-Wieland.
+	This means some 
+	subrepresentation $\chi \subset H^1(X, \mathbb
+	C)$ has finite orbit under the action of the mapping class group
+	$\on{Mod}_{g,n+1}$.
+	The isotypicity statement of 	
+	\cite[Theorem B(i)]{boggiL:curves-with-prescribed-symmetry}
+	implies that if $\chi \subset H^1(X, \mathbb
+	C)$ has finite orbit under the action of the mapping class group
+	$\on{Mod}_{g,n+1}$, 
+	every element of the $\chi$-isotypic component
+	$H^1(X, \mathbb C)^\chi$ has finite orbit under the action of 
+	$\on{Mod}_{g,n+1}$.	
+	By definition, this means
+	$f: \Sigma_{g',n'} \to \Sigma_{g,n}$ is $\chi$-isotypic
+	in the sense of \autoref{definition:pw-counterexample},
+	which contradicts \autoref{theorem:isotypic}.
+\end{proof}
+
+\end{document}
+
