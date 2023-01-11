@@ -32,9 +32,9 @@ from trouver.markdown.obsidian.links import (
 from trouver.markdown.obsidian.personal.note_type import (
     note_is_of_type, PersonalNoteTypeEnum, assert_note_is_of_type
 )
-# from trouver.markdown.obsidian.personal.reference import (
-#     files_in_reference_folder
-# )
+from trouver.markdown.obsidian.personal.reference import (
+    files_in_reference_folder
+)
 from trouver.markdown.obsidian.vault import(
     all_note_paths_by_name, note_path_by_name, VaultNote, NoteDoesNotExistError
 )
