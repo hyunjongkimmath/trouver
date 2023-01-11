@@ -5,7 +5,6 @@ __all__ = []
 
 # %% ../../../../../nbs/17_markdown.obsidian.personal.machine_learning.__init__.ipynb 2
 from bisect import bisect_left, bisect_right
-from itertools import accumulate, pairwise
 from os import PathLike
 from random import sample, choices
 import re
