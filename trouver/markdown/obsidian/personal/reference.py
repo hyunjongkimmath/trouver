@@ -3,7 +3,8 @@
 # %% auto 0
 __all__ = ['index_note_for_reference', 'reference_directory', 'copy_obsidian_vault_configs', 'get_obsidian_vault_plugin_configs',
            'modify_obsidian_vault_plugin_configs', 'copy_obsidian_vault_configs_with_nice_modifications',
-           'setup_folder_for_new_reference', 'get_index_notes_from_subdirectory']
+           'setup_folder_for_new_reference', 'get_index_notes_from_subdirectory', 'get_index_notes_from_index_note',
+           'reference_folders_in_vault', 'files_in_reference_folder']
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 2
 import glob
@@ -699,33 +700,12 @@ def setup_folder_for_new_reference(
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 61
 def get_index_notes_from_subdirectory(
-        vault: PathLike, subdirectory: PathLike,
-        main_index_note: bool = False,
-        as_vault_notes: bool = True) -> list[Union[str, VaultNote]]:
+        vault: PathLike, # The path to the Obsidian vault directory.
+        subdirectory: PathLike, # The path, relative to `vault` of the subdirectory of of the vault for the reference.
+        main_index_note: bool = False, # If `True`, include the main index note for the reference. This index note should be in the directory specified by `subdirectory`.
+        as_vault_notes: bool = True # If `True`, returns the ``VaultNote`` objects for the index notes.  Otherwise, returns the paths to the index notes as paths, represented by str.
+        ) -> list[Union[str, VaultNote]]: # Either of the names of the index notes in the vault or of the index notes as VaultNote objects, depending on `as_vault_notes`.
     """Returns list of index note files for reference
-    
-    Does so by searching the reference directory and subdirectories.
-    Does not include the index file in a `_temp` subdirectory.
-    
-    **Parameters**
-    - `vault` - PathLike
-        - The path to the Obsidian vault directory.
-    - `subdirectory` - PathLike
-        - The path, relative to `vault` of the subdirectory of
-        of the vault for the reference.
-    - `main_index_note` - bool
-        - If `True`, include the main index note for the reference. This
-        index note should be in the directory specified by `subdirectory`.
-        Defaults to `False`.
-    - `as_vault_notes` - bool
-        - If `True`, returns the ``VaultNote`` objects for the index notes.
-        Otherwise, returns the paths to the index notes as paths, represented
-        by str. Defaults to `True`.
-        
-    **Returns**
-    - list[Union[str, VaultNote]]
-        - Either of the names of the index notes in the vault or of the 
-        index notes as VaultNote objects, depending on `as_vault_notes`.
     """
     vault = Path(vault)
     reference_directory = vault / subdirectory
@@ -739,3 +719,168 @@ def get_index_notes_from_subdirectory(
     if as_vault_notes:
         index_notes = [VaultNote(vault, rel_path=index_note) for index_note in index_notes]
     return index_notes
+
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 63
+# TODO: reformat
+def get_index_notes_from_index_note(
+        vault: PathLike, reference_name: str,
+        as_vault_notes: bool = True) -> list[Union[str, VaultNote]]:
+    """Returns the list of index notes for the reference in the order
+    that they are listed in the reference's main index note.
+    
+    Does so by searching the "main" index note in the reference folder.
+    Returns the index notes in order that they are listed in the main index
+    note.
+    
+    Assumes that the reference folder is "formatted correctly". This includes
+    the assumption that the main index note for the reference is the unique
+    note named `'_index_{reference_name}'` in the vault.
+    
+    **Parameters**
+
+    - `vault` - PathLike
+        - The path to the Obsidian vault directory
+    - `reference_name` - str
+        - The name of the reference folder in the vault.
+    - `as_vault_notes` - bool
+        - If `True`, returns the ``VaultNote`` objects for the index notes.
+        Otherwise, returns the paths to the index notes as paths, represented
+        by str. Defaults to `True`.
+
+    **Returns**
+    - list[Union[str, VaultNote]]
+        - Either of the names of the index notes in the vault or of the 
+        index notes as VaultNote objects, depending on `as_vault_notes`.
+    
+    **See Also**
+    - ``get_notes_from_index_note`` in
+    ``markdown.obsidian.personal.index_notes``.
+    """
+    vault = Path(vault)
+    main_index_note = VaultNote(vault, name=f'_index_{reference_name}')
+    mf = MarkdownFile.from_vault_note(main_index_note)
+    text = str(mf)
+    links = links_from_text(text)
+    index_notes = [link.file_name for link in links]
+    if as_vault_notes:
+        index_notes = [VaultNote(vault, name=index_note)
+                       for index_note in index_notes]
+    return index_notes
+
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 66
+def reference_folders_in_vault(vault: PathLike) -> dict[str, str]:
+    """Returns a dict of reference folders in vault.
+    
+    **Parameters**
+    - vault - PathLike
+        - The path to the Obsidian vault directory.
+
+    **Returns**
+    - dict
+        - The keys are str, each of which is the name of a reference.
+        The values are path strings to the reference folder, relative to
+        `vault`.
+    """
+    vault = Path(MATH_VAULT_LOCATION)
+    reference_folders = {}
+    index_files = vault.glob(f'**/_index*.md')
+    for index_file in index_files:
+        # print(index_file)
+        directory = os.path.dirname(index_file)
+        # print(directory)
+        directory = os.path.relpath(directory, vault)
+        # print(directory)
+        # print(f'{directory}/_notation*.md')
+        notation_notes = vault.glob(f'{directory}/_notation*.md')
+        if list(notation_notes):
+            reference_name = os.path.basename(directory)
+            reference_folders[reference_name] = directory
+            if not os.path.exists(vault / directory /\
+                                  f'_index_{reference_name}.md'):
+                warnings.warn(f'''The index file for this reference
+                              seems misnamed: {reference_name}''')
+            if not os.path.exists(vault / directory /\
+                                 f'_notation_{reference_name}.md'):
+                warnings.warn(f'''The notation file for this reference
+                              seems misnamed: {reference_name}''')
+    return reference_folders
+
+
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 69
+# TODO: reformat
+def files_in_reference_folder(
+        vault: PathLike, reference: str, as_list: bool = False,
+        search_index_notes: bool = False,
+        exclude_notes_of_type: list[PersonalNoteTypeEnum] = None)\
+        -> Union[list[str], dict[str, str]]:
+    """Returns a dict or list of files in a reference folder of a vault.
+
+    TODO: also implement a method to get the files as listed in index notes.
+
+    **Parameters**
+    - vault - PathLike
+    - reference - str
+        - Name of the reference folder in the vault. The folder must have
+        the index note file `'_index_{reference}.md'`, and there must not
+        be two index note files of the same name in the vault.
+    - as_list - bool
+        - If `True`, then returns a list. Returns a dict otherwise. Defaults
+        to `False`.
+    - search_index_notes - bool
+        - If `True`, then gets the notes by looking at the reference's index
+        notes and returns the notes as ordered by the index notes.
+    - exclude_notes_of_type - list of 
+            ``markdown.obsidian.personal.note_type.PersonalNoteTypeEnum``.
+        - The notes of the types specified here will be excluded in the dict
+        or list returned. Defaults to `None`, in which case
+        
+    **Returns**
+    - list[str] or dict[str, str]
+        - Either a list of path strings or a dict whose keys are str and values
+        are path strings. The keys are the names of the files. The Paths are
+        relative to `vault`.
+    """
+    if not exclude_notes_of_type:
+        exclude_notes_of_type = []
+    vault = Path(vault)
+    if search_index_notes:
+        return _files_in_reference_folder_via_index_notes(
+            vault, reference, as_list, exclude_notes_of_type)
+    else:
+        return _files_in_reference_folder_via_glob(
+            vault, reference, as_list, exclude_notes_of_type)
+    
+def _files_in_reference_folder_via_index_notes(
+        vault: PathLike, reference: str, as_list: bool,
+        exclude_notes_of_type: list[PersonalNoteTypeEnum])\
+        -> Union[list[str], dict[str, str]]:
+    # TODO make sure that notes_linked_in_note is ordered correctly.
+    index_of_index = VaultNote(vault, name=f'_index_{reference}')
+    index_notes = notes_linked_in_note(index_of_index, as_dict=False)
+    file_list = []
+    for index_note in index_notes:
+        notes_in_index_note = notes_linked_in_note(index_note, as_dict=False)
+        file_list.extend(notes_in_index_note)
+    file_list = [note.rel_path for note in file_list
+                 if type_of_note(note) not in exclude_notes_of_type]
+    if as_list:
+        return file_list
+    else:
+        return {os.path.basename(file): file for file in file_list}
+    
+def _files_in_reference_folder_via_glob(
+        vault: PathLike, reference: str, as_list: bool,
+        exclude_notes_of_type: list[PersonalNoteTypeEnum])\
+        -> Union[list[str], dict[str, str]]:
+    vn = VaultNote(vault, name=f'_index_{reference}')
+    reference_folder = Path(os.path.dirname(vn.path()))
+    files = reference_folder.glob('**/*.md')
+    file_list = [os.path.relpath(Path(file), start=vault) for file in files] 
+    vault_notes = [VaultNote(vault, rel_path=file) for file in file_list]
+    vault_notes = [vn for vn in vault_notes
+                 if type_of_note(vn) not in exclude_notes_of_type]
+    file_list = [vn.rel_path for vn in vault_notes]
+    if as_list:
+        return file_list
+    else:
+        return {os.path.basename(file): file for file in file_list}
