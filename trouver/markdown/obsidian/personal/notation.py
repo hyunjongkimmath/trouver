@@ -26,9 +26,9 @@ from trouver.markdown.obsidian.links import (
     find_links_in_markdown_text, ObsidianLink, LinkType
 )
 
-# from trouver.markdown.obsidian.personal.information_notes import (
-#     bulleted_links_of_type_in_section
-# )
+from trouver.markdown.obsidian.personal.information_notes import (
+    bulleted_links_of_type_in_section
+)
 from trouver.markdown.obsidian.personal.note_type import (
     note_is_of_type, PersonalNoteTypeEnum, assert_note_is_of_type
 )
