@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['index_note_for_reference', 'reference_directory', 'copy_obsidian_vault_configs', 'get_obsidian_vault_plugin_configs',
            'modify_obsidian_vault_plugin_configs', 'copy_obsidian_vault_configs_with_nice_modifications',
-           'setup_folder_for_new_reference']
+           'setup_folder_for_new_reference', 'get_index_notes_from_subdirectory']
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 2
 import glob
@@ -696,3 +696,46 @@ def setup_folder_for_new_reference(
         print(f'Created a new reference folder at {location}.'\
             ' Make sure to update the reference file and'\
             ' The files for new mathematicians!')
+
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 61
+def get_index_notes_from_subdirectory(
+        vault: PathLike, subdirectory: PathLike,
+        main_index_note: bool = False,
+        as_vault_notes: bool = True) -> list[Union[str, VaultNote]]:
+    """Returns list of index note files for reference
+    
+    Does so by searching the reference directory and subdirectories.
+    Does not include the index file in a `_temp` subdirectory.
+    
+    **Parameters**
+    - `vault` - PathLike
+        - The path to the Obsidian vault directory.
+    - `subdirectory` - PathLike
+        - The path, relative to `vault` of the subdirectory of
+        of the vault for the reference.
+    - `main_index_note` - bool
+        - If `True`, include the main index note for the reference. This
+        index note should be in the directory specified by `subdirectory`.
+        Defaults to `False`.
+    - `as_vault_notes` - bool
+        - If `True`, returns the ``VaultNote`` objects for the index notes.
+        Otherwise, returns the paths to the index notes as paths, represented
+        by str. Defaults to `True`.
+        
+    **Returns**
+    - list[Union[str, VaultNote]]
+        - Either of the names of the index notes in the vault or of the 
+        index notes as VaultNote objects, depending on `as_vault_notes`.
+    """
+    vault = Path(vault)
+    reference_directory = vault / subdirectory
+    index_notes = glob.glob(f'{reference_directory}/**/_index_*.md', recursive=True)
+    index_notes = [index_note for index_note in index_notes 
+                   if Path(os.path.dirname(index_note)) != reference_directory / "_temp"]
+    if not main_index_note:
+        index_notes = [index_note for index_note in index_notes
+                       if Path(os.path.dirname(index_note)) != reference_directory]
+    index_notes = [os.path.relpath(index_note, vault) for index_note in index_notes]
+    if as_vault_notes:
+        index_notes = [VaultNote(vault, rel_path=index_note) for index_note in index_notes]
+    return index_notes
