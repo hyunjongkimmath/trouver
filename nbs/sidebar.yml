@@ -19,5 +19,8 @@ website:
       - 14_markdown.obsidian.personal.note_type.ipynb
       - 15_latex.__init__.ipynb
       - 16_latex.convert.ipynb
+      - 17_markdown.obsidian.personal.machine_learning.__init__.ipynb
+      - 18_markdown.obsidian.personal.machine_learning.notations.ipynb
+      - 19_markdown.obsidian.personal.note_processing.ipynb
       - TODO.ipynb
       - using_regex.ipynb
