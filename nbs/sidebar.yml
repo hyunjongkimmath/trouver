@@ -24,5 +24,7 @@ website:
       - 19_markdown.obsidian.personal.note_processing.ipynb
       - 20_markdown.obsidian.personal.notation.ipynb
       - 21_markdown.obsidian.personal.information_notes.ipynb
+      - 22_markdown.obsidian.personal.machine_learninig.database_update.ipynb
+      - 23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb
       - TODO.ipynb
       - using_regex.ipynb

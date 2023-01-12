@@ -4,28 +4,52 @@
     "type": "split",
     "children": [
       {
-        "id": "ced6b6defa5b20ec",
+        "id": "2bd4db994ffeb67a",
         "type": "tabs",
         "children": [
           {
-            "id": "1cb9d0cf1a7b699b",
+            "id": "dac704e45ed67e4b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
                 "mode": "source",
                 "source": false
               }
             }
           },
           {
-            "id": "7a60f5e1f570d8f3",
+            "id": "7a3fc9afef8cb081",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "16e1fe7456ec4f17",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/12_another_section/reference_with_tag_labels_Theorem 1.md",
+                "mode": "preview",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "92a39aa42a71ea72",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Exercise 1.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md"
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md"
               }
             }
           }
@@ -159,17 +183,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7a60f5e1f570d8f3",
+  "active": "7d21c595a34c13a6",
   "lastOpenFiles": [
-    "number_theory/number_theory_reference_1/_TODO_number_theory_reference_1.md",
-    "_templates/_template_glossary.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/12_another_section/reference_with_tag_labels_Theorem 1.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 2.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Exercise 1.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/reference_with_tag_labels_something_something.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 1.md",
+    "reference_with_tag_labels/_index_reference_with_tag_labels.md",
+    "_templates/_template_common.md",
     "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
-    "_common_terms/_index_common_terms.md",
-    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
-    "_references/_reference_number_theory_reference_1.md",
-    "_templates/_template_number_theory_reference_1.md",
-    "_common_terms/_common_terms_ring.md",
-    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_notation_Z_nZ_ring_of_integers_modulo_n.md",
     "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md"
   ]
 }

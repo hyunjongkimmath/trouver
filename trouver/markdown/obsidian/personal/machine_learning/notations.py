@@ -27,7 +27,7 @@ from trouver.helper import (
 # )
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from trouver.markdown.obsidian.personal.note_processing import (
-    standard_information_note_processor
+    process_standard_information_note
 )
 from ..notes import notes_linked_in_note, notes_linked_in_notes_linked_in_note
 # from trouver.markdown.obsidian.personal.notation import (
