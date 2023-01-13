@@ -1,0 +1,105 @@
+Time added,Time modified,Note name,Full note content,Processed note content,#_meta/concept,#_meta/exercise,#_meta/definition,#_meta/example,#_meta/narrative,#_meta/notation,#_meta/proof,#_meta/remark,#_meta/TODO/split,#_meta/TODO/merge,#_meta/TODO/delete,#_meta/hint,#_meta/how_to,#_meta/conjecture,#_meta/convention,#_meta/context
+2023-01-13T00:37,2023-01-13T00:37,reference_with_tag_labels_something_something,"---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/narrative]
+---
+# Topic[^1]
+
+In this chapter, we describe some basics of ring theory. Rings are mathematical structures which generalize the structures of the familiar integers, rational numbers, real numbers, complex numberes, etc.
+
+
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Kim, Page 1","In this chapter, we describe some basics of ring theory. Rings are mathematical structures which generalize the structures of the familiar integers, rational numbers, real numbers, complex numberes, etc.
+",NOT #_meta/concept,NOT #_meta/exercise,NOT #_meta/definition,NOT #_meta/example,IS #_meta/narrative,NOT #_meta/notation,NOT #_meta/proof,NOT #_meta/remark,NOT #_meta/TODO/split,NOT #_meta/TODO/merge,NOT #_meta/TODO/delete,NOT #_meta/hint,NOT #_meta/how_to,NOT #_meta/conjecture,NOT #_meta/convention,NOT #_meta/context
+2023-01-13T00:37,2023-01-13T00:37,reference_with_tag_labels_Definition 1,"---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/definition_note]
+---
+# Ring[^1]
+
+A **ring** is a set with binary operators $+$ and $\cdot$ such that ...
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Kim, Definition 1","A ring is a set with binary operators $+$ and $\cdot$ such that ...
+",NOT #_meta/concept,NOT #_meta/exercise,NOT #_meta/definition,NOT #_meta/example,NOT #_meta/narrative,NOT #_meta/notation,NOT #_meta/proof,NOT #_meta/remark,NOT #_meta/TODO/split,NOT #_meta/TODO/merge,NOT #_meta/TODO/delete,NOT #_meta/hint,NOT #_meta/how_to,NOT #_meta/conjecture,NOT #_meta/convention,NOT #_meta/context
+2023-01-13T00:37,2023-01-13T00:37,reference_with_tag_labels_Definition 2,"---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/definition, _meta/notation]
+---
+# Ring of integers modulo $n$[^1]
+
+Let $n \geq 1$ be an integer. The **ring of integers modulo $n$**, denoted by **$\mathbb{Z}/n\mathbb{Z}$**, is, informally, the ring whose elements are represented by the integers with the understanding that $0$ and $n$ are equal.
+
+More precisely, $\mathbb{Z}/n\mathbb{Z}$ has the elements $0,1,\ldots,n-1$.
+
+...
+
+
+# See Also
+- [[reference_with_tag_labels_Exercise 1|reference_with_tag_labels_Z_nZ_is_a_ring]]
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Kim, Definition 2","Let $n \geq 1$ be an integer. The ring of integers modulo $n$, denoted by $\mathbb{Z}/n\mathbb{Z}$, is, informally, the ring whose elements are represented by the integers with the understanding that $0$ and $n$ are equal.
+
+More precisely, $\mathbb{Z}/n\mathbb{Z}$ has the elements $0,1,\ldots,n-1$.
+
+...
+",NOT #_meta/concept,NOT #_meta/exercise,IS #_meta/definition,NOT #_meta/example,NOT #_meta/narrative,IS #_meta/notation,NOT #_meta/proof,NOT #_meta/remark,NOT #_meta/TODO/split,NOT #_meta/TODO/merge,NOT #_meta/TODO/delete,NOT #_meta/hint,NOT #_meta/how_to,NOT #_meta/conjecture,NOT #_meta/convention,NOT #_meta/context
+2023-01-13T00:37,2023-01-13T00:37,reference_with_tag_labels_Exercise 1,"---
+cssclass: clean-embeds
+aliases: [reference_with_tag_labels_Z_nZ_is_a_ring]
+tags: [_meta/literature_note, _meta/exercise]
+---
+# $\mathbb{Z}/n\mathbb{Z}$ is a ring[^1]
+
+Show that $\mathbb{Z}/n\mathbb{Z}$ is a ring.
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Exercise 1","Show that $\mathbb{Z}/n\mathbb{Z}$ is a ring.
+",NOT #_meta/concept,IS #_meta/exercise,NOT #_meta/definition,NOT #_meta/example,NOT #_meta/narrative,NOT #_meta/notation,NOT #_meta/proof,NOT #_meta/remark,NOT #_meta/TODO/split,NOT #_meta/TODO/merge,NOT #_meta/TODO/delete,NOT #_meta/hint,NOT #_meta/how_to,NOT #_meta/conjecture,NOT #_meta/convention,NOT #_meta/context
+2023-01-13T00:37,2023-01-13T00:37,reference_with_tag_labels_Theorem 1,"---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/concept, _meta/proof]
+---
+# The polynomial ring of a UFD is a UFD[^1]
+
+Theorem 1. Let $R$ be a UFD. Then $R[x]$ is a UFD.
+
+Proof. Let $f,g \in R[x]$ and suppose that $fg = 0$. Write $f = \sum_{i=0}^n a_i x^i$ and $g = \sum_{j=0}^m b_j x^j$ for some $a_i,b_j \in R$.
+
+...
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Kim, Theorem 1","Theorem 1. Let $R$ be a UFD. Then $R[x]$ is a UFD.
+
+Proof. Let $f,g \in R[x]$ and suppose that $fg = 0$. Write $f = \sum_{i=0}^n a_i x^i$ and $g = \sum_{j=0}^m b_j x^j$ for some $a_i,b_j \in R$.
+
+...
+",IS #_meta/concept,NOT #_meta/exercise,NOT #_meta/definition,NOT #_meta/example,NOT #_meta/narrative,NOT #_meta/notation,IS #_meta/proof,NOT #_meta/remark,NOT #_meta/TODO/split,NOT #_meta/TODO/merge,NOT #_meta/TODO/delete,NOT #_meta/hint,NOT #_meta/how_to,NOT #_meta/conjecture,NOT #_meta/convention,NOT #_meta/context
