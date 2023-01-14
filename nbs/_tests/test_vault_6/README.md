@@ -1,1 +1,1 @@
-This is a test vault for `10_markdown.obsidian.personal.reference.ipynb`.
+This is a test vault for `23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb`.

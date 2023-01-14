@@ -27,4 +27,5 @@ website:
       - 22_markdown.obsidian.personal.machine_learninig.database_update.ipynb
       - 23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb
       - TODO.ipynb
+      - how_to.train_ml_model.ipynb
       - using_regex.ipynb

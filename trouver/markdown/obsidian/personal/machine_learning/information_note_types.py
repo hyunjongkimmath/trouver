@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['LABEL_TAGS', 'note_is_labeled_with_tag', 'note_labels', 'gather_information_note_types',
-           'append_to_information_note_type_database']
+           'append_to_information_note_type_database', 'predict_text_types', 'predict_note_types',
+           'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
 
 # %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 3
 LABEL_TAGS = [
@@ -13,12 +14,15 @@ LABEL_TAGS = [
     '#_meta/context',
 ]
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 5
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 6
 import os
 from os import PathLike
 from pathlib import Path
 import shutil
+from typing import Optional
+import warnings
 
+from fastai.text.learner import TextLearner
 import pandas as pd
 
 from .....helper import current_time_formatted_to_minutes
@@ -27,8 +31,7 @@ from .database_update import max_ID, append_to_database
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 8
-# export
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 9
 def note_is_labeled_with_tag(
         note: VaultNote,
         label_tag: str # A tag which labels a type that `note` is. Includes the beginning hashtag `#`, e.g. `#_meta/definition`, `#_meta/TODO/split`
@@ -51,7 +54,7 @@ def note_is_labeled_with_tag(
 
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 10
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 11
 def note_labels(
         note: VaultNote
         ) -> dict[str, str]:
@@ -66,7 +69,7 @@ def note_labels(
             for tag, flag in label_dict.items()}
     
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 13
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 14
 def gather_information_note_types(
         vault: PathLike,
         notes: list[VaultNote],
@@ -93,7 +96,7 @@ def gather_information_note_types(
     # process_standard_information_note
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 15
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 16
 def append_to_information_note_type_database(
         vault: PathLike, # The vault freom which the data is drawn
         file: PathLike, # The path to a CSV file
@@ -143,3 +146,150 @@ def append_to_information_note_type_database(
     append_to_database(
         file, new_df, cols, 'Processed note content', cols_to_update, backup)
 
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 20
+def predict_text_types(
+        learn: TextLearner, # The ML model predicting note types.
+        texts: list[str],
+        remove_NO_TAG: bool = True # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
+        ) -> list[list[str]]: # Each list corresponds to a text and contains the predicted types of the text.
+    """Predict the types of mathematical texts using an ML model."""
+    predictions = []
+    for text in texts:
+        with learn.no_bar(), learn.no_logging():
+            pred, loss, _ = learn.predict(text)
+        if remove_NO_TAG and 'NO_TAG' in pred:
+            pred.remove('NO_TAG')
+        predictions.append(list(pred))
+    return predictions
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 24
+def predict_note_types(
+        learn: TextLearner, # The ML model predicting note types.
+        vault: PathLike, # The vault with the notes.
+        notes: list[VaultNote], # The notes with texts to predict
+        remove_NO_TAG: bool = True # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
+        ) -> list[list[str]]:
+    markdown_files = [
+        MarkdownFile.from_vault_note(note) for note in notes]
+    raw_note_contents = [
+        str(process_standard_information_note(mf, vault)) for mf in markdown_files]
+    return predict_text_types(learn, raw_note_contents, remove_NO_TAG)
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 28
+def automatically_add_note_type_tags(
+        learn: TextLearner, # The ML model predicting note types.
+        vault: PathLike, # The vault with the notes
+        notes: list[VaultNote],
+        add_auto_label: bool = True, # If `True`, adds `"_auto"` to the front of the note type tag to indicate that the tags were added via this automated script.
+        overwrite: Optional[str] = None # Either `'w'`, `'a'`, or `None`. If `'w'`, then overwrite any already-existing note type tags (from LABEL_TAGS) with the predicted tags. If `'a'`, then preserve already-existing note type tags and just append the newly predicted ones; in the case that `learn` predicts the note type whose tag is already in the note, a new tag of that type is not added, even if `add_auto_label=True`. If `None`, then do not make modifications to each note if any note type tags already exist in the note; if the predicted note types are different from the already existing note types, then raise a warning.
+        ) -> None:
+    """
+    Predict note types and add the predicted types as
+    frontmatter YAML tags in the notes.
+
+    Non-`_auto`-labeled tags take precedent over `auto`-labeled tags,
+    unless `overwrite='w'`.
+    
+    **Raises**
+
+    - Warning:
+        - If `overwrite=None`, a note already has some note type tags,
+        and `learn` predicts different note types as those in the note.
+    
+    """
+    if overwrite not in ['w', 'a'] and overwrite is not None:
+        raise ValueError(
+            f"`overwrite` was expected to be 'w', 'a', or None," 
+            f" but was {overwrite}")
+    predictions = predict_note_types(learn, notes)
+    # remove hashtags
+    predictions = [[tag[1:] if tag.startswith('#') else tag for tag in tags]
+                   for tags in predictions]
+    # Add `_auto/`
+    all_label_tags = [*LABEL_TAGS]
+    all_label_tags.extend([f'_auto/{tag}' for tag in LABEL_TAGS])
+    for note, prediction in zip(notes, predictions):
+        _change_label_tags_for_single_note(
+            note, prediction, overwrite, add_auto_label,
+            all_label_tags)
+
+
+def _change_label_tags_for_single_note(
+        note: VaultNote, prediction: list[str], overwrite: Optional[str],
+        add_auto_label: bool, all_label_tags: list[str]):
+    mf = MarkdownFile.from_vault_note(note)
+
+    if add_auto_label:
+        tags_to_add = _auto_prediction(prediction)
+    else:
+        tags_to_add = prediction
+
+    if overwrite == 'w':
+        mf.remove_tags(all_label_tags)
+        mf.add_tags(tags_to_add, skip_repeated_auto=True)
+    elif overwrite == 'a':
+        for tag in prediction:
+            _append_single_predicted_tag(mf, tag, add_auto_label)
+    else:  # overwrite=None
+        # TODO
+        if not _has_any_label_tags(mf):
+            mf.add_tags(tags_to_add, skip_repeated_auto=True)
+        elif not _has_exactly_predicted_tags(mf, prediction):
+            warnings.warn(
+                "The note type labeling tags in the note are different"
+                f" from the predicted note types:\n\nNote name: {note.name}"
+                f"\n\nPredicted types: {prediction}", UserWarning)        
+    mf.write(note)
+
+
+def _auto_prediction(prediction: list[str]):
+    return [f'_auto/{tag}' for tag in prediction]
+
+
+def _append_single_predicted_tag(
+        mf, tag, add_auto_label):
+    if tag in mf.metadata()['tags']:
+        return
+    elif f'_auto/{tag}' in mf.metadata()['tags'] and add_auto_label:
+        return
+    elif f'_auto/{tag}' in mf.metadata()['tags'] and not add_auto_label:
+        mf.remove_tags([f'_auto/{tag}'])
+        mf.add_tags([tag])
+    else:
+        mf.add_tags([f'_auto/{tag}'] if add_auto_label else [tag])
+    
+
+def _has_exactly_predicted_tags(
+        mf, prediction: list[str]) -> bool:
+    """Return `True` if the MarkdownFile already has the predicted tags
+    (or the corresponding `_auto` tags)"""
+    for tag in LABEL_TAGS:
+        if (mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}')) and tag in prediction:
+            continue
+        else:
+            return False
+    return True
+
+
+def _has_any_label_tags(
+        mf) -> bool:
+    """Return `True` if the MarkdownFile has any label tags (or correspnoding `_auto` tags)"""
+    for tag in LABEL_TAGS:
+        if mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}'):
+            continue
+        else:
+            return False
+    return True
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 39
+def convert_auto_tags_to_regular_tags_in_notes(
+        notes: list[VaultNote], 
+        exclude: list[str] = ['links_added', 'notations_added'] # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.
+        ) -> None:
+    """Convert the auto tags into regular tags for the notes.
+    """
+    for note in notes:
+        mf = MarkdownFile.from_vault_note(note)
+        mf.replace_auto_tags_with_regular_tags(exclude)
+        mf.write(note)

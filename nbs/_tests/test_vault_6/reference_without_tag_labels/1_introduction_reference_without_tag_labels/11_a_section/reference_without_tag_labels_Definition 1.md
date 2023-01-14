@@ -1,7 +1,7 @@
 ---
 cssclass: clean-embeds
 aliases: []
-tags: [_meta/literature_note, _meta/definition]
+tags: [_meta/literature_note]
 ---
 # Ring[^1]
 
