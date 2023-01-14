@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 2.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md"
+                "file": "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 2.md"
               }
             }
           }
@@ -161,8 +161,8 @@
   },
   "active": "87ac05be244cbecc",
   "lastOpenFiles": [
-    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/12_another_section/reference_with_tag_labels_Theorem 2.md",
     "reference_with_tag_labels/1_introduction_reference_with_tag_labels/_index_1_introduction_reference_with_tag_labels.md",
+    "reference_with_tag_labels/1_introduction_reference_with_tag_labels/12_another_section/reference_with_tag_labels_Theorem 2.md",
     "reference_with_tag_labels/1_introduction_reference_with_tag_labels/12_another_section/reference_with_tag_labels_Theorem 1.md",
     "reference_with_tag_labels/1_introduction_reference_with_tag_labels/11_a_section/reference_with_tag_labels_Definition 1.md",
     "reference_without_tag_labels/1_introduction_reference_without_tag_labels/_index_1_introduction_reference_without_tag_labels.md",

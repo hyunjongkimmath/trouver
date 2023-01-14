@@ -45,8 +45,8 @@ def process_standard_information_note(
         remove_headers: bool = True, # If `True`, removes headers. Defaults to `True`.
         remove_citation_footnotes: bool = True, # If `True`, removes the citation footnote. Defaults to `True`.
         replace_embedded_links_with_content: bool = True, # If `True`, replaces embedded links with their content.  Defaults to `True`.
-        merge_in_line_latex: bool = True, # If `True`, merge each group of in-line latex lines into single lines.  Defaults to `True`.
-        merge_in_line_latex_into_text: Optional[str] = None, # If not `None`, merge each group of in-line latex lines into single lines and merge those groups into the text that precedes them with the specified str. Defaults to `None`.  The blank character ` ` and the new-line character `\n` are recommended as arguments.
+        merge_display_math_mode: bool = True, # If `True`, merge each group of display math mode latex lines into single lines.  Defaults to `True`.
+        merge_display_math_mode_into_text: Optional[str] = None, # If not `None`, merge each group of display math mode latex lines into single lines and merge those groups into the text that precedes them with the specified str. Defaults to `None`.  The blank character ` ` and the new-line character `\n` are recommended as arguments.
         no_double_blank_lines: bool = True # If `True`, removes escape characters `'\n'` to make it so that there are no double blank lines. Defaults to `True`.
         ) -> MarkdownFile: # If `markdown_file` is a `MarkdownFile` object, then the output is `markdown_file` itself (not a copy) with modifications. If `markdown_file` is a `str`, then the output is a `MarkdownFile` object with the modifications.
     """Process/modify a str/MarkdownFile of a standard information note.
@@ -78,11 +78,11 @@ def process_standard_information_note(
         markdown_file.remove_in_line_tags()
     if remove_headers:
         markdown_file.remove_headers()
-    if merge_in_line_latex:
-        markdown_file.merge_in_line_latex()
-    if merge_in_line_latex_into_text:
-        markdown_file.merge_in_line_latex_into_preceding_text(
-            separator=merge_in_line_latex_into_text)
+    if merge_display_math_mode:
+        markdown_file.merge_display_math_mode()
+    if merge_display_math_mode_into_text:
+        markdown_file.merge_display_math_mode_into_preceding_text(
+            separator=merge_display_math_mode_into_text)
     if no_double_blank_lines:
         markdown_file.remove_double_blank_lines()
     # print(markdown_file)

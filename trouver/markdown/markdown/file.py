@@ -21,7 +21,7 @@ from trouver.markdown.obsidian.links import (
     ObsidianLink, 
     remove_links_from_text, EMBEDDED_PATTERN
 )
-from ..obsidian.vault import VaultNote, NoteDoesNotExistError
+from ..obsidian.vault import VaultNote, NoteDoesNotExistError, NotePathIsNotIdentifiedError
 from trouver.markdown.obsidian.tags import (
     strip_auto_from_tag, tag_is_auto_tag
 )
@@ -110,10 +110,10 @@ class MarkdownLineEnum(Enum):
     BLANK_LINE = 9
     UNKNOWN = 10
     FOOTNOTE_DESCRIPTION = 11
-    INLINE_LATEX_SINGLE = 12  # A single-line inline latex
-    INLINE_LATEX_START = 13  # Start line of inline latex
-    INLINE_LATEX_END = 14  # End line of inline latex
-    INLINE_LATEX = 15  # All other inline latex lines
+    DISPLAY_LATEX_SINGLE = 12  # A single-line DISPLAY latex
+    DISPLAY_LATEX_START = 13  # Start line of DISPLAY latex
+    DISPLAY_LATEX_END = 14  # End line of DISPLAY latex
+    DISPLAY_LATEX = 15  # All other DISPLAY latex lines
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 20
 class MarkdownFile:
@@ -128,7 +128,7 @@ class MarkdownFile:
 
     - Comments (surrounded by `%%`) must not be on the same line as
     non-comments.
-    - In-line LaTeX (surrounded by `$$`) must not be on the same line
+    - Display math mode LaTeX (surrounded by `$$`) must not be on the same line
     as non-In line LaTeX.
 
     **Attributes**
@@ -700,8 +700,8 @@ class MarkdownFile:
             return False, True
         elif self.parts[i-1]['type'] == MarkdownLineEnum.HEADING:
             return False, has_any
-        elif (self.parts[i]['type'] == MarkdownLineEnum.INLINE_LATEX
-                and self.parts[i-1]['type'] == MarkdownLineEnum.INLINE_LATEX):
+        elif (self.parts[i]['type'] == MarkdownLineEnum.DISPLAY_LATEX
+                and self.parts[i-1]['type'] == MarkdownLineEnum.DISPLAY_LATEX):
             return True, True
         elif self.parts[i-1]['line'].strip() == '':
             if has_any:
@@ -736,6 +736,9 @@ class MarkdownFile:
     def _replace_embedded_links_one_line(
             self, text: str, vault: PathLike, recursive: bool,
             remove_paragraph_id: bool) -> str:
+        # TODO: test what happens when `link_note` is actually an image.
+        # TODO: deal with possibility that a vaultnote gets an image
+        # file name passed.
         """Used in `replace_embedded_links_with_text`"""
         embedded_links = find_regex_in_text(text, EMBEDDED_PATTERN)
         for start, end in reversed(embedded_links):
@@ -743,13 +746,13 @@ class MarkdownFile:
             if link_object.file_name:
                 try:
                     link_note = VaultNote(vault, name=link_object.file_name)
-                except NoteDoesNotExistError:
+                    link_file = MarkdownFile.from_vault_note(link_note)
+                except (NoteDoesNotExistError, NotePathIsNotIdentifiedError):
                     text = text[:start] + text[end:]
                     continue
                 # if not link_note.exists():
                 #     text = text[:start] + text[end:]
                 #     continue
-                link_file = MarkdownFile.from_vault_note(link_note)
             else:
                 link_file = self
             if link_object.anchor == 0:
@@ -852,21 +855,21 @@ class MarkdownFile:
         for i in reversed(parts_to_remove):
             self.remove_line(i)
     
-    def merge_in_line_latex(self) -> None:
-        """Merge chunks of in-line latex lines into single lines"""
+    def merge_display_math_mode(self) -> None:
+        """Merge chunks of display_math_mode latex lines into single lines"""
         # TODO: test
         i = 0
-        ils = MarkdownLineEnum.INLINE_LATEX_START
+        ils = MarkdownLineEnum.DISPLAY_LATEX_START
         while i < len(self.parts):
             if self.parts[i]['type'] == ils:
-                self._merge_one_in_line_latex_chunk(i)
+                self._merge_one_display_math_mode_latex_chunk(i)
             i += 1
         
-    def _merge_one_in_line_latex_chunk(self, start: int) -> None:
-        """Merge one chunk of in-line latex lines in self.parts.
+    def _merge_one_display_math_mode_latex_chunk(self, start: int) -> None:
+        """Merge one chunk of display math mode latex lines in self.parts.
         """
         j = start + 1 
-        ile = MarkdownLineEnum.INLINE_LATEX_END
+        ile = MarkdownLineEnum.DISPLAY_LATEX_END
         while (j < len(self.parts)
                and self.parts[j]['type'] is not ile):
             j += 1
@@ -875,20 +878,20 @@ class MarkdownFile:
         merged = ' '.join(lines)
         self.remove_lines(start, end)
         self.insert_line(
-            start, {'type': MarkdownLineEnum.INLINE_LATEX_SINGLE,
+            start, {'type': MarkdownLineEnum.DISPLAY_LATEX_SINGLE,
                     'line': merged})
 
-    def merge_in_line_latex_into_preceding_text(
+    def merge_display_math_mode_into_preceding_text(
             self,
-            separator: str = '\n' # The str with which to join the latex lines into the text lines. Note that the in-line latex lines are not joined with this str.
+            separator: str = '\n' # The str with which to join the latex lines into the text lines. Note that the display math mode latex lines are not joined with this str.
             ) -> None:
         """
-        Merge chunks of in-line latex lines into single lines and merge
+        Merge chunks of display math mode latex lines into single lines and merge
         those single lines into preceding text lines.
         """
-        self.merge_in_line_latex()
+        self.merge_display_math_mode()
         i = 0
-        ils = MarkdownLineEnum.INLINE_LATEX_SINGLE
+        ils = MarkdownLineEnum.DISPLAY_LATEX_SINGLE
         while i < len(self.parts):
             if self.parts[i]['type'] == ils:
                 i = self._merge_latex_into_text(i, separator)
@@ -896,7 +899,7 @@ class MarkdownFile:
 
     def _merge_latex_into_text(self, index: int, separator: str) -> int:
         # TODO: test
-        """Used in `merge_in_line_latex_into_preceding_text`"""
+        """Used in `merge_display_math_mode_into_preceding_text`"""
         j = index-1
         if j == -1:
             return index
@@ -1052,21 +1055,21 @@ class MarkdownFile:
             line_dict['type'] = MarkdownLineEnum.COMMENT
         ###
         if parts and parts[-1]['type'] in [
-                MarkdownLineEnum.INLINE_LATEX,
-                MarkdownLineEnum.INLINE_LATEX_START]:
+                MarkdownLineEnum.DISPLAY_LATEX,
+                MarkdownLineEnum.DISPLAY_LATEX_START]:
             if _line_end_in_line_latex(line) or '$$' in line:
-                line_dict['type'] = MarkdownLineEnum.INLINE_LATEX_END
+                line_dict['type'] = MarkdownLineEnum.DISPLAY_LATEX_END
             else:
-                line_dict['type'] = MarkdownLineEnum.INLINE_LATEX
+                line_dict['type'] = MarkdownLineEnum.DISPLAY_LATEX
             return line_dict
 
 
         if line.lstrip() == '':
             line_dict['type'] = MarkdownLineEnum.BLANK_LINE
         elif _line_start_and_end_in_line_latex(line):
-            line_dict['type'] = MarkdownLineEnum.INLINE_LATEX_SINGLE
+            line_dict['type'] = MarkdownLineEnum.DISPLAY_LATEX_SINGLE
         elif _line_start_in_line_latex(line):
-            line_dict['type'] = MarkdownLineEnum.INLINE_LATEX_START
+            line_dict['type'] = MarkdownLineEnum.DISPLAY_LATEX_START
         elif line.lstrip().startswith('%%'):
             line_dict['type'] = MarkdownLineEnum.COMMENT
         elif re.match(r'^#{1,6} ', line):
@@ -1098,11 +1101,11 @@ def _remove_text_id(line: str) -> str:
     return re.subn(r'((?:^|\s)\^[\w\d]+)\b(?:\s*?)$', r'', line)[0]
 
 def _line_start_in_line_latex(line: str) -> bool:
-    """Return `True` if the line starts an in-line latex string.
+    """Return `True` if the line starts an display math mode latex string.
     
     This is not fully accurate outside of context - e.g. 
     It will return `True` on `$$`, regardless of whether this
-    actually starts or ends the in-line latex.
+    actually starts or ends the display math mode latex.
     """
     return line.lstrip(string.whitespace + '*').startswith('$$') 
 

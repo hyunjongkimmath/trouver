@@ -135,7 +135,7 @@ def append_to_information_note_type_database(
       return
     file = Path(file)
     df = pd.read_csv(file) if os.path.exists(file) else None
-    start_ID_from = max_ID(df) + 1 if not df is None else 1
+    # start_ID_from = max_ID(df) + 1 if not df is None else 1
     new_df = gather_information_note_types(vault, notes)
     cols = [
         'Time added', 'Time modified', 'Note name',
