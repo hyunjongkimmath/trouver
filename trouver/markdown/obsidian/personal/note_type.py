@@ -287,8 +287,8 @@ def type_of_note(
     Assumes that `vault_note` represents an existing note.
 
     **Notes**
-    - This function may return incorrect results, depending on the 
-    formatting of the file.
+    - This function may return incorrect or unintended results,
+    depending on the formatting or existence of the file.
     
     **Raises**
     - NoteDoesNoteExistError

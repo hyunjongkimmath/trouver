@@ -1,68 +1,62 @@
 {
   "main": {
-    "id": "5e7c4882049252db",
+    "id": "6d80fa8379b00a81",
     "type": "split",
     "children": [
       {
-        "id": "f55e64563b0b1b04",
+        "id": "5a9763e960b9412c",
         "type": "tabs",
         "children": [
           {
-            "id": "368d20bbf8e1bd72",
+            "id": "674a52505ff1c701",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/_index_1_some_chapter.md",
+                "file": "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md",
+                "mode": "preview",
+                "source": true
+              }
+            }
+          },
+          {
+            "id": "a15336328bd51d09",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
                 "mode": "source",
                 "source": true
               }
             }
           },
           {
-            "id": "26cfa58dcda1d28f",
+            "id": "47708d883d2f902a",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/_index_1_some_chapter.md",
+                "file": "some_other_folder/foag_15.2.1.md",
                 "mode": "source",
                 "source": true
               }
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       },
       {
-        "id": "7570b7ebc9e1db40",
+        "id": "ad9f3c05f26de40a",
         "type": "tabs",
         "children": [
           {
-            "id": "536441b50a7cf6cb",
+            "id": "8f77024e1b7415ad",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_introducing_some_notations.md",
-                "mode": "source",
-                "source": true
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "49bc944d4312e8cf",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "95a26b7afb4f80fd",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_no_notations_introduced_here.md",
+                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
                 "mode": "source",
                 "source": true
               }
@@ -74,15 +68,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "7b12307eb95ce35f",
+    "id": "2fe17b57e4b235df",
     "type": "split",
     "children": [
       {
-        "id": "36c94c7ab135ec8d",
+        "id": "7616f3d3299c9476",
         "type": "tabs",
         "children": [
           {
-            "id": "7d21c595a34c13a6",
+            "id": "dd7956cfcf683be3",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -92,7 +86,7 @@
             }
           },
           {
-            "id": "96ebfa2cdd103783",
+            "id": "4f3bf6603126cff0",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -107,7 +101,7 @@
             }
           },
           {
-            "id": "1a42cc7f31a0ced8",
+            "id": "e854959f009d718b",
             "type": "leaf",
             "state": {
               "type": "starred",
@@ -121,20 +115,20 @@
     "width": 300
   },
   "right": {
-    "id": "6716005f89e80bd8",
+    "id": "204e2e22cc96c0c8",
     "type": "split",
     "children": [
       {
-        "id": "6065ead3345a22d2",
+        "id": "b3a0972195cf707d",
         "type": "tabs",
         "children": [
           {
-            "id": "455d6a8b7022bfb2",
+            "id": "38b243c5373e47cd",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_introducing_some_notations.md",
+                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -146,19 +140,19 @@
             }
           },
           {
-            "id": "657a74c5272e951b",
+            "id": "ac47b2ecede23d87",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_introducing_some_notations.md",
+                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
           },
           {
-            "id": "d2ec210bca7f0e97",
+            "id": "6aeaea9c472ec670",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -169,12 +163,12 @@
             }
           },
           {
-            "id": "9524aad02df6d8f0",
+            "id": "7afb6bf9cf8dae8c",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_introducing_some_notations.md"
+                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md"
               }
             }
           }
@@ -182,8 +176,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -195,17 +188,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "536441b50a7cf6cb",
+  "active": "8f77024e1b7415ad",
   "lastOpenFiles": [
-    "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_no_notations_introduced_here.md",
-    "reference_for_notation_notes/1_some_chapter/_index_1_some_chapter.md",
-    "reference_for_notation_notes/1_some_chapter/reference_for_notation_notes_introducing_some_notations.md",
-    "reference_for_notation_notes/_index_reference_for_notation_notes.md",
-    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/_index_2_chapter_number_theory_reference_2.md",
-    "_index.md",
-    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
-    "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
-    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/number_theory_reference_1_Definition 15.md",
-    "Untitled.canvas"
+    "yet_another_folder/foag_1.3.5.md",
+    "some_other_folder/note_with_repeated_notation.md",
+    "some_other_folder/note_with_links_to_non_existent_notation_notes.md",
+    "some_other_folder/foag_notation_O_text_Proj__S__n.md",
+    "some_other_folder/foag_notation_O_n.md",
+    "some_other_folder/foag_15.2.1.md",
+    "some_folder/twist_of_a_graded_module.md",
+    "some_folder/foag_notation_M_n_bullet.md",
+    "some_other_folder/poonen_curves_notation_Z_X_T.md",
+    "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md"
   ]
 }
