@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['CHARACTER_ORDERING_LIST', 'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE',
            'latex_to_path_accepted_string', 'add_one_double_asts_to_line', 'notation_data_from_text',
-           'notation_data_from_note', 'append_notation_data_to_database']
+           'notation_data_from_note', 'append_notation_data_to_database', 'automatically_mark_notations']
 
 # %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 2
 import os
@@ -18,6 +18,8 @@ from typing import Optional, Union
 #     LatexNode, LatexGroupNode, LatexCharsNode
 # )
 import warnings
+
+from fastai.text.learner import TextLearner
 
 from trouver.helper import (
     find_regex_in_text, latex_indices, notation_asterisk_indices,
@@ -246,69 +248,60 @@ def append_notation_data_to_database(
     
 
 # %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 25
-# def automatically_add_notations(
-#         vn: VaultNote, reference_name: str, learn: TextLearner,
-#         create_notation_notes: bool = False) -> None:
-#     # TODO: before running this, make sure to warn or check that this
-#     # will change contents of files drasticall.
-#     """Predict where notations occur in a note, create a notation note,
-#     and add the notation note to the `See Also` section of the note.
+def automatically_mark_notations(
+        vn: VaultNote, # The information note to which to mark notations.
+        learn: TextLearner, # The ML model which predicts where notation notes should occur.  This is a classifier which takes as input a str with double asterisks surrounding LaTeX text. The model outputs whether or not the single double asterisk pair surrounds a LaTeX text with notation.
+        create_notation_notes: bool = False, # If `True`, creates the notations notes for the predicted notations and links them to the 'See Also' sections of the information notes.
+        reference_name: str = '' # The name of the reference that `vn` belongs to; this is only relevant when `create_notation_notes=True` so that the created notation notes have file names starting with the reference name.
+        ) -> None:
+    # TODO: before running this, make sure to warn or check that this
+    # will change contents of files drasticall.
+    # TODO: implement `overwrite` parameter
+    """Predict and mark where notations occur in a note, and optionally
+    create a notation note, and add the notation note to the `See Also`
+    section of the note.
 
-#     Removes links, headings, footnotes, etc. from the original note.
-#     Use with caution.
-    
-#     **Parameters**
-#     - vn - VaultNote
-#         - An information note.
-#     - reference_name - str
-#         - The name of the reference.
-#     - learn - TextLearner
-#         - The ML model which predicts where notation notes should occur.
-#         This is a classifier which takes as input a str with double
-#         asterisks surrounding LaTeX text. The str is expected to have
-#         a single double asterisk pair surround text. The model outputs
-#         whether or not the single double asterisk pair surrounds a LaTeX
-#         text with notation.
-#     - create_notation_notes - bool
-#         - If `True`, creates the notations notes for the predicted
-#         notations and links them to the 'See Also' sections of the
-#         information notes. Defaults to `False`.
-#     """
-#     no_double_asts, index_data = _notation_data_with_indices(vn, vn.vault)
-#     notations_to_add = _get_notation_indices_to_add(
-#         no_double_asts, index_data, learn)
-#     with_double_asts = no_double_asts
-#     for start, end in reversed(notations_to_add):
-#         with_double_asts = line_only_one_double_asts(
-#             with_double_asts, start, end)
+    Assumes that no double asterisks are already in the contents of `vn`.
 
-#     original_mf = MarkdownFile.from_vault_note(vn)
-#     _, end_metadata = original_mf.metadata_lines()
-#     see_also_line = original_mf.get_line_number_of_heading('See Also')
-#     original_mf.remove_lines(end_metadata + 1, see_also_line)
-#     original_mf.insert_line(end_metadata + 1, {
-#         'type': MarkdownLineEnum.HEADING, 'line': '# Topic[^1]'})
-#     original_mf.add_line_in_section('Topic[^1]', {
-#         'type': MarkdownLineEnum.DEFAULT, 'line': with_double_asts})
-#     original_mf.write(vn)
+    This function Removes links, headings, footnotes, etc.
+    from the original note and merges multi-line display math mode LaTeX
+    text into single lines. Use with caution.
+    """
+    no_double_asts, index_data = _notation_data_with_indices(vn, vn.vault)
+    notations_to_add = _get_notation_indices_to_add(
+        no_double_asts, index_data, learn)
+    with_double_asts = no_double_asts
+    for start, end in reversed(notations_to_add):
+        with_double_asts = add_one_double_asts_to_line(
+            with_double_asts, start, end)
 
-#     if create_notation_notes:
-#         make_notation_notes_from_double_asts(vn, vn.vault, reference_name)
+    original_mf = MarkdownFile.from_vault_note(vn)
+    _, end_metadata = original_mf.metadata_lines()
+    see_also_line = original_mf.get_line_number_of_heading('See Also')
+    original_mf.remove_lines(end_metadata + 1, see_also_line)
+    original_mf.insert_line(end_metadata + 1, {
+        'type': MarkdownLineEnum.HEADING, 'line': '# Topic[^1]'})
+    original_mf.add_line_in_section('Topic[^1]', {
+        'type': MarkdownLineEnum.DEFAULT, 'line': with_double_asts})
+    original_mf.write(vn)
+
+    # if create_notation_notes:
+    #     make_notation_notes_from_double_asts(vn, vn.vault, reference_name)
 
 
-# def _get_notation_indices_to_add(
-#         no_double_asts: str, index_data: list[list[int, bool]],
-#         learn: TextLearner)\
-#             -> list[tuple[int]]:
-#     """Used in `automatically_add_notations`"""
-#     to_test = [line_only_one_double_asts(no_double_asts, start, end)
-#                        for start, end, is_notat in index_data if not is_notat]
-#     predictions = [learn.predict(one_double_ast) for one_double_ast in to_test]
-#     notations_to_add = [
-#         (start, end) for (start, end, is_notat), prediction
-#         in zip(index_data, predictions) if is_notat or prediction[0] == 'True']
-#     notations_to_add.extend([
-#         (start, end) for (start, end, is_notat) in index_data if is_notat])
-#     notations_to_add.sort()
-#     return notations_to_add
+def _get_notation_indices_to_add(
+        no_double_asts: str, index_data: list[list[int, bool]],
+        learn: TextLearner)\
+            -> list[tuple[int]]:
+    """Used in `automatically_add_notations`"""
+    to_test = [add_one_double_asts_to_line(no_double_asts, start, end)
+                       for start, end, is_notat in index_data if not is_notat]
+    predictions = [learn.predict(one_double_ast) for one_double_ast in to_test]
+    notations_to_add = [
+        (start, end) for (start, end, is_notat), prediction
+        in zip(index_data, predictions) if is_notat or prediction[0] == 'True']
+    notations_to_add.extend([
+        (start, end) for (start, end, is_notat) in index_data if is_notat])
+    notations_to_add.sort()
+    return notations_to_add
 

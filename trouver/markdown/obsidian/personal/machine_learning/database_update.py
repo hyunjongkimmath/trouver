@@ -69,6 +69,8 @@ def append_to_database(
     if df is None:
         df = df_to_append
     else:
+        # TODO: I am going to have to replace this line because df.append
+        # is deprecated Use pandas.concat instead.
         df.append(df_to_append)
     df.reset_index(drop=True, inplace=True)
     aggregation_dict = {
