@@ -443,29 +443,25 @@ class MarkdownFile:
         
     def metadata(
             self
-            ) -> dict[str]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`.
+            ) -> Union[dict[str], None]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`. If there is not frontmatter YAML metadata, then this return value is `None`.
         # TODO: change the Exception to some kind of yaml format exception.
         """
         Return the frontmatter metadata as a dict.
         
-        **Returns**
-
-        - dict[str]
-            - The keys are `str` of the labels/names of the metadata.
-            The values are the metadata, which are usually `str` or `list`.
-            
         **Raises**
 
-        - Exception
-            - If any exceptions are raised when reading the YAML
-            metadata. In doing so, `str(self)` is printed.
+        - ValueError
+            - If any exceptions are raised when reading (i.e. parsing or scanning
+            the YAML metadata. In doing so, `str(self)` is printed. Moreover,
+            the appropriate `yaml.parser.ParserError`, `yaml.scanner.ScannerError`,
+            or `yaml.reader.ReaderError` is also raised.
         """
         metadata_parts = [part['line'] for part in self.parts 
                           if part['type'] == MarkdownLineEnum.META]
         try:
             return yaml.safe_load('\n'.join(metadata_parts[1:-1]))
-        except Exception as e:
-            raise Exception(
+        except (yaml.YAMLError) as e:
+            raise ValueError(
                 "There is invalid YAML formatting in a MarkdownFile object."
                 " The following is its text:\n"
                 f"{str(self)}\n\n") from e

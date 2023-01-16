@@ -13,50 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md",
-                "mode": "preview",
-                "source": true
-              }
-            }
-          },
-          {
-            "id": "a15336328bd51d09",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
-                "mode": "source",
-                "source": true
-              }
-            }
-          },
-          {
-            "id": "47708d883d2f902a",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "some_other_folder/foag_15.2.1.md",
-                "mode": "source",
-                "source": true
-              }
-            }
-          }
-        ],
-        "currentTab": 2
-      },
-      {
-        "id": "ad9f3c05f26de40a",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "8f77024e1b7415ad",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "mode": "source",
                 "source": true
               }
@@ -128,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -145,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -168,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "some_other_folder/poonen_curves_notation_Z_X_T.md"
+                "file": "some_other_folder/some_reference_name_notation_B_R.md"
               }
             }
           }
@@ -188,17 +145,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8f77024e1b7415ad",
+  "active": "674a52505ff1c701",
   "lastOpenFiles": [
+    "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md",
+    "some_other_folder/poonen_curves_notation_Z_X_T.md",
+    "some_other_folder/foag_15.2.1.md",
     "yet_another_folder/foag_1.3.5.md",
     "some_other_folder/note_with_repeated_notation.md",
     "some_other_folder/note_with_links_to_non_existent_notation_notes.md",
     "some_other_folder/foag_notation_O_text_Proj__S__n.md",
     "some_other_folder/foag_notation_O_n.md",
-    "some_other_folder/foag_15.2.1.md",
     "some_folder/twist_of_a_graded_module.md",
-    "some_folder/foag_notation_M_n_bullet.md",
-    "some_other_folder/poonen_curves_notation_Z_X_T.md",
-    "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md"
+    "some_folder/foag_notation_M_n_bullet.md"
   ]
 }
