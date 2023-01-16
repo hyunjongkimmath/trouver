@@ -5,12 +5,15 @@ __all__ = ['notation_summarization_data_from_note', 'gather_notation_note_summar
            'append_to_notation_note_summarization_database']
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 3
+import os
 from os import PathLike
+from typing import Union
 
 import pandas as pd
 
 from .....helper import current_time_formatted_to_minutes
 from ....markdown.file import MarkdownFile
+from .database_update import append_to_database
 from ..note_processing import process_standard_information_note
 from ..notation import parse_notation_note
 from ..note_type import note_is_of_type
@@ -56,7 +59,7 @@ def notation_summarization_data_from_note(
     if not _notation_has_been_summarized(main_mf):
         return None
 
-    if 'latex_in_original' in metadata:
+    if metadata is not None and 'latex_in_original' in metadata:
         latex_in_original = metadata['latex_in_original']
         if isinstance(latex_in_original, list):
             latex_in_original = latex_in_original[0]
@@ -66,7 +69,11 @@ def notation_summarization_data_from_note(
     process_standard_information_note(main_mf, vault)
     processed_summary = str(main_mf)
 
+    if main_of_notation is None:
+      return None
     main_note = VaultNote(vault, name=main_of_notation)
+    if not main_note.exists():
+        return None
     main_note_mf = MarkdownFile.from_vault_note(main_note)
     process_standard_information_note(main_note_mf, vault)
 
@@ -85,10 +92,10 @@ def _notation_has_been_summarized(
     return len(text) > 0 and '#_meta/TODO' not in text
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 13
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 15
 def gather_notation_note_summaries(
         vault: PathLike,
-        note: list[VaultNote]
+        notes: list[VaultNote]
         ) -> pd.DataFrame: # Has columns `Time added`, `Time modified`, `Notation note name`, `Notation`, `Latex in original`, 'Summary', 'Main note name', and 'Processed main note contents'. 
     """
     Return a `pandas.DataFrame` encapsulating the data of notation note
@@ -97,7 +104,8 @@ def gather_notation_note_summaries(
     cf. 
     """
     summary_data = [
-        notation_summarization_data_from_note(note) for note in notes]
+        notation_summarization_data_from_note(note, vault) for note in notes]
+    summary_data = [row for row in summary_data if row is not None]
     current_time = current_time_formatted_to_minutes()
     for row in summary_data:
         row['Time added'] = current_time
@@ -105,7 +113,7 @@ def gather_notation_note_summaries(
     return pd.DataFrame(summary_data)
     
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 16
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 19
 def append_to_notation_note_summarization_database(
         vault: PathLike, # The vault freom which the data is drawn
         file: PathLike, # The path to a CSV file
@@ -156,11 +164,12 @@ def append_to_notation_note_summarization_database(
         file = Path(file)
     df = pd.read_csv(file) if os.path.exists(file) else None
     # start_ID_from = max_ID(df) + 1 if not df is None else 1
-    new_df = gather_information_note_types(vault, notes)
+    new_df = gather_notation_note_summaries(vault, notes)
     cols = [
         'Time added', 'Time modified', 'Notation note name',
-        'Notation', 'Latex in origianl', 'Summary', 'Main note name',
+        'Notation', 'Latex in original', 'Summary', 'Main note name',
         'Processed main note contents']
-    cols_to_update = ['Time modified', 'Notation note name', 'Main note name']
+    cols_to_update = [
+      'Time modified', 'Notation note name', 'Notation', 'Latex in original', 'Summary', 'Main note name']
     append_to_database(
         file, new_df, cols, 'Processed main note contents', cols_to_update, backup)

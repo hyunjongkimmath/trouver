@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "some_folder/some_reference_name_notation_Spec_A.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "mode": "source",
                 "source": true
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "some_folder/some_reference_name_notation_Spec_A.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "some_folder/some_reference_name_notation_Spec_A.md",
+                "file": "some_other_folder/some_reference_name_notation_B_R.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "some_folder/some_reference_name_notation_Spec_A.md"
+                "file": "some_other_folder/some_reference_name_notation_B_R.md"
               }
             }
           }
@@ -147,6 +147,7 @@
   },
   "active": "674a52505ff1c701",
   "lastOpenFiles": [
+    "some_folder/some_reference_name_notation_Spec_A.md",
     "some_other_folder/some_reference_name_notation_B_R.md",
     "some_other_folder/poonen_curves_notation_zeta_X_s_zeta_function_of_variety.md",
     "some_other_folder/poonen_curves_notation_Z_X_T.md",
@@ -155,7 +156,6 @@
     "some_other_folder/note_with_repeated_notation.md",
     "some_other_folder/note_with_links_to_non_existent_notation_notes.md",
     "some_other_folder/foag_notation_O_text_Proj__S__n.md",
-    "some_other_folder/foag_notation_O_n.md",
-    "some_folder/twist_of_a_graded_module.md"
+    "some_other_folder/foag_notation_O_n.md"
   ]
 }
