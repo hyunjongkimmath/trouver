@@ -205,7 +205,7 @@ def single_input(
         latex_in_original: str, # A substring in main_note_content which is a latex string in which the notation is introduced.
         ) -> str: 
 
-    return f"summarize: {main_note_content}\n\nlatex_in_original: {latex_in_original}"
+    return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 29
 # TODO: I wonder if I should also keep text that doesn't take 
