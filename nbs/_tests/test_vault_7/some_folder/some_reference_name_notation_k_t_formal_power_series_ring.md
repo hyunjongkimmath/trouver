@@ -1,0 +1,1 @@
+$k[[t]]$ [[some_note|denotes]] the ring of formal power series where $k$ is a field.

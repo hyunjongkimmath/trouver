@@ -1,0 +1,12 @@
+﻿Time added,Time modified,Notation note name,Notation,Latex in original,Summary,Main note name,Processed main note contents
+2023-01-17T01:47,2023-01-17T01:47,reference_name_notation_Gal_L_K,$\operatorname{Gal}(L/K)$,$\operatorname{ann} M$,the Galois group of the Galois field extension $L/K$.,reference_name_Galois_group,"If $L/K$ is a Galois field extension, then its Galois group $\operatorname{Gal}(L/K)$ is the group of automorphisms of $L$ fixing $K$ pointwise.
+"
+2023-01-17T01:47,2023-01-17T01:47,reference_name_notation_I_J,$\mathbb{Z}/n\mathbb{Z}$,$\mathbb{Z}/n\mathbb{Z}$,The ring of integers modulo $n$. It is defined as …,reference_name_Definition 1,"The ring $\mathbb{Z}/n\mathbb{Z}$, called the ring of integers modulo $n$, is defined as the ring whose elements are $0,1,\ldots,n-1$ whose ring operation is given as follows:…"
+2023-01-17T01:47,2023-01-17T01:47,reference_name_notation_M_vee_dual_of_a_module,$M^\vee$,$M^\vee$,"the dual of the $R$-module $M$. It is defined as $\operatorname{Hom}_R(R,M)$",reference_name_Definition 17,"Let $M$ be an $R$-module. We define the dual module $M^\vee$ as $\operatorname{Hom}_R(M,R)$. In other words, $M^\vee$ is the set of all $R$-module homomorphisms $M \to R$. Note that $M^\vee$ has a natural $R$-module structure given by $$(f+g)(m) = f(m) + g(m), \quad (cf)(m) = c f(m).$$
+"
+2023-01-17T01:47,2023-01-17T01:47,reference_name_notation_F_q,$\mathbb{F}_q$,$\mathbb{F}_q$,"the finite field of $q$ elements, where $q$ is a power of a prime.",reference_name_Theorem 1,"Theorem. Let $q$ be a prime power. There is a unique field, up to isomorphism, with $q$ elements. We denote this field as $\mathbb{F}_q$ and call it the ""finite field of $q$ elements"".
+"
+2023-01-17T01:47,2023-01-17T01:47,reference_name_notation_X_N,$X(N)$,$X(N)$,"the quotient of $\mathbb{H}^*$ by $\Gamma(N)$, where $N$ is a positive integer.",reference_name_Definition 200,"Now we discuss modular curves, whose points parameterize elliptic curves along with $N$-torsion data where $N \geq 1$. Before we do so, we define the congruence subgroups $\Gamma(N), \Gamma_0(N)$, and $\Gamma_(N)$:
+$$\Gamma(N) := …$$
+
+Recall that we had defined the extended upper half plane $\mathbb{H}^*$. The modular curves $X(N)$, $X_1(N)$, and $X_0(N)$ are respectively the quotients of $\mathbb{H}^*$ by $\Gamma(N)$, $\Gamma_1(N)$, and $\Gamma_0(N)$."
