@@ -6,14 +6,29 @@ trouver
 Mathematicians constantly need to learn and read about concepts with
 which they are unfamiliar. Keeping mathematical notes in an
 [`Obsidian.md`](https://obsidian.md/) vault can help with this learning
-process as `Obsidian.md`
+process as `Obsidian.md`.
 
-This file will become your README and also the index of your
-documentation.
+## Disclaimer
 
-``` python
-# TODO Write front description
-```
+At the time of this writing (01/18/2023), there is only one
+author/contributor of this library. Nevertheless, the author often
+refers to himself as “the author”, “the authors”, or “the
+author/authors” in writing this library. Moreover, the author often uses
+the [“editorial we”](https://en.wikipedia.org/wiki/We#Editorial_we) in
+writing this library.
+
+Use this library at your own risk as using this library can write or
+modify files in your computer and as the documentation of some
+components of this library may be inaccurate or outdated. By using this
+library, you agree that the author/authors of this library is/are not
+responsible for any damages from this library and related components.
+
+This library is still somewhere in-between prototype and alpha.
+Moreover, the library itself may be unstable and subject to abrupt
+changes.
+
+The author/authors of this library is/are also not affiliated with
+`Obsidian.md`, `fast.ai`, or `Hugging Face`.
 
 ## Install
 
@@ -25,34 +40,205 @@ documentation.
 pip install trouver
 ```
 
-## How to use
+# How to use
+
+## Parse LaTeX documents and split them into parts
+
+`Trouver` can parse `LaTeX` documents and split them up into “parts”
+which are convenient to read in `Obsidian.md` and to take notes on. For
+example, the following code splits up this
+[paper](https://arxiv.org/abs/2106.10586) in creates a folder in an
+Obsidian.md vault[^1].
 
 ``` python
-# TODO Write basic usage
-```
+import os
+from pathlib import Path
+import shutil
+import tempfile
 
-Fill me in please! Don’t forget code examples:
+from trouver.helper import _test_directory, text_from_file
+from trouver.latex.convert import (
+    divide_preamble, divide_latex_text, custom_commands,
+    setup_reference_from_latex_parts
+)
+```
 
 ``` python
-1+1
+# This context manager is implemented to make sure that a temporary
+# folder is created and copies contents from `test_vault_5` in `nbs/_tests`,
+# only the contents of the temporary folder are modified, and 
+with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_dir):
+    temp_vault = Path(temp_dir) / 'test_vault_5'
+    shutil.copytree(_test_directory() / 'test_vault_5', temp_vault)
+
+    sample_latex_file = _test_directory() / 'latex_examples' / 'kim_park_ga1dcmmc' / 'main.tex'
+    sample_latex_text = text_from_file(sample_latex_file)
+    preamble, _ = divide_preamble(sample_latex_text)
+    parts = divide_latex_text(sample_latex_text)
+    cust_comms = custom_commands(preamble)
+    vault = temp_vault
+    location = Path('') # The path relative to the vault of the directory in which to make the new folder containing the new notes.
+    reference_name = 'kim_park_ga1dcmmc'
+    author_names = ['Kim', 'Park']
+    
+    setup_reference_from_latex_parts(
+        parts, cust_comms, vault, location,
+        reference_name,
+        author_names)
+
+    os.startfile(os.getcwd()) # This open the current working directory; find the temporary folder in here.
+    input() # There should be an input prompt; make an input here when you are done viewing the
 ```
 
-    2
+![The created folder in Obsidian.md looks like this in `Obsidian.md` The
+text in magenta are links, each to a file in the `Obsidian.md`
+vault](.\images/index_setup_reference_from_latex_parts_demonstration.png)
 
-## How the examples are structured
+While `Obsidian.md` is not strictly necessary to use `trouver` or to
+read and write the files created by `setup_reference_from_latex_parts`
+(in fact, any traditional file reader/writer can be used for such
+purposes), reading and writing the files on `Obsidian.md` can be
+convenient.
 
-TODO: add how the `nbs` folder has a `_tests` folder.
+## ML model utilities
+
+We have trained a few ML models to detect/predict and provide
+information about “short” mathematical text. These ML models are
+available on [`Hugging Face`](https://huggingface.co/) and as such, they
+can be downloaded to and used from one’s local machines. Please note
+that ML models can be large and the locations that the Hugging Face
+[Transformers](https://huggingface.co/docs/transformers/index) library
+downloads such models to can vary from machine to machine.
+
+For each of these models, we may or may not have also written some
+instructions on how to train similar models given appropriately
+formatted data[^2].
+
+## Use an ML model to categorize and label the note types
+
+One of these ML models predicts the type of a piece of mathematical
+writing. For example, this model may predict that
+
+``` markdown
+Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.
+```
+
+introduces a definition. For the purposes of `trouver`, an `Obsidian.md`
+note containing ought to be labeled with the `#_meta/definition` tag by
+adding the text `_meta/definition` to the `tags` field in the
+frontmatter YAML metadata of the note:
+
+![In this note, there is a `_meta/definition` in the `tags` field in the
+frontmatter YAML metadata of the
+note](.\images/index_example_of_a_note_with_meta_definition_tag.png)
+
+See `markdown.obsidian.personal.machine_learning.information_note_types`
+for more details.
+
+This ML model is trained using the [fast.ai](https://www.fast.ai/)
+library; see `how_to.train_ml_model.fastai` for the steps taken to train
+this model. This ML model is also available on [Hugging
+Face](https://huggingface.co/) under the repository
+[hyunjongkimmath/math_text_tag_categorization](https://huggingface.co/hyunjongkimmath/math_text_tag_categorization)
+
+``` python
+# from transformers import
+```
+
+``` python
+# from trouver.markdown.obsidian.personal.machine_learning.information_note_types import
+```
+
+``` python
+# TODO: example of loading model and feeding it input directly
+# TODO: exmaple of loading model and using it.
+```
+
+## Use an ML model to find notations introduced in text
+
+Another ML model predicts locations of notations introduced in text.
+
+This ML model is also trained using the `fast.ai` library.
+
+``` python
+# TODO: upload model to hugging face
+```
+
+## Use an ML model to summarize notations introduced in text
+
+Now that we have found notations introduced in text and created notation
+notes for them in our `Obisidian.md` vault, we now generate summaries
+for these notations.
+
+The ML model for this is available on `Hugging Face` under the
+repository
+[`hyunjongkimmath/notation_summarizations_model`](https://huggingface.co/hyunjongkimmath/notation_summarizations_model).
+
+## How the examples/tests are structured
+
+Many of the functions and methods in this library are accompanied by
+examples demonstrating how one might use them.
+
+These examples are usually also tests of the functions/methods; the
+developer of this library can use `nbdev`’s
+[`nbdev_test`](https://nbdev.fast.ai/api/test.html#nbdev_test)
+command-line command to automatically run these tests[^3][^4]. Moreover,
+there is a GitHub workflow in the repository for this library (see the
+`.github/workflows/test.yaml`) which automatically runs these
+examples/tests on GitHub Actions when changes to are [committed to the
+GitHub repository](https://github.com/git-guides/git-commit)[^5].
+
+These examples may use a combination of the following:
+
+- Mock patching via Python’s
+  [`unittest.mock`](https://docs.python.org/3/library/unittest.mock.html)
+  library.
+- The [`fastcore.test`](https://fastcore.fast.ai/test.html) module as
+  assertion statements.
+- example/test files in the `nbs/_tests` folder in the repository[^6].
+  - The `_test_directory()` function in the `helper` module obtains this
+    folder.
+  - Many of these examples also use the
+    [`tempfile.TemporaryDirectory`](https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory)
+    class along with the
+    [`shutil.copytree`](https://docs.python.org/3/library/shutil.html#shutil.copytree)
+    to create a Python context manager of a temporary directory with
+    contents copied from the `nbs/_tests` folder. The temporary
+    directory is automatically deleted once the context manager ends. We
+    do this to run tests/examples which modify files/folders without
+    modifying the files/folders in the `nbs/_tests` directory
+    themselves.
+    - For example, the code
+
+    ``` python
+    with tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_dir:
+        temp_vault = Path(temp_dir) / 'test_vault_1'
+        shutil.copytree(_test_directory() / 'test_vault_1', temp_vault)
+
+        # run the rest of the example here
+
+        # Uncomment the below lines of code to view the end-results of the example; 
+        # os.startfile(os.getcwd())
+        # os.input()  # this line pauses the process until the user makes an input so the deletion of the temporary directory is delayed.
+    ```
+
+    first creates a temporary directory starting `temp_dir` in the
+    current working directory and copies into this temporary directory
+    the contents of `test_vault_1` in the `nbs/_tests` folder. One the
+    example/test has finished running, the temporary directory is
+    removed whether or not the test succeeds.
 
 ## Miscellaneous
 
 This repository is still in its preliminary stages and much of the code
 and documentation may be faulty or not well formatted. The author
 greatly appreciates reports of these issues or suggestions on edits;
-please feel free to report them on the `Issues` section of this
-repository. The [author](https://sites.google.com/wisc.edu/hyunjongkim)
-of this repository, who is primarily a mathematician (a PhD student at
-the time of this writing), does not guarantee quick responses or
-resolutions to such issues, but will do his best to address them.
+please feel free to report them on the `Issues` section of the GitHub
+repository for this library. The
+[author](https://sites.google.com/wisc.edu/hyunjongkim) of this
+repository, who is primarily a mathematician (a PhD student at the time
+of this writing), does not guarantee quick responses or resolutions to
+such issues, but will do his best to address them.
 
 ## For developers
 
@@ -66,11 +252,46 @@ command-line command
 [`nbdev_prepare`](https://nbdev.fast.ai/tutorials/tutorial.html#prepare-your-changes),
 which among other things runs `nbdev_export`.).
 
-Many
-
 ### Troubleshooting
 
 - In the `nbs/_tests` folder, make sure that the folders that you want
   to test are not empty; since git does not track empty folders, empty
   folders will not be pushed in GitHub and the tests in GitHub Actions
   may yield different results than in a local computer.
+
+## Special Thanks
+
+The author of `trouver` thanks [Sun Woo
+Park](https://sites.google.com/wisc.edu/spark483) for agreeing to allow
+their coauthored paper, [*Global $\mathbb{A}^1$-degrees covering maps
+between modular curves*](https://arxiv.org/abs/2106.10586), along with
+some of Park’s expository writings, to be used in examples in this
+library.
+
+[^1]: There is a known bug in the numbering of the sections of the
+    paper, cf. [Issue
+    \#32](https://github.com/hyunjongkimmath/trouver/issues/32).
+
+[^2]: Given time, the author of `trouver` eventually plans on writing
+    instructions on training each of the models.
+
+[^3]: cf. [nbdev’s End-To-End
+    Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-examples-tests-and-docs)
+    to see how to use `nbdev_test`
+
+[^4]: There are also tests which are hidden from the documentation
+    website; one can find these tests in the jupyter notebook files in
+    the `nbs` folder in the repository for this library as notebook
+    cells marked with the `#| hide` flag, cf. [nbdev’s End-to-End
+    Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-frontmatter)
+    to see what the `#| hide` flag does.
+
+[^5]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+    in such a way that that allows GitHub Actions to access/use the
+    contents of the `nbs/_tests` directory upon running the
+    tests/examples.
+
+[^6]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+    in such a way that that allows GitHub Actions to access/use the
+    contents of the `nbs/_tests` directory upon running the
+    tests/examples.

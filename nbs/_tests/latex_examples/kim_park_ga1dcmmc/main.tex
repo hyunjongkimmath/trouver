@@ -1,0 +1,991 @@
+\documentclass[12pt, reqno]{amsart}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[%pdftex,
+  bookmarks=true]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[final]{microtype}
+\usepackage{lmodern}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{enumerate}
+\usepackage{tikz-cd} % commutative diagrams
+\usepackage{tikz}
+\usetikzlibrary{arrows,calc,matrix}
+\usepackage[textwidth=1in]{todonotes}
+\setlength{\marginparwidth}{2cm}
+
+
+% Theorem-style environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{definition*}{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{note}[theorem]{Note}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{question}[theorem]{Question}
+
+%Short-Hand Commands
+\newcommand{\Spec}{\mathrm{Spec }} %Spectrum of a Ring
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\A}{\mathbb{A}} %A^1 
+\newcommand{\Proj}{\mathbb{P}} %P^1
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\GW}{\mathrm{GW}} %Grothendieck-Witt Ring
+\newcommand{\Adeg}{\deg^{\mathbb{A}^1}} %A^1 degree
+\newcommand{\Oh}{\mathscr{O}} %Notation for structure sheaf
+\newcommand{\Tr}{\mathrm{Tr}} %Trace Map
+\newcommand{\ind}{\mathrm{ind}} %index of global sections
+\newcommand{\nAdeg}{\mathrm{ndeg}^{\mathbb{A}^1}} %naive A^1 global degree
+\newcommand{\Hom}{\text{Hom}}
+
+\begin{document}
+
+\title{Global $\A^1$ degrees of covering maps between modular curves}
+
+\author{Hyun Jong Kim and Sun Woo Park}
+\address{Department of Mathematics, University of Wisconsin --
+  Madison, 480 Lincoln Dr., Madison, WI 53706, USA}
+\email{\href{mailto:hyunjong.kim@math.wisc.edu}{hyunjong.kim@math.wisc.edu}}
+\address{ Department of Mathematics, University of Wisconsin -- Madison, 480 Linconln Dr., Madison, WI 53706, USA \newline National Institute for Mathematical Sciences, 463-1 Jeonmin-dong, Yuseong-gu, Daejon, 34047, Republic of Korea.}
+\email{\href{mailto:spark483@math.wisc.edu}{spark483@math.wisc.edu}, \href{mailto:spark483@nims.re.kr}{spark483@nims.re.kr}}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+Given a projective smooth curve $X$ over any field $k$ of characteristic not $2$, we define the global $\A^1$ degree of a finite morphism of smooth curves $f: X \to \mathbb{P}^1_k$ satisfying certain conditions, a generalization of Morel's construction of $\A^1$-Brouwer degree of a morphism $f: \Proj^1_k \to \Proj^1_k$ as well as Kass and Wickelgren's construction of Euler numbers of global sections. We then prove that under certain conditions on $N$, the global $\A^1$ degrees of covering maps between modular curves $X_0(N) \to X(1)$, $X_1(N) \to X(1)$, and $X(N) \to X(1)$ are sums of hyperbolic elements $\langle 1 \rangle + \langle -1 \rangle$ in the Grothendieck-Witt ring $\GW(k)$ for any field $k$ whose characteristic is coprime to $N$ and the pullback of $\mathscr{O}_{\Proj^1}(1)$ is relatively orientable.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}\label{sec: Introduction}
+$\A^1$ enumerative geometry uses $\A^1$ homotopy theory over the category of smooth schemes over $k$ to explicitly analyze families of algebraic objects. Morel and Voevodsky constructed the $\A^1$ homotopy category of smooth schemes, which extends homotopy theory to algebraic geometry and views $\A^1$ as a replacement for the unit interval \cite{mv}.  
+Applications of $\A^1$ homotopy theory led to generalizations of various profound results in enumerative geometry. Morel (\cite{morel06}), Cazanave (\cite{cazanave}), Kass and Wickelgren (\cite{kwEKL},  \cite{kwBezout}), and many others proposed generalizations of topological degrees of continuous maps as $\A^1$ degrees of morphisms. Kass and Wickelgren used Euler numbers of vector bundles over smooth schemes to count the number of lines on a smooth cubic surface over $\Proj^3$ over any field $k$ with respect to a choice of orientation \cite{kwcubic}. Hoyois proposed a refinement of Grothendieck-Lefschetz trace formula \cite{hoyois}. Levine gave a generalization of Euler characteristic of smooth projective varieties \cite{levine}. Asok and Fasel proved a refinement of Hopf degree theorem and $\A^1$ cohomotopy groups of smooth schemes \cite{af18}. Lastly, Kobin and Taylor extended Kass and Wickelgren's construction of Euler numbers to root stacks \cite{tkstack}.
+
+Arithmetic properties of modular curves, such as the number of components of modular curves, change with respect to different base fields. Snowden gave explicit combinatorial descriptions of real components of modular curves \cite{snowden}. Over the real numbers, the components of $X_0(N)$ comprise of $2^{d-1}$ copies of $S^1$ where $d$ is the number of distinct prime factors of $N$. In this paper, we enrich the notion of degrees of finite, relatively orientable maps from a curve to $\Proj^1$. We then apply this notion to maps from coarse moduli schemes of elliptic curves with level structures to $X(1)$ with a choice of relative orientations using global $\A^1$ degrees of a morphism.
+
+Given a continuous map of orientable manifolds $f: M \to N$ of dimensions $n$ over $\mathbb{R}$, the degree of $f$ is the degree of the morphism induced on their top homology groups:
+\begin{equation*}
+    f_* : H_n(M, \mathbb{Z}) \to H_n(N, \mathbb{Z}).
+\end{equation*}
+The degree of $f$ can be computed from the local degrees of $f$ at each of the fibers of a point $y \in N$. Let $V$ be a small enough open neighborhood of $y$. For each fiber $x \in f^{-1}(y)$, pick an open neighborhood $x \in U \subset f^{-1}(V)$ such that $U \cap f^{-1}(y) = \{x\}$. Then the local degree at $x$ is given by the degree of
+\begin{equation*}
+    f: S^n \cong U / (U - \{x\}) \to V / (V - \{y\}) \cong S^n.
+\end{equation*}
+The sum of local degrees at each fiber is equal to the degree of $f$. 
+
+Morel's construction of $\A^1$-Brouwer degree of $f: \Proj^n_k/\Proj^{n-1}_k \to \Proj^n_k/\Proj^{n-1}_k$ extends the notion of degree of continuous functions to the $\A^1$ homotopy category of smooth schemes $X$ over $k$. The $\A^1$-Brouwer degree (or the global $\A^1$ degree) of a morphism $f: \Proj^n_k/\Proj^{n-1}_k \to \Proj^n_k/\Proj^{n-1}_k$ is defined as
+\begin{equation*}
+    \Adeg: [\Proj^n_k/\Proj^{n-1}_k, \Proj^n_k/\Proj^{n-1}_k]_{\A^1} \to  \widetilde{CH}^n(\Proj^n_k/\Proj^{n-1}_k) \cong \GW(k),
+\end{equation*}
+where $\Proj^n_k/\Proj^{n-1}_k$ is the $\A^1$-homotopic $n$-sphere, and $\widetilde{CH}^i(X)$ is the $i$th oriented Chow-Witt ring of a smooth scheme $X$ of dimension $n$. Kass and Wickelgren showed that the global $\A^1$ degree of $f$ is the sum of its local $\A^1$ degrees \cite[Proposition 14]{kwEKL}.
+
+In a similar vein, one can extend the above result by considering any finite morphism of form $f: X \to \Proj^n_k \simeq \Proj^1_k$ for a smooth projective scheme $X$ of dimension $n$ over $k$. Recall that Hopf degree theorem states that the degree map 
+\begin{equation*}
+    \deg: [M, S^n] \to H_n(M, \mathbb{Z}) \cong \mathbb{Z}
+\end{equation*}
+induces a bijection, where $M$ is a smooth $n$-dimensional manifold over $\mathbb{R}$. Setting $M = S^n$ gives the Hurewicz theorem. In light of this observation, Morel's construction of $\A^1$-Brouwer degree is the analogue of Hurewicz theorem over $\A^1$ homotopy category of smooth schemes over $k$. Furthermore, Asok and Fasel proved the $\A^1$ analogue of Hopf degree theorem formulated by defining an abelian group homomorphism given by
+\begin{equation*}
+    [X, \Proj^n_k / \Proj^{n-1}_k]_{\A^1} \to \widetilde{CH}^n(X)
+\end{equation*}
+for any smooth schemes $X$ of dimension $\geq 2$, see \cite[Theorem 2]{adf17} and \cite[Theorem 1]{af18} for further details.
+
+Given a smooth projective curve $C$ over $k$, however, the set of $\A^1$-homotopy classes of morphisms $[C, \Proj^1_k]$ may not necessarily have a functorial abelian group structure. As an alternative, we introduce the notion of a global $\A^1$ degree of a finite morphism $\pi: C \to \Proj^1_k/\infty$ by using Euler numbers of a line bundle $\pi^*(\Oh_{\Proj^1_k}(d))$ of $C$. 
+
+\begin{definition*}[Global $\A^1$ degree, Definition \ref{naiveEulerequiv}]
+Let $\pi: C \to \mathbb{P}^1_k$ be a finite morphism of smooth curves over any field $k$ such that $\pi^* \Oh_{\Proj^1_k} (1)$ is relatively orientable. We can write $\pi = [s_0: s_1]$ where $s_0, s_1$ are global sections of $\pi^* \Oh_{\Proj^1_k}(1)$ with no common zeroes. Let $q \in \Proj^1_k(k)$ be a $k$-rational point, $F_q$ the minimal polynomial of $q$, and $Z$ a zero section of $F_q(s_0,s_1)$ considered as a section of $\pi^* \Oh_{\Proj^1_k}(1)$. The global $\A^1$-degree of $\pi: C \to \mathbb{P}^1_k$ is given by
+\begin{equation*}
+    \Adeg \pi := e(\pi^* \Oh_{\Proj^1_k}(1), F_q(s_0,s_1)) = \sum_{p \in Z} \ind_{p} F_q(s_0, s_1),
+\end{equation*}
+where $e(\pi^* \Oh_{\Proj^1_k}(1), F_q(s_0,s_1))$ is the Euler number of the line bundle $\pi^* \Oh_{\Proj^1_k}(1)$ with respect to $F_q(s_0, s_1)$.
+\end{definition*}
+
+Using the ramification index of the $j$-invariant, we explicitly compute the global $\A^1$ degrees of covering maps between modular curves under certain conditions.
+
+\begin{theorem*}[Theorem \ref{mainA}]\label{main1}
+Let $X_0(N)$, $X_1(N)$, and $X(N)$ be modular curves, considered as coarse moduli schemes of elliptic curves with level structure over $\Z[1/N]$. Then the global $\A^1$ degrees of covering maps 
+\begin{align*}
+    \pi_{0,N}&: X_0(N) \to X(1) \\
+    \pi_{1,N}&: X_1(N) \to X(1) \\
+    \pi_N&: X(N) \to X(1)
+\end{align*}
+over any field $k$ such that $\text{char }(k) \nmid N$ and the pullback of $\Oh_{\Proj^1_k}(1)$ is relatively orientable are given by
+\begin{enumerate}
+    \item $\Adeg \pi_{0,N} = \frac{1}{2} N \prod_{p | N, \; p \; \text{prime}} \left(1 + \frac{1}{p} \right) \left(\langle 1 \rangle + \langle -1 \rangle \right) $ if there exists a prime factor $q$ of $N$ such that $q \equiv 3 \; \text{mod} \; 4$,
+    \item $\Adeg \pi_{1,N} = \frac{1}{4} N^2 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right) \left(\langle 1 \rangle + \langle -1 \rangle \right) $ for any $N \geq 4$,
+    \item $\Adeg \pi_N = \frac{1}{4} N^3 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right) \left( \langle 1 \rangle + \langle -1 \rangle \right)$ for any $N \geq 2$.
+\end{enumerate}
+\end{theorem*}
+
+The structure of the paper is as follows. In Section 2, we overview relevant results from $\A^1$-homotopy theory, in particular Morel's notion of $\A^1$-Brouwer degree and Kass and Wickelgren's construction of Euler numbers. In Section \ref{sec: Global A1 degrees}, we discuss how one can compute the Euler numbers of the line bundle $\pi^* \Oh_{\Proj^1_k} (n)$ given a choice of a finite morphism of smooth projective curves $\pi: C \to \Proj^1_k$. We define global $\A^1$ degrees of finite morphisms of smooth projective curves $\pi: C \to \Proj^1_k$ under the assumption that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable over $k$. Over such base field $k$, we finally proceed to compute the global $\A^1$ degrees of covering maps of modular curves in Section \ref{sec: covering maps}. We recall some facts on coarse moduli schemes of elliptic curves with level structures, which we combine with the aforementioned results from Section 2 to Theorem \ref{main1}. We also list explicit computations of global $\A^1$ degrees of covering maps $\pi_{0,N}:X_0(N) \to X(1)$ for some values of $N$, and discuss what the global $\A^1$ degrees are for other integers $N$ not divisible by primes congruent to 3 modulo 4.
+
+\subsection{Notation}
+Unless otherwise specified, we will notate:
+\begin{itemize}
+    \item $k$: any commutative field.
+    \item $X, Y, Z$: smooth schemes over $k$.
+    \item $n$: the dimension of $X$.
+    \item $\A^n_k$: the affine $n$-space over $k$.
+    \item $\Proj^n_k$: the projective $n$-space over $k$.
+    \item $\Oh_X$: the structure sheaf of $X$.
+    \item $V \to X$: a vector bundle over $X$.
+    \item $\Gamma(X,V)$: the set of global sections of $V \to X$.
+    \item $k(X)$: the function field of $X$.
+    \item $k(x)$: the residue field of a closed point $x \in X$.
+    \item $\Proj^n_k / \Proj^{n-1}_k$: the $\A^1$-homotopic $n$-sphere.
+    \item $\Adeg$: the $\A^1$-Brouwer degree of $f: \Proj^n_k / \Proj^{n-1}_k \to \Proj^n_k / \Proj^{n-1}_k$. Also notates the global $\A^1$ degree of a finite morphism of smooth projective curves $f: C \to \Proj^1_k$.
+    \item $[X, Y]$: the set of $\A^1$-homotopy classes of morphisms of smooth schemes $f:X \to Y$ over $k$.
+    \item $GW(k)$: the Grothendieck-Witt ring of $k$.
+    \item $\Tr_{L/k}$: the trace operator $\Tr_{L/k}: \GW(L) \to \GW(k)$ given a separable field extension $L/k$.
+    \item $\widetilde{CH}^i(X)$: the $i$-th oriented Chow-Witt ring of a smooth scheme $X$.
+    \item $\langle a \rangle$: an element of $GW(k)$ for some $a \in k^\times$.
+    \item $e(V,f)$: the Euler number of a vector bundle $V \to X$ given a global section $f \in \Gamma(V,X)$.
+    \item $e(\pi, q)$: The Euler number $e(\pi^* \Oh_{\Proj^1_k} (\deg F_q), F_q)$, where $\pi$ is a finite morphism of smooth projective curves $\pi: C \to \Proj^1_k$, $q \in \Proj^1_k$ a closed point, and $F_q$ the minimal polynomial of $q$ over $k$.
+    \item $N$: the level of modular curves.
+    \item $X(N), X_0(N), X_1(N)$: modular curves of level $N$ considered as smooth projective schemes over $\Z[1/N]$.
+    \item $Y(N), Y_0(N), Y_1(N)$: affine modular curves of level $N$ considered as smooth affine schemes over $\Z[1/N]$.
+    \item $E$: an elliptic curve over $k$.
+    \item $j$: the classical $j$-invariant of an elliptic curve $E$.
+\end{itemize}
+
+We will mention additional conditions on these notations in the upcoming sections.
+
+\section{$\A^1$ homotopy theory} \label{sec: A1 homotopy theory}
+
+We introduce $\A^1$ homotopy theory by listing some essential definitions and results. The concepts that we list in this section follow \cite{AWS}, \cite{kwcubic}, and \cite{kwBezout}, and lead up to Euler numbers, see Definition \ref{def:eulernumbersection}. Euler numbers are sums of local indices. We think of Euler numbers as analogous to global $\A^1$-degrees and local indices as analogous to local $\A^1$-degrees, cf. Example \ref{ex:euler_number_A1_degree}. 
+
+Under some conditions, ongoing work by Kass, Levine, Solomon, and Wickelgren defines the degree of a finite morphism $f: X \rightarrow Y$ of equidimensional schemes. While this work in itself is not publicly available at this time, one of the authors describes it in \cite[Definition 10 and Theorem 9]{pw20}. This paper does not verify that the notions of $\A^1$ degree, particularly Definitions \ref{def:eulernumber}, \ref{naiveEulerequiv} and \ref{def:affine euler number}, that we define are equivalent to that found in \cite{pw20}.
+
+
+\subsection{$\A^1$ degrees of finite morphisms over projective spaces}\label{subsec: A1 degree basic}
+We first introduce the construction of $\A^1$ degrees of morphisms, which are generalizations of topological Brouwer degrees of continuous maps between manifolds.
+
+\begin{definition}
+Let $X$ be a scheme over $k$. A Nisnevich neighborhood of $x \in X$ is an \'etale morphism $p: U \rightarrow X$ such that there is some $u \in U$ such that $p(u) = x$ and the induced map $k(x) \rightarrow k(u)$ of residue fields is an isomorphism.
+\end{definition}
+
+Nisnevich sites on categories of smooth schemes over $k$ are finer than Zariski sites but coarser than \'etale sites.
+
+%Found in AWS notes, Definition 17 and KW17
+\begin{definition}
+Let $X$ be a scheme of dimension $n$. An \'etale map $\phi: U \rightarrow \A^n$, where $U$ is a Zariski open neighborhood of $p \in X$, is referred to as Nisnevich local coordinates around $p$ if the induced map of residue fields $k(\phi(p)) \rightarrow k(p)$ is an isomorphism.
+\end{definition}
+
+\begin{proposition}\label{curvenis}
+Let $X$ be a smooth scheme over $k$ of dimension $n \geq 1$. There are Nisnevich coordinates near any closed point.
+\end{proposition}
+\begin{proof}
+We refer to \cite[Proposition 20]{kwcubic}.
+\end{proof}
+
+%Found in AWS notes, page 12
+\begin{definition}
+Let $k$ be a field. The isometry classes of non-degenerate, symmetric, bilinear forms over $k$ form a semi-ring under $\oplus$, the direct sum operator, and $\otimes$, the tensor product operator. The Grothendieck-Witt group $\GW(k)$ is the group completion of this semi-ring under $\oplus$.
+The Grothendieck-Witt group is generated by elements of the form $\langle a \rangle$, where $\langle a \rangle$ represents the isometry class of the bilinear form $k \times k \rightarrow k, (x,y) \mapsto axy$. The generators are subject to the following relations:
+\begin{enumerate}
+    \item $\langle a \rangle = \langle b^2 a \rangle$ for $b \in k^\times$
+    \item $\langle a \rangle \langle b \rangle = \langle ab \rangle$
+    \item $\langle u \rangle + \langle v \rangle = \langle uv(u+v) \rangle + \langle u+v \rangle$
+    \item $\langle u \rangle + \langle -u \rangle = \langle 1 \rangle + \langle -1 \rangle$.
+\end{enumerate}
+\end{definition}
+
+In fact, global $\A^1$ degrees of morphisms $f: \Proj^n_k \to \Proj^n_k$ have been carefully studied, for instance by Morel \cite{morel06}, Kass and Wickelgren \cite{kwEKL}, and Cazanave \cite{cazanave}. We first state the definition of the trace operator on Grothendieck-Witt rings, whose construction we will use to state a proposition which claims that the global $\A^1$ degrees of such morphisms is the sum of local $\A^1$ degrees at the fibers.
+
+%Refer to [KW16] Section 2, page 4
+\begin{definition} \label{def:trace}
+Let $L/k$ be a finite separable field extension with a trace functor $\Tr_{L/k}: L \rightarrow k$. Define the trace operator $\Tr_{L/k}: \GW(L) \rightarrow \GW(k)$ by $[\beta] \mapsto [\Tr_{L/k} \circ \beta]$ where $\beta: V \times V \rightarrow L$ is a non-degenerate symmetric bilinear form.
+\end{definition}
+
+
+In particular, Kass and Wickelgren prove that there exists an algebraic method to explicitly compute the local $\A^1$ degree at a fiber of $f: \A^n_k \to \A^n_k$. Here, we define the Eisenbud-Khimshiashvili-Levine class of a morphism $\A^n_k \rightarrow \A^n_k$.
+
+%Refer to [KW19] page 5,6 Or AWS notes. We may add more sections if needed, which is very likely to happen.
+
+\begin{definition} \label{def:ekl}
+Let $R$ be the polynomial ring $k[x_1,\ldots,x_n]$. Let $f = (f_1,\ldots,f_n): \A^n_k \rightarrow \A^n_k$ be a finite $k$-morphism and let $x \in \A^n_k$ be a closed point such that $y = f(x)$ has residue field $k$. Express the coordinates of $y$ by $y = (\overline{b}_1,\ldots,\overline{b}_n)$. Furthermore, we denote by $\mathfrak{m}_x$ the maximal ideal of $R$ corresponding to $x$.
+
+Define the local algebra $Q_x(f)$ of $f$ at $x$ to be the local ring $R_{\mathfrak{m}_x}/(f_1-\overline{b}_1,\ldots,f_n-\overline{b}_n)$. The local algebra at the origin is $Q_0(f)$. 
+
+Let $a_{i,j} \in R$ be polynomials satisfying
+$$
+    f_i(x) = f_i(0) + \sum_{j=1}^n a_{i,j} x_j.
+$$
+The distinguished socle element is the element $E_0(f) = \det(a_{i,j})$ of $Q_0(f)$. 
+
+Given any $k$-linear map $\phi: Q_0(f) \rightarrow k$ satisfying $\phi(E_0(f)) = 1$, define $\beta_\phi: Q_0(f) \times Q_0(f) \rightarrow k$ to be the symmetric bilinear form $\beta_\phi(a_1,a_2) = \phi(a_1 \cdot a_2)$. The Grothendieck-Witt class of Eisenbud-Khimshiashvili-Levine or the EKL class $w_0(f) \in \GW(k)$ is the Grothendieck-Witt class of $\beta_\phi$. By \cite[Lemma 6]{kwEKL}, this is independent of the choice of $\phi$.
+\end{definition}
+
+A crucial theorem of Kass and Wickelgren in \cite{kwEKL} states the following.
+\begin{theorem}\label{localEKL}\cite[Main Theorem]{kwEKL}
+Let $f: \A^n_k \to \A^n_k$ be a finite morphism of $k$-schemes. Then the local $\A^1$ degree of $f$ at $x \in \A^n_k$ is equivalent to the EKL class $w_0(f)$.
+\end{theorem}
+
+Other than the EKL class, we can also use the B\'ezout degree to compute the global $\A^1$ degree of the morphism $f: \Proj^n_k \to \Proj^n_k$. In particular, \cite[Lemma 6]{kwBezout} equates the Grothendieck-Witt class of a certain type of nondegenerate symmetric bilinear form with the $\A^1$ degree of maps of Proposition \ref{adegpoly}.
+
+% See [KW16] Lemma 6, page 6
+\begin{lemma} \label{bezoutlemma}
+Let $k$ be any field, and let $A_1, A_2, \cdots, A_n \in k$ be scalars such that $A_n$ is nonzero. Then the nondegenerate symmetric matrix 
+\begin{equation*}
+    M = \begin{pmatrix}
+    A_1 & A_2 & \cdots & A_{n-1} & A_n \\
+    A_2 & A_3 & \cdots & A_n & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    A_{n-1} & A_n & \cdots & 0 & 0 \\
+    A_n & 0 & \cdots & 0 & 0
+    \end{pmatrix}
+\end{equation*}
+corresponds to the following element in $\GW(k)$:
+\begin{equation*}
+    M = \begin{cases}
+    \langle A_n \rangle + \frac{n-1}{2} \left( \langle 1 \rangle + \langle -1 \rangle  \right) \; &\text{if } \; n \; \text{ odd} \\
+    \frac{n}{2} \left( \langle 1 \rangle + \langle -1 \rangle \right) \; &\text{if } \; n \; \text{ even}.
+    \end{cases}
+\end{equation*}
+\end{lemma}
+
+% See [KW16] Theorem 2, page 2. (The paper refers to Cazanave)
+\begin{definition}
+The B\'ezout degree of a finite morphism $\frac{F}{G}: \Proj^1_k \to \Proj^1_k$ is represented by the matrix $\left( b_{i,j} \right)_{i,j}$ where $b_{i,j}$ are defined as follows:
+\begin{equation*}
+    F(x)G(y) - F(y)G(x) = (x-y) \left( \sum_{i,j} b_{i,j} x^{i-1} y^{j-1} \right).
+\end{equation*}
+We call the matrix $\left(b_{i,j} \right)_{i,j}$ the B\'ezout matrix of $\frac{F}{G}$.
+\end{definition}
+
+\begin{theorem} \label{thm:globalA1Bezout}
+The global $\A^1$ degree of a finite morphism $\frac{F}{G}: \Proj^1_k \to \Proj^1_k$ is equivalent to the B\'ezout degree of $\frac{F}{G}$.
+\end{theorem}
+\begin{proof}
+We refer to \cite[Theorem 3]{kwBezout} and \cite[Theorem 1.2]{cazanave}.
+\end{proof}
+We will use the theorem when we compute explicit examples of global $\A^1$ degrees of covering maps of modular curves equivalent to $\mathbb{P}^1_k$.
+%Combine [KW16] Theorem 2 of page 2, Theorem 3 of page 3, and [KW19] Main Theorem of page 1
+
+We also state the following result from \cite[Lemma 5]{kwBezout}, which computes the $\A^1$ degree of maps $\frac{x^n}{c}: \mathbb{P}^1_k \rightarrow \mathbb{P}^1_k$.
+%Refer to [KW16] Lemma 5, page 6
+\begin{proposition}\label{adegpoly} \cite[Lemma 5]{kwBezout}
+For $c \in k^*$, 
+\begin{equation*}
+    \deg^{\A^1} \left( \frac{x^n}{c} \right) = \begin{cases} \langle c \rangle + \frac{n-1}{2} \cdot (\langle 1 \rangle + \langle -1 \rangle) &\text{if } n \text{ is odd} \\ \frac{n}{2} \cdot (\langle 1 \rangle + \langle - 1 \rangle) & \text{if } n \text{ is even}  \end{cases}
+\end{equation*}
+\end{proposition}
+
+We end the subsection with the following proposition, which simplifies the computation of local $\A^1$ degree of a morphism $f$ at a fiber with double ramification.
+\begin{lemma}\label{TraceDoubleRamify}
+Let $k$ be any field of characteristic coprime to $2$. Let $L$ be any finite separable field extension over $k$. Then the trace of the hyperbolic element $\langle 1 \rangle + \langle -1 \rangle$ is given by
+\begin{equation*}
+    \Tr_{L/k} (\langle 1 \rangle + \langle -1 \rangle) = [L:k] \left( \langle 1 \rangle + \langle -1 \rangle \right).
+\end{equation*}
+\end{lemma}
+\begin{proof}
+Let $\alpha$ be a primitive element of $L$. Let $f(x)$ be the minimal polynomial of $\alpha$. Pick $\eta$, a bilinear form over $L[x]/(x-\alpha)^2$ such that $\eta(x) = 1$ and $\eta(1) = 0$. Then $\eta$ induces a non-degenerate quadratic form $\beta$ over $L$, considered as a $k$-vector space. The equation for $\beta$ is given by
+\begin{equation*}
+    \beta(a, b) := \Tr_{L/k}(\eta(ab)).
+\end{equation*}
+We assume that the basis of $L$, as a $k$-vector space, is the set of monomials $\{1, x, \cdots, x^{[L:k]}\}$. It is clear to check that for any polynomial $g(x) \in L$,
+\begin{equation*}
+    \beta(g(x), g(x)) = \Tr_{L/k} ( \eta(g(x)^2))
+\end{equation*}
+This implies that any polynomial of form $g(x) = f(x)h(x)$ where $(f, h) = 1$ is an isotropic vector of $\beta$. Using this observation, we can explicitly construct an orthogonal basis $B$ of a maximal totally isotropic subspace of dimension $\frac{[L:k]}{2}$:
+\begin{equation*}
+    B := \{f(x), x f(x), x^2 f(x), \cdots, x^{n-1} f(x)\}.
+\end{equation*}
+We can hence conclude that $\beta$ is hyperbolic. 
+\end{proof}
+
+\subsection{Euler numbers of vector bundles over smooth schemes}\label{subsec: Euler numbers}
+
+ We present an exposition on Euler numbers of vector bundles over smooth schemes, constructed by Kass and Wickelgren \cite{kwcubic}. The terminologies presented in this subsection closely follow those in \cite[Section 4]{kwcubic} and \cite[Section 4]{AWS}.
+
+Following \cite{okotel14}, \cite{kwcubic} defines relative orientations of lines bundles.
+\begin{definition}{\cite[Definition 17]{kwcubic}}
+A line bundle over $L$ over $C$ is said to be relatively orientable if $\Hom(\wedge^{\text{top}} TC, \wedge^{\text{top}} L)$ is orientable.
+\end{definition}
+
+% Refer to [KWcubic] Definition 17, page 11
+\begin{definition} \cite[Definition 17]{kwcubic}
+Let $X$ be a smooth scheme over $k$ of dimension $n$. Let $V \to X$ be a vector bundle of rank $n$ over $X$. The relative orientation of $V$ is determined by a line bundle $L$ over $X$ such that 
+\begin{equation*}
+    L^{\otimes 2} \cong \text{Hom} \left( \bigwedge\nolimits^n \text{T}X, \bigwedge\nolimits^n V \right)
+\end{equation*}
+where $\text{T}X$ is the tangent bundle of $X$.
+\end{definition}
+
+Pick a Nisnevich local coordinate $\phi: U \to \A^n_k$ at a closed point $p \in X$. Given a relatively orientable vector bundle $V \to X$, we can choose a sufficiently small open $U$ such that $V$ is trivial when restricted to $U$. 
+\begin{definition} \cite[Definition 21]{kwcubic}
+Let $V \to X$ be a vector bundle whose relative orientation is determined by $L$. A trivialization of $V|_U$ is said to be compatible if there exists an element $f \in \Gamma(U,L)$ such that $f^{\otimes 2} \in \Gamma(U, L^{\otimes 2})$ sends a distinguished basis of $\bigwedge\nolimits^n \text{T}X|_U$ to a distinguished basis of $\bigwedge\nolimits^n V|_U$. 
+\end{definition}
+
+Given a choice of a Nisnevich local coordinate $\phi: U \to \A^n_k$ and a compatible trivialization of $V|_U$, Kass and Wickelgren defines the Euler number of a vector bundle given a choice of a global section. 
+
+% Refer to [KW17] Definition 20, page 12
+\begin{definition} \cite[Definition 22]{kwcubic}
+Given a relatively orientable vector bundle $V \to X$ of rank equal to $\text{dim}X$, let $f \in \Gamma(X, V)$ be a global section. Let $Z \subset X$ be the closed subscheme defined as the zero set of $f$. Then a closed point $p \in X$ is an isolated zero of $f$ if $\Oh_{Z,p}$ is a finite $k$-algebra. We say that $f$ has isolated zeros if $\Oh_Z$ is a finite $k$-algebra.
+\end{definition}
+
+In \cite[Proposition 23]{kwcubic}, Kass and Wickelgren gives a criterion of whether a global section $f$ has isolated zeros, which we state as below.
+
+% Refer to [KW17] Proposition 21, page 12
+\begin{proposition} \label{isozero} \cite[Proposition 23]{kwcubic}
+A global section $f \in \Gamma(X,V)$ of a relatively orientable vector bundle $V \to X$ has isolated zeros if and only if $Z$, the closed subscheme of $X$ defined as the zero set of $f$, consists of finitely many points.
+\end{proposition}
+
+Given a global section $f \in \Gamma(X,V)$ with isolated zeros, we define the local index of $f$ at each isolated zero $p$ defined over the field $k$.
+% Refer to [KW17] Definition 28, page 17
+%NEW: reworded the definition of ind_p f
+\begin{definition} \cite[Definition 30]{kwcubic} \label{def:localind}
+    For any field $k$, let $p \in Z$ be any isolated zero of a global section $f \in \Gamma(X, V)$ of a relatively orientable vector bundle $V \to X$ defined over $k$. Let $\beta$ be a symmetric bilinear form on $\Oh_{Z,p}$ defined as
+    \begin{equation*}
+        \beta(x,y) = \eta(xy),
+    \end{equation*}
+    where $\eta: \Oh_{Z,p} \to k$ is any $k$-linear morphism which sends the distinguished socle element to $1$. The local index $\ind_p f$ of $f$ at $p$ is the equivalence class in the Grothendieck-Witt ring represented by the symmetric bilinear form $\beta$.
+\end{definition}
+
+As proved in \cite[Section 4]{kwcubic}, the local ring $\Oh_{Z,p}$ is of finite complete intersection, hence its socle is a dimension $1$ vector space over $k$. This allows us to find a distinguished socle element in $\Oh_{Z,p}$. We also note that $\ind_p f$ which represents $\beta$ is independent of the choice of $\eta$, the choice of Nisnevich coordinates of $X$, and the choice of a compatible trivialization of the vector bundle $E$, see \cite[Corollary 31]{kwcubic} for further details.
+
+The above definition, which holds for any $k$-rational points of isolated zeros of $f$, can be extended to any finite separable field extension $L$ over $k$, as shown in \cite[Proposition 34]{kwcubic}.
+
+%Refer to [KW17] Proposition 32, page 19
+\begin{proposition} \cite[Proposition 34]{kwcubic} \label{local_index_base_change}
+Let $V$ be a relatively orientable vector bundle over $X$. Let $L$ be any finite separable field extension over $k$ such that $p: \Spec(k) \to X$ is an isolated zero of a global section $f \in \Gamma(X, V)$ which lives in $L$.  Then the following equation holds. Let $p_L$ be the canonical base change determined by $\Spec(L) \to X_L$. Let $f_L$ be the base change of the global section $f$ to $L$. Then the following equation holds.
+\begin{equation*}
+    \ind_p f = \Tr_{L/k} \left( \ind_{p_L} f_L \right)
+\end{equation*}
+\end{proposition}
+
+Using local indices, we define the Euler number of a global section $f \in \Gamma(X,V)$.
+% Refer to [KW17] Definition 33, page 20
+\begin{definition} \cite[Definition 35]{kwcubic} \label{def:eulernumbersection}
+Let $V \to X$ be a relatively orientable vector bundle over a smooth scheme $X$ over any field $k$ of rank $n = \dim X$. Then the Euler number of $V$ given a global section $f$ is defined as 
+\begin{equation*}
+    e(V, f) := \sum_{p_L \in Z_L} \Tr_{L/k} \left( \ind_{p_L} f_L \right),
+\end{equation*}
+\end{definition}
+where $Z_L$ is the zero set of $f$ over $L$, a finite separable field extension over $k$ where all elements of $Z_L$ live in $L$. Under certain conditions, the choice of a global section is independent of the Euler number of a vector bundle. Further discussions about the invariance of choice of global sections are provided in section 3. 
+
+\begin{example} \label{ex:euler_number_A1_degree}
+When $X = \A^n_k$ and $V = \Oh^n_X$, the Euler number of $V$ given a global section $f \in \Gamma(X, V)$ is equivalent to the global $\A^1$ degree of $f: \A^n_k \to \A^n_k$. The local indices of the Euler number is equal to the local $\A^1$ degrees of $f$, which are determined by the EKL class of $f$ at each fiber of $0 \in \A^n_k$.
+\end{example}
+
+\section{Global $\A^1$ degrees of finite maps into the projective line}
+\label{sec: Global A1 degrees}
+
+In this section, we define some notions of Euler numbers and global $\A^1$-degrees for some finite maps of schemes. Section \ref{sec: Relative orientability} does so for morphisms $C \rightarrow \Proj^1_k$. Section \ref{subsec: euler number into affine} does so for morphisms $Y \rightarrow \A^n_k$. Finally, Section \ref{subsec: explicit method} roughly reduces computations of local indices for morphisms $C \rightarrow \Proj^1_k$ into computations of local indices for morphisms $\A^r_k \rightarrow \A^r_k$. Example \ref{example:ellipticcurve} shows that this rough reduction can sometimes be sufficient to precisely determine global $\A^1$ degrees.
+
+\subsection{Defining Euler numbers of finite maps into the projective line}\label{sec: Relative orientability}
+
+Throughout this section, unless otherwise specified, let $\pi: C \rightarrow \Proj^1_k$ be a finite morphism over a field $k$ whose characteristic is not $2$ where $C$ is a smooth (projective) curve and let $q \in \Proj^1_k$ be a closed point. Express $\pi$ as $\pi = [s_0:s_1]$ where $s_0,s_1$ are global sections of $\pi^* \mathscr{O}_{\Proj^1_k}(1)$ with no common zeroes. Given a closed point $q \in \Proj^1_k$, let $F_q(X,Y)$ be the ``minimal'' polynomial of $q$, chosen up to scalar multiplication. In particular, $F_q(X,Y)$  is a nonzero homogeneous irreducible polynomial over $k$ and $F_q(s_0,s_1)$ can be interpreted a section of $\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q)$.
+
+In this section, we define $e(\pi, q)$ when $\pi^* \Oh_{\Proj^1}(\deg q)$ is relatively orientable. We will then show that $e(\pi, q)$ only depends on $\deg q$. Assuming that a rational point $q$ exists, we define the global $\A^1$ degree as the Euler number $e(\pi, q)$. Moreover, when $\pi$ is has a fiber consisting entirely of doubly ramified points, we show that the Euler number is an appropriate multiple of the hyperbollic element $\mathbb{H} = \langle 1 \rangle + \langle -1 \rangle$. \par
+
+More specifically, in Definition \ref{def:eulernumber} below, we define $e(\pi,q)$ by identifying it with the Euler number of the section $F_q(s_0,s_1)$ of the line bundle $\pi^*(\mathscr{O}_{\Proj^1_k}(\deg F_q))$. Lemma \ref{lemma:fiber} below identifies the fiber $\pi^{-1}(q)$ with the zero locus of $F_q(s_0, s_1)$. The Euler number of a section $\sigma$ of a line bundle is defined as the sum of local indices on the zero locus points of $\sigma$. Therefore, $e(\pi,q)$ can be computed as the sum of local indices at the points of $\pi^{-1}(q)$ --- this aligns with the intuition that global degrees can be computed as the sum of local degrees. 
+
+\begin{lemma} \label{lemma:fiber}
+Let $q \in \Proj^1_k$ be a closed point. The zero locus of the section $F_q(s_0,s_1)$ is the fiber of $\pi$ at $q$.
+\begin{proof}
+The zero locus of $F_q(s_0,s_1)$ can be locally determined on open subschemes of $C$ trivializing $\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q)$. Let $X,Y$ denote the coordinates of $\Proj^1_k$ so that $\A^1_{X/Y} := \Spec(k[X/Y])$ and $\A^1_{Y/X} := \Spec( k[Y/X])$ are open subschemes of $\Proj^1_k$ that trivialize $\mathscr{O}_{\Proj^1_k}(\deg F_q)$ and hence $\pi^{-1}(\A^1_{X/Y})$ and $\pi^{-1}(\A^1_{Y/X})$ trivialize $\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q)$. Say that $q \in \Spec(k[X/Y]) = \A^1_{X/Y} \subset \Proj^1_k$. The fiber $\pi^{-1}(q)$ is the Cartesian product $C \otimes_{\Proj^1_k} q$, which restricts to $\pi^{-1}(\A^1_{X/Y}) \otimes_{\A^1} q$ over $\pi^{-1}(\A^1_{X/Y})$. Note that $q = \Spec(k[X/Y]/(F_q(X/Y,1)))$ and that $\pi|_{\pi^{-1}(\A^1_{X/Y})}$ is the map $\pi^{-1} (\A^1_{X/Y}) \xrightarrow{s_0/s_1} \A^1_{X/Y}$.
+\begin{center}
+\begin{tikzcd}
+ \pi^{-1}(\A^1_{X/Y}) \otimes_{\A^1_{X/Y}} q \ar[r] \ar[d] & q = \Spec(k[X/Y]/(F_q(X/Y,1))) \ar[d] \\
+ \pi^{-1}(\A^1_{X/Y}) \ar[r,"\pi|_{\pi^{-1}(\A^1_{X/Y})} = s_0/s_1"] & \A^1_{X/Y}
+\end{tikzcd}
+\end{center}
+Therefore, $\pi^{-1}(\A^1_{X/Y}) \otimes_{\A^1} q$ is the closed subscheme of $\pi^{-1} (\A^1_{X/Y})$ cut out by $F_q(s_0/s_1,1)$. On the other hand, the section $F_q(s_0,s_1)$ restricts to $F_q(s_0/s_1,1)$ on $\pi^{-1}(\A^1_{X/Y})$. Thus, the zero locus of $F_q(s_0,s_1)$ and the fiber $\pi^{-1}(q)$ agree on $\pi^{-1}(\A^1_{X/Y})$. By symmetry, they agree on $\pi^{-1}(\A^1_{Y/X})$ as well, so they are the same closed subscheme of $C$.
+\end{proof}
+\end{lemma}
+
+\begin{definition} \label{def:eulernumber}
+Let $q \in \Proj^1_k$ be a closed point. Assume that $\pi^*(\mathscr{O}_{\Proj^1_k}(\deg F_q))$ is a relatively orientable line bundle of $C$. Define the Euler number $e(\pi,q)$ to be the Euler number $e(\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q), F_q(s_0,s_1))$. 
+\end{definition}
+
+A priori, $e(\pi,q)$ might depend on the choice of $F_q(s_0,s_1)$ up to scalar multiplication, but Proposition \ref{proposition:eulernumberpoly} below shows that this is not the case.
+
+
+Furthermore, the relative orientability of the line bundle $\pi^* \Oh_{\Proj^1_k}(\deg F_q)$ ensures that $e(\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q))$ is well defined, cf.~Definition \ref{def:eulernumbersection}.
+
+For $\pi^*\mathscr{O}_{\Proj^1_k}(\deg F_q)$ to be relatively orientable, it must be of even degree, i.e. $\deg \pi^* \mathscr{O}_{\Proj^1_k} (\deg F_q) = \deg \pi \cdot \deg F_q$ is even. Conversely, if $\pi^* \mathscr{O}_{\Proj^1_k}(\deg F_q)$ is of even degree, then $\Hom(\wedge^{\text{top}} TC, \wedge^{\text{top}} L)$ is also of even degree and hence orientable over $\overline{k}$. There is thus some finite extension $k'$ of $k$ over which the base change of $\Hom(\wedge^{\text{top}} TC, \wedge^{\text{top}} L)$ is orientable. Letting $\pi_{k'}: C_{k'} \rightarrow \mathbb{P}^1_{k'}$ denote the base change of $\pi$ over $\Spec(k') \rightarrow \Spec(k)$, the line bundle $\pi^*_{k'} \mathscr{O}_{\Proj^1_{k'}}(\deg F_q)$ of $C_{k'}$ is relatively orientable. In Section \ref{sec: covering maps} we will calculate the Euler numbers of even-degree covering maps $\pi: C \rightarrow X(1) \simeq \mathbb{P}^1_\mathbb{Q}$, where $C$ is a coarse moduli scheme, after base change to a number field $k'$ over which $\pi^* \mathscr{O}_{\Proj^1_{k'}}(1)$ is relatively orientable. Note that the choice of $k'$ may depend on $\pi$. 
+
+The discussion of the above paragraph still holds when $\overline{k}$ is replaced with $k^\text{sep}$ when $\text{char } k \neq 2$ because the multiplication-by-$2$ map on $\text{Pic}(C)$ is a separable isogeny and hence the $\overline{k}$-points of $\text{Pic}(C)$ form a $2$-divisible group, cf. \cite[Proposition 5.9 and Corollary 5.10]{vm11}
+
+
+\begin{remark}
+While $ \pi^* \mathscr{O}_{\Proj^1_k} (\deg F_q)$ is relatively orientable after base change to both $k'$ and $\overline{k}$, we only use $k'$ to discuss Euler numbers because the Grothendieck-Witt ring of $\overline{k}$ is ``trivial'', by which we mean that $\GW(\overline{k}) \simeq \mathbb{Z}$. In this case, $\GW(\overline{k})$ is the (additive) group completion of the equivalence classes of bilinear forms of finite dimensional vector spaces over $\overline{k}$, but such equivalence classes are entirely determined by the rank of the bilinear forms. Accordingly, the Euler number $E(\pi_{\overline{k}},q)$ must equal $\deg \pi \cdot \deg q \in \mathbb{Z} \simeq \GW(\overline{k})$
+\end{remark}
+
+
+%Picard group torsion base change
+%https://mathoverflow.net/questions/287182/picard-group-under-base-change-for-algebraically-closed-fields
+
+%https://mathoverflow.net/questions/44692/what-is-a-square-root-of-a-line-bundle
+%"'Now in the zariski topology, on integral domains, locally constant sheaves have no cohomology"', cf. 1582914342345
+%"'There is a short exact sequence of sheaves on X...
+
+
+We now show that the Euler number $e(\pi,q)$ only depends on $\deg q$. To do so, we use the notion of sections of a relatively orientable line bundle connected by sections with isolated zeros, as introduced in \cite[Definition 37]{kwcubic}. Under certain circumstances, such sections admit the same Euler number by Theorem \ref{thm:eulernumberconnectedsection} below.
+
+\begin{definition} \label{def:sectionsconnected}
+Let $\pi: E \rightarrow X$ be a vector bundle of rank $r = \dim X$ where $X$ is a smooth, proper scheme over $k$. Denote $\mathcal{E}$ to be the pullback of $E$ to $X \times \mathbb{A}^1$. We say that sections $\sigma,\sigma'$ with isolated zeros can be connected by sections with isolated zeros if there exist sections $s_i$ for $i = 0,1,\ldots,N$ of $\mathcal{E}$ and rational points $t_i^-$ and $t_i^+$ of $\A^1$ for $i = 1,\ldots, N$ such that
+\begin{enumerate}[(1)]
+	\item for $i = 0,\ldots, N$, and all closed points $t$ of $\A^1$, the section $(s_i)_t$ of $E$ has isolated zeros.
+	\item $(s_0)_{t_0^-}$ is isomorphic to $\sigma$. 
+	\item $(s_N)_{t_N^+}$ is isomorphic to $\sigma'$.
+	\item for $i = 0,\ldots,N-1$, we have that $(s_i)_{t_i^+}$ is isomorphic to $(s_{i+1})_{t_{i+1}^-}$. 
+\end{enumerate}
+Here, given a section $s$ of $\mathcal{E}$ and a rational point $t \in \A^1$, $s_t$ denotes the pullback of $s$ under the embedding $X  \times_k \Spec(k(t)) \xrightarrow{\text{id},t} X \times \mathbb{A}^1$.
+\end{definition}
+
+\begin{theorem}{\cite[Corollary 38]{kwcubic}} \label{thm:eulernumberconnectedsection}
+Let $\pi: E \rightarrow X$ be a relatively oriented vector bundle on a smooth, proper dimension $r$ scheme $X$ over $k$. Say that $\sigma$ and $\sigma'$ are sections of $\pi$ with isolated zeros and let $\sigma_L$ and $\sigma'_L$ be their base changes by an odd degree field extension $L$ of $k$. If $\sigma_L$ and $\sigma'_L$ can be connected by sections with isolated zeros, then $e(E,\sigma) = e(E,\sigma')$. \par
+In particular, if any two sections of $\pi$ with isolated zeros can be connected by sections with isolated zeros after base change by an odd degree field extension of $k$, then $e(E,\sigma) = e(E,\sigma')$ for all sections $\sigma$ and $\sigma'$ with isolated zeros.  
+\end{theorem}
+
+\begin{proposition} \label{proposition:eulernumberpoly}
+Let $F(X,Y)$ and $F'(X,Y)$ be nonzero homogeneous polynomials over $k$ of degree $d$, let $\sigma$ and $\sigma'$ be the sections of $\mathscr{O}_{\mathbb{P}^1_k}(d)$ corresponding to $F$ and $F'$, respectively, and assume that $\sigma$ and $\sigma'$ have isolated zeros. Further assume that $\pi^*\mathscr{O}_{\mathbb{P}^1_k}(d)$ is relatively orientable, so that Euler numbers of sections can be defined. \par
+The sections $F(s_0,s_1)$ and $F'(s_0,s_1)$ of $\pi^*\mathscr{O}_{\mathbb{P}^1_k}(d)$ have equal Euler numbers, i.e.~
+$$e(\pi^* \mathscr{O}_{\mathbb{P}^1_k}(d), F(s_0,s_1)) = e(\pi^* \mathscr{O}_{\mathbb{P}^1_k}(d), F'(s_0,s_1)).$$
+\begin{proof}
+Denote $E$ to be $\pi^*\mathscr{O}_{\mathbb{P}^1_k}(d)$. We show that $\sigma$ and $\sigma'$ are connected via the section $(1-t) \sigma + t\sigma'$ of the pullback $\mathcal{E}$ of $E$ under the projection map $C \times \mathbb{A}^1 \rightarrow C$ and then apply Theorem \ref{thm:eulernumberconnectedsection}, where the odd degree extension $L$ over $k$ is $k$ itself. Following the notation of Definition \ref{def:sectionsconnected}, we let $N = 0$, $s_0 = (1-t) \sigma + t\sigma'$, $t_0^- = 0$, and $t_0^+ = 1$. \par
+
+It remains to show that the section $(s_0)_t$ of $E$ has isolated zeros for all closed points $t$ of $\mathbb{A}^1$. Suppose for contradiction that $(s_0)_t$ does not have isolated zeros. Let $Z$ be the zero locus of $(s_0)_t$. Since $Z$ has non-isolated points and is a closed subscheme of $C \times_k \Spec(k(t))$, $Z$ cannot be zero dimensional. Instead, $Z$ must contain some connected component of $C \times_k k(t)$. Moreover, if $p'$ is a point of $C \times_k \Spec(k(t))$ mapping down to a point $p$ in $C$, then 
+$$(t-1) \sigma(p) = t \sigma'(p).$$
+Fixing an algebraic closure $\overline{k}$ of $k$, 
+$$\prod_\tau \tau(t-1) \tau(\sigma(p)) = \prod_\tau \tau(t) \tau(\sigma'(p))$$
+where the products run through the embeddings $\tau:k \hookrightarrow \overline{k}$. In particular, whenever $p$ is a $k$-rational point of $C$,
+$$\prod_\tau \tau(t-1) \sigma(p) = \tau(t) \sigma'(p).$$
+Let $f$ denote the minimal polynomial of $t$ over $k$. The left hand side is $(-1)^{\deg f} f(-1) \sigma(p)^{\deg f}$ whereas the right hand side is $(-1)^{\deg f} f(0) \sigma'(p)^{\deg f}$. Therefore,
+$$f(-1) \sigma(p)^{\deg f} = f(0) \sigma'(p)^{\deg f}.$$
+Since $C \times_k \Spec(k(t))$ is finite over $C$, every point $p \in C$ lifts to some point $p' \in C \times_k \Spec(k(t))$. Thus, $\frac{\sigma^{\deg f}}{\sigma'^{\deg f}}$, which is a rational function of $C$, must equal $\frac{f(0)}{f(-1)}$ at all $k$-rational points of $C$. Note that $f(-1) \neq 0$ because $f$ is the minimal polynomial of $t$. Therefore, $\frac{\sigma^{\deg f}}{\sigma'^{\deg f}}$ must in fact be (a $k$-rational) constant on $C$, in which case $\frac{\sigma}{\sigma'}$ must be constant on $C$. %because when looking at divisors, 
+However, this then means that $(s_0)_t$ is a constant multiple of $\sigma$ over $k(t)$. Thus, $(s_0)_t$ must have the same zeroes on $C \times_k k(t)$ as $\sigma$, so these zeros are isolated. This is a contradiction, so in fact $(s_0)_t$ has to have isolated zeros to begin with.
+\end{proof} 
+\end{proposition}
+
+\begin{corollary} \label{euler deg independent}
+Assuming that $\pi^*\mathscr{O}_{\mathbb{P}^1_k}(\deg q)$ is relatively orientable, the Euler number $e(\pi, q)$ depends only on $\deg q$. 
+\begin{proof}
+Say that $q_1$ and $q_2$ are two closed points of $\mathbb{P}^1_k$ of equal degree $d$ over $k$. Let $F_1(X,Y)$ and $F_2(X,Y)$ be their respective irreducible (homogeneous) polynomials. By Proposition \ref{proposition:eulernumberpoly} above, 
+$$e(\pi^* \mathscr{O}_{\mathbb{P}^1_k}(d), F(s_0,s_1)) = e(\pi^* \mathscr{O}_{\mathbb{P}^1_k}(d), F'(s_0,s_1)).$$
+Thus,
+$$e(\pi,q_1) = e(\pi,q_2).$$
+\end{proof}
+\end{corollary}
+
+Based on Corollary \ref{euler deg independent} above, we can define the global $\A^1$-degree by letting $q$ be $k$-rational.
+
+\begin{definition} \label{naiveEulerequiv}
+Let $\pi: C \to \Proj^1_k$ be a finite morphism of smooth curves over $k$. Let $\pi = [s_0: s_1]$ where $s_0, s_1$ are global sections of $\pi^* \Oh_{\Proj^1_k}(1)$ with no common zeroes. Assume that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable. Let $q \in \Proj^1_k(k)$ be a $k$-rational point, $F_q(s_0,s_1)$ the minimal polynomial of $q$, and $Z$ the zero locus of $F_q(s_0,s_1)$, which is considered as a section of $\pi^* \Oh_{\Proj^1_k}(1)$. The global $\A^1$-degree, or the Euler number, of $\pi: C \to \mathbb{P}^1_k$ is given by
+\begin{equation*}
+    \Adeg \pi := e(\pi, q) = \sum_{p \in Z} \ind_{p} F_q(s_0, s_1).
+\end{equation*}
+\end{definition}
+
+
+We now show that, around doubly ramified points, the local index of a section of a relatively oriented line bundle is the hyperbolic element $\mathbb{H} = \langle 1 \rangle + \langle -1 \rangle \in \text{GW}(k)$. In Section \ref{sec: covering maps}, we will use the fact that the covering maps from modular curves to $X(1)$ 
+have fibers at $j = 1728$ entirely consisting of doubly ramified points to conclude that the Euler numbers of these maps are integer multiples of the hyperbolic element. 
+
+\begin{proposition}\label{euler double ramify}
+Let $\pi: E \rightarrow X$ be a relatively oriented line bundle on a smooth curve $X$ over $k$, let $\sigma$ be a section with isolated zeros, let $Z$ be the zero locus of $\sigma$, and let $p \in Z$.
+
+If $p \in Z$ is a doubly ramified point for $\pi$, then $$ \ind_p \sigma = [k(p):k]( \langle 1 \rangle + \langle - 1 \rangle).$$
+\begin{proof}
+It suffices to show this in the case where $k = k(p)$ because 
+$$\ind_p \sigma = \Tr_{k(p)/k} \ind_{p_{k(p)}} \sigma_{k(p)}$$
+and once we show that $\ind_{p_{k(p)}} \sigma_{k(p)} = \langle 1 \rangle + \langle -1 \rangle$, the right side becomes
+$$[k(p):k] (\langle 1 \rangle + \langle -1 \rangle).$$
+by Lemma \ref{TraceDoubleRamify}.
+
+Now assume that $k = k(p)$. Let $\phi: U \rightarrow \Spec(k[x])$ be Nisnevich coordinates around $p$. Via $\phi$, the local ring $\mathscr{O}_{Z,p}$ can be presented as $k[x]_{q}/(f)$ where $q = \phi(p)$ for some polynomial $f \in k[x]$ \cite[Section 4, the discussion after Lemma 24 leading up to Lemma 27]{kwcubic}. 
+
+We show that $\Omega_{p/Z} \simeq \Omega_{(k[x]_q/(f))/k}$. Note that there is an closed embedding $p \hookrightarrow \Spec(\mathscr{O}_{Z,p})$. The composition of this closed embedding with the isomorphism $\mathscr{O}_{Z,p} \simeq \Spec(k[x]_q/(f))$ is the same as the closed embedding $q \hookrightarrow \Spec(k[x]_q/(f))$. In particular, 
+$$\Omega_{p/\Spec(\mathscr{O}_{Z,p})} \simeq \Omega_{q/\Spec(k[x]_q/(f))} \simeq \Omega_{(k[x]_q/(f))/k}.$$
+On the other hand, $Z$ consists of finitely many closed points \ref{isozero} and is hence finite over $\Spec(k)$. Therefore, $\Spec(\mathscr{O}_{Z,p})$ is an open subscheme of $Z$, so 
+$$\Omega_{\Spec(\mathscr{O}_{Z,p})/Z} = 0$$
+and hence
+$$\Omega_{p/\Spec(\mathscr{O}_{Z,p})} \simeq \Omega_{p/Z}.$$
+Thus, $\Omega_{p/Z} \simeq \Omega_{(k[x]_q/(f))/k}$ as desired.
+
+
+Let $g(x) \in k[x]$ be the monic generator of the prime ideal $q$ of $k[x]$. In particular, $g$ is linear because $p$, and hence $q$, has residue field $k$. Moreover, since $p$ is doubly ramified in $Z$ and since $\Omega_{p/Z} \simeq \Omega_{(k[x]_q/(f))/k}$, the point $q$ is doubly ramified in $\Spec(k[x]_q/(f))$. Therefore, $f$ is divisible by $g$ exactly twice and hence the local ring $k[x]_q/(f)$ can be presented as $k[x]_q/(g^2)$.
+
+By \cite[Section 3]{SS75}, cf. \cite[Section 4, the discussion after Lemma 27]{kwcubic}, the presentation $k[x]_q/(g^2) \simeq \mathscr{O}_{Z,p}$ of the complete intersection $k$-algebra $\mathscr{O}_{Z,p}$ determines a canonical isomorphism
+$$\Hom_k(\mathscr{O}_{Z,p},f) \simeq \mathscr{O}_{Z,p}$$
+of $\mathscr{O}_{Z,p}$-modules. We take $\eta \in \Hom_k(\mathscr{O}_{Z,p},f)$ to correspond to $1 \in \mathscr{O}_{Z,p}$. In Definition \ref{def:localind}, $\ind_p \sigma$ is defined as the Grothendieck-Witt group element induced by the symmetric bilinear form $\beta: \mathscr{O}_{Z,p} \times \mathscr{O}_{Z,p} \rightarrow k, (x,y) \mapsto \eta(xy)$. When $p$ is a $k$-point, one may replace $\eta$ with any $k$-linear homomorphism taking the distinguished socle element to $1$. In this case, $g \in k[x]_q/(g^2)$ is the distinguished socle element \cite[Example 32]{kwcubic}. For instance, we may choose $\eta$ to be the $k$-linear map $k[x]_q/(g^2) \rightarrow k$ taking $1$ to $0$ and $g$ to $1$. Giving $k[x]_q/(g^2)$ the $k$-basis $(1,g)$, the bilinear form $\beta$ has matrix representation
+$$\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$$
+which reduces to the element $\langle 1 \rangle + \langle -1 \rangle$ in $\GW(k)$ by Lemma \ref{bezoutlemma}.
+\end{proof}
+\end{proposition}
+
+We note that \cite[Example 32]{kwcubic} and \cite[Main Theorem, Proposition 14]{kwEKL} imply that if $C = \Proj^1_k$, then the Euler number of $\pi$, as defined above, is equal to Morel's $\A^1$-Brouwer degree of $\pi$. Its value, as an element in $\GW(k)$, can be directly computed from the EKL class of a non-degenerate bilinear form $\beta$ induced from $\pi$ considered as a morphism $\A^1_k \to \A^1_k$.
+
+Suppose we have a morphism $\pi: C \to \mathbb{P}^1$ such that $\pi^* \Oh_{\mathbb{P}^1_k}(1)$ is relatively orientable, and there exists a $k$-rational point $q \in \mathbb{P}^1$ at which all of its fibers doubly ramify. There are two separate ways to compute the global $\A^1$ degree of $\pi$. The first method immediately follows from Proposition \ref{euler double ramify}. 
+
+\begin{proposition} \label{A1 degree double ramify}
+    Let $C$ be a smooth projective curve. Suppose $\pi: C \to \mathbb{P}^1_k$ is a morphism such that $\pi^* \Oh_{\mathbb{P}^1}(1)$ is relatively orientable, and there exists a $k$-rational point $q \in \mathbb{P}^1_k$ such that all of its fibers doubly ramify. Then the global $\A^1$ degree of $\pi$ is given by
+    \begin{equation*}
+        \Adeg \pi = \frac{\deg \pi}{2} (\langle 1 \rangle + \langle -1 \rangle).
+    \end{equation*}
+\end{proposition}
+\begin{proof}
+    By definition of the global $\A^1$ degree,
+    \begin{equation*}
+        \Adeg \pi = \sum_{p \in Z} \ind_{p} F_q(s_0, s_1).
+    \end{equation*}
+    where $F_q(S_0,s_1)$ is a global section of the line bundle $\pi^* \Oh_{\mathbb{P}^1}(1)$. Since every fiber of $\pi$ at $q$ is doubly ramified, there are $\frac{1}{2} \deg \pi$ fibers at $q$ ignoring multiplicities. By Proposition \ref{euler double ramify},
+    \begin{equation*}
+        \Adeg \pi = \sum_{p \in Z} [k(p): k] (\langle 1 \rangle + \langle -1 \rangle) = \frac{\deg \pi}{2} (\langle 1 \rangle + \langle -1 \rangle).
+    \end{equation*}
+\end{proof}
+
+\subsection{The Euler number of a finite map into $\A^n$.} \label{subsec: euler number into affine}
+
+In Section \ref{subsec: explicit method} below, we roughly reduce computations of local indices for finite maps from a general smooth affine scheme $Y$ to an affine space to computations of local indices for finite maps from an affine space to itself. For the latter type of map, the local indices are equivalent to the local $\A^1$-degrees \cite[Example 32]{kwcubic}, which can be computed by the methods in \cite{kwEKL} that we describe above in Definition \ref{def:ekl} and Theorem \ref{localEKL}.
+
+In this section, we define the Euler number $e(\pi, q)$ for a finite $k$-map $\pi: Y \rightarrow \A^n_k$ at a closed point $q \in \A^n_k$. This definition is similar to that for finite maps into $\Proj^1_k$ in Section \ref{sec: Relative orientability} above. The precise conditions under which we define $e(\pi, q)$ are also similar to those in Section \ref{sec: Relative orientability}.
+
+Given a scheme $Y$, recall that a map $\pi: Y \rightarrow \A^n_k$ corresponds to a choice of a global section of $\Oh_Y^n$, which in turn corresponds to a choice of $n$ global sections of $\Oh_Y$. In particular, the components of the map are the $n$ global sections of $\Oh_Y$.
+
+Given a closed point $q \in \A^n_k$, let $f_1(x_1),\ldots,f_n(x_n) \in k[x]$ be nonzero minimal (monic) polynomials for the coordinates $q_1,\ldots,q_n$ of $q$ respectively. If $q_i = 0$, then we let $f_i(x_i) = x_i$. The map
+\begin{align*}
+    \A^n &\rightarrow \A^n \\
+    (t_1,\ldots,t_n) &\mapsto (f_1(t_1),\ldots,f_n(t_n))
+\end{align*}
+corresponds to a section of $\Oh_{\A^n}^n$ and this section has zeroes precisely at $q$. Pulling back this section via $\pi$ yields a section of $\Oh_Y^n$ whose zeroes are precisely at $\pi^{-1}(q)$. Note that the points of $\pi^{-1}(q)$ are isolated because $\pi$ is finite.
+
+Assuming that $Y$ is smooth of dimension $n$ and that $\Oh_Y^n$ is relatively orientable, we define the Euler number $e(\pi, q)$ of $\pi$ at $q$. Note that $\Oh_Y^n$ is relatively orientable exactly when $\bigwedge^{\text{top}} TY$ is orientable because $\bigwedge^{\text{top}} \Oh_Y^n = \Oh_Y$.
+
+\begin{definition} \label{def:affine euler number}
+Let $Y$ be a smooth scheme of dimension $n$ with a finite map $\pi: Y \rightarrow \A^n$. Assume that $\Oh_Y^n$ is relatively orientable. Let $q \in \A^n$ be a closed point. For $1 \leq i \leq n$, let $f_i(x_i)$ be the (monic) minimal polynomial of the coordinate $q_i$ of $q$. The map $(f_1(x_1),\ldots,f_n(x_n)): \A^n \rightarrow \A^n$ corresponds to a section $\sigma_q$ of $\Oh_{\A^n}^n$. Define the Euler number $e(\pi, q)$ by
+$$e(\pi,q) := e(\Oh^n_Y, \pi^* \sigma_q).$$
+\end{definition}
+
+In the case that $n = 1$, Definitions \ref{naiveEulerequiv} and \ref{def:affine euler number} coincide. 
+
+\begin{proposition} \label{curve_euler_number_2}
+Given a smooth projective curve $C$ over any field $k$, let $\pi: C \to \Proj^1_k$ be a finite morphism. Let $Y = \pi^{-1}(\A^1_k)$ be an open affine subscheme of $C$. Suppose that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable. Pick a $k$-rational point $q \in \A^1_k \subset \Proj^1_k$. Let $F_q(s_0, s_1)$ be the minimal polynomial of $q$. Then for any $p \in \pi^{-1}(q) = \pi|_Y^{-1}(q)$,
+\begin{equation*}
+    \ind_p F_q(s_0,s_1) = \ind_p F_q(s_0/s_1, 1)
+\end{equation*}
+where the LHS is the local index of the Euler number $e(\pi, q)$ and the RHS is the local index of the Euler number $e(\pi|_Y, q)$. In particular,
+\begin{equation*}
+    e(\pi, q) = e(\pi|_Y, q).
+\end{equation*}
+\end{proposition}
+\begin{proof}
+Because $C$ is a smooth projective curve over $k$, both $C$ and $Y$ are local complete intersections over $k$. Because $Y$ is an affine local complete intersection, $Y$ is a set theoretic complete intersection \cite[Corollary 5]{ku78}. The fact that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable, i.e.
+\begin{equation*}
+    \text{Hom}(TC, \pi^* \Oh_{\Proj^1_k}(1)) \cong L^{\otimes 2}
+\end{equation*}
+implies that the structure sheaf $\Oh_Y$ is also relatively orientable:
+\begin{equation*}
+    \text{Hom}(TY, \Oh_Y) \cong \text{Hom}(TY, \pi|_Y^* \Oh_{\A^1}) \cong \text{Hom}(TC|_{Y}, \pi^* \Oh_{\Proj^1_k}(1)|_{Y}) \cong L|_Y^{\otimes 2}.
+\end{equation*}
+Let $\phi: U \to \A^1_k$ be a Nisnevich local coordinate of $p \in C$. Then the restriction $\phi|_Y: U \cap Y \to \A^1_k$ is also a Nisnevich local coordinate at $p \in Y \subset C$. We can choose a compatible trivialization of $\pi^* \Oh_{\Proj^1_k}(1)|_{U \cap Y} = \Oh_Y|_{U \cap Y}$ by sufficiently shrinking $U \cap Y$. Because both $\ind_p F_q(s_0, s_1)$ and $\ind_p F_q(s_0/s_1,1)$ are induced from the same choice of the Nisnevich local coordinates and compatible trivializations, we obtain
+\begin{equation*}
+    \ind_p F_q(s_0,s_1) = \ind_p F_q(s_0/s_1, 1).
+\end{equation*}
+A summation of local indices at every element of $\pi^{-1}(q)$ shows
+\begin{equation*}
+    e(\pi, q) \overset{def}{=} \sum_{p \in \pi^{-1}(q)} \ind_p F_q(s_0,s_1) = \sum_{p \in \pi|_Y^{-1}(q)} \ind_p F_q(s_0/s_1,1) \overset{def}{=} e(\pi|_Y, q)
+\end{equation*}
+\end{proof}
+
+\subsection{An explicit method to compute local indices}
+\label{subsec: explicit method}
+
+Let $\pi: C \to \mathbb{P}^1_k$ be a finite morphism of smooth projective curves such that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable. Let $Y$ be an open affine subscheme of $C$ which is a trivializing open subscheme of $C$ for $\pi^* \Oh_{\Proj^1_k}(1)$. In particular, we may choose $Y = \pi^{-1}(\A^1_k)$. 
+
+Using the Euler number of the restriction $\pi|_Y: Y \to \A^1_k$, we present a method to explicitly compute the local indices of $e(\pi,q)$ for any $k$-rational point $q \in \A^1_k \subset \mathbb{P}^1_k$. The following proposition proves how the local indices of the Euler number $e(\pi|_Y, q)$ can be explicitly computed up to a unit in $k$ under certain conditions.
+
+%A method to compute the global $\A^1$ degree of $\pi$ is by choosing a closed embedding $i: Y \to \A^r_k$ for some $r \in \mathbb{N}$, where $Y$ is an open affine subscheme of $C$ which is a trivializing open subscheme of $C$ for  Because $\Adeg \pi := e(\pi, q)$ can be computed with a choice of Nisnevich coordinates around $q$, which are compatible with the relative orientation of $\pi^* \Oh_{\mathbb{P}^1}(1)$, 
+%\begin{equation*}
+%    \Adeg (\pi: C \to \Proj^1_k) \overset{\mathrm{def}}{=} e(\pi^* \Oh_{\Proj^1_k}(1), F(s_0, s_1)) = e(\pi_Y^* \Oh_{\A^1_k}, F(s_0/s_1, 1))
+%\end{equation*}
+%where $F(s_0)$ is a global section of $\Oh_{\A^1_k}$ corresponding to a $k$-rational point $q \in \Proj^1_k$.
+
+%We show that there is a simplified process of computing the Euler number of global sections of structure sheaves of smooth affine schemes $Y$ over $k$. The following proposition can be considered as a corollary of various lemmas and propositions stated in \cite[Section 4]{kwcubic}.
+
+\begin{proposition} \label{curve_euler_number}
+Let $Y$ be a smooth affine scheme of dimension $n$ such that $\Oh^n_Y$ is relatively orientable over $k$. 
+Let $\{x_1, x_2, \cdots, x_r\}$ be coordinates of $\A^r_k$. Pick a closed embedding $i_Y: Y \to \A^r_k$ for some $r$. Suppose that $Y$ is a set theoretic complete intersection over $k$, i.e. the zero set of the collection of $r-n$ polynomials $\{F_1, F_2, \cdots, F_{r-n}\}$ defines $Y$. Pick a $k$-rational point $q \in \A^n_k$.
+
+Let $\mathcal{F}: Y \to \A^n_k$ be a finite morphism defined by the polynomial map $(F_{r-n+1}, \cdots, F_r)$ over $k[x_1, \cdots, x_r]$. Let $F = (F_1, F_2, \cdots, F_r): \A^r_k \to \A^r_k$ be a finite morphism such that the diagram
+\begin{equation*}
+    \begin{tikzcd}
+        \A^r_k \arrow[r, "F"] & \A^r_k \\
+        Y \arrow[r, "\mathcal{F}"] \arrow[u, "i_Y"] & \A^n_k \arrow[u, "i_{\A^n_k}"]
+    \end{tikzcd}
+\end{equation*}
+commutes, where $i_{\A^n_k}: \A^n_k \to \A^r_k$ sends $q := (q_1, q_2, \cdots, q_n) \in \A^n_k$ to $(0, \cdots, 0, q_1, q_2, \cdots, q_n) \in \A^r_k$. Note that $\mathcal{F}$ and $F$ can be considered as global sections of $\Oh^n_Y$ and $\Oh^r_{\A^r_k}$ respectively. Moreover, given a point $q \in \A^n_k$, note that the fibers of the point $(0,\ldots,0, q) \in \A^r_k$ via $F$ are all in $Y$. Denote by $\{p_1, \cdots, p_d\}$ the elements of $\mathcal{F}^{-1}(q)$. 
+
+Let $\mathcal{G}$ and $G$ be global sections of $\Oh^n_{\A^n_k}$ and $\Oh^r_{\A^r_k}$ given by the minimal polynomials of the coordinates of $q$ and $i_{\A^n_k}(q)$ respectively, cf. Section \ref{subsec: euler number into affine}. In particular, the zero sets of $\mathcal{G}$ and $G$ are exactly $q$ and $i_{\A^n_k}(q)$ respectively. Furthermore, the zero sets of $\mathcal{F}^* \mathcal{G}$ and $F^* G$ are $\mathcal{F}^{-1}(q)$ and $F^{-1}(i_{\A^n_k}(q))$ respectively. Then for each closed point $p_i \in \mathcal{F}^{-1}(q)$ there exists a unit $\alpha_{p_i} \in k^\times$ such that
+\begin{equation*}
+    \ind_{p_i} \mathcal{F}^* \mathcal{G} = \langle \alpha_{p_i} \rangle \bullet \ind_{i_{Y}(p_i)} F^* G.
+\end{equation*}
+
+Assuming that the units $\alpha_{p_i} \in k^\times$ coincide with $\alpha \in k^\times$ up to multiplication by a square,
+\begin{equation*}
+    e(\mathcal{F}, q) = \langle \alpha \rangle \bullet e(F, i_{\A^n_k}(q)).
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+The following proposition can be considered as a corollary of various lemmas and propositions stated in \cite[Section 4]{kwcubic}.
+Let $\text{T}Y \to Y$ be the tangent bundle of $Y$. Because $\Oh^n_Y$ and $\Oh^r_{\A^r_k}$ are relatively orientable, there exist a line bundle $L$ on $Y$ such that
+
+\begin{align*}
+    & \text{Hom}(\bigwedge\nolimits^n \text{T}Y, \bigwedge\nolimits^n \Oh^n_Y) \cong L^{\otimes 2} \\
+    & \text{Hom} (\bigwedge\nolimits^r \text{T}\A^r_k, \bigwedge\nolimits^r \Oh^r_{\A^r_k}) \cong \Oh_{\A^r_k}^{\otimes 2}.
+\end{align*}
+
+Let $\mathcal{Z} \subset Y$ be the zero locus of $\mathcal{F}^* \mathcal{G}$, and $Z \subset \A^r$ be the zero locus of $F^* G$. the proof of Lemma \ref{lemma:fiber} shows that $\mathcal{Z} = \mathcal{F}^{-1}(q)$ and $Z = F^{-1}(i_{\A^n_k}(q))$. Furthermore, the morphism $i_Y|_{\mathcal{Z}}: \mathcal{Z} \to Z$ is an isomorphism.
+
+Pick a fiber point $p \in \mathcal{Z}$. Let $\phi_Y: \mathcal{U} \to \A^n_k = \Spec k[y_1, y_2, \cdots, y_n]$ be a choice of Nisnevich local coordinates of $Y$ at $p$, and let $\phi_{\A^r_k}: U \to \A^r_k = \Spec k[\chi_1, \chi_2, \cdots, \chi_r]$ be a choice of Nisnevich local coordinates of $\A^r_k$ at $i_Y(p)$. By sufficiently shrinking the open subschemes $\mathcal{U}$ and $U$, we can choose compatible trivializations of $\Oh^n_Y$ and $\Oh^r_{\A^r_k}$. The proof of \cite[Lemma 24]{kwcubic} implies that the following two diagrams are commutative:
+\begin{equation*}
+\begin{tikzcd}
+    & k[\chi_1, \chi_2, \cdots, \chi_r] \arrow[d, twoheadrightarrow] \arrow[dl] \\
+    \Oh_{\A^r_k, i_Y(p)} \arrow[r, twoheadrightarrow] & \Oh_{Z,i_Y(p)}
+\end{tikzcd}
+\end{equation*}
+\begin{equation*}
+\begin{tikzcd}
+    & k[y_1, y_2, \cdots, y_n] \arrow[d, twoheadrightarrow] \arrow[dl] \\
+    \Oh_{Y, p} \arrow[r, twoheadrightarrow] & \Oh_{\mathcal{Z}, p}
+\end{tikzcd}
+\end{equation*}
+
+By exactness of localization, the surjection 
+$$i_Y^*: k[x_1, x_2, \cdots, x_r] \to k[x_1, x_2, \cdots, x_r] / (F_1, F_2, \cdots, F_r)$$ 
+associated to the closed embedding $i_Y:Y \to \A^r_k$, induces
+\begin{align*}
+    \Oh_{Z,i_Y(p)} & \cong \Oh_{\A^r_k, i_Y(p)} / (F_1, F_2, \cdots, F_r) \\
+    & \cong k[x_1, x_2, \cdots, x_r]_{i_Y(p)} / (F_1, F_2, \cdots, F_r) \\
+    & \cong \left( k[x_1, x_2, \cdots, x_r]/(F_1, \cdots, F_{r-n}) \right)_{i_Y(p)} / (F_{r-n+1}, F_{r-n+2}, \cdots, F_r) \\
+    & \cong \Oh_{Y, p} / \left( (F_{r-n+1}, F_{r-n+2}, \cdots, F_r) \right) \\
+    & \cong \Oh_{\mathcal{Z}, p}.
+\end{align*}
+
+The Nisnevich local coordinate $\phi_Y$ and a choice of a compatible trivialization of $\Oh^n_Y$ defines a symmetric bilinear form $\tilde{\beta}$ over $\Oh_{\mathcal{Z}, p}$ which sends a distinguished socle element $\tilde{s}$ ti $1$. Likewise, the Nisnevich local coordinate $\phi_{\A^r_k}$ and a choice of a compatible trivialization of $\Oh^r_{\A^r_k}$ defines a symmetric beilinear form $\beta$ over $\Oh_{Z,i_Y(p)}$ which also sends its distinguished socle element $s$ to $1$. These bilinear forms are independent from choices of Nisnevich local coordinates and compatible trivializations. We recall from  \cite[Lemma 27]{kwcubic} shows that both $\Oh_{\mathcal{Z}, p}$ and $\Oh_{Z,i_Y(p)}$ are finite complete intersections. The isomorphism $i_Y^*: \Oh_{Z,i_Y(p)} \to \Oh_{\mathcal{Z}, p}$ sends the socle element $s$ to $\alpha_p \tilde{s}$ for some $\alpha_p \in k^\times$. Using the fact that $\tilde{\beta}$ and $\beta$ define local indices $\ind_p \mathcal{F}^* \mathcal{G}$ and $\ind_{i_Y(p)} F^* G$, we obtain
+\begin{equation*}
+    \ind_{p} \mathcal{F}^* \mathcal{G} = \langle \alpha_{p} \rangle \bullet \ind_{i_{Y}(p)} F^* G.
+\end{equation*}
+
+Now let $\mathcal{F}^{-1}(q) = \{p_1, p_2, \cdots, p_d\}$. Further suppose that for all $p_i$'s the associated units $\alpha_{p_i}$ are all equal to $\alpha$ up to multiplication by a square in $k$. We show that
+$$e(\mathcal{F},q) = \langle \alpha \rangle \bullet e(F, i_{\A^n_k}(q)).$$
+Recall that $q \in  \A^n_k$. Choose $g_{r-n+1}(x_{r-n+1}),\ldots,g_r(x_r)$ to be nonzero (monic) minimal polynomials of the coordinates of $q$ similarly as in Section \ref{subsec: euler number into affine}. These $n$ polynomials together correspond to a section $\sigma_q$ of $\Oh^n_{\A^n_k}$. Let $\mathcal{G} = \mathcal{F}^* \sigma_q$. Similarly, the $n$ polynomials $x_1,\ldots,x_{r-n},g_{r-n+1}(x_{r-n+1}),\ldots,g_r(x_r)$ correspond to a section $\sigma'_q$ of $\Oh^r_{\A^r_k}$. Let $G = F^* \sigma'_q$. Note that $\mathcal{G}$ and $G$ are global sections of $\Oh_Y^n$ and $\Oh^r_{\A^r_k}$ whose zero sets are $\mathcal{F}^{-1}(q)$ and $F^{-1}(q)$ respectively.
+
+Furthermore, choose $\mathcal{G}$ and $G$ to be the global sections of $\Oh^n_Y$ and $\Oh^r_{\A^r_k}$ 
+respectively Then
+\begin{align*}
+    e(\mathcal{F}, q) 
+    &\overset{\mathrm{def}}{=} e(\Oh^n_Y, \mathcal{F}^* \mathcal{G}) \\
+    &\overset{\mathrm{def}}{=} \sum_{p_i \in \mathcal{F}^{-1}(q)} \ind_{p_i} \mathcal{F}^* \mathcal{G} \\
+    &= \sum_{p_i \in \mathcal{F}^{-1}(q)} \langle \alpha \rangle \bullet \ind_{i_Y(p_i)} F^* G \\
+    &=  \sum_{i_Y(p_i) \in F^{-1}(i_{\A^n_k}(q))} \langle \alpha \rangle \bullet \ind_{i_Y(p_i)} F^* G \\
+    &\overset{\mathrm{def}}{=} \langle \alpha \rangle \bullet e(\Oh^r_{\A^r_k}, F^* G) \\
+    &\overset{\mathrm{def}}{=} \langle \alpha \rangle \bullet e(F, i_{\A^n_k}(q)).
+\end{align*}
+
+\end{proof}
+
+
+
+Combining Proposition \ref{curve_euler_number_2} and \ref{curve_euler_number}, we obtain:
+\begin{corollary} \label{cor:curve_euler_number}
+    Let $C$ be a smooth projective curve over any field $k$. Let $\pi: C \to \Proj^1_k$ be a finite morphism such that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable. Let $Y = \pi^{-1}(\A^1_k)$ with a choice of a closed embedding $i_Y: Y \to \A^r_k$ in which $Y$ is a set theoretic complete intersection, i.e. a set of $r-1$ polynomials $\{F_1, F_2, \cdots, F_{r-1}\}$ defines $Y$. Let $\{x_1,x_2,\cdots,x_r\}$ be coordinates of $\A^r_k$.
+    
+    Pick a $k$-rational point $q \in \A^1_k \subset \Proj^1_k$. Let $F_q(s_0,s_1)$ be the minimal polynomial of $q$, where $s_0,s_1$ are the coordinates of $\Proj^1_k$ and $\A^1_k$ has the coordinates $\frac{s_0}{s_1}$. Define $F: \A^r_k \to \A^r_k$ to be the polynomial map $F = (F_1, \cdots, F_{r-1}, \pi|_Y^*)$. In particular, the following diagram commutes:
+    \begin{equation*}
+        \begin{tikzcd}
+                    \A^r_k \arrow[r, "F"] & \A^r_k \\
+        Y \arrow[r, "\pi|_Y"] \arrow[u, "i_Y"] \arrow[d, "i"] & \A^1_k \arrow[u, "i_{\A^n_k}"] \arrow[d, "i"] \\
+        C \arrow[r, "\pi"] & \Proj^1_k
+        \end{tikzcd}.
+    \end{equation*}
+    Then for each closed point $p \in \pi^{-1}(q)$, there exists a unit $\alpha_p \in k^\times$ such that
+    \begin{equation*}
+        \ind_{i(p)} \pi^* F_q(s_0,s_1) = \langle \alpha_p \rangle \bullet \ind_{i_Y(p)} F^* (x_1,x_2,\cdots,x_{r-1},F_q(x_r,1)).
+    \end{equation*}
+\end{corollary}
+
+\begin{example} \label{example:ellipticcurve}
+Let $E$ be an elliptic curve with a minimal Weierstrass model given by $y^2z = x^3 - xz^2$ over any field $k$ of characteristic not equal to $2$ and $3$. Let $\pi: E \to \Proj^1_k$ be the double cover defined by the projection $[x:y:z] \mapsto [x:z]$. We will use Proposition \ref{A1 degree double ramify} and Corollary \ref{cor:curve_euler_number} separately to show that
+\begin{equation*}
+    \Adeg \pi = \langle 1 \rangle + \langle -1 \rangle.
+\end{equation*}
+
+Recall that $\pi^* \Oh(1) \simeq \Oh_E(2 \infty)$, cf. \cite[The explanation before Theorem IV.4.1]{hartshorne}. Moreover, the tangent bundle $TE$ is trivial, so $\Oh_E(2\infty)$ is relatively orientable over any field $k$. The morphism $\pi$ is doubly ramified at the fiber of $0 \in \mathbb{P}^1_k(k)$. Hence, Proposition \ref{A1 degree double ramify} shows that
+\begin{equation*}   
+    \Adeg \pi = \langle 1 \rangle + \langle -1 \rangle.
+\end{equation*}
+
+Let $\tilde{E}$ be the affine part of the elliptic curve $E$ at $z = 1$.
+Using Corollary \ref{cor:curve_euler_number} and suitably choosing Nisnevich coordinates, we obtain
+\begin{equation*}
+    \Adeg \pi = e(\pi^* \Oh_{\Proj^1_k}(1), x) = e(\Oh_{\tilde{E}}, x) = \ind_{(0,0) \in \tilde{E}} x = \langle \alpha \rangle \bullet \; \ind_{(0,0) \in \A^2_k} F = \langle \alpha \rangle \bullet e(\Oh_{\A^2_k}^2, F),
+\end{equation*}
+where $\alpha \in k^\times$, and $F: \A^2_k \to \A^2_k$ is defined by $(x,y) \mapsto (y^2 - x^3 + x, x)$. We can calculate the Euler number $e(\Oh^2_{\A^2_k}, F)$ using the Jacobian of $F$, see \cite[Proposition 15]{kwEKL} and the discussion after \cite[Corollary 31]{kwcubic}. The Jacobian of $F$ is given by
+\begin{equation*}
+    \text{det} \begin{pmatrix} -3x^2 + 1 & 2y \\ 1 & 0 \end{pmatrix} = -2y.
+\end{equation*}
+The quadratic form $\beta: R \times R \to k$ associated to $e(\Oh^2_{\A^2_k}, F)$ is defined over the ring $R = k[x,y]/(y^2 - x^3 + x, x) \cong k[y]/(y^2)$. Recall that $\beta(a,b) = \eta(ab)$ for some k-linear morphism $\eta: R \to k$ such that $\eta(-2y) = \text{dim}_k R = 2$. Hence, the quadratic form $\beta$ is represented by
+\begin{equation*}
+    \begin{pmatrix} 0 & -1 \\ -1 & 0 \end{pmatrix},
+\end{equation*}
+which is equivalent to the class $\langle 1 \rangle + \langle -1 \rangle$ in the Grothendieck-Witt ring $GW(k)$, by Lemma \ref{bezoutlemma}. Since the hyperbolic element is invariant under multiplication by the class $\langle \alpha \rangle$, we obtain that
+\begin{equation*}
+    \Adeg \pi = \langle 1 \rangle + \langle -1 \rangle .
+\end{equation*}
+\end{example}
+
+\section{Covering maps of modular curves} \label{sec: covering maps}
+
+In this subsection, we compute the global $\A^1$ degrees of covering maps from coarse moduli schemes of elliptic curves with level structures to $X(1)$ under certain conditions. Using Proposition \ref{A1 degree double ramify}, we show that the global $\A^1$ degree of these covering maps are equivalent to hyperbolic elements in $\GW(k)$. We then use Proposition \ref{curve_euler_number} to relate the global $\A^1$ degree with oriented counts of torsion subgroups or torsion points of elliptic curves.
+
+Consider the modular curves $X_0(N), X_1(N)$, and $X(N)$ as smooth projective schemes over $\Z[1/N]$. As coarse moduli spaces, the closed points of $X_0(N)$ (coarsely) correspond to isomorphism classes of pairs $(E,C)$, where $C$ is a cyclic $N$-torsion subgroup of a generalized elliptic curve $E(k)$. The closed points of $X_1(N)$ (coarsely) correspond to isomorphism classes of pairs $(E,P)$, where $P$ is an $N$-torsion point of $E$. The closed points of $X(N)$ (coarsely) correspond to isomorphism classes of pairs $(E,\tau)$, where $\tau: (\Z/N\Z)^2 \to E[N]$ is an isomorphism of group schemes. For more details on constructions of coarse moduli schemes, we refer to \cite[Section 2]{saito}, \cite[Section 6]{shimura}, and \cite[Section 8, Section 9]{diamondim}. We also refer to the aforementioned sections for the proof that these coarse moduli schemes are smooth projective schemes over $\Z[1/N]$. We denote by $Y_0(N), Y_1(N)$, and $Y(N)$ affine open dense subschemes of $X_0(N), X_1(N)$, and $X(N)$ over $\Z[1/N]$, respectively. We also note that $Y_0(N)$, $Y_1(N)$ and $Y(N)$ are smooth affine schemes over $\Z[1/N]$, as noted in respective sections of \cite{saito} and \cite{diamondim}.
+
+\begin{definition}\label{cover}
+For any $N$, we denote by $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_N$ the following covering maps of modular curves over $\Z[1/N]$.
+\begin{align*}
+    \pi_{0,N}&: X_0(N) \to X(1) \\
+    \pi_{1,N}&: X_1(N) \to X(1) \\
+    \pi_N&: X(N) \to X(1)
+\end{align*}
+\end{definition}
+We also denote by $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_N$ the respective morphisms $\pi_{0,N}: Y_0(N) \to Y(1)$, $\pi_{1,N}: Y_1(N) \to Y(1)$, and $\pi_N: Y(N) \to Y(1)$.
+
+\begin{proposition}\label{coverdeg}
+Given any positive integer $N$, let $k$ be a field of characteristic not dividing $N$ where all the fibers of $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_{N}$ are defined. Then the degrees of $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_N$ over $K$ are given as follows.
+\begin{align*}
+    \deg \pi_{0,N} &= N \prod_{p | N, \; p \; \text{prime}} \left(1 + \frac{1}{p} \right)\\
+    \deg \pi_{1,N} &= \frac{1}{2} N^2 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right)\\
+    \deg \pi_N &= \frac{1}{2} N^3 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right)
+\end{align*}
+\end{proposition}
+
+We denote by $j$ the classical $j$-invariant which induces an isomorphism between $X(1)$ and $\Proj^1_k$. The ramification indicies of the fibers at $j = 1728$ play a crucial role in computing the global $\A^1$ degrees of the covering maps.
+
+\begin{proposition}\label{ram}
+Given any positive integer $N$, let $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_N$ be the desired covering maps over a field $K$ of characteristic not dividing $N$ such that all the fibers of $\pi_{0,N}$, $\pi_{1,N}$, and $\pi_{N}$ at $j = 1728$ are elements of $K$.
+\begin{enumerate}
+    \item For any $N \geq 2$, all the fibers of $\pi_N$ at $j = 1728$ are doubly ramified.
+    \item For any $N \geq 4$, all the fibers of $\pi_{1,N}$ at $j = 1728$ are doubly ramified.
+    \item Let $N$ be a positive integer such that either $4 \mid N$ or there exists a prime $p \equiv 3 \; \text{mod} \; 4$ such that $p \mid N$. Then all the fibers of $\pi_{0,N}$ at $j = 1728$ are doubly ramified.
+    \item Let $N$ be a positive integer that does not satisfy both conditions in (3). Then there are $2^{\# \text{ of distinct prime factors of N}}$ fibers of $\pi_{0,N}$ at $j = 1728$ which are unramified. All other fibers are doubly ramified.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+We refer to \cite[Section 1]{shimura} and \cite[Section 9]{diamondim}. For $(3)$ and $(4)$, we recall that $-1$ is a square mod $p$ if and only if $p \equiv 3 \; \textrm{mod} \; 4$.
+\end{proof}
+
+Now we compute the global $\A^1$ degrees of covering maps of modular curves.
+
+\begin{theorem}\label{mainA}
+For some values of $N$, the global $\A^1$ degrees of covering maps $\pi \in \{\pi_{0,N}$, $\pi_{1,N}$, $\pi_{N}\}_{N}$ over any field $k$ such that $\text{char }(k) \nmid N$ and $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable are integer multiples of hyperbolic elements in $GW(k)$. In particular:
+\begin{enumerate}
+    \item $\Adeg \pi_{0,N} = \frac{1}{2} N \prod_{p | N, \; p \; \text{prime}} \left(1 + \frac{1}{p} \right) \left(\langle 1 \rangle + \langle -1 \rangle \right) $ if either $4 | N$ or  there exists a prime factor $q$ of $N$ such that $q \equiv 3 \; \text{mod} \; 4$.
+    \item $\Adeg \pi_{1,N} = \frac{1}{4} N^2 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right) \left(\langle 1 \rangle + \langle -1 \rangle \right) $ for any $N \geq 4$.
+    \item $\Adeg \pi_N = \frac{1}{4} N^3 \prod_{p | N, \; p \; \text{prime}} \left(1 - \frac{1}{p^2} \right) \left( \langle 1 \rangle + \langle -1 \rangle \right)$ for any $N \geq 2$.
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}
+It is not always possible to compute the global $\A^1$ degree of covering maps $\pi$ of modular curves over any field $k$, say the rational numbers $\Q$. This is because the pullback of the line bundle $\pi^* \Oh_{\Proj^1_\mathbb{Q}}(1)$ is not always relatively orientable over $\Q$. For instance, for any odd prime $p$, the pullback $\pi_{0,p}^*(\infty)$ is equal to $p (0) + (\infty)$. To show that the pullback of the line bundle is relatively orientable, it suffices to show that the divisor $(0) - (\infty)$ is a square. This is a contradiction, as Manin-Drinfeld theorem states that the torsion subgroup of the Jacobian variety $J_0(p)$ of modular curves is generated by $(0) - (\infty)$. 
+\end{remark}
+
+\begin{proof}
+We first note that the conditions on $N$ from all the statements above are identical to those from Proposition \ref{ram}. Without loss of generality, we prove statement (1) of the theorem, whose proof can be directly extended to those of statement (2) and (3). 
+%TODO: I forgot if the phrase should be "a fiber $p$ of \pi_{0,N}" or "any given fiber $p$ of \pi_{0,N}$ or "every fiber $p$ of \pi_{0,N}.
+%It should be defined for each fiber $p$.
+Let $N$ be any positive integer such that either $4$ divides $N$ or there exists a prime $q \equiv 3 \; \text{mod} \; 4$ which divides $N$. For each fiber $p$ of $\pi_{0,N}$ at $j = 1728$, let $k(p) / k$ be a finite field extension such that $p$, as a closed point, is defined over $k(p)$. The global $\A^1$ degree of $\pi_{0,N}$ is then given by
+\begin{equation*}
+    \Adeg \pi_{0,N} = e(\pi_{0,N}, 1728) = \sum_{p \in \pi_{0,N}^{-1}(1728)} \ind_p (j-1728)
+\end{equation*}
+where $j - 1728$ is considered as a global section over $\pi^* \Oh_{\Proj^1_k}(1)$. By Lemma \ref{lemma:fiber}, the zero locus of the section $j - 1728$ is the fiber of $\pi_{0,N}$ at $j = 1728$. Proposition \ref{euler double ramify} and Proposition \ref{coverdeg} then shows
+\begin{equation*}
+    \ind_p (j - 1728) = [k(p):k] (\langle 1 \rangle + \langle -1 \rangle).
+\end{equation*}
+
+Because every fiber of $\pi_{0,N}$ at $j=1728$ is doubly ramified, there are $\frac{1}{2} \deg \pi_{0,N}$ closed points in the fiber at $j = 1728$. Thus, the global $\A^1$ degree of $\pi_{0,N}$ is given by
+\begin{align*}
+    \Adeg \pi_{0,N} &= \sum_{p \in \pi_{0,N}^{-1}(1728)} \ind_p (j - 1728) \\
+    &= \sum_{p \in \pi_{0,N}^{-1}(1728)} [k(p):k] \left( \langle 1 \rangle + \langle -1 \rangle \right) \\
+    &= \frac{1}{2} \deg \pi_{0,N} \left( \langle 1 \rangle + \langle -1 \rangle \right) \\
+    &= \frac{1}{2} N \prod_{p \mid N, \; p \; \text{prime}} \left( 1 + \frac{1}{p} \right) \left( \langle 1 \rangle + \langle -1 \rangle \right).
+\end{align*}
+\end{proof}
+
+%\begin{remark}
+%In fact, it is possible to compute the naive global $\A^1$ degree of $\pi_{0,N}$ by computing the local $\A^1$ degrees at fibers of $\pi_{0,N}$ at different values of the $j$-invariant.
+%\begin{equation*}
+%    \nAdeg \pi_{0,N} = \sum_{p \in \pi_{0,N}^{-1}(j=a)} \Tr_{k(p)/k} \left( \Adeg_{p} \pi_{0,N} \right).
+%\end{equation*}
+%However, choosing different values of $j=a$ requires an explicit identification of Nisnevich local coordinates of each fiber at $j=a$. At $j = 1728$, the fact that $\Adeg (x^2/A) = \langle 1 \rangle + \langle -1 \rangle$ for any $A \in k(p)^\times$, i.e. Proposition \ref{adegpoly}, allows us to compute the naive global $\A^1$ degree of $\pi_{0,N}$ without explicitly identifying the Nisnevich local coordinates. Such observation, however, is not applicable for $X_0(N)$ where $4$ and any primes congruent to $3$ mod $4$ do not divide $N$ because of statement $(4)$ of Proposition \ref{ram}. We discuss these cases in more detail in Remark \ref{nonex1} and \ref{nonex2}.
+%\end{remark}
+
+In fact, when the modular curve is isomorphic to $\Proj^1_k$, we can compute the global $\A^1$ degrees of covering maps by computing B\'ezout matrices as per Theorem \ref{thm:globalA1Bezout} and by using Proposition \ref{curve_euler_number}. These techniques correspond to computing the local $\A^1$ degrees at fibers of covering maps at $j = 0$. Corollary \ref{euler deg independent} implies that the global $\A^1$ degrees computed at the fibers of $j = 0$ and $j = 1728$ are equivalent. Throughout the following examples, we assume that $k$ is any field of characteristic not dividing $N$ such that $\pi^* \Oh_{\Proj^1_k}(1)$ is relatively orientable.
+
+\begin{example}
+Suppose $N = 3$. The covering map $\pi_{0,3}:X_0(3) \to X(1)$ is a morphism from $\Proj^1_k$ to itself, so we can compute the B\'ezout matrix associated to $\pi_{0,3}$ to compute its global $\A^1$ degree (which is the same as the global $\A^1$ degree by Theorem \ref{thm:globalA1Bezout}. The pullback of the $j$-invariant $\pi_{0,3}^*(j)$ can be written explicitly as follows, where $t$ is the hauptmodul of $X_0(3)$.
+\begin{equation*}
+    \pi_{0,3}^*(j) = \frac{(t+27)(t + 3)^3}{t}
+\end{equation*}
+Let $F(t) = (t+27)(t+3)^3$ and $G(t) = t$. The polynomial $F(x)G(y) - F(y)G(x)$ factorizes as
+\begin{equation*}
+    F(x) G(y) - F(y) G(x) = (x-y)(x^3y + x^2y^2 + xy^3 + 36x^2y + 36xy^2 + 270xy - 729).
+\end{equation*}
+Hence the B\'ezout matrix is given by
+\begin{equation*}
+    \begin{pmatrix} -729 & 0 & 0 & 0 \\ 0 & 270 & 36 & 1 \\ 0 & 36 & 1 & 0 \\ 0 & 1 & 0 & 0 \end{pmatrix}
+\end{equation*}
+which corresponds to the class
+\begin{equation*}
+    \langle -729 \rangle + 2 \langle 1 \rangle + \langle -1 \rangle = 2(\langle 1 \rangle + \langle -1 \rangle).
+\end{equation*}
+
+One may ask whether the Atkin-Lehner involution $w_3: X_0(3) \to X_0(3)$ affects the global $\A^1$ degree of $\pi_{0,3}$. Thankfully, such is not the case. We compute the B\'ezout matrix associated to the Atkin-Lehner involution $w_3$. The pullback of the hauptmodul $t$ under the involution $w_3$ can be written explicitly as follows.
+\begin{equation*}
+    w_3^*(t) = \frac{729}{t}
+\end{equation*}
+The B\'ezout matrix is given by the following $1 \times 1$ matrix
+\begin{equation*}
+    \begin{pmatrix} -729 \end{pmatrix}
+\end{equation*}
+which corresponds to the class $\langle -1 \rangle$. Accordingly, we would expect $\pi_{0,3} \circ w_3$ to have $\A^1$-degree $\langle -1 \rangle ( \langle 1 \rangle + \langle -1 \rangle)$ (cf. \cite[Lemma 4.8]{cazanave}), but multiplication by $\langle -1 \rangle$ does not change the global $\A^1$ degree of $\pi_{0,3}$, i.e. the global $\A^1$ degree of $\pi_{0,3}$ is invariant under the action of the Atkin-Lehner involution. 
+\end{example}
+
+\begin{example}
+We now compute an example where the genus of a modular curve is at least $1$. Suppose $N = 11$. The covering map $\pi_{0, 11}: X_0(11) \to X(1)$ is a morphism from a genus $1$ curve $C$ to $\Proj_k^1$. Pick $t = \left( \frac{\eta_1}{\eta_{11}} \right)^{12}$, and let $y$ be a variable which satisfies
+\begin{equation*}
+    y^2 - (t+6)(t^3-2t^2-76t-212) = 0.
+\end{equation*}
+Then $k(j(\tau), j_{11}(\tau)) = k(t, y)$. The covering map $X_0(11) \to X(1)$ can be written explicitly as $(t,y) \mapsto c_0 - c_1 y$, where
+\begin{align*}
+    c_0 &= \frac{1}{2}t^{11} - \frac{187}{2}t^9 - 253 t^8 + 5720 t^7 + 28721 t^6 - 92092 t^5 \\
+    &- 837892 t^4 - 933856 t^3 + 4126320 t^2 + 9924800 t + 4360000\\
+    c_1 &= \frac{1}{2}(t-1)(t+5)(t+4)(t+2)(t-10)(t^2-2t-44)(t^2-20)
+\end{align*}
+Consider the morphism $\phi_{0, 11}: \A_k^2 \to \A_k^2$ such that 
+\begin{equation*}
+    \phi_{0,11}(t,y) = (y^2 - (t+6)(t^3-2t^2-76t-212), c_0 - c_1 y).
+\end{equation*}
+Let $(t^*, y^*) \in \pi_{0, 11}^{-1}(1728)$ be any choice of a fiber. Denote by $k((t^*, y^*))$ the separable field extension over $k$ in which $t^*$ and $y^*$ lives.
+
+Proposition \ref{curve_euler_number} implies that for any fiber $(t^*, y^*) \in \pi_{0, 11}^{-1}(1728)$, there exists a unit $\alpha \in k((t^*, y^*))$ such that
+\begin{equation*}
+    \ind_{(t^*, y^*)} (j-1728) = \langle \alpha \rangle \bullet \ind_{(t^*, y^*)} (j-1728).
+\end{equation*}
+We note that if $y = \frac{c_0 - 1728}{c_1}$, then the equation $y^2 - (t+6)(t^3 - 2t^2 - 76t - 212)$ can be simplified as
+\begin{equation*}
+    \frac{4(7641728 + 6475200t + 2113680t^2 + 325856 t^3 + 22692 t^4 + 492t^5 - t^6)^2}{c_1^2}
+\end{equation*}
+Set $\alpha_{11} = 7641728 + 6475200t + 2113680t^2 + 325856 t^3 + 22692 t^4 + 492t^5 - t^6$. 
+
+Calculating the local index of $\phi_{(0,11)}$ at $(t^*, y^*) \in f^{-1}((0, 1728))$ is equivalent to calculating the EKL class of $\phi_{0, 11}$ over the localization of the ring $R$ at $(t^*, y^*)$.
+\begin{align*}
+    R &= k((t^*, y^*)) \left[ t, \frac{c_0 - 1728}{c_1} \right] / (y^2 - (t+6)(t^3 - 2t^2 - 76t - 212)) \\
+    &= k((t^*, y^*)) \left[ t, \frac{1}{c_1} \right] / \left( \frac{4 \alpha_{11}^2}{c_1^2} \right) \\
+    &= k((t^*, y^*)) \left[ t, \frac{1}{c_1} \right] / \left( \frac{4 \alpha_{11}^2}{c_1} \right)
+\end{align*}
+
+Because every root of $\alpha_{11} = 0$ doubly ramifies, for any $\alpha \in k((t^*, y^*))^\times$,
+\begin{equation*}
+    \langle \alpha \rangle \bullet \ind_{(t^*, y^*)} (j-1728) = \langle 1 \rangle + \langle -1 \rangle.
+\end{equation*}
+Using the definition of the global $\A^1$ degree, we conclude that
+\begin{equation*}
+    \Adeg \pi_{0, 11} = \sum_{(t^*, y^*) \in \pi_{0, 11}^{-1}(1728)} [k((t^*,y^*)) : k](\langle 1 \rangle + \langle -1 \rangle) = 6(\langle 1 \rangle + \langle -1 \rangle).
+\end{equation*}
+
+\end{example}
+
+\begin{remark}\label{nonex1}
+For other values of $N$ not satisfying any conditions from statement (1) of Theorem \ref{mainA}, the global $\A^1$ degree of $\pi_{0,N}$ may not equal to an integer multiple of the hyperbolic element $\langle 1 \rangle + \langle -1 \rangle \in \GW(k)$ over any field $k$ of characteristic not dividing $N$. 
+For $N = 2$, it is possible to compute the B\'ezout matrix associated to the covering map $\pi_{0,2}:X_0(2) \to X(1)$, but the Atkin-Lehner involution changes the $\A^1$ degree of $\pi_{0,2}$.
+
+Let $k$ be any field whose characteristic is coprime to $2$. Let $t$ be a hauptmodul of $X_0(2)$. Then the pullback of the $j$-invariant $\pi_{0,2}^{*}(j)$ can be written explicitly as follows.
+\begin{equation*}
+    \pi_{0,2}^*(j) = \frac{(t + 16)^3}{t}
+\end{equation*}
+The B\'ezout matrix associated to $\pi_{0,2}$ is the following matrix
+\begin{equation*}
+    \begin{pmatrix} -4096 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 1 & 0 \end{pmatrix}
+\end{equation*}
+whose corresponding element in $\GW(k)$ is $\langle -4096 \rangle + \langle 1 \rangle + \langle -1 \rangle = 2 \langle 1 \rangle + \langle -1 \rangle$. However, after applying the Atkin-Lehner involution, the pullback of the $j$-invariant can also be written as follows.
+\begin{equation*}
+    \pi_{0,2}^*(j) = \frac{(t+256)^3}{t^2}
+\end{equation*}
+The B\'ezout matrix associated to $\pi_{0,2}$ is now given as follows
+\begin{equation*}
+    \begin{pmatrix} 0 & -16777216 & 0 \\ -16777216 & -196608 & 0 \\ 0 & 0 & 1 \end{pmatrix}
+\end{equation*}
+whose corresponding element in $\GW(k)$ is $2\langle -1 \rangle + \langle 1 \rangle$. 
+
+We now verify that the Atkin-Lehner involution $w_2: X_0(2) \to X_0(2)$ affects the global $\A^1$ degree of $\pi_{0,2}$. The pullback of the hauptmodul $t$ under the involution $w_2$ can be written as
+\begin{equation*}
+    w_2^*(t) = \frac{4096}{t}
+\end{equation*}
+which corresponds to the class $\langle -1 \rangle$. We note that the two $\A^1$ degrees of $\pi_{0,2}$ are related via multiplication by $\langle -1 \rangle$:
+\begin{equation*}
+    \langle -1 \rangle (2 \langle 1 \rangle + \langle -1 \rangle) = 2 \langle -1 \rangle + \langle 1 \rangle.
+\end{equation*}
+
+We hence observe that the global $\A^1$ degree of $\pi_{0,2}$ depends on the choice of the pullback of the $j$-invariant.
+\end{remark}
+
+\begin{remark}\label{nonex2}
+Suppose $N$ is a positive integer such that $4$ and primes of form $p \equiv 3 \; \text{mod} \; 4$ do not divide $N$. Let $D$ be the number of distinct prime factors of $N$. Then we notice that all but $2^D$ fibers of $\pi_{0,N}$ at $j = 1728$ doubly ramify. We make an analogous claim to statement $(1)$ of Theorem \ref{mainA} using statement $(4)$ of Proposition \ref{ram}.
+\begin{equation*}
+    \Adeg \pi_{0,N} = \left(N \prod_{p \mid N, \; p \; \text{prime}} \left( 1 + \frac{1}{p} \right) - 2^D \right) \left( \langle 1 \rangle + \langle -1 \rangle \right) + \sum_{\substack{q \in \pi_{0,N}^{-1}(1728) \\ m(q) = 1}} \ind_q (j-1728)
+\end{equation*}
+The difficulty with computing the global $\A^1$ degree of $\pi_{0,N}$ comes from explicitly computing the Nisnevich local coordinates to compute the local $\A^1$ degrees of $\pi_{0,N}$ at unramified fibers. For instance, suppose $N = 5$. Let $t$ be a hauptmodul of $X_0(5)$. The pullback of the $j$-invariant is given by
+\begin{equation*}
+    \pi_{0,5}^*(j) = \frac{(t^2+10t+5)^3}{t}
+\end{equation*}
+The B\'ezout matrix associated to $\pi_{0,5}$ is given by the following
+\begin{equation*}
+    \begin{pmatrix} -125 & 0 & 0 & 0 & 0 & 0 \\ 0 & 1575 & 1300 & 315 & 30 & 1 \\ 0 & 1300 & 315 & 30 & 1 & 0 \\ 0 & 315 & 30 & 1 & 0 & 0 \\ 0 & 30 & 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 \end{pmatrix}
+\end{equation*}
+whose corresponding element in $\GW(k)$ is $3\langle 1 \rangle + 2\langle -1 \rangle + \langle -5 \rangle$. We also note that the Atkin-Lehner involution $w_5$ of $X_0(5)$ pulls back the $j$-invariant as follows.
+\begin{equation*}
+    w_5^*(j) = \frac{125}{t}
+\end{equation*}
+The $\A^1$ degree of the Atkin-Lehner involution is $\langle -5 \rangle$. Note that the Atkin-Lehner involution still preserves the global $\A^1$ degree of $\pi_{0,5}$.
+\end{remark}
+
+\section{Future directions}
+We end the paper with a discussion of two questions that naturally arise from previous sections.
+\begin{enumerate}
+    \item Let $\pi: X(\Gamma) \to X(1)$ be the covering map of modular curves where $\pi^* \Oh(1)$ is relatively orientable over the field $k$. Let $Y(\Gamma) := \pi^{-1}(\A^1_k)$.
+    
+    Using Proposition \ref{curve_euler_number_2}, Theorem \ref{mainA} implies that the global $\A^1$ degree of $\pi: X(\Gamma) \to X(1)$ is equal to the Euler number of $\Oh_{Y(\Gamma)}$ with respect to the $j$-invariant, considered as a weakly holomorphic modular form of weight $0$. It is hence a natural question to ask which arithmetic properties do Euler numbers of line bundles with respect to holomorphic modular forms of weight $2k$ over $X(\Gamma)$ or those with respect to weakly holomorphic modular forms of weight $2k$ over $Y(\Gamma)$ imply.
+    
+    \item In this paper, we viewed modular curves as coarse moduli schemes over $\Z[1/N]$. However, we may also consider moduli stacks of elliptic curves with level structures. Libby Taylor and Andrew Kobin \cite{tkstack} extended $\A^1$ homotopy theory and the construction of Euler numbers to root stacks. In a similar manner, we may extend the definition of $\A^1$ degrees for morphisms of stacks. Then, we can compute the $\A^1$ degrees of covering maps $\pi_\Gamma: \mathcal{M}(\Gamma) \to \mathcal{M}_{1,1}$ considered as morphisms of moduli stacks of elliptic curves with level structures, where $\Gamma$ is any congruence subgroup of $\textrm{SL}_2(\Z)$. Lastly, we may ask how global $\A^1$ degrees of covering maps between coarse moduli schemes and $\A^1$ degrees of covering maps between moduli stacks compare to each other.
+\end{enumerate}
+
+\subsection*{Acknowledgements}
+
+We sincerely thank Jordan Ellenberg for suggesting the problem and patiently giving constructive comments and encouragement to us. We would like to thank Kirsten Wickelgren for giving a very enlightening talk at the 2019 Arizona Winter School on $\A^1$ enumerative geometry, as well as for giving invaluable feedback via email. We would like to thank Libby Taylor and Andrew Kobin for sharing their progress on extending $\A^1$ homotopy theory to root stacks and for giving helpful feedback and discussions via email. The second author would like to thank Junhwa Jung for helpful discussions on calculating traces of Grothendieck-Witt group elements.
+
+Hyun Jong Kim was partially supported by the National Science Foundation Award DMS-1502553. Sun Woo Park was partially supported by National Institute for Mathematical Sciences (NIMS) grant funded by the Korean Government (MSIT) B20810000.
+
+\nocite{*}
+\bibliographystyle{alpha}
+\bibliography{chmix.bbl}
+
+\end{document}

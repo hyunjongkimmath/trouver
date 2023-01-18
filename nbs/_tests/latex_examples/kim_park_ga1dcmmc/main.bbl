@@ -1,0 +1,190 @@
+\begin{thebibliography}{vdGM11}
+
+\bibitem[ADF17]{adf17}
+Aravind Asok, Brent Doran, and Jean Fasel.
+\newblock Smooth models of motivic spheres and the clutching construction.
+\newblock {\em International Mathematics Research Notices}, 2017:1890--1925,
+  2017.
+
+\bibitem[AF18]{af18}
+Aravind Asok and Jean Fasel.
+\newblock Euler class groups and motivic stable cohomotopy.
+\newblock {\em Preprint available at https://arxiv.org/abs/1601.05723}, 2018.
+
+\bibitem[Baa10]{model1}
+Houria Baaziz.
+\newblock Equations for the modular curve $\text{X}_1(\text{N})$ and models of
+  elliptic curves with torsion points.
+\newblock {\em Mathematics of Computation}, 79(272):2371--2386, 2010.
+
+\bibitem[Caz12]{cazanave}
+Christophe Cazanave.
+\newblock Algebraic homotopy classes of rational functions.
+\newblock {\em Ann. Scient. \'{E}c. Norm. Sup.}, 45(4):511--534, 2012.
+
+\bibitem[DI95]{diamondim}
+Fred Diamond and John Im.
+\newblock Modular forms and modular curves.
+\newblock {\em Canadian Mathematical Society Conference Proceedings},
+  17:39--133, 1995.
+
+\bibitem[Elk98]{elkis}
+Noam Elkies.
+\newblock Elliptic and modular curves over finite fields and related
+  computational issues.
+\newblock {\em Computational Perspectives on Number Theory}, pages 21 -- 76,
+  1998.
+
+\bibitem[Gal96]{galbraith}
+Steven~D. Galbraith.
+\newblock Equations for modular curves.
+\newblock {\em Ph.D. thesis, available at
+  https://www.math.auckland.ac.nz/~sgal018/thesis.pdf}, 1996.
+
+\bibitem[GZ86]{gzheegner}
+Benedict~H. Gross and Don~B. Zagier.
+\newblock Heegner points and derivatives of $\text{L}$-series.
+\newblock {\em Inventiones Mathematicae}, 84(2):225--320, 1986.
+
+\bibitem[Har77]{hartshorne}
+Robin Hartshorne.
+\newblock {\em Algebraic Geometry}.
+\newblock Springer, New York, New York, 1977.
+
+\bibitem[Hoy14]{hoyois}
+Marc Hoyois.
+\newblock A quadratic refinement of the $\text{Grothendieck-Lefschetz-Verdier}$
+  trace formula.
+\newblock {\em Algebr. Geom. Topol.}, 14(6):3603--3658, 2014.
+
+\bibitem[Kol89]{kolyvagin}
+Victor Kolyvagin.
+\newblock Finiteness of $\text{E}(\mathbb{Q})$ and
+  $\text{X}(\text{E},\mathbb{Q})$ for a class of weil curves.
+\newblock {\em Math. USSR Izv}, 32(3):523--541, 1989.
+
+\bibitem[Kum78]{ku78}
+N.~Mohan Kumar.
+\newblock On two conjectures about polynomial rings.
+\newblock {\em Inventiones Mathematicae}, pages 225--236, 1978.
+
+\bibitem[KW16]{kwBezout}
+Jesse~Leo Kass and Kirsten Wickelgren.
+\newblock A classical proof that the algebraic homotopy class of a rational
+  function is the residue pairing.
+\newblock {\em Preprint available at https://arxiv.org/abs/1602.08129}, 2016.
+
+\bibitem[KW19]{kwEKL}
+Jesse~Leo Kass and Kirsten Wickelgren.
+\newblock The class of $\text{Eisenbud-Khimshiashvili-Levine}$ is the local
+  $\mathbb{A}^1-\text{Brouwer}$ degree.
+\newblock {\em Duke Mathematical Journal}, 168(3):429--469, 2019.
+
+\bibitem[KW20]{kwcubic}
+Jesse~Leo Kass and Kirsten Wickelgren.
+\newblock An arithmetic count of the lines on a smooth cubic surface.
+\newblock {\em Preprint available at https://arxiv.org/abs/1708.01175. Accepted
+  for publication at Compositio Mathematica}, 2020.
+
+\bibitem[Lev18]{levine}
+Marc Levine.
+\newblock Toward an enumerative geometry with quadratic forms.
+\newblock {\em Preprint available at https://arxiv.org/abs/1703.03049}, 2018.
+
+\bibitem[Maz77]{mazur1}
+Barry Mazur.
+\newblock Modular curves and the $\text{Eisenstein}$ ideal.
+\newblock {\em Publications Mathematiques de l'IHES}, 47(1):33--186, 1977.
+
+\bibitem[Maz78]{mazur2}
+Barry Mazur.
+\newblock Rational isogenies of prime degree, with an appendix by $\text{Dorian
+  Goldfeld}$.
+\newblock {\em Inventiones Mathematicae}, 44(2):129--162, 1978.
+
+\bibitem[McM]{mcmurdy}
+Ken McMurdy.
+\newblock Explicit equations for $\text{X}_0(\text{N})$.
+\newblock {\em Website available at
+  https://phobos.ramapo.edu/~kmcmurdy/research/Models/index.html}.
+
+\bibitem[Mil17]{milne}
+James~S. Milne.
+\newblock Modular functions and modular forms.
+\newblock {\em Course notes available at
+  https://www.jmilne.org/math/CourseNotes/MF.pdf}, 2017.
+
+\bibitem[Mor06]{morel06}
+Fabien Morel.
+\newblock $\mathbb{A}^1$-algebraic topology.
+\newblock {\em Proceedings of the International Congress of Mathematicians},
+  2:1035--1060, 2006.
+
+\bibitem[MV99]{mv}
+Fabien Morel and Vladimir Voevodsky.
+\newblock $\mathbb{A}^1$-homotopy theory of schemes.
+\newblock {\em Publications math\'{e}matiques de l'I.H.\'{E}.S.}, 90:45--143,
+  1999.
+
+\bibitem[OT14]{okotel14}
+Christian Okonek and Andrei Teleman.
+\newblock {Intrinsic signs and lower bounds in real algebraic geometry}.
+\newblock {\em {Journal f{\"u}r die reine und angewandte Mathematik}},
+  (688):219--241, March 2014.
+
+\bibitem[PW20]{pw20}
+Sabrina Pauli and Kirsten Wickelgren.
+\newblock Applications to $\mathbb{A}^1$-enumerative geometry of the
+  $\mathbb{A}^1$-degree.
+\newblock {\em Preprint available at
+  https://services.math.duke.edu/~kgw/papers/Pauli-Wickelgren.pdf}, 2020.
+
+\bibitem[Sai13]{saito}
+Takeshi Saito.
+\newblock {\em Fermat's Last Theorem: Basic Tools}.
+\newblock American Mathematical Soc., Princeton, New Jersey, 2013.
+
+\bibitem[Shi71]{shimura}
+Goro Shimura.
+\newblock {\em Introduction to the arithmetic theory of automorphic functions}.
+\newblock Princeton University Press, Princeton, New Jersey, 1971.
+
+\bibitem[Sil09]{silverman}
+Joseph~H. Silverman.
+\newblock {\em The Arithmetic of Elliptic Curves: 2nd Edition}.
+\newblock Springer, New York, New York, 2009.
+
+\bibitem[Sno11]{snowden}
+Andrew Snowden.
+\newblock Real components of modular curves.
+\newblock {\em Preprint available at https://arxiv.org/abs/1108.3131}, 2011.
+
+\bibitem[SS75]{SS75}
+G.~Scheja and U.~Storch.
+\newblock {\"{U}}ber spurkunktionen bei vollst{\"{a}}ndigen durchschnitten.
+\newblock {\em J. Reine Angew. Math.}, 278/279:174--190, 1975.
+
+\bibitem[TK19]{tkstack}
+Libby Taylor and Andrew Kobin.
+\newblock $\mathbb{A}^1$ local degree via stacks.
+\newblock {\em Preprint available at https://arxiv.org/abs/1911.05955}, 2019.
+
+\bibitem[vdGM11]{vm11}
+Gerard van~der Geer and Ben Moonen.
+\newblock Abelian varieties.
+\newblock {\em Book in Preparation, available at
+  http://page.mi.fu-berlin.de/elenalavanda/BMoonen.pdf}, 2011.
+
+\bibitem[Wic19]{AWS}
+Kirsten Wickelgren.
+\newblock $\mathbb{A}^1$-enumerative geometry.
+\newblock {\em Arizona Winter School 2019: Topology and Arithmetic, Notes
+  available at http://swc.math.arizona.edu/aws/2019/2019WickelgrenNotes.pdf},
+  2019.
+
+\bibitem[Yan06]{model2}
+Yifan Yang.
+\newblock Defining equations of modular curves.
+\newblock {\em Advances in Mathematics}, 204(2):481--508, 2006.
+
+\end{thebibliography}

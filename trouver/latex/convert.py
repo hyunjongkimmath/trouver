@@ -173,7 +173,7 @@ def _search_counters_by_pattern(
         counters[env_name] = counter
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 53
+# %% ../../nbs/16_latex.convert.ipynb 54
 def numberwithins_in_preamble(
         document: str # The LaTeX document
     ) -> dict[str, str]: # The keys are the first arguments of `numberwithin` invocations and the values ar ethe second arguments of `numberwithin` invocations.
@@ -193,7 +193,7 @@ def numberwithins_in_preamble(
 
     return numberwithins
 
-# %% ../../nbs/16_latex.convert.ipynb 57
+# %% ../../nbs/16_latex.convert.ipynb 58
 def display_names_of_environments(
         document: str # The LaTeX document
         ) -> dict[str, str]:  
@@ -236,7 +236,7 @@ def _search_display_names_by_pattern(
         display_names[env_name] = display_name
     return display_names
 
-# %% ../../nbs/16_latex.convert.ipynb 60
+# %% ../../nbs/16_latex.convert.ipynb 61
 def _setup_counters(
         numbertheorem_counters: dict[str, str]
         ) -> dict[str, int]:
@@ -280,7 +280,7 @@ def _setup_counters(
     counters[''] = 0
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 62
+# %% ../../nbs/16_latex.convert.ipynb 63
 def _setup_numberwithins(
         explicit_numberwithins: dict[str, str]
         ) -> dict[str, str]: # The keys are counters and the values are all counters that the key is immediately numbered within.
@@ -327,7 +327,38 @@ def _is_numberedwithin(
         numberwithins[counter_1], counter_2, numberwithins)
 
 
-# %% ../../nbs/16_latex.convert.ipynb 68
+# %% ../../nbs/16_latex.convert.ipynb 65
+def _unnumbered_environments(
+        numbertheorem_counters: dict[str, str],
+        display_names: dict[str, str]) -> set[str]:
+    r"""Return the set of unnumbered theorem-like environments defined by
+    `\newtheorem`.
+    """
+    return {environment for environment in display_names
+            if environment not in numbertheorem_counters}
+
+    
+
+# %% ../../nbs/16_latex.convert.ipynb 67
+def _section_title(
+        text: str
+        ) -> tuple[bool, str]: # The bool is `True` if the section/subsection is numbered (i.e. is `section` or `subsection` as opposed to `section*` or `subsection*`). The `str` is the title of the section or subsection
+    """Return the title of a section or subsection from a latex str
+    and whether or not the section/subsection is numbered"""
+
+    # Note that the `section` command has the optional argument `toc-title` which appears
+    # in the table of contents, cf.
+    # http://latexref.xyz/_005csection.html
+    pattern = regex.compile(
+        r'\\(?:section|subsection)\s*(?:\[.*\])?(\*)?\s*'
+        r'\{((?>[^{}]+|\{(?2)\})*)\}',
+        regex.MULTILINE
+    )
+    regex_search = regex.search(pattern, text)
+    return regex_search.group(1) is None, regex_search.group(2)
+
+
+# %% ../../nbs/16_latex.convert.ipynb 69
 def _is_section_node(node):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
@@ -339,7 +370,7 @@ def _is_subsection_node(node):
 def _is_environment_node(node):
     return node.isNodeType(LatexEnvironmentNode)
 
-# %% ../../nbs/16_latex.convert.ipynb 70
+# %% ../../nbs/16_latex.convert.ipynb 71
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, str]
@@ -352,7 +383,7 @@ def _is_numbered(
     else:
         return False
 
-# %% ../../nbs/16_latex.convert.ipynb 72
+# %% ../../nbs/16_latex.convert.ipynb 73
 def _change_counters(
         node,
         counters,
@@ -395,7 +426,7 @@ def _change_counters(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 73
+# %% ../../nbs/16_latex.convert.ipynb 74
 def get_node_from_simple_text(
         text: str) -> LatexNode:
     """Return the (first) `LatexNode` object from a str."""
@@ -403,7 +434,7 @@ def get_node_from_simple_text(
     nodelist, _, _ = w.get_latex_nodes(pos=0)
     return nodelist[0]
 
-# %% ../../nbs/16_latex.convert.ipynb 76
+# %% ../../nbs/16_latex.convert.ipynb 77
 def _node_numbering(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -447,7 +478,7 @@ def _numbering_helper(
         counters)
     
 
-# %% ../../nbs/16_latex.convert.ipynb 78
+# %% ../../nbs/16_latex.convert.ipynb 79
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -512,7 +543,7 @@ def _title_for_environment_node(
         return f'{display_name} {numbering}.'
         
 
-# %% ../../nbs/16_latex.convert.ipynb 80
+# %% ../../nbs/16_latex.convert.ipynb 81
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
@@ -523,7 +554,7 @@ def swap_numbers_invoked(
     preamble = remove_comments(preamble)
     return '\swapnumbers' in preamble
 
-# %% ../../nbs/16_latex.convert.ipynb 82
+# %% ../../nbs/16_latex.convert.ipynb 83
 def _node_warrants_own_part(
         node, environments_to_not_divide_along: list[str],
         accumulation: str, parts: list[tuple[str, str]]) -> bool:
@@ -550,7 +581,7 @@ def _node_warrants_own_part(
     #     return True
     return node.environmentname not in environments_to_not_divide_along
 
-# %% ../../nbs/16_latex.convert.ipynb 84
+# %% ../../nbs/16_latex.convert.ipynb 85
 def _node_is_proof_immediately_following_a_theorem_like_environment(
         node, accumulation, parts, display_names) -> bool:
     """Return `True` if `node` is that of a proof environment that immediately
@@ -572,7 +603,7 @@ def _node_is_proof_immediately_following_a_theorem_like_environment(
     return previous_node.environmentname in display_names
 
 
-# %% ../../nbs/16_latex.convert.ipynb 86
+# %% ../../nbs/16_latex.convert.ipynb 87
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
     'equation', 'equation*', 'proof', 'align', 'align*', 'enumerate', 'itemize', 'label',
     'eqnarray', 'quote', 'tabular', 'table']
@@ -676,7 +707,7 @@ def _append_non_environment_accumulation_to_parts_if_non_empty(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 105
+# %% ../../nbs/16_latex.convert.ipynb 106
 def _part_is_of_section(
         part: tuple[str, str]):
     """Return `True` if `part` specifies a section, cf. `divide_latex_text`."""
@@ -692,7 +723,7 @@ def _part_is_of_subsection(
     # node = get_node_from_simple_text(part[1])
     # return _is_subsection_node(node)
 
-# %% ../../nbs/16_latex.convert.ipynb 107
+# %% ../../nbs/16_latex.convert.ipynb 108
 def section_and_subsection_titles_from_latex_parts(
         parts: list[tuple[str, str]], # An output of `divide_latex_text`
         # verbose_sections: bool = False, # 
@@ -723,7 +754,7 @@ def _consider_part_to_add(
         
 
 
-# %% ../../nbs/16_latex.convert.ipynb 113
+# %% ../../nbs/16_latex.convert.ipynb 114
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -759,7 +790,7 @@ def custom_commands(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 116
+# %% ../../nbs/16_latex.convert.ipynb 117
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -793,7 +824,7 @@ def _argument_detection(group_num: int):
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 118
+# %% ../../nbs/16_latex.convert.ipynb 119
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -834,7 +865,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 120
+# %% ../../nbs/16_latex.convert.ipynb 121
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -849,7 +880,7 @@ def replace_commands_in_text(
         text = replace_command_in_text(text, command_tuple)
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 122
+# %% ../../nbs/16_latex.convert.ipynb 123
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:
@@ -873,7 +904,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/16_latex.convert.ipynb 126
+# %% ../../nbs/16_latex.convert.ipynb 127
 def adjust_common_syntax_to_markdown(
         text) -> str:
     """
@@ -890,7 +921,7 @@ def adjust_common_syntax_to_markdown(
     text = re.sub(r'(\\end\{(?:align|equation)\*?\})', r'\1$$', text)
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 129
+# %% ../../nbs/16_latex.convert.ipynb 130
 def _replace_custom_commands_in_parts(
         parts: list[tuple[str, str]],
         custom_commands: list[tuple[str, int, Union[str, None], str]]
@@ -905,7 +936,7 @@ def _adjust_common_syntax_to_markdown_in_parts(
     return [(title, adjust_common_syntax_to_markdown(text))
             for title, text in parts]
 
-# %% ../../nbs/16_latex.convert.ipynb 131
+# %% ../../nbs/16_latex.convert.ipynb 132
 def _adjust_common_section_titles_in_parts(
         parts: list[tuple[str, str]],
         reference_name: str):
@@ -940,7 +971,7 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/16_latex.convert.ipynb 133
+# %% ../../nbs/16_latex.convert.ipynb 134
 def _create_notes_from_parts(
         parts: list[tuple[str, str]],
         chapters: list[list[str]],
@@ -1101,7 +1132,7 @@ def _update_links_to_make(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 134
+# %% ../../nbs/16_latex.convert.ipynb 135
 # TODO: test parts without a subsection.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
