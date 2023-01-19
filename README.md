@@ -460,6 +460,19 @@ between modular curves*](https://arxiv.org/abs/2106.10586), along with
 some of Park’s expository writings, to be used in examples in this
 library.
 
+# Release notes
+
+## Ver. 0
+
+#### Ver. 0.0.2
+
+- I made the mistake of note including much of the contents of
+  `index.ipynb` in the `pypi` library release, so that should be fixed..
+
+#### Ver. 0.0.1
+
+- Initial release
+
 [^1]: There is a known bug in the numbering of the sections of the
     paper, cf. [Issue
     \#32](https://github.com/hyunjongkimmath/trouver/issues/32).
