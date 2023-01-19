@@ -7,6 +7,7 @@ trouver
   website](https://sites.google.com/wisc.edu/hyunjongkim)
 - [GitHub repository](https://github.com/hyunjongkimmath/trouver#readme)
 - [Documentation website](https://hyunjongkimmath.github.io/trouver/)
+- [pypi page](https://pypi.org/project/trouver/0.0.1/)
 
 Mathematicians constantly need to learn and read about concepts with
 which they are unfamiliar. Keeping mathematical notes in an
