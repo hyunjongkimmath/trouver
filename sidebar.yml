@@ -21,5 +21,15 @@ website:
           - nbs\14_markdown.obsidian.personal.note_type.ipynb
           - nbs\15_latex.__init__.ipynb
           - nbs\16_latex.convert.ipynb
+          - nbs\17_markdown.obsidian.personal.machine_learning.__init__.ipynb
+          - nbs\18_markdown.obsidian.personal.machine_learning.notations.ipynb
+          - nbs\19_markdown.obsidian.personal.note_processing.ipynb
+          - nbs\20_markdown.obsidian.personal.notation.ipynb
+          - nbs\21_markdown.obsidian.personal.information_notes.ipynb
+          - nbs\22_markdown.obsidian.personal.machine_learninig.database_update.ipynb
+          - nbs\23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb
+          - nbs\24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb
+          - nbs\25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb
           - nbs\TODO.ipynb
+          - nbs\how_to.train_ml_model.fastai.ipynb
           - nbs\using_regex.ipynb
