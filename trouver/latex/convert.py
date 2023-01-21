@@ -121,9 +121,32 @@ def environment_names_used(
             if node.isNodeType(LatexEnvironmentNode)}        
 
 # %% ../../nbs/16_latex.convert.ipynb 45
+def _search_counters_by_pattern(
+        preamble: str,
+        newtheorem_regex: re.Pattern, # This is supposed to be a regex that detects and captures parameters of `\newtheorem` commands.
+        counter_group: int # This depends on which `newtheorem_regex` is used, and is either 3 or 4. 
+        ) -> dict[str, str]: # The 
+    """
+    Capture the newly defined theorem-like environment names as well as the
+    counters that they belong to
+    
+    This is a helper function for `numbered_newtheorems_counters_in_preamble`.
+    
+    """
+    counters = {}
+    for match in newtheorem_regex.finditer(preamble):
+        env_name = match.group(1)
+        counter = match.group(counter_group)
+        # If no counter was specified, use the environment name as the counter
+        if counter is None:
+            counter = env_name
+        counters[env_name] = counter
+    return counters
+
+# %% ../../nbs/16_latex.convert.ipynb 48
 def numbered_newtheorems_counters_in_preamble(
         document: str # The LaTeX document
-        ) -> dict[str, str]: # The keys are the command names of the environments. The values are the counters that the environments belong to, which can be custom defined or predefined in LaTeX.
+        ) -> dict[str, tuple[str, Union[str, None]]]: # The keys are the command names of the environments.  The value a key is a tuple `(<counter>, <reset_by_counter>)`, where `<counter>`` is the counter that the environment belongs to, which can be custom defined or predefined in LaTeX, and `<reset_by_counter>` is a counter whose incrementation resets the # counter of the environment, if available. 
     r"""Return the dict specifying the numbered `\newtheorem` command invocations
 
     Assumes that
@@ -135,9 +158,9 @@ def numbered_newtheorems_counters_in_preamble(
 
     This function does not take into account `numberwithins` being used.
 
-    This function uses two separate regex patterns, one to detect the invocations of `\newtheorem`
-    in which the optional parameter is the second parameter and one to detect those in which
-    the optional parameter is the third parameter.
+    This function uses two separate regex patterns, one to detect the invocations
+    of `\newtheorem` in which the optional parameter is the second parameter and
+    one to detect those in which the optional parameter is the third parameter.
 
 
     """
@@ -145,35 +168,30 @@ def numbered_newtheorems_counters_in_preamble(
     preamble = remove_comments(preamble)
     # TODO: maybe use the `regex` package instead of `re` with a recursive
     # balanced-curly braces detecting regex.
+
+    # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{proposition}[theorem]{Proposition}`
+    # does not match `\newtheorem{theorem}{Theorem}[Section]`
     second_parameter_pattern = re.compile(
         # In this case, the optional parameter (if any) should not follow the newtheorem.
         r'\\newtheorem\s*\{\s*(\w+)\s*\}\s*(\[\s*(\w+)\s*\])?\s*\{\s*(.*)\s*\}(?!\s*\[\s*(\w+)\s*\])')
+    # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{theorem}{Theorem}[Section]`,
+    # does not match `\newtheorem{proposition}[theorem]{Proposition}`
     third_parameter_pattern = re.compile(
         r'\\newtheorem\s*\{\s*(\w+)\s*\}\s*\{\s*(.*)\s*\}\s*(\[\s*(\w+)\s*\])?')
+
+    # TODO: return a dict whose values are tuples.
     second_results = _search_counters_by_pattern(preamble, second_parameter_pattern, 3)
     third_results = _search_counters_by_pattern(preamble, third_parameter_pattern, 4)
-    return second_results | third_results
-    
+    to_return = {}
+    for environment_name, counter in second_results.items():
+        to_return[environment_name] = (counter, None)
+    for environment_name, reset_counter in third_results.items():
+        if environment_name in to_return:
+            continue
+        to_return[environment_name] = (environment_name, reset_counter)
+    return to_return        
 
-def _search_counters_by_pattern(
-        preamble: str,
-        newtheorem_regex: re.Pattern,
-        counter_group: int # This depends on which `newtheorem_regex` is used, and is either 3 or 4. 
-        ) -> dict[str, str]:
-    """
-    Capture the newly defined theorem-like environment names as well as the
-    counters that they belong to"""
-    counters = {}
-    for match in newtheorem_regex.finditer(preamble):
-        env_name = match.group(1)
-        counter = match.group(counter_group)
-        # If no counter was specified, use the environment name as the counter
-        if counter is None:
-            counter = env_name
-        counters[env_name] = counter
-    return counters
-
-# %% ../../nbs/16_latex.convert.ipynb 54
+# %% ../../nbs/16_latex.convert.ipynb 59
 def numberwithins_in_preamble(
         document: str # The LaTeX document
     ) -> dict[str, str]: # The keys are the first arguments of `numberwithin` invocations and the values ar ethe second arguments of `numberwithin` invocations.
@@ -193,15 +211,17 @@ def numberwithins_in_preamble(
 
     return numberwithins
 
-# %% ../../nbs/16_latex.convert.ipynb 58
+# %% ../../nbs/16_latex.convert.ipynb 63
 def display_names_of_environments(
         document: str # The LaTeX document
         ) -> dict[str, str]:  
-    r"""Return the dict specifying the display names for each theorem-like environment.
+    r"""Return the dict specifying the display names for each theorem-like
+    environment.
 
-    This function uses two separate regex patterns, one to detect the invocations of `\newtheorem`
-    in which the optional parameter is the second parameter and one to detect those in which
-    the optional parameter is the third parameter.
+    This function uses two separate regex patterns, one to detect the invocations
+    of `\newtheorem`
+    in which the optional parameter is the second parameter and one to detect
+    those in which the optional parameter is the third parameter.
 
     Assumes that
     - invocations of the `\newtheorem` command are exclusively in the
@@ -211,9 +231,13 @@ def display_names_of_environments(
 
     """
     preamble, _ = divide_preamble(document)
+    # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{proposition}[theorem]{Proposition}`
+    # does not match `\newtheorem{theorem}{Theorem}[Section]`
     second_parameter_pattern = re.compile(
         # In this case, the optional parameter (if any) should not follow the newtheorem.
         r'\\newtheorem\*?\s*\{\s*(\w+\*?)\s*\}\s*(\[\s*(\w+)\s*\])?\s*\{\s*(.*)\s*\}(?!\s*\[\s*(\w+)\s*\])')
+    # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{theorem}{Theorem}[Section]`,
+    # does not match `\newtheorem{proposition}[theorem]{Proposition}`
     third_parameter_pattern = re.compile(
         r'\\newtheorem\*?\s*\{\s*(\w+\*?)\s*\}\s*\{\s*(.*)\s*\}\s*(\[\s*(\w+)\s*\])?')
     second_results = _search_display_names_by_pattern(preamble, second_parameter_pattern, 4)
@@ -236,9 +260,9 @@ def _search_display_names_by_pattern(
         display_names[env_name] = display_name
     return display_names
 
-# %% ../../nbs/16_latex.convert.ipynb 61
+# %% ../../nbs/16_latex.convert.ipynb 67
 def _setup_counters(
-        numbertheorem_counters: dict[str, str]
+        numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         ) -> dict[str, int]:
     r"""
     Return a dict whose keys are of counters in the LaTeX document and whose
@@ -273,17 +297,25 @@ def _setup_counters(
         'enumiii',
         'enumiv']
 
-    counters = {counter: 0 for _, counter in numbertheorem_counters.items()}
+    counters = {counter: 0 for _, (counter, reset_counter) in numbertheorem_counters.items()}
     for counter in predefined_counters:
         counters[counter] = 0
 
     counters[''] = 0
     return counters
 
-# %% ../../nbs/16_latex.convert.ipynb 63
+# %% ../../nbs/16_latex.convert.ipynb 69
 def _setup_numberwithins(
-        explicit_numberwithins: dict[str, str]
+        explicit_numberwithins: dict[str, str],
+        numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`.
         ) -> dict[str, str]: # The keys are counters and the values are all counters that the key is immediately numbered within.
+    """
+    Extracts information of counters that are reset when other counters are
+    incremented.
+
+    This is a helper function of `_setup_all_numberwithins` as well as
+    `divide_latex_text`.
+    """
     builtin_numberwithins = {
         'subsection': 'section',
         'subsubsection': 'subsection',
@@ -296,14 +328,23 @@ def _setup_numberwithins(
         'appendix': 'chapter'
     }
     numberwithins = explicit_numberwithins | builtin_numberwithins
+
+    for environmentname, (counter, reset_by_counter) in numbertheorem_counters.items():
+        if reset_by_counter is None:
+            continue
+        numberwithins[environmentname] = reset_by_counter
     return numberwithins
 
     
 
 def _setup_all_numberwithins(
-        explicit_numberwithins: dict[str, str]
+        explicit_numberwithins: dict[str, str],
+        numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`.
         ) -> dict[str, list[str]]: # The keys are counters and the values are all counters that the key is numbered within.
-    numberwithins = _setup_numberwithins(explicit_numberwithins) 
+    """
+    This is a helper function of `divide_latex_text`.
+    """
+    numberwithins = _setup_numberwithins(explicit_numberwithins, numbertheorem_counters)
     all_counters = set()
     for key, value in numberwithins.items():
         all_counters.add(key)
@@ -327,19 +368,21 @@ def _is_numberedwithin(
         numberwithins[counter_1], counter_2, numberwithins)
 
 
-# %% ../../nbs/16_latex.convert.ipynb 65
+# %% ../../nbs/16_latex.convert.ipynb 71
 def _unnumbered_environments(
-        numbertheorem_counters: dict[str, str],
+        numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         display_names: dict[str, str]) -> set[str]:
     r"""Return the set of unnumbered theorem-like environments defined by
     `\newtheorem`.
+
+    This is a helper function of `divide_latex_text`.
     """
     return {environment for environment in display_names
             if environment not in numbertheorem_counters}
 
     
 
-# %% ../../nbs/16_latex.convert.ipynb 67
+# %% ../../nbs/16_latex.convert.ipynb 73
 def _section_title(
         text: str
         ) -> tuple[bool, str]: # The bool is `True` if the section/subsection is numbered (i.e. is `section` or `subsection` as opposed to `section*` or `subsection*`). The `str` is the title of the section or subsection
@@ -358,7 +401,7 @@ def _section_title(
     return regex_search.group(1) is None, regex_search.group(2)
 
 
-# %% ../../nbs/16_latex.convert.ipynb 69
+# %% ../../nbs/16_latex.convert.ipynb 75
 def _is_section_node(node):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
@@ -370,7 +413,7 @@ def _is_subsection_node(node):
 def _is_environment_node(node):
     return node.isNodeType(LatexEnvironmentNode)
 
-# %% ../../nbs/16_latex.convert.ipynb 71
+# %% ../../nbs/16_latex.convert.ipynb 77
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, str]
@@ -383,7 +426,7 @@ def _is_numbered(
     else:
         return False
 
-# %% ../../nbs/16_latex.convert.ipynb 73
+# %% ../../nbs/16_latex.convert.ipynb 79
 def _change_counters(
         node,
         counters,
@@ -396,7 +439,7 @@ def _change_counters(
     # Take into consideration unnumbered environment node
     if _is_environment_node(node):
         if node.environmentname in numbertheorem_counters:
-           counter = numbertheorem_counters[node.environmentname] 
+           counter = numbertheorem_counters[node.environmentname][0]
         else:
             counter = None
     elif _is_section_node(node):
@@ -426,7 +469,7 @@ def _change_counters(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 74
+# %% ../../nbs/16_latex.convert.ipynb 80
 def get_node_from_simple_text(
         text: str) -> LatexNode:
     """Return the (first) `LatexNode` object from a str."""
@@ -434,7 +477,7 @@ def get_node_from_simple_text(
     nodelist, _, _ = w.get_latex_nodes(pos=0)
     return nodelist[0]
 
-# %% ../../nbs/16_latex.convert.ipynb 77
+# %% ../../nbs/16_latex.convert.ipynb 83
 def _node_numbering(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -446,7 +489,7 @@ def _node_numbering(
     elif _is_subsection_node(node):
         counter = 'subsection'
     elif _is_environment_node(node):
-        counter = numbertheorem_counters[node.environmentname]
+        counter = numbertheorem_counters[node.environmentname][0]
     return _numbering_helper('', counter, numberwithins, counters)
 
 
@@ -478,7 +521,7 @@ def _numbering_helper(
         counters)
     
 
-# %% ../../nbs/16_latex.convert.ipynb 79
+# %% ../../nbs/16_latex.convert.ipynb 85
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -543,7 +586,7 @@ def _title_for_environment_node(
         return f'{display_name} {numbering}.'
         
 
-# %% ../../nbs/16_latex.convert.ipynb 81
+# %% ../../nbs/16_latex.convert.ipynb 87
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
@@ -554,7 +597,7 @@ def swap_numbers_invoked(
     preamble = remove_comments(preamble)
     return '\swapnumbers' in preamble
 
-# %% ../../nbs/16_latex.convert.ipynb 83
+# %% ../../nbs/16_latex.convert.ipynb 89
 def _node_warrants_own_part(
         node, environments_to_not_divide_along: list[str],
         accumulation: str, parts: list[tuple[str, str]]) -> bool:
@@ -581,7 +624,7 @@ def _node_warrants_own_part(
     #     return True
     return node.environmentname not in environments_to_not_divide_along
 
-# %% ../../nbs/16_latex.convert.ipynb 85
+# %% ../../nbs/16_latex.convert.ipynb 91
 def _node_is_proof_immediately_following_a_theorem_like_environment(
         node, accumulation, parts, display_names) -> bool:
     """Return `True` if `node` is that of a proof environment that immediately
@@ -603,7 +646,7 @@ def _node_is_proof_immediately_following_a_theorem_like_environment(
     return previous_node.environmentname in display_names
 
 
-# %% ../../nbs/16_latex.convert.ipynb 87
+# %% ../../nbs/16_latex.convert.ipynb 93
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
     'equation', 'equation*', 'proof', 'align', 'align*', 'enumerate', 'itemize', 'label',
     'eqnarray', 'quote', 'tabular', 'table']
@@ -628,8 +671,8 @@ def divide_latex_text(
     """
     numbertheorem_counters = numbered_newtheorems_counters_in_preamble(document)
     explicit_numberwithins = numberwithins_in_preamble(document)
-    numberwithins = _setup_numberwithins(explicit_numberwithins)
-    all_numberwithins = _setup_all_numberwithins(explicit_numberwithins)
+    numberwithins = _setup_numberwithins(explicit_numberwithins, numbertheorem_counters)
+    all_numberwithins = _setup_all_numberwithins(explicit_numberwithins, numbertheorem_counters)
     # environments_to_counters = counters_for_environments(document)
     display_names = display_names_of_environments(document)
     counters = _setup_counters(numbertheorem_counters)
@@ -707,7 +750,7 @@ def _append_non_environment_accumulation_to_parts_if_non_empty(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 106
+# %% ../../nbs/16_latex.convert.ipynb 113
 def _part_is_of_section(
         part: tuple[str, str]):
     """Return `True` if `part` specifies a section, cf. `divide_latex_text`."""
@@ -723,7 +766,7 @@ def _part_is_of_subsection(
     # node = get_node_from_simple_text(part[1])
     # return _is_subsection_node(node)
 
-# %% ../../nbs/16_latex.convert.ipynb 108
+# %% ../../nbs/16_latex.convert.ipynb 115
 def section_and_subsection_titles_from_latex_parts(
         parts: list[tuple[str, str]], # An output of `divide_latex_text`
         # verbose_sections: bool = False, # 
@@ -754,7 +797,7 @@ def _consider_part_to_add(
         
 
 
-# %% ../../nbs/16_latex.convert.ipynb 114
+# %% ../../nbs/16_latex.convert.ipynb 121
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -790,7 +833,7 @@ def custom_commands(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 117
+# %% ../../nbs/16_latex.convert.ipynb 124
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -824,7 +867,7 @@ def _argument_detection(group_num: int):
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 119
+# %% ../../nbs/16_latex.convert.ipynb 126
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -865,7 +908,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 121
+# %% ../../nbs/16_latex.convert.ipynb 128
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -880,7 +923,7 @@ def replace_commands_in_text(
         text = replace_command_in_text(text, command_tuple)
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 123
+# %% ../../nbs/16_latex.convert.ipynb 130
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:
@@ -904,7 +947,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/16_latex.convert.ipynb 127
+# %% ../../nbs/16_latex.convert.ipynb 134
 def adjust_common_syntax_to_markdown(
         text) -> str:
     """
@@ -914,14 +957,14 @@ def adjust_common_syntax_to_markdown(
     Assumes that the tokens for math mode delimiters (e.g. `\( \)` and `\[ \]`)
     are not used otherwise.
     """
-    # TODO
+    # TODO: see if I need to add more substitutions.
     text = re.sub(r'\\\(|\\\)', '$', text)
     text = re.sub(r'\\\[|\\]', '$$', text)
     text = re.sub(r'(\\begin\{(?:align|equation)\*?\})', r'$$\1', text)
     text = re.sub(r'(\\end\{(?:align|equation)\*?\})', r'\1$$', text)
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 130
+# %% ../../nbs/16_latex.convert.ipynb 137
 def _replace_custom_commands_in_parts(
         parts: list[tuple[str, str]],
         custom_commands: list[tuple[str, int, Union[str, None], str]]
@@ -936,7 +979,7 @@ def _adjust_common_syntax_to_markdown_in_parts(
     return [(title, adjust_common_syntax_to_markdown(text))
             for title, text in parts]
 
-# %% ../../nbs/16_latex.convert.ipynb 132
+# %% ../../nbs/16_latex.convert.ipynb 139
 def _adjust_common_section_titles_in_parts(
         parts: list[tuple[str, str]],
         reference_name: str):
@@ -971,7 +1014,7 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/16_latex.convert.ipynb 134
+# %% ../../nbs/16_latex.convert.ipynb 141
 def _create_notes_from_parts(
         parts: list[tuple[str, str]],
         chapters: list[list[str]],
@@ -1132,7 +1175,7 @@ def _update_links_to_make(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 135
+# %% ../../nbs/16_latex.convert.ipynb 142
 # TODO: test parts without a subsection.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
