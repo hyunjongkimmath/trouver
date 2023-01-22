@@ -3,22 +3,23 @@
 # %% auto 0
 __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'notation_summarization_data_from_note',
            'gather_notation_note_summaries', 'append_to_notation_note_summarization_database', 'single_input',
-           'append_column_for_single_text', 'summarize_notation', 'fix_summary_formatting',
+           'append_column_for_single_text', 'fix_summary_formatting', 'summarize_notation',
            'append_summary_to_notation_note']
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 3
 import os
 from os import PathLike
-from typing import Union
+import re
+from typing import Optional, Union
 
 import pandas as pd
-from transformers import pipeline
+from transformers import pipeline, pipelines
 
 from .....helper import current_time_formatted_to_minutes
-from ....markdown.file import MarkdownFile
+from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from .database_update import append_to_database
 from ..note_processing import process_standard_information_note
-from ..notation import parse_notation_note
+from ..notation import parse_notation_note, main_of_notation
 from ..note_type import note_is_of_type
 from ...vault import VaultNote
 
@@ -329,10 +330,30 @@ def append_column_for_single_text(
     df["Single text"] = single_text_column
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 42
+def fix_summary_formatting(
+        summary: str
+        ) -> str:
+    """Fix some latex formatting issues in a summarized text
+    """
+    summary = summary.replace(r'\ ', '\\')
+    summary = summary.replace(r'{ ', r'{')
+    summary = summary.replace(r' }', r'}')
+    summary, _ = re.subn(r'\$\s*([^\$]+?)\s*\$', r'$\1$', summary)
+    # TODO: do $ <latex_string> $ into $<latex_stinrg>$
+    # TODO: if the replacement of r'\ ' by '\\' happesn to
+    # make `\` stick to the previous chunk of things
+    # (e.g. r'd\in\mathbb{Z}_{\geq 0}`, then give it some
+    # space, e.g. r'd \in \mathbb{Z}_{\geq 0}'.
+    return summary
+
+
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 46
 def summarize_notation(
         main_content: str,
         latex_in_original: str,
-        summarizer,
+        summarizer: pipelines.text2text_generation.SummarizationPipeline,
+        fix_formatting: bool = True, # If `True`, run `fix_summary_formatting` on `summarizer`'s summary before retuning it.
         ) -> str:
     """Summarize a notation introduced in a mathematical text using
     a huggingface pipeline.
@@ -343,43 +364,32 @@ def summarize_notation(
     """
     summarizer_output = summarizer(
         single_input(main_content, latex_in_original))
-    return summarizer_output[0]['summary_text']
-
-
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 44
-def fix_summary_formatting(
-        summary: str
-        ) -> str:
-    """Fix some latex formatting issues in a summarized text
-    """
-    summary = summary.replace(r'\ ', '\\')
-    summary = summary.replace(r'{ ', r'{')
-    # TODO: do $ <latex_string> $ into $<latex_stinrg>$
-    # TODO: if the replacement of r'\ ' by '\\' happesn to
-    # make `\` stick to the previous chunk of things
-    # (e.g. r'd\in\mathbb{Z}_{\geq 0}`, then give it some
-    # space, e.g. r'd \in \mathbb{Z}_{\geq 0}'.
+    summary = summarizer_output[0]['summary_text']
+    if fix_formatting:
+        summary = fix_summary_formatting(summary)
     return summary
 
-
-
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 48
 def append_summary_to_notation_note(
-        main_note: VaultNote,
         notation_note: VaultNote,
         vault: PathLike,
-        summarizer
+        summarizer: pipelines.text2text_generation.SummarizationPipeline,
+        main_note: Optional[VaultNote] = None # The main note from which the notation comes from. If this is `None`, then the `main_note` is obtained via the `main_of_notation` function.
     ) -> None:
     """Summarize a notation introduced in a mathematical text
     using a huggingface pipeline and append said summarization to
     `notation_note`.
 
+    If `main_note` is `None` and no main note of `notation_note` can
+    be determined via the `main_of_notation` function, then the
+    summarization does not happen.
+
     If `notation_note` does not have a YAML frontmatter meta or
     does not have a `latex_in_original` field in its YAML frontmatter
     meta, then the actual notation is used as the `latex_in_original`.
 
-    If `notation_note` already has some content,
-    then it is ignored.
+    If `notation_note` already has some content, then the
+    summarization does not happen.
 
     If an auto-generated summary is appended, then this function
     adds an `_auto/notation_summary` tag to the notation note's
@@ -397,23 +407,48 @@ def append_summary_to_notation_note(
       tag to indicate that the summary is appropriate to be added
       to the note summarization database.
     """
-    metadata, notation_str, main_of_notation, main_mf, _ = parse_notation_note(notation_note, vault)
 
-    latex_in_original = get_latex_in_original_from_parsed_notation_note_data(
-        metadata, notation_str)
-    
-    main_mf = MarkdownFile.from_vaultNote(main_note)
+    metadata, notation_str, _, notation_note_content_mf, _\
+        = parse_notation_note(notation_note, vault)
+    if main_note is None:
+        main_note = main_of_notation(notation_note, as_note=True)
+
+    if main_note is None:
+        return
+    main_mf = MarkdownFile.from_vault_note(main_note)
     process_standard_information_note(main_mf, vault)
-    main_content = str(main_mf)
-    if len(main_content.strip()) != 0:
+    notation_note_content = str(notation_note_content_mf)
+    if len(notation_note_content.strip()) != 0:
         # TODO: warn that the notation note already had
         # contents, so no new ones were added.
         return
-    summarization = summarize_notation(
-        main_content, latex_in_original, summarizer)
-    summarization = fix_summary_formatting(summarization)
-    # TODO Append to notation note
-    # TODO add _auto/notation_summary tag
+    summary = _get_summary(metadata, notation_str, main_mf, summarizer)
+    _write_summary_to_notation_note(notation_note, summary)
+
+
+def _get_summary(
+        metadata, notation_str, main_mf, summarizer) -> str:
+    """
+    This is a helper function of `append_summary_to_notation_note`.
+    """
+    latex_in_original = get_latex_in_original_from_parsed_notation_note_data(
+        metadata, notation_str)
+    summary = summarize_notation(main_mf, latex_in_original, summarizer)
+    return summary
+
+
+def _write_summary_to_notation_note(
+        notation_note: VaultNote, summary: str) -> None:
+    """
+    This is a helper function of `append_summary_to_notation_note`.
+    """
+    notation_note_mf = MarkdownFile.from_vault_note(notation_note)
+    notation_note_mf.parts[-1]['line'] += summary
+    # notation_note_mf.add_line_to_end({
+    #     'type': MarkdownLineEnum.DEFAULT, 'line': summarization})
+    notation_note_mf.add_tags(['_auto/notation_summary'])
+    notation_note_mf.write(notation_note)
+
+
+
     
-
-

@@ -7,7 +7,7 @@ trouver
   website](https://sites.google.com/wisc.edu/hyunjongkim)
 - [GitHub repository](https://github.com/hyunjongkimmath/trouver#readme)
 - [Documentation website](https://hyunjongkimmath.github.io/trouver/)
-- [pypi page](https://pypi.org/project/trouver/0.0.1/)
+- [pypi page](https://pypi.org/project/trouver/)
 
 Mathematicians constantly need to learn and read about concepts with
 which they are unfamiliar. Keeping mathematical notes in an
@@ -451,6 +451,13 @@ which among other things runs `nbdev_export`.).
   folders will not be pushed in GitHub and the tests in GitHub Actions
   may yield different results than in a local computer.
 
+# Copyright
+
+Copyright © 2019 onward Hyun Jong Kim. Licensed under the Apache
+License, Version 2.0 (the “License”); you may not use this project’s
+files except in compliance with the License. A copy of the License is
+provided in the LICENSE file in this repository.
+
 # Special Thanks
 
 The author of `trouver` thanks [Sun Woo
@@ -459,6 +466,9 @@ their coauthored paper, [*Global $\mathbb{A}^1$-degrees covering maps
 between modular curves*](https://arxiv.org/abs/2106.10586), along with
 some of Park’s expository writings, to be used in examples in this
 library.
+
+`trouver` was built using [`nbdev`](https://nbdev.fast.ai/) as a
+template.
 
 # Release notes
 

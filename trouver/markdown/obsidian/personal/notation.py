@@ -291,6 +291,7 @@ def main_of_notation(
         - If the notation note is not formatted correctly by starting
         with the notation with dollar signs `$`.
     """
+    vault = notation_note.vault
     _, _, main_note_name, _, _ = parse_notation_note(notation_note, vault)
     if main_note_name is None:
         return None
