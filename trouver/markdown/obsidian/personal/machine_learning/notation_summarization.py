@@ -370,6 +370,25 @@ def summarize_notation(
     return summary
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 48
+def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
+    """Escape the `latex_in_original` field in the metadata.
+    
+    Assumes that `notation_mf` is a MarkdownFile object derived
+    from a notation note.
+    """
+    metadata = notation_mf.metadata()
+    if not 'latex_in_original' in metadata:
+        return
+    latex_in_original = metadata['latex_in_original']
+    latex_in_original = [
+        _enquote(raw_notation.replace('\\', '\\\\'))
+        for raw_notation in latex_in_original]
+    metadata['latex_in_original'] = latex_in_original
+    notation_mf.replace_metadata(metadata)
+
+
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 50
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
@@ -438,15 +457,17 @@ def _get_summary(
 
 
 def _write_summary_to_notation_note(
-        notation_note: VaultNote, summary: str) -> None:
+        notation_note: VaultNote, summary: str, ) -> None:
     """
     This is a helper function of `append_summary_to_notation_note`.
+
+    
     """
     notation_note_mf = MarkdownFile.from_vault_note(notation_note)
     notation_note_mf.parts[-1]['line'] += summary
-    # notation_note_mf.add_line_to_end({
-    #     'type': MarkdownLineEnum.DEFAULT, 'line': summarization})
     notation_note_mf.add_tags(['_auto/notation_summary'])
+
+    # _escape_latex_in_original_in_metadata(notation_note_mf)
     notation_note_mf.write(notation_note)
 
 
