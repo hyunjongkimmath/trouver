@@ -51,23 +51,47 @@ def find_front_matter_meta_in_markdown_text(
 
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 11
+def _enquote(str):
+    return f'"{str}"'
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 13
 def dict_to_metadata_lines(
         data: dict[str, Union[str, list[str]]] # The keys are str of the labels/names of the metadata. The values are the metadata, which are usually str or list.
         ) -> list[str]: # Each str entry is the line for the yaml frontmatter metadata of an Obsidian Markdown note.
     """
     Convert a dict to a list of str of yaml frontmatter metadata
     that Obsidian recognizes.
+
+    This function is used in `MarkdownFile.replace_metadata`.
     
     **Returns**
     - list[str]
     """
+    # lines = []
+    # for key, value in data.items():
+    #     value = '[' + ', '.join(value) + ']' if isinstance(value, list) else value
+    #     lines.append(f'{key}: {value}')
+    # return lines
+
     lines = []
     for key, value in data.items():
-        value = '[' + ', '.join(value) + ']' if isinstance(value, list) else value
+        if isinstance(value, list):
+            _add_line_for_list(lines, key, value)
+            continue
         lines.append(f'{key}: {value}')
     return lines
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 15
+def _add_line_for_list(
+        lines: list[str], key: str, list_value: list):
+    """This is a helper function for `dict_to_metadata_lines`."""
+    escaped_strings_in_list_value = [
+        _enquote(single_value.replace('\\', '\\\\'))
+        if isinstance(single_value, str) and ('\\' in single_value or '{' in single_value)
+        else single_value
+        for single_value in list_value]
+    lines.append(f"{key}: [{', '.join(escaped_strings_in_list_value)}]")
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 20
 def replace_embedded_links_with_text(
         text: str, vault: PathLike) -> str:
     """
@@ -95,7 +119,7 @@ def replace_embedded_links_with_text(
         text = text[:start] + replace + text[end:]
     return text
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 17
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 22
 class MarkdownLineEnum(Enum):
     # See https://www.markdownguide.org/basic-syntax/
     DEFAULT = 0
@@ -115,7 +139,7 @@ class MarkdownLineEnum(Enum):
     DISPLAY_LATEX_END = 14  # End line of DISPLAY latex
     DISPLAY_LATEX = 15  # All other DISPLAY latex lines
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 20
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 25
 class MarkdownFile:
     r"""
     Parses and represents the contents of an Obsidian styled Markdown
@@ -447,7 +471,11 @@ class MarkdownFile:
         # TODO: change the Exception to some kind of yaml format exception.
         """
         Return the frontmatter metadata as a dict.
-        
+
+        Writing the metadata read with this function can be faulty if
+        the metadata attempts to escape characters that cannot be read by
+        YAML; the escapes are not preserved upon writing.
+
         **Raises**
 
         - ValueError
@@ -465,6 +493,8 @@ class MarkdownFile:
                 "There is invalid YAML formatting in a MarkdownFile object."
                 " The following is its text:\n"
                 f"{str(self)}\n\n") from e
+        # try:
+        #     return ruamel.yaml.load()
             
     def has_metadata(self) -> bool:
         """
