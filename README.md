@@ -57,7 +57,7 @@ by the `fast.ai` and/or `Hugging Face` libraries.
 which are convenient to read in `Obsidian.md` and to take notes on. For
 example, the following code splits up this
 [paper](https://arxiv.org/abs/2106.10586) in creates a folder in an
-Obsidian.md vault[^1].
+Obsidian.md vault\[^4\].
 
 ``` python
 import os
@@ -95,8 +95,8 @@ with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_di
         reference_name,
         author_names)
 
-    os.startfile(os.getcwd()) # This open the current working directory; find the temporary folder in here.
-    input() # There should be an input prompt; make an input here when you are done viewing the
+    # os.startfile(os.getcwd()) # This open the current working directory; find the temporary folder in here.
+    # input() # There should be an input prompt; make an input here when you are done viewing the
 ```
 
 ![The created folder in Obsidian.md looks like this in `Obsidian.md` The
@@ -121,7 +121,7 @@ downloads such models to can vary from machine to machine.
 
 For each of these models, we may or may not have also written some
 instructions on how to train similar models given appropriately
-formatted data[^2].
+formatted data[^1].
 
 Note that the data used to train these models contains mathematical text
 pertaining mostly to fields closely related to number theory and
@@ -181,14 +181,6 @@ else:
 
     Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
 
-    Downloading:   0%|          | 0.00/1.38k [00:00<?, ?B/s]
-
-    Downloading:   0%|          | 0.00/768 [00:00<?, ?B/s]
-
-    Downloading:   0%|          | 0.00/166M [00:00<?, ?B/s]
-
-    Downloading:   0%|          | 0.00/162 [00:00<?, ?B/s]
-
 ``` python
 sample_prediction_1 = model.predict(r'Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.')
 print(sample_prediction_1) 
@@ -196,10 +188,43 @@ sample_prediction_2 = model.predict(r'Theorem. Let $q$ be a prime power. Up to i
 print(sample_prediction_2)
 ```
 
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
     (['#_meta/definition', '#_meta/notation'], tensor([False, False, False, False, False, False,  True, False, False, False,
              True, False, False, False]), tensor([1.9631e-03, 3.4931e-04, 1.7551e-02, 4.8163e-02, 5.7628e-06, 3.0610e-06,
             9.6544e-01, 2.3179e-03, 2.4539e-03, 1.6170e-02, 5.8807e-01, 4.5185e-03,
             2.5055e-04, 4.6183e-03]))
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
     (['#_meta/concept', '#_meta/proof'], tensor([False, False, False,  True, False, False, False, False, False, False,
             False,  True, False, False]), tensor([3.4701e-03, 6.6588e-05, 7.8861e-02, 9.7205e-01, 8.8357e-06, 6.1183e-06,
             9.5552e-02, 4.0747e-03, 2.7043e-04, 2.7545e-02, 1.3064e-02, 5.6198e-01,
@@ -309,7 +334,40 @@ print(contains_a_notation)
 print(does_not_contain_a_notation)
 ```
 
-    ('True', tensor(1), tensor([9.0574e-08, 1.0000e+00]))                
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+    ('True', tensor(1), tensor([9.0574e-08, 1.0000e+00]))
     ('False', tensor(0), tensor([1.0000e+00, 4.8617e-06]))
 
 ``` python
@@ -349,6 +407,12 @@ latex_in_original: $<notation_to_summarize>$
 ```
 
 ``` python
+type(summarizer)
+```
+
+    transformers.pipelines.text2text_generation.SummarizationPipeline
+
+``` python
 summarizer("summarize:Let us now define the upper half plane $\mathbb{H}$ as the set of all complex numbers of real part greater than $1$.\n\n\nlatex_in_original: $\mathbb{H}$")
 ```
 
@@ -374,11 +438,11 @@ examples demonstrating how one might use them.
 These examples are usually also tests of the functions/methods; the
 developer of this library can use `nbdev`’s
 [`nbdev_test`](https://nbdev.fast.ai/api/test.html#nbdev_test)
-command-line command to automatically run these tests[^3][^4]. Moreover,
+command-line command to automatically run these tests[^2][^3]. Moreover,
 there is a GitHub workflow in the repository for this library (see the
 `.github/workflows/test.yaml`) which automatically runs these
 examples/tests on GitHub Actions when changes to are [committed to the
-GitHub repository](https://github.com/git-guides/git-commit)[^5].
+GitHub repository](https://github.com/git-guides/git-commit)[^4].
 
 These examples may use a combination of the following:
 
@@ -387,7 +451,7 @@ These examples may use a combination of the following:
   library.
 - The [`fastcore.test`](https://fastcore.fast.ai/test.html) module as
   assertion statements.
-- example/test files in the `nbs/_tests` folder in the repository[^6].
+- example/test files in the `nbs/_tests` folder in the repository[^5].
   - The `_test_directory()` function in the `helper` module obtains this
     folder.
   - Many of these examples also use the
@@ -474,6 +538,28 @@ template.
 
 ## Ver. 0
 
+#### Ver. 0.0.3
+
+- Fixed [issue \#
+  32](https://github.com/hyunjongkimmath/trouver/issues/32) in which
+  setting up an `Obsidian.md` vault folder from a LaTeX document was not
+  numbering sections and theorem-like environments correctly with a
+  theorem-like environment of the form
+  `\numbertheorem{theorem}{Theorem}[section]` was being defined.
+- Finished implementing `append_summary_to_notation_note`
+- Modified `dict_to_metadata` function to escape and enquote strings if
+  necessary to take into consideration that `yaml.safe_load` does uses
+  quotations to consider strings as escaped.
+- Fixed a bug in `notation_notes_linked_in_see_also_section` where the
+  main of notation where the `VaultNote` objects were incorrectly
+  constructed by passing an argument to the `rel_path` parameter as
+  opposed to the `name` parameter.
+- Fixed a bug in `_obsidian_vault_plugin_configs_file`; I had realized
+  that files for non-core `Obsidian.md` plugins are stored in
+  `.obsidian/plugins/<plugin_name>` in the vault directory.
+- Changed the default `template_location` argument from `'.'` to `'/'`
+  in `markdown.obsidian.personal.reference`.
+
 #### Ver. 0.0.2
 
 - I made the mistake of note including much of the contents of
@@ -483,30 +569,26 @@ template.
 
 - Initial release
 
-[^1]: There is a known bug in the numbering of the sections of the
-    paper, cf. [Issue
-    \#32](https://github.com/hyunjongkimmath/trouver/issues/32).
-
-[^2]: Given time, the author of `trouver` eventually plans on writing
+[^1]: Given time, the author of `trouver` eventually plans on writing
     instructions on training each of the models.
 
-[^3]: cf. [nbdev’s End-To-End
+[^2]: cf. [nbdev’s End-To-End
     Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-examples-tests-and-docs)
     to see how to use `nbdev_test`
 
-[^4]: There are also tests which are hidden from the documentation
+[^3]: There are also tests which are hidden from the documentation
     website; one can find these tests in the jupyter notebook files in
     the `nbs` folder in the repository for this library as notebook
     cells marked with the `#| hide` flag, cf. [nbdev’s End-to-End
     Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-frontmatter)
     to see what the `#| hide` flag does.
 
-[^5]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+[^4]: The `.github/workflows/test.yaml` GitHub workflow file is set up
     in such a way that that allows GitHub Actions to access/use the
     contents of the `nbs/_tests` directory upon running the
     tests/examples.
 
-[^6]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+[^5]: The `.github/workflows/test.yaml` GitHub workflow file is set up
     in such a way that that allows GitHub Actions to access/use the
     contents of the `nbs/_tests` directory upon running the
     tests/examples.
