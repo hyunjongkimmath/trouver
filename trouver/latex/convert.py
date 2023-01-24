@@ -18,6 +18,7 @@ from pathlib import Path
 import re
 from typing import Optional, Union
 
+from pathvalidate import sanitize_filename
 from pylatexenc import latexwalker, latex2text
 from pylatexenc.latexwalker import (
     LatexWalker, LatexEnvironmentNode, get_default_latex_context_db,
@@ -398,7 +399,9 @@ def _section_title(
         regex.MULTILINE
     )
     regex_search = regex.search(pattern, text)
-    return regex_search.group(1) is None, regex_search.group(2)
+    is_numbered = regex_search.group(1) is None
+    title = regex_search.group(2)
+    return is_numbered, title
 
 
 # %% ../../nbs/16_latex.convert.ipynb 75
@@ -1014,7 +1017,7 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/16_latex.convert.ipynb 141
+# %% ../../nbs/16_latex.convert.ipynb 142
 def _create_notes_from_parts(
         parts: list[tuple[str, str]],
         chapters: list[list[str]],
@@ -1129,7 +1132,7 @@ def _create_note_for_part(
         current_subsection: str
         ) -> VaultNote: # The created VaultNote.
     """Create a note for the part"""
-    note_title = part[0]
+    note_title = sanitize_filename(part[0])
     note_contents = part[1]
     mf = template_mf.copy(True)
     mf.add_line_in_section(
@@ -1175,7 +1178,7 @@ def _update_links_to_make(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 142
+# %% ../../nbs/16_latex.convert.ipynb 143
 # TODO: test parts without a subsection.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
