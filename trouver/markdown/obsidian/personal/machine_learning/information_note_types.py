@@ -202,7 +202,7 @@ def automatically_add_note_type_tags(
         raise ValueError(
             f"`overwrite` was expected to be 'w', 'a', or None," 
             f" but was {overwrite}")
-    predictions = predict_note_types(learn, notes)
+    predictions = predict_note_types(learn, vault, notes)
     # remove hashtags
     predictions = [[tag[1:] if tag.startswith('#') else tag for tag in tags]
                    for tags in predictions]
