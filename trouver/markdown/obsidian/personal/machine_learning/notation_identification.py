@@ -236,7 +236,9 @@ def _get_notation_indices_to_add(
     """Used in `automatically_add_notations`"""
     to_test = [add_one_double_asts_to_line(no_double_asts, start, end)
                        for start, end, is_notat in index_data if not is_notat]
-    predictions = [learn.predict(one_double_ast) for one_double_ast in to_test]
+    with learn.no_bar(), learn.no_logging():
+        predictions = [learn.predict(one_double_ast)
+                       for one_double_ast in to_test]
     notations_to_add = [
         (start, end) for (start, end, is_notat), prediction
         in zip(index_data, predictions) if is_notat or prediction[0] == 'True']

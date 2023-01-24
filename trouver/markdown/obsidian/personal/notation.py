@@ -2,10 +2,10 @@
 
 # %% auto 0
 __all__ = ['CHARACTER_ORDERING_LIST', 'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE',
-           'SPECIAL_CHARACTERS', 'replaceable_groups', 'REPLACEABLES', 'latex_to_path_accepted_string',
-           'parse_notation_note', 'notation_in_note', 'main_of_notation', 'notation_str_in_a_standard_information_note',
-           'notation_notes_linked_in_see_also_section', 'notations_and_main_notes',
-           'notation_note_is_linked_in_see_also_section', 'add_notation_note_to_see_also',
+           'MAX_NOTE_NAME_LENGTH', 'SPECIAL_CHARACTERS', 'replaceable_groups', 'REPLACEABLES',
+           'latex_to_path_accepted_string', 'parse_notation_note', 'notation_in_note', 'main_of_notation',
+           'notation_str_in_a_standard_information_note', 'notation_notes_linked_in_see_also_section',
+           'notations_and_main_notes', 'notation_note_is_linked_in_see_also_section', 'add_notation_note_to_see_also',
            'add_missing_notation_links_to_information_notes', 'notations_to_add_in_index',
            'index_notation_note_formatted_entry', 'make_a_notation_note', 'make_notation_notes_from_double_asts',
            'regex_from_latex', 'regex_from_notation_note']
@@ -336,12 +336,12 @@ def notation_notes_linked_in_see_also_section(
         note_type=PersonalNoteTypeEnum.NOTATION_NOTE)
     note_names = [link.file_name for link in links]
     if as_vault_notes:
-        return [VaultNote(vault, note_name) for note_name in note_names]
+        return [VaultNote(vault, name=note_name) for note_name in note_names]
     else:
         return note_names
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 49
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 50
 def notations_and_main_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note parameter is used to determined the subdirectory. If `subdirectory` is the empty str, then all notation notes in the vault are searched. Defaults to `None`. 
@@ -374,7 +374,7 @@ def notations_and_main_notes(
     return {vn.name: main_of_notation(vn) for vn in vn_objects
             if note_is_of_type(vn, PersonalNoteTypeEnum.NOTATION_NOTE)}
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 57
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 58
 def notation_note_is_linked_in_see_also_section(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None # The note in which to find the link to `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -389,7 +389,7 @@ def notation_note_is_linked_in_see_also_section(
     return notation_note.name in notes
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 64
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 65
 def add_notation_note_to_see_also(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None, # The note in which to link `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -420,7 +420,7 @@ def add_notation_note_to_see_also(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 77
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 78
 def add_missing_notation_links_to_information_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes and their main notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note` parameter is used to determine `subdirectory`. Defaults to `None`. 
@@ -449,7 +449,7 @@ def add_missing_notation_links_to_information_notes(
         except NoteDoesNotExistError:
             continue
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 81
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 82
 def notations_to_add_in_index(
         vault: PathLike, # Path to the vault directory.
         notation_index_note = VaultNote, # The notation index note in the vault where the notations should be added to.
@@ -489,7 +489,7 @@ def notations_to_add_in_index(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 84
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 85
 def index_notation_note_formatted_entry(
         notation_str: str, # The str of the notation, including the surrounding dollar signs `$`.
         link: ObsidianLink # The embedded link to the notation note. 
@@ -501,7 +501,7 @@ def index_notation_note_formatted_entry(
     """
     return f'### {notation_str}\n- {link.to_string()}'
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 88
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 89
 def make_a_notation_note(
         main_note: VaultNote, # The note from which the notation originates.
         vault: PathLike,
@@ -532,6 +532,7 @@ def make_a_notation_note(
     if not notation_note.exists():
         notation_note.create()
     to_print = _full_notation_string(main_note, notation, description)
+    # TODO: change this to use VaultNote method
     with open(notation_note.path(), 'w+', encoding='utf8') as notation_file:
         notation_file.write(to_print)
     if add_to_main:
@@ -572,7 +573,7 @@ def _raw_notation(notation: str):
     return notation
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 102
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 103
 def make_notation_notes_from_double_asts(
         main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
         vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
@@ -674,6 +675,7 @@ def _latex_in_original_from_notat_notes_to_main_note(
     return all_latex_in_original
 
 
+MAX_NOTE_NAME_LENGTH = 80
 def _make_new_notes_from_sifted_double_asts(
         main_note: VaultNote, vault: PathLike, reference_name: str,
         notations: list[str], destination: Optional[PathLike],
@@ -682,10 +684,13 @@ def _make_new_notes_from_sifted_double_asts(
     Actually makes the notation notes found from the double asterisked LaTeX
     str's
     """
+    # TODO: test that note names aren't too long.
     new_notes = []
     for notation in reversed(notations):
         notation_note_name = f'{reference_name}_notation_'\
             f'{latex_to_path_accepted_string(notation)}'
+        if len(notation_note_name) > MAX_NOTE_NAME_LENGTH:
+            notation_note_name = notation_note_name[:MAX_NOTE_NAME_LENGTH]
         notation_note_name = VaultNote.unique_name(
             notation_note_name, vault)
         new_note = make_a_notation_note(
@@ -698,7 +703,7 @@ def _make_new_notes_from_sifted_double_asts(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 121
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 122
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -804,7 +809,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 125
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 126
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     """Returns a regex str to detect the notation of the notation note.
     
