@@ -725,11 +725,11 @@ def _process_node(
         accumulation =  _append_non_environment_accumulation_to_parts_if_non_empty(
             accumulation, counters, parts)
         
-        parts.append([
-            _title(
-                node, numbertheorem_counters, numberwithins, all_numberwithins,
-                display_names, counters, swap_numbers).strip(),
-            node.latex_verbatim()])
+        title = _title(
+            node, numbertheorem_counters, numberwithins, all_numberwithins,
+            display_names, counters, swap_numbers).strip()
+        title = title.replace('\n', '') 
+        parts.append([title, node.latex_verbatim()])
     else:
         accumulation += node.latex_verbatim()
         # In _change_counters`, the '' counter is incremented by default.
@@ -793,10 +793,11 @@ def _consider_part_to_add(
         part: list[tuple[str, str]],
         sections_and_subsections: list[list[str]]):
     """Add the title of part appropriately if part is of a section or subsection."""
+    title = part[0].strip()
     if _part_is_of_section(part):
-        sections_and_subsections.append([part[0].strip()])
+        sections_and_subsections.append([title])
     elif _part_is_of_subsection(part):
-        sections_and_subsections[-1].append(part[0].strip())
+        sections_and_subsections[-1].append(title)
         
 
 
