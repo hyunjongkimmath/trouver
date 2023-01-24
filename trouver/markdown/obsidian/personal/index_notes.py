@@ -16,6 +16,7 @@ import re
 from typing import Union
 
 from natsort import natsorted
+from pathvalidate import sanitize_filename
 
 from trouver.markdown.markdown.file import (
     MarkdownFile, MarkdownLineEnum
@@ -241,6 +242,7 @@ def convert_title_to_folder_name(title: str) -> str:
         title = title.replace(character, '')
     for character in characters_to_turn_to_underscore:
         title = title.replace(character, '_')
+    title = sanitize_filename(title)
     return title
 
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 34
