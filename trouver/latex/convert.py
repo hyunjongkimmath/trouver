@@ -989,7 +989,8 @@ def _adjust_common_section_titles_in_parts(
         reference_name: str):
     """Adjust common section titles in `parts`
 
-    Common section titles include `Introduction`, `Notations`,
+    Common section titles include, but are not limited to,
+    `Introduction`, `Notations`,
     `Conventions`, `Preliminaries`, and `Notations and Conventions`    
     
     This is a helper function for `setup_reference_from_latex_parts`.
@@ -999,9 +1000,14 @@ def _adjust_common_section_titles_in_parts(
             for title, text in parts]
 
 
+# TODO: also adjust title if the title is of the form
+# <section_number>_<common_section_title>, e.g.
+# 7_acknowledgements
+# 8_references
 COMMON_SECTION_TITLES = [
     'introduction', 'notations', 'conventions', 'preliminaries',
-    'notations and conventions', 'definitions', 'definitions and notations']
+    'notations and conventions', 'definitions', 'definitions and notations',
+    'references', 'acknowledgements']
 
 
 def _adjusted_title(

@@ -4,9 +4,11 @@
 __all__ = ['bulleted_links_of_type_in_section', 'links_to_common_terms_notes_in_see_also_section', 'main_content',
            'reference_notes_in_references_section_of_information_note', 'reference_of_information_note',
            'citation_location_string', 'fill_info_note_with_template', 'link_info_notes_to_index',
-           'create_info_notes_and_link_to_index', 'create_generic_info_notes_and_link_to_index']
+           'create_info_notes_and_link_to_index', 'create_generic_info_notes_and_link_to_index',
+           'index_note_of_a_directory', 'index_note_of_note']
 
 # %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 2
+import glob
 import os
 from os import PathLike
 from pathlib import Path
@@ -26,6 +28,7 @@ from trouver.markdown.obsidian.links import (
 from trouver.markdown.obsidian.personal.note_type import (
     note_is_of_type, PersonalNoteTypeEnum, assert_note_is_of_type
 )
+from .notes import notes_linked_in_note
 from trouver.markdown.obsidian.vault import (
     note_path_by_name, VaultNote, NoteDoesNotExistError
 )
@@ -351,3 +354,129 @@ def create_generic_info_notes_and_link_to_index(
                                         content_to_add = [], tags_to_add=tags_to_add)
         
     
+
+# %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 25
+def index_note_of_a_directory(
+        vault: PathLike,
+        directory: PathLike # Relative to `vault`
+        ) -> Union[VaultNote, None]: # Either the index note in the directory if it exists or `None` 
+    """Return the index note in a directory in an `Obsidian.md` vault, if it exists.
+
+    Assumes that the directory has at most one index note.
+
+    **Raises**
+
+    - RuntimeError
+        - If more than one index note exists in the directory.    
+    """
+    full_directory = Path(vault) / directory
+    glob_results = glob.glob(
+        str(full_directory /  "_index*.md"), recursive=False)
+    # TODO
+    if len(glob_results) > 1:
+        raise RuntimeError(
+            "Expected there to exist at most one index note in the"
+            f" directory, but there are more than one:\n{glob_results}")
+    elif len(glob_results) == 1:
+        path = glob_results[0]
+        rel_path = os.path.relpath(path, vault)
+        return VaultNote(vault, rel_path)
+    else:
+        return None
+
+# %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 29
+def index_note_of_note(
+        note: VaultNote # An information note or an index note
+        ) -> Union[VaultNote, None]: # The index note which indexes `note`. If no such index note exists (in either the same directory as or the immediate parent directory of the note), then `None` is returned. In particular, `None` is returned if `note` is the root index note of the vault.
+    """Return the index note indexing the specified note.
+
+    `note` is assumed to either be an information note
+    or itself an index note.
+
+    Assumes that a note in indexed in at most one
+    index note and that this index note is either in the same directory
+    as the note or in the immediate parent directory of
+    the note.
+
+    **Raises**
+
+    - UserWarning
+        - If an index note that is supposed to index `note` 
+        exists, but does not actually index `note`.
+    
+    """
+    # If `note` is the top level index note, then return `None`
+    note_is_index_note = note_is_of_type(
+        note, PersonalNoteTypeEnum(PersonalNoteTypeEnum.INDEX_NOTE))
+    if note_is_index_note and note.directory(relative=True) == Path('.'):
+        return None
+
+    index_note = _index_note_in_same_directory(note, note_is_index_note)
+    index_note = _index_note_in_parent_directory(note, index_note)
+
+    if _note_is_not_linked_in_index_note(index_note, note):
+        UserWarning(
+            f'The index note is expected to index the note, but this is'
+            f' not actually the case:\n'
+            f' index_note: {index_note.name}\nnote: {note.name}')
+
+    return index_note
+
+
+def _index_note_in_same_directory(
+        note: VaultNote,
+        note_is_index_note: bool
+        ) -> Union[VaultNote, None]:
+    """
+    If the index note of `note` should be in the same directory as `note`,
+    then return that index note assuming it exists; otherwise, return `None`.
+
+    This is a helper function of `index_note_of_note`
+    """
+    # Determine if the index note is in the same directory as `note`
+    search_index_note_in_same_directory = index_note_of_a_directory(
+        note.vault, note.directory(relative=True))
+    if not (note_is_index_note
+            or search_index_note_in_same_directory is None):
+        index_note = search_index_note_in_same_directory
+    else:
+        index_note = None
+    return index_note
+
+
+def _index_note_in_parent_directory(
+        note: VaultNote,
+        index_note: Union[VaultNote, None], # Output of `_index_note_in_same_directory`
+        ) -> Union[VaultNote, None]:
+    """
+    If the index note of `note` should be in the immediate parent directory as
+    `note`, then return that index note assuming it exists; otherwise, return
+    `None`.
+
+    This is a helper function of `index_note_of_note`
+    """
+    # Determine if the index note is in the parent directory of `note`
+    search_index_note_in_parent_directory = index_note_of_a_directory(
+        note.vault, note.directory(relative=True).parent)
+    if (index_note is None
+            and search_index_note_in_parent_directory is not None):
+        index_note = search_index_note_in_parent_directory
+    else:
+        index_note = None
+    return index_note
+
+
+
+def _note_is_not_linked_in_index_note(
+        index_note: Union[VaultNote, None],
+        note: VaultNote) -> bool:
+    """Return `True` if `index_note` is not `None` and `note` is not
+    linked in `index_note`.
+    
+    This is a helper function of `index_note_of_note`.
+    """
+    if index_note is None:
+        return False
+    indexed_notes = notes_linked_in_note(index_note, as_dict=False)
+    indexed_note_names = [vn.name for vn in indexed_notes]
+    return note.name not in indexed_note_names

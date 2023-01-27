@@ -559,6 +559,15 @@ template.
   `.obsidian/plugins/<plugin_name>` in the vault directory.
 - Changed the default `template_location` argument from `'.'` to `'/'`
   in `markdown.obsidian.personal.reference`.
+- Move `latex_to_path_accepted_string` function from
+  `20_markdown.obsidian.personal.notation.ipynb` to `00_helper.ipynb`
+- Modify `_consider_part_to_add` in `16_latex.convert` so that
+  multi-line section titles in LaTeX documents get parsed as single-line
+  titles
+- Modify `convert_title_to_folder_name` in
+  `12_markdown.obsidian.personal.index_notes.ipynb` and
+  `_create_note_for_part` in `16_latex.convert.ipynb` to use
+  `sanitize_filename`
 
 #### Ver. 0.0.2
 
