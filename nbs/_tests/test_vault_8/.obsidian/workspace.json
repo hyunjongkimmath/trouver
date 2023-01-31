@@ -1,0 +1,162 @@
+{
+  "main": {
+    "id": "5e7c4882049252db",
+    "type": "split",
+    "children": [
+      {
+        "id": "2bd4db994ffeb67a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dac704e45ed67e4b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7b12307eb95ce35f",
+    "type": "split",
+    "children": [
+      {
+        "id": "36c94c7ab135ec8d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7d21c595a34c13a6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "96ebfa2cdd103783",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "1a42cc7f31a0ced8",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6716005f89e80bd8",
+    "type": "split",
+    "children": [
+      {
+        "id": "6065ead3345a22d2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "455d6a8b7022bfb2",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "657a74c5272e951b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d2ec210bca7f0e97",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "9524aad02df6d8f0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "dac704e45ed67e4b",
+  "lastOpenFiles": [
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/_index_1_chapter_number_theory_reference_1.md",
+    "number_theory/number_theory_reference_1/_index_number_theory_reference_1.md",
+    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/1_more_general_ring_theory/number_theory_reference_1_Definition 2.3.md",
+    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/_index_2_chapter_number_theory_reference_2.md",
+    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/1_more_general_ring_theory/number_theory_reference_1_Definition 2.2.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/1_basic_ring_theory/number_theory_reference_1_Definition 1.1.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Proposition 1.8.md",
+    "number_theory/number_theory_reference_1/2_chapter_number_theory_reference_1/1_more_general_ring_theory/number_theory_reference_1_Definition 2.1.md",
+    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/1_basic_ring_theory/number_theory_reference_1_Exercise 1.2.md"
+  ]
+}
