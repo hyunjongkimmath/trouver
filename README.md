@@ -156,6 +156,9 @@ model. This ML model is also available on [Hugging
 Face](https://huggingface.co/) under the repository
 [hyunjongkimmath/information_note_type](https://huggingface.co/hyunjongkimmath/information_note_type)
 
+The following code downloads the model into the local Hugging Face cache
+(if necessary) and loads the model.
+
 ``` python
 import pathlib
 from pathlib import WindowsPath
@@ -173,18 +176,18 @@ repo_id = 'hyunjongkimmath/information_note_type'
 if platform.system() == 'Windows':
     temp = pathlib.PosixPath # See https://stackoverflow.com/questions/57286486/i-cant-load-my-model-because-i-cant-put-a-posixpath
     pathlib.PosixPath = pathlib.WindowsPath
-    model = from_pretrained_fastai(repo_id)
+    information_note_type_model = from_pretrained_fastai(repo_id)
     pathlib.PosixPath = temp
 else:
-    model = from_pretrained_fastai(repo_id)
+    information_note_type_model = from_pretrained_fastai(repo_id)
 ```
 
     Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
 
 ``` python
-sample_prediction_1 = model.predict(r'Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.')
+sample_prediction_1 = information_note_type_model.predict(r'Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.')
 print(sample_prediction_1) 
-sample_prediction_2 = model.predict(r'Theorem. Let $q$ be a prime power. Up to isomorphism, there is exactly one field with $q$ elements.')
+sample_prediction_2 = information_note_type_model.predict(r'Theorem. Let $q$ be a prime power. Up to isomorphism, there is exactly one field with $q$ elements.')
 print(sample_prediction_2)
 ```
 
@@ -238,9 +241,97 @@ notation. - in `sample_prediction_2` that the text contains a proof.
 # from trouver.markdown.obsidian.personal.machine_learning.information_note_types import
 ```
 
+While one can make use of the model’s `predict` method as is, `trouver`
+also provides functions which predict the types of mathematical text
+written in notes formatted in a specific way and record on these notes
+the predictions made. This way, one can make the model predict once and
+use these predictions for later, which can save computational resources.
+
 ``` python
-# TODO: exmaple of loading model and using it.
+from trouver.markdown.obsidian.vault import VaultNote
+from trouver.markdown.obsidian.personal.notes import notes_linked_in_notes_linked_in_note
+from trouver.markdown.obsidian.personal.machine_learning.information_note_types import automatically_add_note_type_tags
 ```
+
+``` python
+with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_dir):
+    temp_vault = Path(temp_dir) / 'test_vault_8'
+    shutil.copytree(_test_directory() / 'test_vault_8', temp_vault)
+    reference = 'number_theory_reference_1'
+
+    index_note = VaultNote(temp_vault, name=f'_index_{reference}')
+    # `notes` below is a list of `VaultNote` objects.
+    # Also, the `notes_linked_in_note` function can be a useful
+    # alternative to the `notes_linked_in_notes_linked_in_note` function.
+    notes = notes_linked_in_notes_linked_in_note(index_note, as_dict=False)
+    
+    print("This is what one of the notes looks like before predicting its note type:\n\n")
+    print(notes[0].text())
+
+    print("\n\nTagging notes\n\n")
+    # Note that `information_note_type_model` was loaded previously.
+    automatically_add_note_type_tags(information_note_type_model, temp_vault, notes)
+
+    print("This is what the same note looks like after predicting its note type:\n\n")
+    print(notes[0].text())
+
+    # os.startfile(os.getcwd()) # This opens the current working directory; find the temporary folder in here and explore it if desired.
+    # input() # There should be an input prompt; make an input here when you are done viewing the
+```
+
+    This is what one of the notes looks like before predicting its note type:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: [number_theory_reference_1_ring]
+    tags: [_meta/literature_note, _reference/number_theory_reference_1]
+    ---
+    # Ring[^1]
+
+    A **(commutative) ring** is a set $R$, equipped with two binary operators, denoted $+$ and $\cdot$, such that the following hold:
+
+    1. $R$ is an abelian group under $+$ with identity element $0$.
+    2. $R$ is an commutative monoid under $\cdot$ with identity element $1$.
+    3. For all $a,b,c \in R$, we have $a \cdot (b+c) = a \cdot b + a \cdot c$.
+
+    # See Also
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, Definition 1.1, Page 1
+
+
+    Tagging notes
+
+
+    This is what the same note looks like after predicting its note type:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: [number_theory_reference_1_ring]
+    tags: [_meta/literature_note, _reference/number_theory_reference_1, _auto/_meta/definition]
+    ---
+    # Ring[^1]
+
+    A **(commutative) ring** is a set $R$, equipped with two binary operators, denoted $+$ and $\cdot$, such that the following hold:
+
+    1. $R$ is an abelian group under $+$ with identity element $0$.
+    2. $R$ is an commutative monoid under $\cdot$ with identity element $1$.
+    3. For all $a,b,c \in R$, we have $a \cdot (b+c) = a \cdot b + a \cdot c$.
+
+    # See Also
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, Definition 1.1, Page 1
 
 ## Use an ML model to find notations introduced in text
 
@@ -319,17 +410,17 @@ repo_id = 'hyunjongkimmath/notation_identification'
 if platform.system() == 'Windows':
     temp = pathlib.PosixPath # See https://stackoverflow.com/questions/57286486/i-cant-load-my-model-because-i-cant-put-a-posixpath
     pathlib.PosixPath = pathlib.WindowsPath
-    model = from_pretrained_fastai(repo_id)
+    notation_identification_model = from_pretrained_fastai(repo_id)
     pathlib.PosixPath = temp
 else:
-    model = from_pretrained_fastai(repo_id)
+    notation_identification_model = from_pretrained_fastai(repo_id)
 ```
 
     Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
 
 ``` python
-contains_a_notation = model.predict(r'Let $L/K$ be a Galois field extension. Its Galois group **$\operatorname{Gal}(L/K)$** is defined as the group of automorphisms of $L$ fixing $K$ pointwise.')
-does_not_contain_a_notation = model.predict(r'Let **$L/K$** be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of $L$ fixing $K$ pointwise.')
+contains_a_notation = notation_identification_model.predict(r'Let $L/K$ be a Galois field extension. Its Galois group **$\operatorname{Gal}(L/K)$** is defined as the group of automorphisms of $L$ fixing $K$ pointwise.')
+does_not_contain_a_notation = notation_identification_model.predict(r'Let **$L/K$** be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of $L$ fixing $K$ pointwise.')
 print(contains_a_notation)
 print(does_not_contain_a_notation)
 ```
@@ -373,6 +464,130 @@ print(does_not_contain_a_notation)
 ``` python
 # TODO: examples of using functions in markdown.obsidian.personal.machine_learning.notation_identifcation.
 ```
+
+Similarly as with the `information_note_type` model, `trouver` provides
+functions (namely `automatically_mark_notations`) which locate within
+notes mathematical notations that are newly introduced in the text of
+the notes and record on these notes locations of such notations (by
+surrounding double asterisks `**` to LaTeX math mode strings). Note that
+this is done by applying the `notation_identification` model’s `predict`
+method as many times on a single piece of text as there are LaTeX math
+mode strings in the text. As such, these predictions often take a long
+time.
+
+To save time, it is recommended to apply `automatically_mark_notations`
+only on notes which have the `_meta/definition` or `_meta/notation` tags
+(or `_auto/_meta/definittion` or `_auto/_meta/notation`) in their
+frontmatter YAML metadata[^2].
+
+> **Warning** The `automatically_mark_notations` function note only adds
+> double asterisks `**` to LaTeX math mode strings, but also removes
+> components such as links and footnotes from the text of the note. It
+> is recommended to only apply this function to notes whose text has not
+> been embellished with such components[^3].
+
+The test vault used in the below example contains a single note which
+has already been marked with the `_meta/definition` and `_meta/notation`
+notes. The following example in particular locates notations in that
+note at the very least.
+
+``` python
+from trouver.markdown.markdown.file import MarkdownFile
+from trouver.markdown.obsidian.vault import VaultNote
+from trouver.markdown.obsidian.personal.notes import notes_linked_in_notes_linked_in_note
+from trouver.markdown.obsidian.personal.machine_learning.notation_identification import automatically_mark_notations
+```
+
+``` python
+with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_dir):
+    temp_vault = Path(temp_dir) / 'test_vault_8'
+    shutil.copytree(_test_directory() / 'test_vault_8', temp_vault)
+    reference = 'number_theory_reference_1'
+
+    index_note = VaultNote(temp_vault, name=f'_index_{reference}')
+    # `notes` below is a list of `VaultNote` objects.
+    # Also, the `notes_linked_in_note` function can be a useful
+    # alternative to the `notes_linked_in_notes_linked_in_note` function.
+    notes = notes_linked_in_notes_linked_in_note(index_note, as_dict=False)
+    one_note_with_notation_tag = VaultNote(temp_vault, name='number_theory_reference_1_Definition 1.7')
+    
+    print("This is what one of the notes looks like before locating notations introduced:\n\n")
+    print(one_note_with_notation_tag.text())
+
+    print("\n\nFinding notations\n\n")
+    # Note that `information_note_type_model` was loaded previously.
+    automatically_add_note_type_tags(notation_identification_model, temp_vault, notes)
+
+    note_mfs = [MarkdownFile.from_vault_note(note) for note in notes]
+    # The below code ensures that the model searches for notations only in 
+    # notes marked with a `_meta/definition` or a `_meta/notation`tag or
+    # their `_auto` versions. 
+    notation_introducing_notes = [
+        note for note, mf in zip(notes, note_mfs)
+        if mf.has_tag('_auto/_meta/definition') or mf.has_tag('_auto/_meta/notation')
+        or mf.has_tag('_meta/definition') or mf.has_tag('_meta/notation')]
+    for note in notation_introducing_notes:
+        automatically_mark_notations(note, notation_identification_model, reference_name=reference)
+
+    print("This is what the same note looks like after locating notations introduced:\n\n")
+    print(one_note_with_notation_tag.text())
+
+    # os.startfile(os.getcwd()) # This opens the current working directory; find the temporary folder in here and explore it if desired.
+    # input() # There should be an input prompt; make an input here when you are done viewing the
+```
+
+    This is what one of the notes looks like before locating notations introduced:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: [number_theory_reference_1_ring_of_integers_modulo_n]
+    tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+    ---
+    # Ring of integers modulo $n$[^1]
+    The ring of integers modulo $n$, denoted $\mathbb{Z}/n\mathbb{Z}$ has the elements $[m]$ for each integer $m$ where $[m_1] = [m_2]$ if and only if $m_1-m_2$ is divisible by $n$. As a ring, it has the following structure:
+
+    1. $[m_1] + [m_2] = [m_1+m_2]$
+    2. $[m_1] \cdot [m_2] = [m_1 \cdot m_2]$.
+
+
+    # See Also
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, Definition 1.7, Page 3
+
+
+    Finding notations
+
+
+    This is what the same note looks like after locating notations introduced:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: [number_theory_reference_1_ring_of_integers_modulo_n]
+    tags: [_meta/literature_note, _auto/s, _auto/F, _meta/definition, _reference/number_theory_reference_1, _auto/a, _auto/e, _auto/l, _meta/notation]
+    ---
+    # Topic[^1]
+    The ring of integers modulo $n$, denoted **$\mathbb{Z}/n\mathbb{Z}$** has the elements $[m]$ for each integer $m$ where $[m_1] = [m_2]$ if and only if $m_1-m_2$ is divisible by $n$. As a ring, it has the following structure:
+
+    1. $[m_1] + [m_2] = [m_1+m_2]$
+    2. $[m_1] \cdot [m_2] = [m_1 \cdot m_2]$.
+
+    # See Also
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, Definition 1.7, Page 3
+
+[^4]
 
 ## Use an ML model to summarize notations introduced in text
 
@@ -430,6 +645,146 @@ Let us now define the upper half plane $\mathbb{H}$ as the set of all complex nu
 denotes
 `'the upper half plane of the complex plane $\\ mathbb{ H} $. It is defined as the set of all complex numbers of real part greater than $1$.'`.
 
+Once we mark notations introduced in information notes by surrounding
+LaTeX math mode strings with double asterisks `**` (manually and/or by
+using the `notation_identification` model, see [the section about the
+`notation_identification`
+model](#use-an-ml-model-to-find-notations-introduced-in-text) above), we
+can use the `make_notation_notes_from_double_asts` function to make
+notation notes dedicated to those introduced notations and to link these
+newly created notation notes to the information notes.
+
+After making these notation notes, we can use the
+`append_summary_to_notation_note` function to predict what each notation
+is supposed to denote and add these predicted summaries to the notation
+notes themselves.
+
+For the example below, there is at least one information note with
+notations already marked with double asterisks `**`.
+
+``` python
+from trouver.markdown.obsidian.personal.notation import make_notation_notes_from_double_asts, notation_notes_linked_in_see_also_section
+from trouver.markdown.obsidian.personal.machine_learning.notation_summarization import append_summary_to_notation_note
+```
+
+``` python
+with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_dir):
+    temp_vault = Path(temp_dir) / 'test_vault_8'
+    shutil.copytree(_test_directory() / 'test_vault_8', temp_vault)
+    reference = 'number_theory_reference_1'
+
+    index_note = VaultNote(temp_vault, name=f'_index_{reference}')
+    # Also, the `notes_linked_in_note` function can be a useful
+    # alternative to the `notes_linked_in_notes_linked_in_note` function.
+    notes = notes_linked_in_notes_linked_in_note(index_note, as_dict=False)
+    one_note_with_notations_marked = VaultNote(temp_vault, name='number_theory_reference_1_Definition 2.3')
+
+    print("This is what the information note looks like before we add the links to the notation notes:\n\n")
+    print(one_note_with_notations_marked.text())
+
+    for note in notes:
+        new_notation_notes = make_notation_notes_from_double_asts(note, temp_vault, reference_name=reference)
+
+    print("\n\nThis is what the information note looks like after we add the links to the notation notes:\n\n")
+    print(one_note_with_notations_marked.text())
+
+
+    for note in notes:
+        notation_notes_linked_in_note = notation_notes_linked_in_see_also_section(note, temp_vault)
+        for notation_note in notation_notes_linked_in_note:
+            append_summary_to_notation_note(notation_note, temp_vault, summarizer)
+
+    print("\n\nThis is what the newly created notation notes look like after we add the predicted summaries:\n\n")
+    notation_notes_linked_in_the_one_note = notation_notes_linked_in_see_also_section(
+        one_note_with_notations_marked, temp_vault)
+    for notation_note in notation_notes_linked_in_note:
+        print(notation_note.text(), '\n')
+```
+
+    Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)
+
+    This is what the information note looks like before we add the links to the notation notes:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: []
+    tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+    ---
+    # Quotient ring of a ring by an ideal[^1]
+
+    Let $R$ be a ring and let $I$ be an ideal. The quotient ring **$R/I$** is the ring whose elements are the equivalence classes of elements of $R$ with respect to the equivalence relation **$\sim$** given by $x \sim y$ if $x-y \in I$ and whose ring structure is given by
+
+    $$\begin{align*}
+    [x]+[y] &= [x+y] \\
+    [x] \cdot [y] &= [x \cdot y].
+    \end{align*}$$
+
+
+    # See Also
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, 
+
+
+    This is what the information note looks like after we add the links to the notation notes:
+
+
+    ---
+    cssclass: clean-embeds
+    aliases: []
+    tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+    ---
+    # Quotient ring of a ring by an ideal[^1]
+
+    Let $R$ be a ring and let $I$ be an ideal. The quotient ring **$R/I$** is the ring whose elements are the equivalence classes of elements of $R$ with respect to the equivalence relation **$\sim$** given by $x \sim y$ if $x-y \in I$ and whose ring structure is given by
+
+    $$\begin{align*}
+    [x]+[y] &= [x+y] \\
+    [x] \cdot [y] &= [x \cdot y].
+    \end{align*}$$
+
+
+    # See Also
+    - [[number_theory_reference_1_notation_R_I]]
+    - [[number_theory_reference_1_notation_sim]]
+
+    # Meta
+    ## References
+    ![[_reference_number_theory_reference_1]]
+
+    ## Citations and Footnotes
+    [^1]: Kim, 
+
+    Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)
+
+
+
+    This is what the newly created notation notes look like after we add the predicted summaries:
+
+
+    ---
+    detect_regex: []
+    latex_in_original: [R/I]
+    tags: [_auto/notation_summary]
+    ---
+    $R/I$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring $R/I$ where $R$ is a ring and $I$ is an ideal. It is given by $$\begin{align*} [x]+[y] &= [x+y]\\[x],\cdot [y]$. [$][x]$ is the ring whose elements are the equivalence classes of elements of $R = [\3]$ given by 
+
+    ---
+    detect_regex: []
+    latex_in_original: ["\\sim"]
+    tags: [_auto/notation_summary]
+    ---
+    $\sim$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring $R/I$ given by $x\sim y$ where $R$ is a ring and $I$ is an ideal. 
+
+At the time of this writing (1/30/2023), the author of `trouver`
+believes that this summarization model could be improved upon with more
+data; thus far, this model was trained on less than 1700 data points.
+
 # How the examples/tests are structured
 
 Many of the functions and methods in this library are accompanied by
@@ -438,11 +793,11 @@ examples demonstrating how one might use them.
 These examples are usually also tests of the functions/methods; the
 developer of this library can use `nbdev`’s
 [`nbdev_test`](https://nbdev.fast.ai/api/test.html#nbdev_test)
-command-line command to automatically run these tests[^2][^3]. Moreover,
+command-line command to automatically run these tests[^5][^6]. Moreover,
 there is a GitHub workflow in the repository for this library (see the
 `.github/workflows/test.yaml`) which automatically runs these
 examples/tests on GitHub Actions when changes to are [committed to the
-GitHub repository](https://github.com/git-guides/git-commit)[^4].
+GitHub repository](https://github.com/git-guides/git-commit)[^7].
 
 These examples may use a combination of the following:
 
@@ -451,7 +806,7 @@ These examples may use a combination of the following:
   library.
 - The [`fastcore.test`](https://fastcore.fast.ai/test.html) module as
   assertion statements.
-- example/test files in the `nbs/_tests` folder in the repository[^5].
+- example/test files in the `nbs/_tests` folder in the repository[^8].
   - The `_test_directory()` function in the `helper` module obtains this
     folder.
   - Many of these examples also use the
@@ -488,9 +843,9 @@ These examples may use a combination of the following:
 
 This repository is still in its preliminary stages and much of the code
 and documentation may be faulty or not well formatted. The author
-greatly appreciates reports of these issues or suggestions on edits;
-please feel free to report them on the `Issues` section of the GitHub
-repository for this library. The
+greatly appreciates reports of these issues, notifications of typos, and
+suggestions on edits; please feel free to report them on the `Issues`
+section of the GitHub repository for this library. The
 [author](https://sites.google.com/wisc.edu/hyunjongkim) of this
 repository, who is primarily a mathematician (a PhD student at the time
 of this writing), does not guarantee quick responses or resolutions to
@@ -517,7 +872,7 @@ which among other things runs `nbdev_export`.).
 
 # Copyright
 
-Copyright © 2019 onward Hyun Jong Kim. Licensed under the Apache
+Copyright © 2023 onward Hyun Jong Kim. Licensed under the Apache
 License, Version 2.0 (the “License”); you may not use this project’s
 files except in compliance with the License. A copy of the License is
 provided in the LICENSE file in this repository.
@@ -581,23 +936,47 @@ template.
 [^1]: Given time, the author of `trouver` eventually plans on writing
     instructions on training each of the models.
 
-[^2]: cf. [nbdev’s End-To-End
+[^2]: At the time of this writing (1/30/2023), the
+    `information_note_type` model is fairly good at telling when a note
+    introduces a definition or a notation, but will often conflate the
+    two. In other words, the model may predict that a note ought to have
+    the `_meta/definition` tag assigned to it when the `_meta/notation`
+    tag should be assigned to it and vice versa, but the model will
+    fairly usually assign at least one of the tags when the note
+    introduces a definition or a notation and will assign neither of the
+    tags when the note does not introduce a definition or a notation.
+
+[^3]: More precisely, `automatically_mark_notations` first applies
+    `process_standard_information_note` to a `MarkdownFile` object
+    constructed from the `VaultNote` object to roughly obtain the “raw
+    text” of the note, uses that raw text to locate notations, marks the
+    notations in the raw text, and then replaces the text from the note
+    with the raw text with notations marked. In the process of obtaining
+    the “raw text”, the `process_standard_information_note` function
+    removes components such as links and footnotes from the text.
+
+[^4]: There seems to be a bug in the above example where inexplicable
+    tags (e.g. `_auto/s`, `_auto/a`) are added to the note along with
+    the double asterisks `**`. This issue is reported as [Issue
+    \#33](https://github.com/hyunjongkimmath/trouver/issues/33).
+
+[^5]: cf. [nbdev’s End-To-End
     Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-examples-tests-and-docs)
     to see how to use `nbdev_test`
 
-[^3]: There are also tests which are hidden from the documentation
+[^6]: There are also tests which are hidden from the documentation
     website; one can find these tests in the jupyter notebook files in
     the `nbs` folder in the repository for this library as notebook
     cells marked with the `#| hide` flag, cf. [nbdev’s End-to-End
     Walkthrough](https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-frontmatter)
     to see what the `#| hide` flag does.
 
-[^4]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+[^7]: The `.github/workflows/test.yaml` GitHub workflow file is set up
     in such a way that that allows GitHub Actions to access/use the
     contents of the `nbs/_tests` directory upon running the
     tests/examples.
 
-[^5]: The `.github/workflows/test.yaml` GitHub workflow file is set up
+[^8]: The `.github/workflows/test.yaml` GitHub workflow file is set up
     in such a way that that allows GitHub Actions to access/use the
     contents of the `nbs/_tests` directory upon running the
     tests/examples.
