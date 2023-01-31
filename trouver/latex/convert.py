@@ -1187,6 +1187,7 @@ def _update_links_to_make(
 
 # %% ../../nbs/16_latex.convert.ipynb 143
 # TODO: test parts without a subsection.
+# TODO: somehow contents before a section are not inclued. Fix this bug.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
         custom_commands: list[tuple[str, int, Union[str, None], str]], # Output of `custom_commands` applied to the preamble of the LaTeX ddocument.`
