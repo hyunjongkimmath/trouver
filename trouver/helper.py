@@ -162,8 +162,10 @@ def notation_asterisk_indices(
         text, pattern='\*\*\$\$[^*$]+\$\$\*\*|\*\*\$[^*$]+\$\*\*')
 
 
-def definition_asterisk_indices(text: str) -> list[tuple[int]]:
-    """Returns the indices of definition text surrounded by double asterisks.
+def definition_asterisk_indices(
+        text: str # The str in which to find the indices of the definitions surrounded by double asterisks.
+        ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a substring in `text` surrounded by double asterisks, including the double asterisks.
+    """Return the indices of definition text surrounded by double asterisks.
     
     A double-asterisk-surrounded-text is a definition almost always
     when it is not purely LaTeX math mode text.

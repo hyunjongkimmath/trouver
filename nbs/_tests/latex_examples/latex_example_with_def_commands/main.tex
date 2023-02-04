@@ -1,0 +1,56 @@
+\documentclass[10pt]{article}
+\usepackage{amssymb,enumerate,mathrsfs, amsmath, amsthm, graphicx, mathtools}
+
+\DeclareMathOperator{\Reg}{Reg}
+
+\newcommand{\frob}[1]{\sigma_#1}
+
+
+\def\A{{\cO_{K}}}
+\def\cO{ {\mathcal O} }
+\def\conj{\sim}
+\def\rhol{\delta}
+\def\bbR{ {\mathbb R}}
+\def\fkA{ {\mathfrak A}}
+\def\command1{Hi}
+\def \onetwo #1#2 {#1 #2}
+
+% Apparently \df does not understand optional arguments, cf. https://tex.stackexchange.com/a/49058
+\def\emphopt[#1]{\textit{#1}} % Not an actually macro with optional arguments
+
+% \def \macrowithoptional[#1]{Yo #1}
+
+%\def\command_1{Hi} % Doesn't work
+
+\def \foo [#1]#2{The first argument is ``#1'', the second one is ``#2''}
+
+\def \foo [#1]#2%
+  {The first argument is ``#1''.
+
+  The second one is ``#2''}
+	
+
+\theoremstyle{plain}
+
+\newtheorem{theorem}{theorem}[section]
+\newtheorem*{lemma*}{Lemma}
+
+\theoremstyle{definition}
+
+\newtheorem{definition}[theorem]{Definition}
+\begin{document}
+$\A$
+
+\foo[1]{2}
+
+
+\command1
+% \command_1
+
+\onetwo{alpha}{beta}
+
+% \macrowithoptional
+\emphopt[text]
+
+\end{document}
+
