@@ -190,8 +190,8 @@ def append_to_notation_note_summarization_database(
         backup: bool = True # If `True`, makes a copy of `file` in the same directory and with the same name, except with an added extension of `.bak`.
         ) -> None:
     """
-    Either create a `csv` file containing data for information note type
-    labels or append to an existing `csv` file.
+    Either create a `csv` file containing data for notation note
+    summarization or append to an existing `csv` file.
 
     The columns of the database file are as follows:
 
@@ -230,7 +230,7 @@ def append_to_notation_note_summarization_database(
     """
     if not notes:
         return
-        file = Path(file)
+    file = Path(file)
     df = pd.read_csv(file) if os.path.exists(file) else None
     # start_ID_from = max_ID(df) + 1 if not df is None else 1
     new_df = gather_notation_note_summaries(vault, notes)
@@ -245,70 +245,7 @@ def append_to_notation_note_summarization_database(
     append_to_database(
         file, new_df, cols, 'Processed main note contents', cols_to_update, backup)
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 25
-def append_to_notation_note_summarization_database(
-        vault: PathLike, # The vault freom which the data is drawn
-        file: PathLike, # The path to a CSV file
-        notes: list[VaultNote], # the notation notes to consider adding to the database. 
-        backup: bool = True # If `True`, makes a copy of `file` in the same directory and with the same name, except with an added extension of `.bak`.
-        ) -> None:
-    """
-    Either create a `csv` file containing data for information note type
-    labels or append to an existing `csv` file.
-
-    The columns of the database file are as follows:
-
-    - `Time added` - The time when the row was added.
-    - `Time modified` - The time when the labels of the row 
-    - `Notation note name` - The name of the note from which the data for the row
-      was derived.
-    - 'Notation' - The notation which is being summarized
-    - 'Latex in original' - The entry of the `latex_in_original` field of the
-      note if available, cf. `make_a_notation_note`
-    - `"Summary"` - The summary of the notation.
-    - `"Main note name"` - The name of the main note of the
-      notation note
-    - `"Processed main note contents"` - The processed contents of the
-      main note
-
-    All timestamps are in UTC time and specify time to minutes
-    (i.e. no seconds/microseconds).
-    
-    TODO: implement updating rows and rewrite the next paragraph to
-    accurately reflect the implementation. I would like the 'Notation', 'Latex in original',
-    'Summary', 'processed main note contents' to be the "pivot_cols"
-
-    If a "new" note has the same processed content as a pre-existing
-    note and anything is different about the "new" note, then update
-    the row of the existing note. In particular, the following are updated:
-    - Time modified (set to current time)
-    - Notation (overwritten)
-    - Latex in original (overwritten)
-    - Summary (overwritten)
-    - Main note name (overwritten)
-    - Processed main note contents (overwritten)
-    
-    This method assumes that all the processed content in the
-    CSV file are all distinct if the CSV file exists.
-    """
-    if not notes:
-        return
-        file = Path(file)
-    df = pd.read_csv(file) if os.path.exists(file) else None
-    # start_ID_from = max_ID(df) + 1 if not df is None else 1
-    new_df = gather_notation_note_summaries(vault, notes)
-    if new_df.empty:
-        return
-    cols = [
-        'Time added', 'Time modified', 'Notation note name',
-        'Notation', 'Latex in original', 'Summary', 'Main note name',
-        'Processed main note contents']
-    cols_to_update = [
-      'Time modified', 'Notation note name', 'Notation', 'Latex in original', 'Summary', 'Main note name']
-    append_to_database(
-        file, new_df, cols, 'Processed main note contents', cols_to_update, backup)
-
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 34
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 33
 def single_input(
         main_note_content: str, # The text from which to summarize a notation
         latex_in_original: str, # A substring in main_note_content which is a latex string in which the notation is introduced.
@@ -316,7 +253,7 @@ def single_input(
 
     return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 37
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 36
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 def append_column_for_single_text(
@@ -329,7 +266,7 @@ def append_column_for_single_text(
         lambda row: single_input(row["Processed main note contents"], row["Latex in original"]), axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 43
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 42
 def fix_summary_formatting(
         summary: str
         ) -> str:
@@ -348,7 +285,7 @@ def fix_summary_formatting(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 46
 def summarize_notation(
         main_content: str,
         latex_in_original: str,
@@ -369,7 +306,7 @@ def summarize_notation(
         summary = fix_summary_formatting(summary)
     return summary
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 49
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 48
 def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
     """Escape the `latex_in_original` field in the metadata.
     
@@ -388,7 +325,7 @@ def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 51
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 50
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,

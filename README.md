@@ -893,6 +893,14 @@ template.
 
 ## Ver. 0
 
+#### Ver. 0.0.4
+
+- The `custom_commands` function in `latex.convert` can parse LaTeX
+  `\newcommand` and `\command` invocations in which the defined command
+  is not surrounded by parentheses, e.g. `\newcommand\A{{\mathbb A}}` is
+  recognized as defining the command `\A` which has display text
+  `{\mathbb A}`.
+
 #### Ver. 0.0.3
 
 - Fixed [issue \#

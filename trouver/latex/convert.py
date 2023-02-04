@@ -815,16 +815,35 @@ def custom_commands(
     Ignores all comented newcommands.
     """
     preamble = remove_comments(preamble)
-    newcommand_regex = regex.compile(
-        r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*\{\\\s*(\w+)\s*\}\s*(\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?5)\})*)\}', re.MULTILINE)
+    latex_commands = _commands_from_newcommand_and_declaremathoperator(preamble)
+    # tex_commands = _commands_from_def(preamble)
+    return latex_commands
+
+
+def _commands_from_newcommand_and_declaremathoperator(
+        preamble: str, # The preamble of a LaTeX document
+        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+    """
+    Get custom commands from invocations of `\newcommand` and `DeclareMathOperator`
+    in the preamble.
+    """
     # newcommand_regex = regex.compile(
-    #     r'(?<!%)\s*\\(?:re)?newcommand\s*\{\\\s*(\w+)\s*\}\s*(\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{\s*(.*)\s*\}', re.MULTILINE)
+    #     r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*\{\\\s*(\w+)\s*\}\s*(?:\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?4)\})*)\}', re.MULTILINE)
+    newcommand_regex = regex.compile(
+        r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*(?:\{\\\s*(\w+)\s*\}|\\\s*(\w+))\s*(?:\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?5)\})*)\}', re.MULTILINE)
+
     commands = []
     for match in newcommand_regex.finditer(preamble):
-        name = match.group(1)
+        name_surrounded_in_parentheses = match.group(1) # e.g. \newcommand{\A}
+        name_without_parentheses = match.group(2) # e.g. \newcommand\A
         num_args = match.group(3)
         optional_default_arg = match.group(4)
         definition = match.group(5)
+
+        if name_surrounded_in_parentheses is not None:
+            name = name_surrounded_in_parentheses
+        else:
+            name = name_without_parentheses
 
         # Convert the number of arguments to an integer, if it was specified
         if num_args is not None:
@@ -835,6 +854,15 @@ def custom_commands(
         commands.append((name, num_args, optional_default_arg, definition))
     return commands
 
+
+# def _commands_from_def(
+#         preamble: str
+#         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+#     """
+#     """
+#     def_regex = regex.compile(
+#         r'(?<!%)\s*\\def\s*(\\[a-z0-9]+)'
+#     )
 
 
 # %% ../../nbs/16_latex.convert.ipynb 124
@@ -1188,6 +1216,8 @@ def _update_links_to_make(
 # %% ../../nbs/16_latex.convert.ipynb 143
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
+# TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
+# Make section titles based on reference name.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
         custom_commands: list[tuple[str, int, Union[str, None], str]], # Output of `custom_commands` applied to the preamble of the LaTeX ddocument.`
