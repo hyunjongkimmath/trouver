@@ -900,6 +900,8 @@ template.
   is not surrounded by parentheses, e.g. `\newcommand\A{{\mathbb A}}` is
   recognized as defining the command `\A` which has display text
   `{\mathbb A}`.
+- Make `adjust_common_syntax_to_markdown` in `latex.convert` recognize
+  the `eqnarray` environment as an environment to adjust.
 
 #### Ver. 0.0.3
 
