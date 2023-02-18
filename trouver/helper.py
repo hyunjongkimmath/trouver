@@ -13,6 +13,7 @@ from itertools import product
 import os
 from os import PathLike
 from pathlib import Path
+from pathvalidate import sanitize_filename
 import platform
 import re
 from typing import Callable, Optional, Pattern, Sequence, Union
@@ -565,4 +566,5 @@ def latex_to_path_accepted_string(latex: str) -> str:
         latex, _ = re.subn(re.escape(to_remove), '', latex)
     for to_underscore in TO_UNDERSCORE:
         latex, _ = re.subn(re.escape(to_underscore), '_', latex)
+    latex = sanitize_filename(latex)
     return latex

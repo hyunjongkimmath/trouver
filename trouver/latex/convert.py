@@ -980,6 +980,8 @@ def replace_commands_in_latex_document(
     
 
 # %% ../../nbs/16_latex.convert.ipynb 134
+# TODO: give the option to replace quotations ``'' and `enquote`, e.g. ```unlikely intersections''` into `"unlikely intersections"`
+# TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 def adjust_common_syntax_to_markdown(
         text) -> str:
     """
@@ -992,8 +994,8 @@ def adjust_common_syntax_to_markdown(
     # TODO: see if I need to add more substitutions.
     text = re.sub(r'\\\(|\\\)', '$', text)
     text = re.sub(r'\\\[|\\]', '$$', text)
-    text = re.sub(r'(\\begin\{(?:align|equation)\*?\})', r'$$\1', text)
-    text = re.sub(r'(\\end\{(?:align|equation)\*?\})', r'\1$$', text)
+    text = re.sub(r'(\\begin\{(?:align|equation|eqnarray)\*?\})', r'$$\1', text)
+    text = re.sub(r'(\\end\{(?:align|equation|eqnarray)\*?\})', r'\1$$', text)
     return text
 
 # %% ../../nbs/16_latex.convert.ipynb 137
@@ -1218,6 +1220,7 @@ def _update_links_to_make(
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
 # Make section titles based on reference name.
+# TODO: give the option to not included commented out content from latex files.
 def setup_reference_from_latex_parts(
         parts: list[tuple[str, str]], # Output of `divide_latex_text`
         custom_commands: list[tuple[str, int, Union[str, None], str]], # Output of `custom_commands` applied to the preamble of the LaTeX ddocument.`

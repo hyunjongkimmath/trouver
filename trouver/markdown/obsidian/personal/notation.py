@@ -642,6 +642,9 @@ def _make_new_notes_from_sifted_double_asts(
         main_note: VaultNote, vault: PathLike, reference_name: str,
         notations: list[str], destination: Optional[PathLike],
         overwrite: bool, add_to_main: bool) -> list[VaultNote]:
+    # TODO: write a test for making a new note from the notation 
+    # `\begin{equation} \label{escape rate} 	G_{F_t}(z,w) = \lim_{n\to\infty} \frac{1}{d^n} \log \| F_t^n(z,w) \|, \end{equation}`
+    # in particular, test that file path has been sanitized.
     """
     Actually makes the notation notes found from the double asterisked LaTeX
     str's
