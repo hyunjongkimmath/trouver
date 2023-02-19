@@ -895,12 +895,17 @@ template.
 
 #### Ver. 0.0.4
 
+- Modified `latex_to_path_accepted_string` in `helper` to use the
+  `sanitize_filename` function from the `pathvalidate` library. In
+  particular, this should ensure that
+  `make_notation_notes_from_double_asts` only attempts to create
+  notation notes with names which are valid as file names.
 - The `custom_commands` function in `latex.convert` can parse LaTeX
   `\newcommand` and `\command` invocations in which the defined command
   is not surrounded by parentheses, e.g. `\newcommand\A{{\mathbb A}}` is
   recognized as defining the command `\A` which has display text
   `{\mathbb A}`.
-- Make `adjust_common_syntax_to_markdown` in `latex.convert` recognize
+- Made `adjust_common_syntax_to_markdown` in `latex.convert` recognize
   the `eqnarray` environment as an environment to adjust.
 
 #### Ver. 0.0.3

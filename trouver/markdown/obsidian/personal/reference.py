@@ -570,14 +570,21 @@ def _make_temp_folder(
 def copy_obsidian_vault_configs(
         vault: PathLike,
         reference_directory: PathLike, # The folder into which to copy the Obsidian configs. Relative to `vault`.
-        configs_folder: PathLike # The folder containing the Obsidian configs. This is either an absolute path or relative to the current working directory.
+        configs_folder: PathLike, # The folder containing the Obsidian configs. This is either an absolute path or relative to the current working directory.
+        dirs_exist_ok: bool = False, # If `dirs_exist_ok` is `False` and `reference_directory` already exists, then a FileExistsError is raised. If `dirs_exist_ok` is true, the copying operation will continue if it encounters existing directories, and files within the destination tree will be overwritten by corresponding files from the source tree. See also the [`shutil.copytree`](https://docs.python.org/3/library/shutil.html#shutil.copytree) function.
         ) -> None:
     """
     Copy the vault's Obsidian config files into the reference directory.
-    """
-    shutil.copytree(configs_folder, vault / reference_directory / '.obsidian')
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 43
+    **Raises**
+    - `FileExistsError`
+        - If `dirs_exist_ok` is `False` and `reference_directory` already exists.
+    """
+    shutil.copytree(
+        configs_folder, vault / reference_directory / '.obsidian',
+        dirs_exist_ok=dirs_exist_ok)
+
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 44
 def _obsidian_vault_plugin_configs_file(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found either in the `.obsidian` directory or in the `.obsidian/plugins` directory in the vault .
@@ -588,7 +595,7 @@ def _obsidian_vault_plugin_configs_file(
     else:
         return Path(vault) / '.obsidian' / 'plugins' / plugin_name / 'data.json'
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 45
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 46
 def get_obsidian_vault_plugin_configs(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found in the `.obsidian` directory in the vault.
@@ -604,7 +611,7 @@ def get_obsidian_vault_plugin_configs(
         return json.load(file)
     
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 47
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 48
 def modify_obsidian_vault_plugin_configs(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found in the `.obsidian` directory in the vault.
@@ -624,7 +631,7 @@ def modify_obsidian_vault_plugin_configs(
     with open(_obsidian_vault_plugin_configs_file(vault, plugin_name, plugin_is_core), 'w') as file:
         json.dump(configs, file, indent=2)
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 49
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 50
 def _modify_fast_link_edit_and_templates(
         vault: PathLike,
         reference_name: str, # The value to change the `referenceName` field in the `fast-link-edit` plugin into.
@@ -650,25 +657,27 @@ def _modify_fast_link_edit_and_templates(
             " for the `templates` plugin, but the file does not exist.",
             UserWarning)
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 51
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 52
 def copy_obsidian_vault_configs_with_nice_modifications(
         vault: PathLike,
         reference_directory: PathLike, # The folder into which to copy the Obsidian configs. Relative to `vault`.
-        configs_folder: PathLike, # The folder containing the Obsidian configs. This is either an absolute path or relative to the current working directory.
+        configs_folder: PathLike, # The folder containing the Obsidian configs to copy. This is either an absolute path or relative to the current working directory.
         reference_name: str = None, # The name of the reference and the value to change the `referenceName` field in the `fast-link-edit` plugin into. If `None`, then the reference name should be obtained as the name of `reference_directory`
-        template_location: str = '/' # The location of the template file(s) and the value to change the `folder` field in the `templates` plugin into.
+        template_location: str = '/', # The location of the template file(s) and the value to change the `folder` field in the `templates` plugin into.
+        dirs_exist_ok: bool = False, # If `dirs_exist_ok` is `False` and `reference_directory` already exists, then a FileExistsError is raised. If `dirs_exist_ok` is true, the copying operation will continue if it encounters existing directories, and files within the destination tree will be overwritten by corresponding files from the source tree. See also the [`shutil.copytree`](https://docs.python.org/3/library/shutil.html#shutil.copytree) function.
         ) -> None:
     """
     Copy the vault's Obsidian config files into the reference directory and make some nice moodifications
     """
-    copy_obsidian_vault_configs(vault, reference_directory, configs_folder)
+    copy_obsidian_vault_configs(
+        vault, reference_directory, configs_folder, dirs_exist_ok=dirs_exist_ok)
     if reference_name is None:
         reference_name = path_name_no_ext(reference_directory)
     # Note that the config file that is being modified belongs to the "subvault",
     # i.e. the reference folder.
     _modify_fast_link_edit_and_templates(vault / reference_directory, reference_name, template_location)
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 55
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 56
 # TODO: add reference link in index note of parent folder
 # TODO: Make another template file in the reference folder
 # TODO: When copying over configs, change some things.
@@ -790,7 +799,7 @@ def setup_folder_for_new_reference(
             ' Make sure to update the reference file and'\
             ' The files for new mathematicians!')
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 61
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 62
 def get_index_notes_from_subdirectory(
         vault: PathLike, # The path to the Obsidian vault directory.
         subdirectory: PathLike, # The path, relative to `vault` of the subdirectory of of the vault for the reference.
@@ -812,7 +821,7 @@ def get_index_notes_from_subdirectory(
         index_notes = [VaultNote(vault, rel_path=index_note) for index_note in index_notes]
     return index_notes
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 63
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 64
 # TODO: reformat
 def get_index_notes_from_index_note(
         vault: PathLike, reference_name: str,
@@ -859,7 +868,7 @@ def get_index_notes_from_index_note(
                        for index_note in index_notes]
     return index_notes
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 66
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 67
 def reference_folders_in_vault(vault: PathLike) -> dict[str, str]:
     """Returns a dict of reference folders in vault.
     
@@ -898,7 +907,7 @@ def reference_folders_in_vault(vault: PathLike) -> dict[str, str]:
     return reference_folders
 
 
-# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 69
+# %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 70
 # TODO: reformat
 def files_in_reference_folder(
         vault: PathLike, reference: str, as_list: bool = False,
