@@ -9,6 +9,7 @@ __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'notation_sum
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 3
 import os
 from os import PathLike
+from pathlib import Path
 import re
 from typing import Optional, Union
 
