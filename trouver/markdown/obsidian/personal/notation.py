@@ -633,6 +633,10 @@ def _latex_in_original_from_notat_notes_to_main_note(
 
     all_latex_in_original = Multiset()
     for notat_note in notation_notes_of_main_note:
+        # TODO: assert that _latex_in_original_in_notat outputs list of str;
+        # I came across an example where it outputs a list of a list
+        # by virtue of the `latex_in_original` field of a notation note
+        # being `[[ Y(S)]]`, when it should have been `["[ Y(S)]"]` instead.
         all_latex_in_original.update(_latex_in_original_in_notat(notat_note))
     return all_latex_in_original
 
