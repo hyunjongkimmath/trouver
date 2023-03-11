@@ -242,9 +242,11 @@ def append_to_notation_note_summarization_database(
         'Notation', 'Latex in original', 'Summary', 'Main note name',
         'Processed main note contents']
     cols_to_update = [
-      'Time modified', 'Notation note name', 'Notation', 'Latex in original', 'Summary', 'Main note name']
+      'Time modified', 'Processed main note contents', 'Notation', 'Latex in original', 'Summary', 'Main note name']
     append_to_database(
-        file, new_df, cols, 'Processed main note contents', cols_to_update, backup)
+        file, new_df, cols, 'Notation note name', cols_to_update, backup)
+# TODO: think about whether the 'Notation note name' column would make for an
+# appropriate pivot.
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 33
 def single_input(
