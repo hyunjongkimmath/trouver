@@ -268,6 +268,11 @@ class VaultNote:
             vault.
     - `subdirectory` - Union[PathLike, None]
     - `hints` - list[PathLike]
+
+    **Raises**
+    
+    - ValueError
+        - if `rel_path` and `name` are both `None`.
     """
     
     cache = {}
@@ -282,7 +287,11 @@ class VaultNote:
             hints: list[PathLike] = [] # Paths, relative to `subdirectory`, to directories where the note file may be found. This is for speedup. Defaults to the empty list, in which case the vault note is searched in all of `subdirectory`.
             ):
         self.vault = Path(vault)
-        assert rel_path or name
+        if rel_path is None and name is None:
+            raise ValueError(
+                "In constructing a `VaultNote` object, the parameters `rel_path`"
+                " and `name` parameters were expected to be given arguments, but"
+                " both parameters are given `None` as arguments.")
         if rel_path is not None:
             self.rel_path = str(rel_path)
             self.name = note_name_from_path(self.rel_path)

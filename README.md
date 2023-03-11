@@ -895,6 +895,31 @@ template.
 
 #### Ver. 0.0.4
 
+- Made the constructor of the `VaultNote` class in
+  `markdown.obsidian.vault` raise a `ValueError` as opposed to an
+  `AssertionError` if both the `name` and `rel_path` parameters are
+  given the argument `None`.
+- Added some examples for
+  `markdown.obsidian.personal.machine_learning.notation_summarization`
+- Changed `append_to_notation_note_summarization_database` to use the
+  `'Notation note name'` column as the pivot in invoking the
+  `append_to_database` function; previously, the
+  `'Processed main note contents'` column was used as the pivot column,
+  which meant that data for notation notes sharing the same main note
+  would be lost in making the database csv file.
+- Made
+  `markdown.obsidian.personal.machine_learning.notation_summarization`
+  import the `os.Path` class; the `notation_summarization` module was
+  previously using the `os.Path` class but not importing it.
+- Modified `copy_obisidian_vault_configs` and
+  `copy_obsidian_vault_configs_with_nice_modifications` in
+  `markdown.obsidian.personal.reference.ipynb` to take the parameter
+  `dirs_exist_ok`; if this is set to `False`, then attempting to copy
+  configs into an existing configs directory is prevented. Otherwise,
+  existing files in the pre-existing configs directory are overwritten.
+  See also the `dirs_exist_ok` parameter of the
+  [`shutil.copytree`](https://docs.python.org/3/library/shutil.html#shutil.copytree)
+  function.
 - Modified `latex_to_path_accepted_string` in `helper` to use the
   `sanitize_filename` function from the `pathvalidate` library. In
   particular, this should ensure that

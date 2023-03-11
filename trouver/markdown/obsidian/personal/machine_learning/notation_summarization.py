@@ -158,7 +158,7 @@ def _notation_has_been_summarized(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 21
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 22
 def gather_notation_note_summaries(
         vault: PathLike,
         notes: list[VaultNote]
@@ -183,7 +183,7 @@ def gather_notation_note_summaries(
     return pd.DataFrame(summary_data)
     
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 24
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 25
 def append_to_notation_note_summarization_database(
         vault: PathLike, # The vault freom which the data is drawn
         file: PathLike, # The path to a CSV file
@@ -248,7 +248,7 @@ def append_to_notation_note_summarization_database(
 # TODO: think about whether the 'Notation note name' column would make for an
 # appropriate pivot.
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 33
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 34
 def single_input(
         main_note_content: str, # The text from which to summarize a notation
         latex_in_original: str, # A substring in main_note_content which is a latex string in which the notation is introduced.
@@ -256,7 +256,7 @@ def single_input(
 
     return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 36
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 37
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 def append_column_for_single_text(
@@ -269,7 +269,7 @@ def append_column_for_single_text(
         lambda row: single_input(row["Processed main note contents"], row["Latex in original"]), axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 42
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 43
 def fix_summary_formatting(
         summary: str
         ) -> str:
@@ -288,7 +288,7 @@ def fix_summary_formatting(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 46
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
 def summarize_notation(
         main_content: str,
         latex_in_original: str,
@@ -309,7 +309,7 @@ def summarize_notation(
         summary = fix_summary_formatting(summary)
     return summary
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 48
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 49
 def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
     """Escape the `latex_in_original` field in the metadata.
     
@@ -328,7 +328,7 @@ def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 50
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 51
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
