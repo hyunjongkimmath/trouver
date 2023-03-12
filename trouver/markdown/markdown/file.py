@@ -618,7 +618,12 @@ class MarkdownFile:
             tags: list[str] # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
             ) -> None:
         """
-        Remove tags from the frontmatter metadata, if they exist.
+        Remove specified tags from the frontmatter metadata, if
+        the frontmatter metadata and the specified tags.
+
+        If the `MarkdownFile` object does not have a frontmatter or
+        if the frontmatter does not include a `tags` line, then
+        the `MarkdownFile` object is not modified.
         
         Assumes that this MarkdownFile object has a frontmatter and
         that the frontmatter includes a tags line.
@@ -628,6 +633,8 @@ class MarkdownFile:
         """
         tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
         metadata = self.metadata()
+        if metadata is None or not 'tags' in metadata:
+            return
         set_of_tags = set(metadata['tags'])
         set_of_tags -= set(tags)
         metadata['tags'] = list(set_of_tags)

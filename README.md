@@ -895,6 +895,12 @@ template.
 
 #### Ver. 0.0.4
 
+- Modified the `MarkdownFile.remove_tags` method in
+  `markdown.markdown.file` to simply return and not change the
+  `MarkdownFile` object if the `MarkdownFile` object does not have YAML
+  frontmatter metadata or if the frontmatter YAML metadata does not
+  include a `tags` line. In particular, `MarkdownFile.remove_tags` does
+  not raise an Error in either of these cases.
 - Made the constructor of the `VaultNote` class in
   `markdown.obsidian.vault` raise a `ValueError` as opposed to an
   `AssertionError` if both the `name` and `rel_path` parameters are
