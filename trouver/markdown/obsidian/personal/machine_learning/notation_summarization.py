@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'notation_summarization_data_from_note',
-           'gather_notation_note_summaries', 'append_to_notation_note_summarization_database', 'single_input',
-           'append_column_for_single_text', 'fix_summary_formatting', 'summarize_notation',
-           'append_summary_to_notation_note']
+           'gather_notation_note_summaries', 'append_to_notation_note_summarization_database',
+           'single_input_for_notation_summarization', 'append_column_for_single_text', 'fix_summary_formatting',
+           'summarize_notation', 'append_summary_to_notation_note']
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 3
 import os
@@ -249,14 +249,21 @@ def append_to_notation_note_summarization_database(
 # appropriate pivot.
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 34
-def single_input(
-        main_note_content: str, # The text from which to summarize a notation
+def single_input_for_notation_summarization(
+        main_note_content: str, # The mathematical text that introduces the notation and from which to summarize a notation.
         latex_in_original: str, # A substring in main_note_content which is a latex string in which the notation is introduced.
-        ) -> str: 
+        ) -> str:
+    """
+    Format an input for a
+    `transformers.pipelines.text2text_generation.SummarizationPipeline`
+    object to summarize a notation introduced in a mathematical text.
 
+    Note that this function is used to format data used to train/validate
+    the summarization model within the `SummarizationPipeline`.
+    """
     return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 37
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 38
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 def append_column_for_single_text(
@@ -266,10 +273,12 @@ def append_column_for_single_text(
     DataFrame to represent the input into an ML model as a single text
     """
     single_text_column = df.apply(
-        lambda row: single_input(row["Processed main note contents"], row["Latex in original"]), axis=1)
+        lambda row: single_input_for_notation_summarization(
+            row["Processed main note contents"], row["Latex in original"]),
+        axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 43
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 44
 def fix_summary_formatting(
         summary: str
         ) -> str:
@@ -288,7 +297,7 @@ def fix_summary_formatting(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 48
 def summarize_notation(
         main_content: str,
         latex_in_original: str,
@@ -303,13 +312,13 @@ def summarize_notation(
     `main_content` in which a notation is introduced.
     """
     summarizer_output = summarizer(
-        single_input(main_content, latex_in_original))
+        single_input_for_notation_summarization(main_content, latex_in_original))
     summary = summarizer_output[0]['summary_text']
     if fix_formatting:
         summary = fix_summary_formatting(summary)
     return summary
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 49
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 50
 def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
     """Escape the `latex_in_original` field in the metadata.
     
@@ -328,11 +337,11 @@ def _escape_latex_in_original_in_metadata(notation_mf: MarkdownFile):
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 51
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 52
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
-        summarizer: pipelines.text2text_generation.SummarizationPipeline,
+        summarizer: pipelines.text2text_generation.SummarizationPipeline, # Contains ML model which summarizes the notation, see `summarize_notation` function.
         main_note: Optional[VaultNote] = None # The main note from which the notation comes from. If this is `None`, then the `main_note` is obtained via the `main_of_notation` function.
     ) -> None:
     """Summarize a notation introduced in a mathematical text
