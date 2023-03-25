@@ -573,8 +573,16 @@ class MarkdownFile:
             tag: str # The tag. Does not start with the hashtag `'#'`.
             ) -> bool:
         """
-        Return `True` if the MarkdownFile has the specified tag in its yaml
-        frontmatter meta.
+        Return `True` if the Markdown file has the specified tag in its
+        YAML frontmatter metadata.
+
+        More specifically, return `True` if the `MarkdownFile` objeect
+
+        1. has YAML frontmatter metadata,
+        2. the metadata has a `'tags'` section,, and
+        3. the `'tags'` section is a list with the specified tag.
+
+        Note that `tag` should not start with the hashtag `#` charater.
         """
         if not self.has_metadata():
             return False
