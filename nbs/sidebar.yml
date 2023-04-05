@@ -30,5 +30,8 @@ website:
       - 25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb
       - 26_markdown.obsidian.personal.machine_learning.definition_identification.ipynb
       - TODO.ipynb
+      - how_to.install_trouver.ipynb
       - how_to.train_ml_model.fastai.ipynb
+      - release_notes.ipynb
+      - tutorial.walkthrough.ipynb
       - using_regex.ipynb

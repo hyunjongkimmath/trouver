@@ -12,11 +12,33 @@ trouver
 Mathematicians constantly need to learn and read about concepts with
 which they are unfamiliar. Keeping mathematical notes in an
 [`Obsidian.md`](https://obsidian.md/) vault can help with this learning
-process as `Obsidian.md`.
+process as `Obsidian.md` makes it easy to edit notes, link notes to one
+another, organize notes, read notes, and access notes.
+
+This library currently includes functionalities to 1. Parse LaTeX
+documents (e.g. those available on [`arxiv.org`](https://arxiv.org/))
+and divide them into reasonably lengthed parts/notes/excerpts as `.md`
+files, especially for viewing and editing on `Obsidian.md`. 2. Use a
+machine learning model to categorize the type of text each excerpt is
+(e.g. introducing definitions/notations, presenting a concept,
+presenting a proof). 3. Use a machine learning model to identify
+notations introduced in each excerpt. 4. Create accompanying notes for
+each notation as more `.md` files. 5. Use a machine learning model to
+summarize what these notations denote in the created accompanying notes.
+
+As some of these functionalities use machine learning models, they
+ultimately cannot run perfectly. Nevertheless, some of these models,
+particularly those described in 2 and 3, perform well enough that these
+functionalities are quite useful as tools to help reading mathematical
+papers.
+
+Moreover, the results of the machine learning models are recorded in the
+notes/`.md` files. One can very well correct these recorded results by
+manually editing the affected `.md` files with any file editor.
 
 ## Disclaimer
 
-At the time of this writing (01/18/2023), there is only one
+At the time of this writing (04/03/2023), there is only one
 author/contributor of this library. Nevertheless, the author often
 refers to himself as “the author”, “the authors”, or “the
 author/authors” in writing this library. Moreover, the author often uses
@@ -38,9 +60,8 @@ The author/authors of this library is/are also not affiliated with
 
 ## Install
 
-``` python
-# TODO Write installation instructions
-```
+We recommend having at least 3GB of free space to install `trouver` and
+related components.
 
 ``` sh
 pip install trouver
@@ -49,7 +70,15 @@ pip install trouver
 You may also have to manually install other libraries which are required
 by the `fast.ai` and/or `Hugging Face` libraries.
 
+We recommend installing [Obsidian.md](https://obsidian.md/) to view,
+edit, and modify mathematical notes created by or which interact with
+`trouver`.
+
+See `how_to.install_trouver` for more details on installation.
+
 # How to use
+
+See also `tutorial.walkthrough` to set up a basic `trouver` workflow.
 
 ## Parse LaTeX documents and split them into parts
 
@@ -107,7 +136,10 @@ While `Obsidian.md` is not strictly necessary to use `trouver` or to
 read and write the files created by `setup_reference_from_latex_parts`
 (in fact, any traditional file reader/writer can be used for such
 purposes), reading and writing the files on `Obsidian.md` can be
-convenient.
+convenient. Moreover, even when you use Obsidian, your data is in a
+local folder. In particular, even if `Obsidian.md` happens to get shut
+down, get bought, or change privacy policy, you will (supposedly) not
+lose access to your data.
 
 ## ML model utilities
 
@@ -314,7 +346,7 @@ with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_di
     ---
     cssclass: clean-embeds
     aliases: [number_theory_reference_1_ring]
-    tags: [_meta/literature_note, _reference/number_theory_reference_1, _auto/_meta/definition]
+    tags: [_reference/number_theory_reference_1, _meta/literature_note, _auto/_meta/definition]
     ---
     # Ring[^1]
 
@@ -480,11 +512,13 @@ only on notes which have the `_meta/definition` or `_meta/notation` tags
 (or `_auto/_meta/definittion` or `_auto/_meta/notation`) in their
 frontmatter YAML metadata[^2].
 
-> **Warning** The `automatically_mark_notations` function note only adds
+> **Warning** The `automatically_mark_notations` function not only adds
 > double asterisks `**` to LaTeX math mode strings, but also removes
 > components such as links and footnotes from the text of the note. It
 > is recommended to only apply this function to notes whose text has not
-> been embellished with such components[^3].
+> been embellished with such components[^3]. Moreover, the
+> `automatically_mark_notations` is currently buggy and should not be
+> applied to the same note twice
 
 The test vault used in the below example contains a single note which
 has already been marked with the `_meta/definition` and `_meta/notation`
@@ -570,7 +604,7 @@ with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_di
     ---
     cssclass: clean-embeds
     aliases: [number_theory_reference_1_ring_of_integers_modulo_n]
-    tags: [_meta/literature_note, _auto/s, _auto/F, _meta/definition, _reference/number_theory_reference_1, _auto/a, _auto/e, _auto/l, _meta/notation]
+    tags: [_meta/literature_note, _auto/l, _auto/e, _auto/F, _meta/notation, _auto/a, _meta/definition, _reference/number_theory_reference_1, _auto/s]
     ---
     # Topic[^1]
     The ring of integers modulo $n$, denoted **$\mathbb{Z}/n\mathbb{Z}$** has the elements $[m]$ for each integer $m$ where $[m_1] = [m_2]$ if and only if $m_1-m_2$ is divisible by $n$. As a ring, it has the following structure:
@@ -633,7 +667,7 @@ summarizer("summarize:Let us now define the upper half plane $\mathbb{H}$ as the
 
     Your max_length is set to 200, but you input_length is only 54. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=27)
 
-    [{'summary_text': 'the upper half plane of the complex plane $\\ mathbb{ H} $. It is defined as the set of all complex numbers of real part greater than $1$.'}]
+    [{'summary_text': 'the upper half plane of the real part greater than $1$. It is defined as the set of all complex numbers of real parts greater than $$.'}]
 
 In the above example, the summarizer determines that the notation
 `$\mathbb{H}$` introduced in the text
@@ -762,25 +796,6 @@ with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_di
 
     Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)
 
-
-
-    This is what the newly created notation notes look like after we add the predicted summaries:
-
-
-    ---
-    detect_regex: []
-    latex_in_original: [R/I]
-    tags: [_auto/notation_summary]
-    ---
-    $R/I$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring $R/I$ where $R$ is a ring and $I$ is an ideal. It is given by $$\begin{align*} [x]+[y] &= [x+y]\\[x],\cdot [y]$. [$][x]$ is the ring whose elements are the equivalence classes of elements of $R = [\3]$ given by 
-
-    ---
-    detect_regex: []
-    latex_in_original: ["\\sim"]
-    tags: [_auto/notation_summary]
-    ---
-    $\sim$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring $R/I$ given by $x\sim y$ where $R$ is a ring and $I$ is an ideal. 
-
 At the time of this writing (1/30/2023), the author of `trouver`
 believes that this summarization model could be improved upon with more
 data; thus far, this model was trained on less than 1700 data points.
@@ -891,102 +906,7 @@ template.
 
 # Release notes
 
-## Ver. 0
-
-#### Ver. 0.0.4
-
-- Updated the docstring of the `MarkdownFile.has_tag` method to more
-  clearly state when it returns `True`.
-- Modified the `append_summary_to_notation_note` function in
-  `markdown.obsidian.personal.machine_learning.notation_summarization`
-  to take a parameter `overwrite_previous_autogenerated_summary` which,
-  when set to `True`, tells the function to overwrite autogenerated
-  summaries in the notation note (a notation note is considered to have
-  an autogenerated summary if it has the `_auto/notation_summary` tag in
-  its YAML frontmatter metadata).
-- Modified the `MarkdownFile.remove_tags` method in
-  `markdown.markdown.file` to simply return and not change the
-  `MarkdownFile` object if the `MarkdownFile` object does not have YAML
-  frontmatter metadata or if the frontmatter YAML metadata does not
-  include a `tags` line. In particular, `MarkdownFile.remove_tags` does
-  not raise an Error in either of these cases.
-- Made the constructor of the `VaultNote` class in
-  `markdown.obsidian.vault` raise a `ValueError` as opposed to an
-  `AssertionError` if both the `name` and `rel_path` parameters are
-  given the argument `None`.
-- Added some examples for
-  `markdown.obsidian.personal.machine_learning.notation_summarization`
-- Changed `append_to_notation_note_summarization_database` to use the
-  `'Notation note name'` column as the pivot in invoking the
-  `append_to_database` function; previously, the
-  `'Processed main note contents'` column was used as the pivot column,
-  which meant that data for notation notes sharing the same main note
-  would be lost in making the database csv file.
-- Made
-  `markdown.obsidian.personal.machine_learning.notation_summarization`
-  import the `os.Path` class; the `notation_summarization` module was
-  previously using the `os.Path` class but not importing it.
-- Modified `copy_obisidian_vault_configs` and
-  `copy_obsidian_vault_configs_with_nice_modifications` in
-  `markdown.obsidian.personal.reference.ipynb` to take the parameter
-  `dirs_exist_ok`; if this is set to `False`, then attempting to copy
-  configs into an existing configs directory is prevented. Otherwise,
-  existing files in the pre-existing configs directory are overwritten.
-  See also the `dirs_exist_ok` parameter of the
-  [`shutil.copytree`](https://docs.python.org/3/library/shutil.html#shutil.copytree)
-  function.
-- Modified `latex_to_path_accepted_string` in `helper` to use the
-  `sanitize_filename` function from the `pathvalidate` library. In
-  particular, this should ensure that
-  `make_notation_notes_from_double_asts` only attempts to create
-  notation notes with names which are valid as file names.
-- The `custom_commands` function in `latex.convert` can parse LaTeX
-  `\newcommand` and `\command` invocations in which the defined command
-  is not surrounded by parentheses, e.g. `\newcommand\A{{\mathbb A}}` is
-  recognized as defining the command `\A` which has display text
-  `{\mathbb A}`.
-- Made `adjust_common_syntax_to_markdown` in `latex.convert` recognize
-  the `eqnarray` environment as an environment to adjust.
-
-#### Ver. 0.0.3
-
-- Fixed [issue \#
-  32](https://github.com/hyunjongkimmath/trouver/issues/32) in which
-  setting up an `Obsidian.md` vault folder from a LaTeX document was not
-  numbering sections and theorem-like environments correctly with a
-  theorem-like environment of the form
-  `\numbertheorem{theorem}{Theorem}[section]` was being defined.
-- Finished implementing `append_summary_to_notation_note`
-- Modified `dict_to_metadata` function to escape and enquote strings if
-  necessary to take into consideration that `yaml.safe_load` does uses
-  quotations to consider strings as escaped.
-- Fixed a bug in `notation_notes_linked_in_see_also_section` where the
-  main of notation where the `VaultNote` objects were incorrectly
-  constructed by passing an argument to the `rel_path` parameter as
-  opposed to the `name` parameter.
-- Fixed a bug in `_obsidian_vault_plugin_configs_file`; I had realized
-  that files for non-core `Obsidian.md` plugins are stored in
-  `.obsidian/plugins/<plugin_name>` in the vault directory.
-- Changed the default `template_location` argument from `'.'` to `'/'`
-  in `markdown.obsidian.personal.reference`.
-- Move `latex_to_path_accepted_string` function from
-  `20_markdown.obsidian.personal.notation.ipynb` to `00_helper.ipynb`
-- Modify `_consider_part_to_add` in `16_latex.convert` so that
-  multi-line section titles in LaTeX documents get parsed as single-line
-  titles
-- Modify `convert_title_to_folder_name` in
-  `12_markdown.obsidian.personal.index_notes.ipynb` and
-  `_create_note_for_part` in `16_latex.convert.ipynb` to use
-  `sanitize_filename`
-
-#### Ver. 0.0.2
-
-- I made the mistake of note including much of the contents of
-  `index.ipynb` in the `pypi` library release, so that should be fixed..
-
-#### Ver. 0.0.1
-
-- Initial release
+See `release_notes`.
 
 [^1]: Given time, the author of `trouver` eventually plans on writing
     instructions on training each of the models.
