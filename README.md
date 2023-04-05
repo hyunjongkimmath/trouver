@@ -40,9 +40,9 @@ manually editing the affected `.md` files with any file editor.
 
 At the time of this writing (04/03/2023), there is only one
 author/contributor of this library. Nevertheless, the author often
-refers to himself as “the author”, “the authors”, or “the
-author/authors” in writing this library. Moreover, the author often uses
-the [“editorial we”](https://en.wikipedia.org/wiki/We#Editorial_we) in
+refers to himself as *the author*, *the authors*, or *the
+author/authors* in writing this library. Moreover, the author often uses
+the [*editorial we*](https://en.wikipedia.org/wiki/We#Editorial_we) in
 writing this library.
 
 Use this library at your own risk as using this library can write or
@@ -82,8 +82,8 @@ See also `tutorial.walkthrough` to set up a basic `trouver` workflow.
 
 ## Parse LaTeX documents and split them into parts
 
-`Trouver` can parse `LaTeX` documents and split them up into “parts”
-which are convenient to read in `Obsidian.md` and to take notes on. For
+`Trouver` can parse `LaTeX` documents and split them up into parts which
+are convenient to read in `Obsidian.md` and to take notes on. For
 example, the following code splits up this
 [paper](https://arxiv.org/abs/2106.10586) in creates a folder in an
 Obsidian.md vault\[^4\].
@@ -133,7 +133,8 @@ text in magenta are links, each to a file in the `Obsidian.md`
 vault](.\images/index_setup_reference_from_latex_parts_demonstration.png)
 
 While `Obsidian.md` is not strictly necessary to use `trouver` or to
-read and write the files created by `setup_reference_from_latex_parts`
+read and write the files created by
+[`setup_reference_from_latex_parts`](https://hyunjongkimmath.github.io/trouver/latex.convert.html#setup_reference_from_latex_parts)
 (in fact, any traditional file reader/writer can be used for such
 purposes), reading and writing the files on `Obsidian.md` can be
 convenient. Moreover, even when you use Obsidian, your data is in a
@@ -144,10 +145,11 @@ lose access to your data.
 ## ML model utilities
 
 We have trained a few ML models to detect/predict and provide
-information about “short” mathematical text. These ML models are
-available on [`Hugging Face`](https://huggingface.co/) and as such, they
-can be downloaded to and used from one’s local machines. Please note
-that ML models can be large and the locations that the Hugging Face
+information about short (or at least not-too-long) mathematical text.
+These ML models are available on
+[`Hugging Face`](https://huggingface.co/) and as such, they can be
+downloaded to and used from one’s local machines. Please note that ML
+models can be large and the locations that the Hugging Face
 [Transformers](https://huggingface.co/docs/transformers/index) library
 downloads such models to can vary from machine to machine.
 
@@ -498,27 +500,31 @@ print(does_not_contain_a_notation)
 ```
 
 Similarly as with the `information_note_type` model, `trouver` provides
-functions (namely `automatically_mark_notations`) which locate within
-notes mathematical notations that are newly introduced in the text of
-the notes and record on these notes locations of such notations (by
-surrounding double asterisks `**` to LaTeX math mode strings). Note that
-this is done by applying the `notation_identification` model’s `predict`
-method as many times on a single piece of text as there are LaTeX math
-mode strings in the text. As such, these predictions often take a long
-time.
+functions (namely
+[`automatically_mark_notations`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations))
+which locate within notes mathematical notations that are newly
+introduced in the text of the notes and record on these notes locations
+of such notations (by surrounding double asterisks `**` to LaTeX math
+mode strings). Note that this is done by applying the
+`notation_identification` model’s `predict` method as many times on a
+single piece of text as there are LaTeX math mode strings in the text.
+As such, these predictions often take a long time.
 
-To save time, it is recommended to apply `automatically_mark_notations`
+To save time, it is recommended to apply
+[`automatically_mark_notations`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations)
 only on notes which have the `_meta/definition` or `_meta/notation` tags
 (or `_auto/_meta/definittion` or `_auto/_meta/notation`) in their
 frontmatter YAML metadata[^2].
 
-> **Warning** The `automatically_mark_notations` function not only adds
-> double asterisks `**` to LaTeX math mode strings, but also removes
-> components such as links and footnotes from the text of the note. It
-> is recommended to only apply this function to notes whose text has not
-> been embellished with such components[^3]. Moreover, the
-> `automatically_mark_notations` is currently buggy and should not be
-> applied to the same note twice
+> **Warning** The
+> [`automatically_mark_notations`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations)
+> function not only adds double asterisks `**` to LaTeX math mode
+> strings, but also removes components such as links and footnotes from
+> the text of the note. It is recommended to only apply this function to
+> notes whose text has not been embellished with such components[^3].
+> Moreover, the
+> [`automatically_mark_notations`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations)
+> is currently buggy and should not be applied to the same note twice
 
 The test vault used in the below example contains a single note which
 has already been marked with the `_meta/definition` and `_meta/notation`
@@ -684,14 +690,15 @@ LaTeX math mode strings with double asterisks `**` (manually and/or by
 using the `notation_identification` model, see [the section about the
 `notation_identification`
 model](#use-an-ml-model-to-find-notations-introduced-in-text) above), we
-can use the `make_notation_notes_from_double_asts` function to make
-notation notes dedicated to those introduced notations and to link these
-newly created notation notes to the information notes.
+can use the
+[`make_notation_notes_from_double_asts`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts)
+function to make notation notes dedicated to those introduced notations
+and to link these newly created notation notes to the information notes.
 
 After making these notation notes, we can use the
-`append_summary_to_notation_note` function to predict what each notation
-is supposed to denote and add these predicted summaries to the notation
-notes themselves.
+[`append_summary_to_notation_note`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_summary_to_notation_note)
+function to predict what each notation is supposed to denote and add
+these predicted summaries to the notation notes themselves.
 
 For the example below, there is at least one information note with
 notations already marked with double asterisks `**`.
@@ -795,6 +802,25 @@ with (tempfile.TemporaryDirectory(prefix='temp_dir', dir=os.getcwd()) as temp_di
     [^1]: Kim, 
 
     Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)
+
+
+
+    This is what the newly created notation notes look like after we add the predicted summaries:
+
+
+    ---
+    detect_regex: []
+    latex_in_original: [R/I]
+    tags: [_auto/notation_summary]
+    ---
+    $R/I$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring of the ideal $R/I$. It is the ring whose elements are the equivalence classes of elements of $R$. 
+
+    ---
+    detect_regex: []
+    latex_in_original: ["\\sim"]
+    tags: [_auto/notation_summary]
+    ---
+    $\sim$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring of the ideal $R/I$. It is the ring whose elements are the equivalence classes of elements of a ring $R$. 
 
 At the time of this writing (1/30/2023), the author of `trouver`
 believes that this summarization model could be improved upon with more
@@ -921,14 +947,21 @@ See `release_notes`.
     introduces a definition or a notation and will assign neither of the
     tags when the note does not introduce a definition or a notation.
 
-[^3]: More precisely, `automatically_mark_notations` first applies
-    `process_standard_information_note` to a `MarkdownFile` object
-    constructed from the `VaultNote` object to roughly obtain the “raw
-    text” of the note, uses that raw text to locate notations, marks the
-    notations in the raw text, and then replaces the text from the note
-    with the raw text with notations marked. In the process of obtaining
-    the “raw text”, the `process_standard_information_note` function
-    removes components such as links and footnotes from the text.
+[^3]: More precisely,
+    [`automatically_mark_notations`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations)
+    first applies
+    [`process_standard_information_note`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_processing.html#process_standard_information_note)
+    to a
+    [`MarkdownFile`](https://hyunjongkimmath.github.io/trouver/markdown.markdown.file.html#markdownfile)
+    object constructed from the
+    [`VaultNote`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote)
+    object to roughly obtain the *raw text* of the note, uses that raw
+    text to locate notations, marks the notations in the raw text, and
+    then replaces the text from the note with the raw text with
+    notations marked. In the process of obtaining the raw text, the
+    [`process_standard_information_note`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_processing.html#process_standard_information_note)
+    function removes components such as links and footnotes from the
+    text.
 
 [^4]: There seems to be a bug in the above example where inexplicable
     tags (e.g. `_auto/s`, `_auto/a`) are added to the note along with
