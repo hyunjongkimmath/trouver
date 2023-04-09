@@ -76,9 +76,27 @@ edit, and modify mathematical notes created by or which interact with
 
 See `how_to.install_trouver` for more details on installation.
 
+> **Warning** At the time of this writing, `trouver` has not been tested
+> on MacOS extensively. We have also found that running the latest
+> Python versions in Jupyter notebooks on modern MacOS machines
+> (e.g. those using the M1 processor and in particular the arm64
+> architecture) lead to some issues. cf. stackexchange discussions such
+> as
+>
+>     - https://apple.stackexchange.com/questions/436801/m1-mac-mach-o-file-but-is-an-incompatible-architecture-have-x86-64-need-a
+>     - https://stackoverflow.com/questions/71502583/jupiter-wont-launch-from-terminal-on-m1-macbook.
+>
+> <!--- > One can also try running `trouver` on an older version of Python (e.g. version 3.7) to avoid these Jupyter problems. In this case, one may need to install some additional Python packages, such as [`graphlib-backport`](https://pypi.org/project/graphlib-backport/). -->
+
 # How to use
 
-See also `tutorial.walkthrough` to set up a basic `trouver` workflow.
+In the following section, we present some of `trouver`’s functionalities
+with some sample code. To run code, make sure to copy the contents of
+the `nbs/_tests` folder of the `trouver` GitHub repository into the
+working directory (as a folder names `_tests`).
+
+See also `tutorial.walkthrough` for a tutorial to set up a basic
+`trouver` workflow.
 
 ## Parse LaTeX documents and split them into parts
 
@@ -925,7 +943,9 @@ Park](https://sites.google.com/wisc.edu/spark483) for agreeing to allow
 their coauthored paper, [*Global $\mathbb{A}^1$-degrees covering maps
 between modular curves*](https://arxiv.org/abs/2106.10586), along with
 some of Park’s expository writings, to be used in examples in this
-library.
+library. The author of `trouver` further thanks Sun Woo Park for his
+help in testing `trouver` on a MacOS computer and for reviewing the
+`tutorial.walkthrough` page.
 
 `trouver` was built using [`nbdev`](https://nbdev.fast.ai/) as a
 template.
