@@ -9,6 +9,7 @@ from os import PathLike
 import re
 import string
 from typing import Iterator, Union, Optional
+import warnings
 import yaml
 
 from trouver.helper import (
@@ -27,8 +28,8 @@ from trouver.markdown.obsidian.tags import (
 )
 
 # %% auto 0
-__all__ = ['find_front_matter_meta_in_markdown_text', 'dict_to_metadata_lines', 'replace_embedded_links_with_text',
-           'MarkdownLineEnum', 'MarkdownFile']
+__all__ = ['find_front_matter_meta_in_markdown_text', 'dict_to_metadata_lines', 'parse_metadata_string',
+           'replace_embedded_links_with_text', 'MarkdownLineEnum', 'MarkdownFile']
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 5
 def find_front_matter_meta_in_markdown_text(
@@ -57,6 +58,7 @@ def _enquote(str):
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 13
 def dict_to_metadata_lines(
         data: dict[str, Union[str, list[str]]] # The keys are str of the labels/names of the metadata. The values are the metadata, which are usually str or list.
+
         ) -> list[str]: # Each str entry is the line for the yaml frontmatter metadata of an Obsidian Markdown note.
     """
     Convert a dict to a list of str of yaml frontmatter metadata
@@ -86,12 +88,50 @@ def _add_line_for_list(
     """This is a helper function for `dict_to_metadata_lines`."""
     escaped_strings_in_list_value = [
         _enquote(single_value.replace('\\', '\\\\'))
-        if isinstance(single_value, str) and ('\\' in single_value or '{' in single_value)
+        if _list_string_for_yaml_metadata_needs_quotes(single_value) 
         else single_value
         for single_value in list_value]
     lines.append(f"{key}: [{', '.join(escaped_strings_in_list_value)}]")
 
+def _list_string_for_yaml_metadata_needs_quotes(single_value):
+    return isinstance(single_value, str) and bool(re.compile(r'[\\\{\[]').match(single_value))
+
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 20
+# TODO: apply this function to the MarkdownFile.metadata function and the MarkdownFile.write function
+def parse_metadata_string(
+        metadata_str: str, # The string for YAML frontmatter metadata of an Obsidian Markdown note
+        raise_error: bool = True, # If `True`, then raise an Error.
+        raise_warning: bool = True # If `raise_error` is false and `raise_warning` is `True`, then raise a warning message.
+        ) -> Union[dict[str], None]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`. If the YAML metadata string cannot be parsed, then this return value is `None`.
+    """
+    Attempt to parse the string for YAML frontmatter metadata of an
+    Obsidian Markdown note.
+
+    **Raises**
+
+    - ValueError
+        - If `raise_error` is `True` and if any `yaml.YAMLError` exceptions
+        are raised when reading (i.e. parsing or scanning the YAML metadata.
+        In doing so, `metadata_str` is printed. Moreover,
+        the appropriate `yaml.YAMLError` (e.g. a `yaml.parser.ParserError`,
+        `yaml.scanner.ScannerError`, or `yaml.reader.ReaderError`) is also raised.
+    - Warning
+        - If `raise_error` is `False` and `raise_warning` is `True` and if any
+        `yaml.YAMLError` exceptions are raise when reading.
+    """
+    try:
+        return yaml.safe_load(metadata_str)
+    except (yaml.YAMLError) as e:
+        if raise_error:
+            raise ValueError(
+                "The following YAML frontmatter metadata string cannot be parsed:\n"
+                f"{metadata_str}\n\n") from e
+        elif raise_warning:
+            warnings.warn(
+                "The following YAML frontmatter metadata string cannot be parsed:\n"
+                f"{metadata_str}\n\n")
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 32
 def replace_embedded_links_with_text(
         text: str, vault: PathLike) -> str:
     """
@@ -119,7 +159,7 @@ def replace_embedded_links_with_text(
         text = text[:start] + replace + text[end:]
     return text
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 22
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 34
 class MarkdownLineEnum(Enum):
     # See https://www.markdownguide.org/basic-syntax/
     DEFAULT = 0
@@ -139,7 +179,7 @@ class MarkdownLineEnum(Enum):
     DISPLAY_LATEX_END = 14  # End line of DISPLAY latex
     DISPLAY_LATEX = 15  # All other DISPLAY latex lines
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 25
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 37
 class MarkdownFile:
     r"""
     Parses and represents the contents of an Obsidian styled Markdown
@@ -465,6 +505,17 @@ class MarkdownFile:
         for index_to_remove in reversed(part_indices_to_remove):
             self.remove_line(index_to_remove)
         
+    def metadata_parts(
+            self
+            ) -> list[str]: # Each str is a 'line' from `self.parts` from the frontmatter YAML metadata.
+        # TODO: test
+        """
+        Return the sublist from `self.parts` consisting of the parts
+        that are of the frontmatter yaml metadata.
+        """
+        return [part['line'] for part in self.parts 
+                if part['type'] == MarkdownLineEnum.META]
+    
     def metadata(
             self
             ) -> Union[dict[str], None]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`. If there is not frontmatter YAML metadata, then this return value is `None`.
@@ -484,10 +535,9 @@ class MarkdownFile:
             the appropriate `yaml.parser.ParserError`, `yaml.scanner.ScannerError`,
             or `yaml.reader.ReaderError` is also raised.
         """
-        metadata_parts = [part['line'] for part in self.parts 
-                          if part['type'] == MarkdownLineEnum.META]
+        md_parts = self.metadata_parts()
         try:
-            return yaml.safe_load('\n'.join(metadata_parts[1:-1]))
+            return yaml.safe_load('\n'.join(md_parts[1:-1]))
         except (yaml.YAMLError) as e:
             raise ValueError(
                 "There is invalid YAML formatting in a MarkdownFile object."
