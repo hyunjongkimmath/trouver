@@ -1,0 +1,1 @@
+The contents of this folder test the `append_summary_to_notation_note` function in `25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb`; more specifically, these are  tests to make sure that the `latex_in_original` field in the metadata of these notation notes are lists of actual string.
