@@ -13,7 +13,6 @@ from pathlib import Path
 import re
 from typing import Callable, Optional, Union
 
-import openai
 import pandas as pd
 from transformers import pipeline, pipelines
 
@@ -253,33 +252,42 @@ def append_to_notation_note_summarization_database(
 def single_input_for_notation_summarization(
         main_note_content: str, # The mathematical text that introduces the notation and from which to summarize a notation.
         latex_in_original: str, # A substring in main_note_content which is a latex string in which the notation is introduced.
+        latex_in_original_comes_first: bool = True # If `True`, the `latex_in_original` piece appears before the `main_note_content`
         ) -> str:
     """
     Format an input for a
     `transformers.pipelines.text2text_generation.SummarizationPipeline`
     object to summarize a notation introduced in a mathematical text.
 
+    The input consists of `main_note_content` as well as a part that is formatted as
+    `f"latex_in_original: {latex_in_original}"`.
+
     Note that this function is used to format data used to train/validate
     the summarization model within the `SummarizationPipeline`.
     """
-    return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
+    if latex_in_original_comes_first:
+        return f"latex_in_original: {latex_in_original}\n\n{main_note_content}"
+    else:
+        return f"{main_note_content}\n\nlatex_in_original: {latex_in_original}"
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 38
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 41
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 def append_column_for_single_text(
-        df: pd.DataFrame # Assumed to be structured just as a dataframe of a CSV file created/modified by append_to_notation_note_summarization_database``
+        df: pd.DataFrame, # Assumed to be structured just as a dataframe of a CSV file created/modified by append_to_notation_note_summarization_database``
+        latex_in_original_comes_first: bool = True # This is a parameter to pass to calls to the `single_input_for_notation_summarization` function. If `True`, the `latex_in_original` piece appears before the `main_note_content`
         ) -> None:
     """Append a column `"Single text"` to the notation note summarization
     DataFrame to represent the input into an ML model as a single text
     """
     single_text_column = df.apply(
         lambda row: single_input_for_notation_summarization(
-            row["Processed main note contents"], row["Latex in original"]),
+            row["Processed main note contents"], row["Latex in original"],
+            latex_in_original_comes_first),
         axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 44
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
 def fix_summary_formatting(
         summary: str
         ) -> str:
@@ -298,12 +306,13 @@ def fix_summary_formatting(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 49
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 52
 def summarize_notation(
         main_content: str,
         latex_in_original: str,
         summarizer: pipelines.text2text_generation.SummarizationPipeline,
         fix_formatting: bool = True, # If `True`, run `fix_summary_formatting` on `summarizer`'s summary before retuning it.
+        latex_in_original_comes_first: bool = True # This is a parameter to pass to calls to the `single_input_for_notation_summarization` function. If `True`, the `latex_in_original` piece appears before the `main_note_content`
         ) -> str:
     """Summarize a notation introduced in a mathematical text using
     a huggingface pipeline.
@@ -313,7 +322,8 @@ def summarize_notation(
     `main_content` in which a notation is introduced.
     """
     summarizer_output = summarizer(
-        single_input_for_notation_summarization(main_content, latex_in_original))
+        single_input_for_notation_summarization(
+            main_content, latex_in_original, latex_in_original_comes_first))
     summary = summarizer_output[0]['summary_text']
     if fix_formatting:
         summary = fix_summary_formatting(summary)
