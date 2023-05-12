@@ -57,44 +57,55 @@ def _enquote(str):
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 13
 def dict_to_metadata_lines(
-        data: dict[str, Union[str, list[str]]] # The keys are str of the labels/names of the metadata. The values are the metadata, which are usually str or list.
-
+        data: dict[str, Union[str, list[str]]], # The keys are str of the labels/names of the metadata. The values are the metadata, which are usually str or list.
+        enquote_entries_in_fields = list[str] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
         ) -> list[str]: # Each str entry is the line for the yaml frontmatter metadata of an Obsidian Markdown note.
     """
     Convert a dict to a list of str of yaml frontmatter metadata
     that Obsidian recognizes.
 
     This function is used in `MarkdownFile.replace_metadata`.
-    
-    **Returns**
-    - list[str]
     """
+
+    lines = [
+        _line_str(key, value, enquote_entries_in_fields)
+        for key, value in data.items()]
     # lines = []
     # for key, value in data.items():
-    #     value = '[' + ', '.join(value) + ']' if isinstance(value, list) else value
+    #     if isinstance(value, list):
+    #         _add_line_for_list(lines, key, value, key in enquote_entries_in_fields)
+    #         continue
     #     lines.append(f'{key}: {value}')
-    # return lines
-
-    lines = []
-    for key, value in data.items():
-        if isinstance(value, list):
-            _add_line_for_list(lines, key, value)
-            continue
-        lines.append(f'{key}: {value}')
     return lines
 
-def _add_line_for_list(
-        lines: list[str], key: str, list_value: list):
+def _line_str(
+        key: str,
+        value: Union[str, list[str]],
+        enquote_entries_in_fields = list[str]):
     """This is a helper function for `dict_to_metadata_lines`."""
+    list_value = value if isinstance(value, list) else [value]
     escaped_strings_in_list_value = [
-        _enquote(single_value.replace('\\', '\\\\'))
-        if _list_string_for_yaml_metadata_needs_quotes(single_value) 
-        else single_value
-        for single_value in list_value]
-    lines.append(f"{key}: [{', '.join(escaped_strings_in_list_value)}]")
+        _enquote(str(single_value).replace('\\', '\\\\'))
+        if key in enquote_entries_in_fields else str(single_value)
+        for single_value in list_value
+        ]
+    if isinstance(value, list):
+        return f"{key}: [{', '.join(escaped_strings_in_list_value)}]"
+    else:
+        return f"{key}: {escaped_strings_in_list_value[0]}"
 
-def _list_string_for_yaml_metadata_needs_quotes(single_value):
-    return isinstance(single_value, str) and bool(re.compile(r'[\\\{\[]').match(single_value))
+# def _add_line_for_list(
+#         lines: list[str], key: str, list_value: list, enquote: bool):
+#     """This is a helper function for `dict_to_metadata_lines`."""
+#     escaped_strings_in_list_value = [
+#         _enquote(single_value.replace('\\', '\\\\'))
+#         if _list_string_for_yaml_metadata_needs_quotes(single_value) 
+#         else single_value
+#         for single_value in list_value]
+#     lines.append(f"{key}: [{', '.join(escaped_strings_in_list_value)}]")
+
+# def _list_string_for_yaml_metadata_needs_quotes(single_value):
+#     return isinstance(single_value, str) and bool(re.compile(r'[\\\{\[\|\*]').match(single_value))
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 20
 # TODO: apply this function to the MarkdownFile.metadata function and the MarkdownFile.write function
@@ -371,7 +382,8 @@ class MarkdownFile:
     def write(
         self,
         vn: VaultNote, # Represents the file.
-        mode: str = 'w' # The specific mode to write the file with.
+        mode: str = 'w', # The specific mode to write the file with.
+        # enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
         ) -> None:
         """
         Write to the file specified by a `VaultNote` object.
@@ -381,6 +393,9 @@ class MarkdownFile:
         """
         if not vn.exists():
             vn.create()
+        # if enquote_entries_in_metadata_fields:
+        #     self.replace_metadata(
+        #         self.metadata(), enquote_entries_in_metadata_fields)
         with open(vn.path(), mode, encoding='utf-8') as file:
             file.write(str(self))
             file.close()
@@ -536,13 +551,14 @@ class MarkdownFile:
             or `yaml.reader.ReaderError` is also raised.
         """
         md_parts = self.metadata_parts()
-        try:
-            return yaml.safe_load('\n'.join(md_parts[1:-1]))
-        except (yaml.YAMLError) as e:
-            raise ValueError(
-                "There is invalid YAML formatting in a MarkdownFile object."
-                " The following is its text:\n"
-                f"{str(self)}\n\n") from e
+        return parse_metadata_string('\n'.join(md_parts[1:-1]))
+        # try:
+        #     return yaml.safe_load('\n'.join(md_parts[1:-1]))
+        # except (yaml.YAMLError) as e:
+        #     raise ValueError(
+        #         "There is invalid YAML formatting in a MarkdownFile object."
+        #         " The following is its text:\n"
+        #         f"{str(self)}\n\n") from e
         # try:
         #     return ruamel.yaml.load()
             
@@ -601,10 +617,20 @@ class MarkdownFile:
         
     def replace_metadata(
             self,
-            new_metadata: dict[str] # The dictionary representing the new metadata.
+            new_metadata: dict[str], # The dictionary representing the new metadata. The keys are the names of fields. The values are the field values, usually expected to be a single string or a list of strings
+            enquote_entries_in_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
         ) -> None:
-        """Replace the frontmatter metadata of this MarkdownFile object."""
-        lines = dict_to_metadata_lines(new_metadata)
+        """
+        Replace the frontmatter metadata of this MarkdownFile object.
+        
+        Optionally also enquotes string entries in fields specified by
+        `enquote_entries_in_fields`.
+
+        **Warning**
+        - This method is only tested when the values of `new_metadata` are either `str` or
+        `list[str]`.
+        """
+        lines = dict_to_metadata_lines(new_metadata, enquote_entries_in_fields)
         new_metadata_parts = [{'type': MarkdownLineEnum.META, 'line': line}
                               for line in lines]
         new_metadata_parts.insert(0, {'type': MarkdownLineEnum.META, 'line': '---'})
@@ -644,12 +670,17 @@ class MarkdownFile:
             self,
             tags: list[str], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
             skip_repeats: bool = True, # If `True`, then this MarkdownFile will just have unique tags; merges pre-existing repeated tags if necessary. Also, the order of the tags may be changed.
-            skip_repeated_auto: bool = True # If `True`, then only add tags starting with '_auto/' if the corresponding non-auto tag does not exist, e.g.  '_auto/_meta/definition' is not added if the note already has '_meta/definition'.
+            skip_repeated_auto: bool = True, # If `True`, then only add tags starting with '_auto/' if the corresponding non-auto tag does not exist, e.g.  '_auto/_meta/definition' is not added if the note already has '_meta/definition'.
+            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
             ) -> None:
         """
         Add tags to the frontmatter metadata.
         
         The order of the tags may be changed.
+
+        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+        `replace_metadata` invocation preserves enquoted metadata values. 
         """
         self.add_metadata_section(check_exists=True)
         metadata = self.metadata()
@@ -669,11 +700,12 @@ class MarkdownFile:
             metadata['tags'] = list(set_of_tags)
         else:
             metadata['tags'] += tags
-        self.replace_metadata(metadata)
+        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
         
     def remove_tags(
             self,
-            tags: list[str] # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
+            tags: list[str], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
+            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
             ) -> None:
         """
         Remove specified tags from the frontmatter metadata, if
@@ -688,6 +720,10 @@ class MarkdownFile:
         
         Any repeated tags are either merged into one (if the tag is 
         not in `tags`) or are removed (if the tag is in `tags`).
+
+        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+        `replace_metadata` invocation preserves enquoted metadata values. 
         """
         tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
         metadata = self.metadata()
@@ -696,15 +732,20 @@ class MarkdownFile:
         set_of_tags = set(metadata['tags'])
         set_of_tags -= set(tags)
         metadata['tags'] = list(set_of_tags)
-        self.replace_metadata(metadata)
+        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
     
     def replace_auto_tags_with_regular_tags(
-            self, exclude: list[str] = None
-            # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.
+            self,
+            exclude: list[str] = None, # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.
+            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
             ) -> None:
         """
         Replace tags in the frontmatter metadata starting with `_auto/`
         with tags without the `_auto/`.
+
+        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+        `replace_metadata` invocation preserves enquoted metadata values. 
         """
         if not exclude:
             exclude = []
@@ -716,7 +757,7 @@ class MarkdownFile:
             else old for (no_auto, old) in zip(no_auto_tags, metadata['tags'])
         ]
         metadata['tags'] = new_tags
-        self.replace_metadata(metadata)
+        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
     
     def remove_in_line_tags(self) -> None:
         """Remove lines starting with in line tags."""
