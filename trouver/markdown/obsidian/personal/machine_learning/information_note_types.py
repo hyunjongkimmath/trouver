@@ -182,7 +182,7 @@ def automatically_add_note_type_tags(
         vault: PathLike, # The vault with the notes
         notes: list[VaultNote],
         add_auto_label: bool = True, # If `True`, adds `"_auto"` to the front of the note type tag to indicate that the tags were added via this automated script.
-        overwrite: Optional[str] = None # Either `'w'`, `'a'`, or `None`. If `'w'`, then overwrite any already-existing note type tags (from LABEL_TAGS) with the predicted tags. If `'a'`, then preserve already-existing note type tags and just append the newly predicted ones; in the case that `learn` predicts the note type whose tag is already in the note, a new tag of that type is not added, even if `add_auto_label=True`. If `None`, then do not make modifications to each note if any note type tags already exist in the note; if the predicted note types are different from the already existing note types, then raise a warning.
+        overwrite: Optional[str] = None # Either `'w'`, `'ws'`, `'ww'`, `'a'`, or `None`. If `'w'` or `'ws'`, then overwrite any already-existing note type tags (from LABEL_TAGS), whether or not these tags are `_auto` tags, with the predicted tags. IF `'ww'`, then overwrite only the `_auto` tags among the already-existing note type tags with the predicted tags. If `'a'`, then preserve already-existing note type tags and just append the newly predicted ones; in the case that `learn` predicts the note type whose tag is already in the note, a new tag of that type is not added, even if `add_auto_label=True`. If `None`, then do not make modifications to each note if any note type tags already exist in the note; if the predicted note types are different from the already existing note types, then raise a warning.
         ) -> None:
     """
     Predict note types and add the predicted types as
@@ -198,9 +198,9 @@ def automatically_add_note_type_tags(
         and `learn` predicts different note types as those in the note.
     
     """
-    if overwrite not in ['w', 'a'] and overwrite is not None:
+    if overwrite not in ['w', 'ws', 'ww', 'a'] and overwrite is not None:
         raise ValueError(
-            f"`overwrite` was expected to be 'w', 'a', or None," 
+            f"`overwrite` was expected to be 'w', 'ws,', 'ww', 'a', or None," 
             f" but was {overwrite}")
     predictions = predict_note_types(learn, vault, notes)
     # remove hashtags
@@ -225,20 +225,24 @@ def _change_label_tags_for_single_note(
     else:
         tags_to_add = prediction
 
-    if overwrite == 'w':
+    if overwrite in ['w', 'ws']:
         mf.remove_tags(all_label_tags)
         mf.add_tags(tags_to_add, skip_repeated_auto=True)
+    elif overwrite == 'ww':
+        mf.remove_tags(
+            [tag for tag in all_label_tags if tag.startswith('_auto/')])
     elif overwrite == 'a':
         for tag in prediction:
             _append_single_predicted_tag(mf, tag, add_auto_label)
     else:  # overwrite=None
-        # TODO
         if not _has_any_label_tags(mf):
             mf.add_tags(tags_to_add, skip_repeated_auto=True)
         elif not _has_exactly_predicted_tags(mf, prediction):
             warnings.warn(
-                "The note type labeling tags in the note are different"
-                f" from the predicted note types:\n\nNote name: {note.name}"
+                "The note type labeling tags in the note are different "
+                "from the predicted note types. "
+                f"The note type tags in the note have NOT been modified:"
+                f"\n\nNote name: {note.name}"
                 f"\n\nPredicted types: {prediction}", UserWarning)        
     mf.write(note)
 
@@ -282,7 +286,7 @@ def _has_any_label_tags(
             return False
     return True
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 39
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 42
 def convert_auto_tags_to_regular_tags_in_notes(
         notes: list[VaultNote], 
         exclude: list[str] = ['links_added', 'notations_added'] # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.

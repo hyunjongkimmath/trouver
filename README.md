@@ -47,16 +47,20 @@ writing this library.
 
 Use this library at your own risk as using this library can write or
 modify files in your computer and as the documentation of some
-components of this library may be inaccurate or outdated. By using this
-library, you agree that the author/authors of this library is/are not
-responsible for any damages from this library and related components.
+components of this library may be inaccurate or outdated. Moreover,
+there are components of this library which use external API’s (including
+but possibly not limited to OpenAI’s API) that may not be free to use.
+By using this library, you agree that the author/authors of this library
+is/are not responsible for any damages or losses, including but not
+limited to data or monetary losses, from this library and related
+components.
 
 This library is still somewhere in-between prototype and alpha.
 Moreover, the library itself may be unstable and subject to abrupt
 changes.
 
 The author/authors of this library is/are also not affiliated with
-`Obsidian.md`, `fast.ai`, or `Hugging Face`.
+`Obsidian.md`, `fast.ai`, `Hugging Face`, and `OpenAI`.
 
 ## Install
 
