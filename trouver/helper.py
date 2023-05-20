@@ -23,8 +23,8 @@ from natsort import natsorted
 
 # %% auto 0
 __all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'CHARACTER_ORDERING_LIST',
-           'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE', 'find_regex_in_text',
-           'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
+           'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE', 'TO_SUBSTITUTE',
+           'find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
            'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
            'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
            'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
@@ -550,11 +550,21 @@ NONEFFECTIVE_CHARACTERS =\
 
 # %% ../nbs/00_helper.ipynb 108
 TO_REMOVE = [
-    '.', '\'', '$', ')', '{', '}', ':', '?', '!', '#', '%', '&',
-    '\\', '<', '>', '*', '?', '"', '@', '+', '`', '|', '=', '[', ']',
+    '.', '$', ':', '?', '!', '#', '%', '&',
+    '<', '>', '*', '?', '"', '@', '`', '|',  
     'mathscr', 'mathbf', 'mathrm', 'mathfrak', 'mathcal', 'mathbb', 'operatorname',
-    'left', 'right']
-TO_UNDERSCORE = [' ', '-', '^', '(', ',', '/']
+    'boldsymbol', 'bf',
+    'text', 'begin', 'end', 'equation' , 'aligned', 'array', 'pmatrix', 'bmatrix',
+    'quad', 'longrightarrow', 'rightarrow', 'left', 'right', 'longmapsto', 'mapsto',
+    'stackrel']
+TO_UNDERSCORE = [' ', '-', '^', '(', ',', '/', '{', '}', '[', ']', '(', ')', '\\', '=',]
+TO_SUBSTITUTE = {
+    '*': 'star',
+    '+': 'plus',
+    'leqslant': 'leq',
+    'geqslant': 'geq',
+    '\'': '_prime'
+}
 
 # TODO: make a universal latex to path string; it seems that latex.convert
 # might do something different when naming files.
@@ -562,9 +572,14 @@ TO_UNDERSCORE = [' ', '-', '^', '(', ',', '/']
 def latex_to_path_accepted_string(latex: str) -> str:
     """Convert a latex string to a path accepted string
     """
-    for to_remove in TO_REMOVE:
-        latex, _ = re.subn(re.escape(to_remove), '', latex)
     for to_underscore in TO_UNDERSCORE:
         latex, _ = re.subn(re.escape(to_underscore), '_', latex)
+    for symbol_to_substitute, substitute_with in TO_SUBSTITUTE.items():
+        latex, _ = re.subn(re.escape(symbol_to_substitute), substitute_with, latex)
+    for to_remove in TO_REMOVE:
+        latex, _ = re.subn(re.escape(to_remove), '', latex)
+    latex, _ = re.subn('_+', '_', latex)
+    latex, _ = re.subn('^_', '', latex)
+    latex, _ = re.subn('_$', '', latex)
     latex = sanitize_filename(latex)
     return latex

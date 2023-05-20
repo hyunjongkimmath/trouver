@@ -195,7 +195,7 @@ def note_path_by_name(
             return search_results[0]
     raise NoteDoesNotExistError.from_note_name(name)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 41
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 42
 def note_name_unique(
         name: str, # Name of the note.
         vault: PathLike # Path to the vault.
@@ -205,7 +205,7 @@ def note_name_unique(
     """
     return len(all_note_paths_by_name(name, vault)) == 1
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 45
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 46
 def note_name_from_path(
         note_path: str # The path of the note. The note does not need to exist.
         ) -> str: # The name of the note.
@@ -213,7 +213,7 @@ def note_name_from_path(
     """
     return path_name_no_ext(note_path)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 48
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 49
 # TODO: change NoteDoesNotExistError to NoteNotFoundError if not found in Cache.
 # TODO: when making NoteNotFoundError, add it to
 # markdown.obsidian.personal.reference.delete_reference_folder
