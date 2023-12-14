@@ -29,6 +29,7 @@ website:
       - 24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb
       - 25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb
       - 26_markdown.obsidian.personal.machine_learning.definition_identification.ipynb
+      - 27_markdown.obsidian.personal.vault.ipynb
       - TODO.ipynb
       - how_to.install_trouver.ipynb
       - how_to.train_ml_model.fastai.ipynb

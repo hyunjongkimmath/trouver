@@ -536,6 +536,35 @@ def _raw_notation(notation: str):
 
 
 # %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 99
+MAX_NOTE_NAME_LENGTH = 80
+def _make_new_notes_from_sifted_double_asts(
+        main_note: VaultNote, vault: PathLike, reference_name: str,
+        notations: list[str], destination: Optional[PathLike],
+        overwrite: bool, add_to_main: bool) -> list[VaultNote]:
+    """
+    Create the notation notes found from the double asterisked LaTeX
+    str's.
+
+    This is a helper function to `make_notation_notes_from_double_asts`.
+    """
+    # TODO: test that note names aren't too long.
+    new_notes = []
+    for notation in reversed(notations):
+        notation_note_name = f'{reference_name}_notation_'\
+            f'{latex_to_path_accepted_string(notation)}'
+        if len(notation_note_name) > MAX_NOTE_NAME_LENGTH:
+            notation_note_name = notation_note_name[:MAX_NOTE_NAME_LENGTH]
+        notation_note_name = VaultNote.unique_name(
+            notation_note_name, vault)
+        new_note = make_a_notation_note(
+            main_note, vault, notation, '', notation_note_name,
+            destination, overwrite, add_to_main)
+        if new_note:
+            new_notes.append(new_note)
+    return new_notes
+    
+
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 101
 def make_notation_notes_from_double_asts(
         main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
         vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
@@ -637,35 +666,10 @@ def _latex_in_original_from_notat_notes_to_main_note(
     return all_latex_in_original
 
 
-MAX_NOTE_NAME_LENGTH = 80
-def _make_new_notes_from_sifted_double_asts(
-        main_note: VaultNote, vault: PathLike, reference_name: str,
-        notations: list[str], destination: Optional[PathLike],
-        overwrite: bool, add_to_main: bool) -> list[VaultNote]:
-    """
-    Actually makes the notation notes found from the double asterisked LaTeX
-    str's
-    """
-    # TODO: test that note names aren't too long.
-    new_notes = []
-    for notation in reversed(notations):
-        notation_note_name = f'{reference_name}_notation_'\
-            f'{latex_to_path_accepted_string(notation)}'
-        if len(notation_note_name) > MAX_NOTE_NAME_LENGTH:
-            notation_note_name = notation_note_name[:MAX_NOTE_NAME_LENGTH]
-        notation_note_name = VaultNote.unique_name(
-            notation_note_name, vault)
-        new_note = make_a_notation_note(
-            main_note, vault, notation, '', notation_note_name,
-            destination, overwrite, add_to_main)
-        if new_note:
-            new_notes.append(new_note)
-    return new_notes
-    
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 118
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 120
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -771,7 +775,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 122
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 124
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     """Returns a regex str to detect the notation of the notation note.
     
