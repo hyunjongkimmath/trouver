@@ -3,17 +3,18 @@
 # %% auto 0
 __all__ = ['setup_obsidian_vault_for_trouver']
 
-# %% ../../../../nbs/27_markdown.obsidian.personal.vault.ipynb 3
+# %% ../../../../nbs/27_markdown.obsidian.personal.vault.ipynb 2
 from pathlib import Path
 import os
 from os import PathLike
 
 # %% ../../../../nbs/27_markdown.obsidian.personal.vault.ipynb 6
 def setup_obsidian_vault_for_trouver(
-    vault: PathLike, # The path to the vault to setup.
-    verbose: bool = True, # If true, print messages explaining what is created
-    prompt: bool = True, # If true, prompt user input for certain decisions, such as whether to create an Obsidian vault folder if `vault` does not exist.
+        vault: PathLike, # The path to the vault to setup.
+        verbose: bool = True, # If true, print messages explaining what is created
+        prompt: bool = True, # If true, prompt user input for certain decisions, such as whether to create an Obsidian vault folder if `vault` does not exist.
     ):
+    # TODO: use this method for vault construction for a reference
     """Setup an `Obsidian.md` vault for `trouver`.
     
     Currently, the following subdirectories are created in `vault` if they do not
@@ -30,9 +31,9 @@ def setup_obsidian_vault_for_trouver(
 
 
 def _setup_trouver_vault_essentials(
-    vault: PathLike, # The path to the vault to setup
-    verbose: bool, # If true, print messages explaining what is created
-    prompt: bool, # If true, prompt user input for certain decisions, such as whether to create an Obsidian vault folder if `vault` does not exist.
+        vault: PathLike, # The path to the vault to setup
+        verbose: bool, # If true, print messages explaining what is created
+        prompt: bool, # If true, prompt user input for certain decisions, such as whether to create an Obsidian vault folder if `vault` does not exist.
     ):
     """
     """
