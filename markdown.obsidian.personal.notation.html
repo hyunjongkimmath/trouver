@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Functions for making and managing notation cards">
+
+<title>trouver - markdown.obisidian.personal.notation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="trouver - markdown.obisidian.personal.notation">
+<meta property="og:description" content="Functions for making and managing notation cards">
+<meta property="og:site-name" content="trouver">
+<meta name="twitter:title" content="trouver - markdown.obisidian.personal.notation">
+<meta name="twitter:description" content="Functions for making and managing notation cards">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.obsidian.personal.notation.html">markdown.obisidian.personal.notation</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#parse-notation-note" id="toc-parse-notation-note" class="nav-link active" data-scroll-target="#parse-notation-note">Parse notation note</a>
+  <ul class="collapse">
+  <li><a href="#parse_notation_note" id="toc-parse_notation_note" class="nav-link" data-scroll-target="#parse_notation_note">parse_notation_note</a></li>
+  <li><a href="#notation_in_note" id="toc-notation_in_note" class="nav-link" data-scroll-target="#notation_in_note">notation_in_note</a></li>
+  <li><a href="#main_of_notation" id="toc-main_of_notation" class="nav-link" data-scroll-target="#main_of_notation">main_of_notation</a></li>
+  </ul></li>
+  <li><a href="#notations-in-a-standard-information-note" id="toc-notations-in-a-standard-information-note" class="nav-link" data-scroll-target="#notations-in-a-standard-information-note">Notations in a standard information note</a>
+  <ul class="collapse">
+  <li><a href="#find-notations-introduced-in-note" id="toc-find-notations-introduced-in-note" class="nav-link" data-scroll-target="#find-notations-introduced-in-note">Find notations introduced in note</a>
+  <ul class="collapse">
+  <li><a href="#notation_str_in_a_standard_information_note" id="toc-notation_str_in_a_standard_information_note" class="nav-link" data-scroll-target="#notation_str_in_a_standard_information_note">notation_str_in_a_standard_information_note</a></li>
+  </ul></li>
+  <li><a href="#notation-notes-listed-in-see-also-section" id="toc-notation-notes-listed-in-see-also-section" class="nav-link" data-scroll-target="#notation-notes-listed-in-see-also-section">Notation notes listed in see also section</a>
+  <ul class="collapse">
+  <li><a href="#notation_notes_linked_in_see_also_section" id="toc-notation_notes_linked_in_see_also_section" class="nav-link" data-scroll-target="#notation_notes_linked_in_see_also_section">notation_notes_linked_in_see_also_section</a></li>
+  </ul></li>
+  <li><a href="#find-all-notation-notes-in-a-vault-subdirectory" id="toc-find-all-notation-notes-in-a-vault-subdirectory" class="nav-link" data-scroll-target="#find-all-notation-notes-in-a-vault-subdirectory">Find all notation notes in a vault subdirectory</a>
+  <ul class="collapse">
+  <li><a href="#notations_and_main_notes" id="toc-notations_and_main_notes" class="nav-link" data-scroll-target="#notations_and_main_notes">notations_and_main_notes</a></li>
+  </ul></li>
+  <li><a href="#check-if-there-is-a-notation-link-in-the-see-also-section-of-a-standard-information-note." id="toc-check-if-there-is-a-notation-link-in-the-see-also-section-of-a-standard-information-note." class="nav-link" data-scroll-target="#check-if-there-is-a-notation-link-in-the-see-also-section-of-a-standard-information-note.">Check if there is a notation link in the <code>See Also</code> section of a standard information note.</a>
+  <ul class="collapse">
+  <li><a href="#notation_note_is_linked_in_see_also_section" id="toc-notation_note_is_linked_in_see_also_section" class="nav-link" data-scroll-target="#notation_note_is_linked_in_see_also_section">notation_note_is_linked_in_see_also_section</a></li>
+  </ul></li>
+  <li><a href="#add-notation-links-to-the-see-also-section" id="toc-add-notation-links-to-the-see-also-section" class="nav-link" data-scroll-target="#add-notation-links-to-the-see-also-section">Add notation links to the <code>See Also</code> section</a>
+  <ul class="collapse">
+  <li><a href="#add_notation_note_to_see_also" id="toc-add_notation_note_to_see_also" class="nav-link" data-scroll-target="#add_notation_note_to_see_also">add_notation_note_to_see_also</a></li>
+  <li><a href="#add_missing_notation_links_to_information_notes" id="toc-add_missing_notation_links_to_information_notes" class="nav-link" data-scroll-target="#add_missing_notation_links_to_information_notes">add_missing_notation_links_to_information_notes</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#add-notation-notes-to-notation-index-note" id="toc-add-notation-notes-to-notation-index-note" class="nav-link" data-scroll-target="#add-notation-notes-to-notation-index-note">Add notation notes to Notation index note</a>
+  <ul class="collapse">
+  <li><a href="#notations_to_add_in_index" id="toc-notations_to_add_in_index" class="nav-link" data-scroll-target="#notations_to_add_in_index">notations_to_add_in_index</a></li>
+  <li><a href="#index_notation_note_formatted_entry" id="toc-index_notation_note_formatted_entry" class="nav-link" data-scroll-target="#index_notation_note_formatted_entry">index_notation_note_formatted_entry</a></li>
+  </ul></li>
+  <li><a href="#making-a-notation-note" id="toc-making-a-notation-note" class="nav-link" data-scroll-target="#making-a-notation-note">Making a notation note</a>
+  <ul class="collapse">
+  <li><a href="#make_a_notation_note" id="toc-make_a_notation_note" class="nav-link" data-scroll-target="#make_a_notation_note">make_a_notation_note</a></li>
+  <li><a href="#make_notation_notes_from_double_asts" id="toc-make_notation_notes_from_double_asts" class="nav-link" data-scroll-target="#make_notation_notes_from_double_asts">make_notation_notes_from_double_asts</a></li>
+  </ul></li>
+  <li><a href="#decomposition-of-notation" id="toc-decomposition-of-notation" class="nav-link" data-scroll-target="#decomposition-of-notation">Decomposition of notation</a>
+  <ul class="collapse">
+  <li><a href="#detect-notations-being-used-in-reference" id="toc-detect-notations-being-used-in-reference" class="nav-link" data-scroll-target="#detect-notations-being-used-in-reference">Detect notations being used in reference</a>
+  <ul class="collapse">
+  <li><a href="#regex-from-latex" id="toc-regex-from-latex" class="nav-link" data-scroll-target="#regex-from-latex">Regex from latex</a></li>
+  <li><a href="#regex_from_latex" id="toc-regex_from_latex" class="nav-link" data-scroll-target="#regex_from_latex">regex_from_latex</a></li>
+  <li><a href="#get-regex-from-notation-note" id="toc-get-regex-from-notation-note" class="nav-link" data-scroll-target="#get-regex-from-notation-note">Get regex from notation note</a></li>
+  <li><a href="#regex_from_notation_note" id="toc-regex_from_notation_note" class="nav-link" data-scroll-target="#regex_from_notation_note">regex_from_notation_note</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">markdown.obisidian.personal.notation</h1>
+</div>
+
+<div>
+  <div class="description">
+    Functions for making and managing notation cards
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unittest <span class="im">import</span> mock</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathvalidate <span class="im">import</span> validate_filename </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.helper <span class="im">import</span> _test_directory</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="parse-notation-note" class="level1">
+<h1>Parse notation note</h1>
+<p>For the purposes of <code>trouver</code>, a notation note most usually starts in the format <code>&lt;Notation&gt; [[&lt;link_to_note&gt;|denotes]] &lt;explanation of what that notation denotes/is defined as&gt; &lt;optional paragraphs discussing aspects about the notation&gt;</code>. For example, “<span class="math inline">\(\deg D\)</span> [[note_link|denotes]] the degree of the divisor <span class="math inline">\(D\)</span>” would be an example of such a note.</p>
+<p>If the word <code>denotes</code> is not given in a link to a note, then the note to which the first link points is considered the main note of the notation note. Alternatively, a notation note might also sometimes have a comment citing the source of the notation instead of links. Nevertheless, it is preferred that <code>denotes</code> is given in a link.</p>
+<p>A notation note may have YAML frontmatter meta as well.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L110" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="parse_notation_note" class="level3">
+<h3 class="anchored" data-anchor-id="parse_notation_note">parse_notation_note</h3>
+<blockquote class="blockquote">
+<pre><code> parse_notation_note
+                      (notation_note:Union[str,trouver.markdown.obsidian.v
+                      ault.VaultNote], vault:Optional[os.PathLike]=None)</code></pre>
+</blockquote>
+<p>Parse information from the notation note.</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li>tuple[Union[dict, None], str, ObsidianLink, MarkdownFile, MarkdownFile]
+<ul>
+<li>The first entry is the YAML frontmatter meta, if available.</li>
+<li>The second entry is the notation string</li>
+<li>The third entry is the name of the “main note” of the notation note. This is usual the linked note in the link <code>[[&lt;linked_note&gt;|denotes]]</code>. If no such main note exists, then this is <code>None</code>.</li>
+<li>The fourth entry is the MarkdownFile consisting of the “main” content of the note, which excludes the information given by all of the other entries.</li>
+<li>The fifth entry is the MarkdownFile consisting of the ending bulleted list, listing the notations used in the notation notes along with links to the notation notes describing these notations. If there is not such bulleted list, then this entry is <code>None</code>.</li>
+</ul></li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li>UserWarning
+<ul>
+<li>If the (non-YAML frontmatter meta) contents of the note do not start inn the form <code>&lt;Notation&gt; [[&lt;link_to_note&gt;|denotes]]</code>; the name of the notation note is included in the warning message.</li>
+</ul></li>
+<li>ValueError
+<ul>
+<li>If the notation note is not formatted correctly by starting with the notation with dollar signs <code>$</code>.</li>
+</ul></li>
+<li>AssertionError
+<ul>
+<li>If <code>notation_note</code> is not determined to be a notation note.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>typing.Union[str, trouver.markdown.obsidian.vault.VaultNote]</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>The vault If <code>None</code>, then uses th</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>tuple</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#parse_notation_note"><code>parse_notation_note</code></a> gets information about the notation note. Note that the <a href="https://hyunjongkimmath.github.io/trouver/markdown.markdown.file.html#markdownfile"><code>MarkdownFile</code></a> object <code>main_mf</code> that has the main content/description of the notation does not start with the pharse of the form <code>&lt;notation&gt; [[&lt;link&gt;|denotes]]</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>metadata, notation_str, main_of_notation, main_mf, mf_with_links_to_notations <span class="op">=</span> parse_notation_note(notation_note, vault)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>test_eq(metadata, {<span class="st">'detect_regex'</span>: [], <span class="st">'latex_in_original'</span>: [<span class="st">'</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Spec}</span><span class="st"> A'</span>]})</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>test_eq(notation_str, <span class="st">'$</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Spec}</span><span class="st"> A$'</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>test_eq(main_of_notation, <span class="st">'spectrum_of_a_ring'</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">str</span>(main_mf), <span class="st">'the spectrum of the ring $A$.'</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> mf_with_links_to_notations <span class="kw">is</span> <span class="va">None</span> <span class="co"># There is not a bulleted list at the end, so the last output is `None`.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'poonen_curves_notation_zeta_X_s_zeta_function_of_variety'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>metadata, notation_str, main_of_notation, main_mf, mf_with_links_to_notations <span class="op">=</span> parse_notation_note(notation_note, vault)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>test_eq(metadata, <span class="va">None</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>test_eq(notation_str, <span class="vs">r'$\zeta_</span><span class="sc">{X}</span><span class="vs">(s)$'</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>test_eq(main_of_notation, <span class="st">'poonen_curves_3.4.1 DEFINITION'</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">str</span>(main_mf), <span class="st">'the zeta function of the [[poonen_curves_1.0.2 DEFINITION|variety]] $X$ over $</span><span class="ch">\\</span><span class="st">mathbb</span><span class="sc">{F}</span><span class="st">_q$.</span><span class="ch">\n\n</span><span class="st">It is defined as</span><span class="ch">\n\n</span><span class="st">$$</span><span class="ch">\\</span><span class="st">zeta_X(s) = Z_X(q^{-s}).$$</span><span class="ch">\n\n</span><span class="st">A priori, it is a formal series, but in fact [[poonen_curves_ 3.6_page_56|it converges]] for $</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Re}</span><span class="st"> s &gt; </span><span class="ch">\\</span><span class="st">dim X$.'</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">str</span>(mf_with_links_to_notations), <span class="st">'- [$Z_X$](poonen_curves_notation_Z_X_T)'</span>) <span class="co"># There is a bulleted list at the end, so the last output is `None`.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L208" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="notation_in_note" class="level3">
+<h3 class="anchored" data-anchor-id="notation_in_note">notation_in_note</h3>
+<blockquote class="blockquote">
+<pre><code> notation_in_note
+                   (notation_note:Union[str,trouver.markdown.obsidian.vaul
+                   t.VaultNote], vault:Optional[os.PathLike]=None)</code></pre>
+</blockquote>
+<p>Return the name of the note from which the notation comes from.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>notation_note</code> - Union[str, VaultNote]
+<ul>
+<li><p>Either</p>
+<ul>
+<li>The name of the notation note or</li>
+<li>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object of the notation note.</li>
+</ul></li>
+</ul>
+The note name is expected to be unique inside the vault specified by <code>vault</code>. This is expected to contain <code>'notation'</code> as a substring. Usually, this is expected to be formatted in one of the following forms: - <code>'&lt;reference_name&gt;_notation_&lt;rest_of_note_name&gt;'</code> - `‘notation.<rest_of_note_name>’</rest_of_note_name></li>
+<li><code>vault</code> - Pathlike or <code>None</code>
+<ul>
+<li>Defaults to <code>None</code></li>
+</ul></li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li>str
+<ul>
+<li>The notation in LaTeX, including the dollar signs <code>$</code>.</li>
+</ul></li>
+</ul>
+<p><strong>Raises</strong></p>
+<p><a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notation_in_note"><code>notation_in_note</code></a> identifies the notation LaTeX str that a notation note presents. Its output starts and ends with dollar signs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>notation <span class="op">=</span> notation_in_note(notation_note)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> notation <span class="op">==</span> <span class="vs">r'$\operatorname</span><span class="sc">{Spec}</span><span class="vs"> A$'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L244" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="main_of_notation" class="level3">
+<h3 class="anchored" data-anchor-id="main_of_notation">main_of_notation</h3>
+<blockquote class="blockquote">
+<pre><code> main_of_notation
+                   (notation_note:trouver.markdown.obsidian.vault.VaultNot
+                   e, as_note:bool=False)</code></pre>
+</blockquote>
+<p>Return the name of the note from which the notation comes from.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>ValueError
+<ul>
+<li>If the notation note is not formatted correctly by starting with the notation with dollar signs <code>$</code>.</li>
+</ul></li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>VaultNote</td>
+<td></td>
+<td>The VaultNote object representing the notation note.</td>
+</tr>
+<tr class="even">
+<td>as_note</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>False</code>, then returns the name of the note, and returns a VaultNote object with the same vault as <code>notation_note</code> otherwise. The vault used to get the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> is the vault of <code>notation_note</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>typing.Union[str, trouver.markdown.obsidian.vault.VaultNote, NoneType]</strong></td>
+<td></td>
+<td><strong>The (name of the) main information note that <code>notation_note</code> comes from. Returns <code>None</code> if <code>notation_note</code> does not come from such a note.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We can identify the “main note” of a notation note with the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#main_of_notation"><code>main_of_notation</code></a> method:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>test_eq(main_of_notation(notation_note), <span class="st">'spectrum_of_a_ring'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also return this main note as a <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>main_note <span class="op">=</span>  main_of_notation(notation_note, as_note<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">isinstance</span>(main_note, VaultNote)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>test_eq(main_note.name, <span class="st">'spectrum_of_a_ring'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the notation note has no links, then <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#main_of_notation"><code>main_of_notation</code></a> returns <code>None</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>main_note <span class="op">=</span>  main_of_notation(notation_note)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> main_note <span class="kw">is</span> <span class="va">None</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>main_note <span class="op">=</span> main_of_notation(notation_note, as_note<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> main_note <span class="kw">is</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="notations-in-a-standard-information-note" class="level1">
+<h1>Notations in a standard information note</h1>
+<section id="find-notations-introduced-in-note" class="level2">
+<h2 class="anchored" data-anchor-id="find-notations-introduced-in-note">Find notations introduced in note</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L266" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="notation_str_in_a_standard_information_note" class="level3">
+<h3 class="anchored" data-anchor-id="notation_str_in_a_standard_information_note">notation_str_in_a_standard_information_note</h3>
+<blockquote class="blockquote">
+<pre><code> notation_str_in_a_standard_information_note
+                                              (info_note:trouver.markdown.
+                                              obsidian.vault.VaultNote)</code></pre>
+</blockquote>
+<p>Return the LaTeX str’s with notations in a standard information note.</p>
+<p>A LaTeX str is deemed to be a notation if it is surrounded by double asterisks <code>**</code></p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>info_note</td>
+<td>VaultNote</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>list</strong></td>
+<td><strong>Each str is a LaTeX str, beginning and trailing dollar signs <code>$</code> (single or double) included.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We can obtain the notation str in an information note:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A note with just one notation:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'galois_group'</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>sample_output_1 <span class="op">=</span> notation_str_in_a_standard_information_note(vn)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(sample_output_1) <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output_1[<span class="dv">0</span>].startswith(<span class="st">'$'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output_1[<span class="dv">0</span>].endswith(<span class="st">'$'</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> sample_output_1[<span class="dv">0</span>].startswith(<span class="st">'$$'</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> sample_output_1[<span class="dv">0</span>].endswith(<span class="st">'$$'</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output_1)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># A note with a notation with double asterisks:</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'spectrum_of_a_ring'</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>sample_output_2 <span class="op">=</span> notation_str_in_a_standard_information_note(vn)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(sample_output_2) <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output_2[<span class="dv">1</span>].startswith(<span class="st">'$$'</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output_2[<span class="dv">1</span>].endswith(<span class="st">'$$'</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output_2)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># A note with no notations:</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> notation_str_in_a_standard_information_note(VaultNote(vault, name<span class="op">=</span><span class="st">'no_notations_note_about_integral_domains'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['$\\operatorname{Gal}(L/K)$']
+['$\\operatorname{Spec} A$', '$$D(f) = \\{\\mathfrak{p} \\in \\operatorname{Spec} A: f \\not\\in \\mathfrak{p} \\}.$$']</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hide</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Test notation str with asterisks.</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'direct_and_inverse_images_of_sheaves'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_str_in_a_standard_information_note(vn)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sample_output</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(sample_output) <span class="op">==</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="notation-notes-listed-in-see-also-section" class="level2">
+<h2 class="anchored" data-anchor-id="notation-notes-listed-in-see-also-section">Notation notes listed in see also section</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L284" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="notation_notes_linked_in_see_also_section" class="level3">
+<h3 class="anchored" data-anchor-id="notation_notes_linked_in_see_also_section">notation_notes_linked_in_see_also_section</h3>
+<blockquote class="blockquote">
+<pre><code> notation_notes_linked_in_see_also_section
+                                            (info_note:trouver.markdown.ob
+                                            sidian.vault.VaultNote,
+                                            vault:os.PathLike,
+                                            as_vault_notes:bool=True)</code></pre>
+</blockquote>
+<p>Return a list of notation notes listed in the <code>See Also</code> section of the standard information note.</p>
+<p>In the current implementation of this function, only “notation notes” that actually exist are included in the returned list.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>info_note</td>
+<td>VaultNote</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>Path to the vault directory.</td>
+</tr>
+<tr class="odd">
+<td>as_vault_notes</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, returns each notation note as a <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object. Otherwise, returns the name of each notation note. Defaults to <code>True</code>.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>typing.Union[list[trouver.markdown.obsidian.vault.VaultNote], list[str]]</strong></td>
+<td></td>
+<td><strong>Each entry corresponds to a notation note in the vault.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notation_notes_linked_in_see_also_section"><code>notation_notes_linked_in_see_also_section</code></a> method detects the Notation notes listed in bulleted links in the See Also section of a standard information note.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'twist_of_a_graded_module'</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_notes_linked_in_see_also_section(vn, vault)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(sample_output) <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">isinstance</span>(sample_output[<span class="dv">0</span>], VaultNote)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output[<span class="dv">0</span>].name)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output[<span class="dv">0</span>].exists()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>foag_notation_M_n_bullet</code></pre>
+</div>
+</div>
+<p>Setting <code>as_vault_notes=False</code> returns the names of the notation notes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'twist_of_a_graded_module'</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_notes_linked_in_see_also_section(vn, vault, as_vault_notes<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(sample_output) <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">isinstance</span>(sample_output[<span class="dv">0</span>], <span class="bu">str</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>foag_notation_M_n_bullet</code></pre>
+</div>
+</div>
+<p>If a “notation note” does not exist, then it is not included in the returned list.</p>
+<p>Note that <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notation_notes_linked_in_see_also_section"><code>notation_notes_linked_in_see_also_section</code></a> uses <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.information_notes.html#bulleted_links_of_type_in_section"><code>bulleted_links_of_type_in_section</code></a>, which is turn uses <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_type.html#note_is_of_type"><code>note_is_of_type</code></a> to get a list of linked notes of the type <code>NOTATION_NOTE</code> of the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_type.html#personalnotetypeenum"><code>PersonalNoteTypeEnum</code></a> class. In turn, a note file must exist for the note to be considered of any particular type under the current implementation of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_type.html#note_is_of_type"><code>note_is_of_type</code></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'note_with_links_to_non_existent_notation_notes'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_notes_linked_in_see_also_section(vn, vault, as_vault_notes<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>test_eq(sample_output, [])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_notes_linked_in_see_also_section(vn, vault, as_vault_notes<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>test_eq(sample_output, [])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="find-all-notation-notes-in-a-vault-subdirectory" class="level2">
+<h2 class="anchored" data-anchor-id="find-all-notation-notes-in-a-vault-subdirectory">Find all notation notes in a vault subdirectory</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L307" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="notations_and_main_notes" class="level3">
+<h3 class="anchored" data-anchor-id="notations_and_main_notes">notations_and_main_notes</h3>
+<blockquote class="blockquote">
+<pre><code> notations_and_main_notes (vault:os.PathLike,
+                           subdirectory:Optional[os.PathLike]=None, note:O
+                           ptional[trouver.markdown.obsidian.vault.VaultNo
+                           te]=None)</code></pre>
+</blockquote>
+<p>Return a <code>dict</code> with all of notation notes in a specified subdirectory of a vault and the names of the main notes of these notation notes.</p>
+<p><strong>Returns</strong> - <code>dict</code></p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>ValueError
+<ul>
+<li>If <code>subdirectory</code> and <code>note</code> are both <code>None</code>.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>Path to the vault directory.</td>
+</tr>
+<tr class="even">
+<td>subdirectory</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>Path to the subdirectory, relative to <code>vault</code>, to find the notation notes. Searches for all notation notes here and in subdirectories of this subdirectory. If <code>None</code>, then the <code>note parameter is used to determined the subdirectory. If</code>subdirectory<code>is the empty str, then all notation notes in the vault are searched. Defaults to</code>None<code>. | | note | typing.Optional[trouver.markdown.obsidian.vault.VaultNote] | None | A note in the vault. The directory that this note is in determines the</code>subdirectory<code>parameter if the argument passed to</code>subdirectory<code>is the blank str. This note can usually be an index note, e.g.</code>’_index_silverman’<code>. Defaults to</code>None<code>, in which case</code>subdirectory<code>must be specified. | | **Returns** | **dict** |  | **A key is the unique name of a notation note in the vault and its corresponding value is the name of the main note of the notation note. Each main note may not actually exist, but each notation note definitely exists. If the notation note has no main note (i.e. has no links to other notes), then the value is</code>None`.**</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notations_and_main_notes"><code>notations_and_main_notes</code></a> function returns all the notation notes in a subdirectory of a vault</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notations_and_main_notes(vault, subdirectory<span class="op">=</span><span class="st">''</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'foag_notation_M_n_bullet'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output[<span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span>] <span class="kw">is</span> <span class="va">None</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'poonen_curves_notation_Z_X_T'</span> <span class="kw">in</span> sample_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'foag_notation_M_n_bullet': 'twist_of_a_graded_module', 'some_reference_name_notation_k_t_formal_power_series_ring': 'some_note', 'some_reference_name_notation_O_X_this_file_has_no_links': None, 'some_reference_name_notation_Pic_C': 'divisor_class_group_of_a_curve', 'some_reference_name_notation_Spec_A': 'spectrum_of_a_ring', 'foag_notation_O_n': 'foag_15.2.1', 'foag_notation_O_text_Proj__S__n': 'foag_15.2.1', 'poonen_curves_notation_zeta_X_s_zeta_function_of_variety': 'poonen_curves_3.4.1 DEFINITION', 'poonen_curves_notation_Z_X_T': 'poonen_curves_3.4.1 DEFINITION', 'some_reference_name_notation_B_R': 'note_with_some_excessive_notation_notes', 'some_reference_name_notation_B_R_1': 'note_with_some_excessive_notation_notes', 'some_reference_name_notation_Jac_C': 'note_with_some_excessive_notation_notes', 'test_notation_note_for_latex_in_original_metadata_1': 'test_note_for_latex_in_original_metadata', 'test_notation_note_for_latex_in_original_metadata_2': 'test_note_for_latex_in_original_metadata', 'foag_notation__otimes_A_quad_obj_Mod_A_times_obj_Mod_A_longarrow_obj_Mod_A_': 'foag_1.3.5'}</code></pre>
+</div>
+</div>
+<p>Here is an example with a subdirectory specified:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notations_and_main_notes(vault, subdirectory<span class="op">=</span><span class="st">'some_other_folder'</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'foag_notation_M_n_bullet'</span> <span class="kw">not</span> <span class="kw">in</span> sample_output</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span> <span class="kw">not</span> <span class="kw">in</span> sample_output</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'poonen_curves_notation_Z_X_T'</span> <span class="kw">in</span> sample_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'foag_notation_O_n': 'foag_15.2.1', 'foag_notation_O_text_Proj__S__n': 'foag_15.2.1', 'poonen_curves_notation_zeta_X_s_zeta_function_of_variety': 'poonen_curves_3.4.1 DEFINITION', 'poonen_curves_notation_Z_X_T': 'poonen_curves_3.4.1 DEFINITION', 'some_reference_name_notation_B_R': 'note_with_some_excessive_notation_notes', 'some_reference_name_notation_B_R_1': 'note_with_some_excessive_notation_notes', 'some_reference_name_notation_Jac_C': 'note_with_some_excessive_notation_notes'}</code></pre>
+</div>
+</div>
+<p>Alternatively, we can specify a subdirectory by a <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object; the directory that the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object is the subdirectory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'galois_group'</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notations_and_main_notes(vault, subdirectory<span class="op">=</span><span class="va">None</span>, note<span class="op">=</span>vn)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'foag_notation_M_n_bullet'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output[<span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span>] <span class="kw">is</span> <span class="va">None</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'poonen_curves_notation_Z_X_T'</span> <span class="kw">not</span> <span class="kw">in</span> sample_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'foag_notation_M_n_bullet': 'twist_of_a_graded_module', 'some_reference_name_notation_k_t_formal_power_series_ring': 'some_note', 'some_reference_name_notation_O_X_this_file_has_no_links': None, 'some_reference_name_notation_Pic_C': 'divisor_class_group_of_a_curve', 'some_reference_name_notation_Spec_A': 'spectrum_of_a_ring'}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="check-if-there-is-a-notation-link-in-the-see-also-section-of-a-standard-information-note." class="level2">
+<h2 class="anchored" data-anchor-id="check-if-there-is-a-notation-link-in-the-see-also-section-of-a-standard-information-note.">Check if there is a notation link in the <code>See Also</code> section of a standard information note.</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L340" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="notation_note_is_linked_in_see_also_section" class="level3">
+<h3 class="anchored" data-anchor-id="notation_note_is_linked_in_see_also_section">notation_note_is_linked_in_see_also_section</h3>
+<blockquote class="blockquote">
+<pre><code> notation_note_is_linked_in_see_also_section
+                                              (notation_note:trouver.markd
+                                              own.obsidian.vault.VaultNote
+                                              , info_note:Optional[trouver
+                                              .markdown.obsidian.vault.Vau
+                                              ltNote]=None)</code></pre>
+</blockquote>
+<p>Return <code>True</code> if a notation note is linked in the <code>See Also</code> section of a standard information note.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>VaultNote</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>info_note</td>
+<td>typing.Optional[trouver.markdown.obsidian.vault.VaultNote]</td>
+<td>None</td>
+<td>The note in which to find the link to <code>notation_note</code>. Defaults to <code>None</code>, in which case the main note is determined to be the first linked note of <code>notation_note</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>bool</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notation_note_is_linked_in_see_also_section"><code>notation_note_is_linked_in_see_also_section</code></a> Returns <code>True</code> if a notation note is linked in the <code>See Also</code> section of an information note:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>info_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'divisor_class_group_of_a_curve'</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'foag_notation_M_n_bullet'</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>info_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'twist_of_a_graded_module'</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If <code>info_note</code> is not specified or if <code>info_note=None</code>, then the info note in question is the first note which the notation note links to, see the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#main_of_notation"><code>main_of_notation</code></a> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'foag_notation_M_n_bullet'</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="add-notation-links-to-the-see-also-section" class="level2">
+<h2 class="anchored" data-anchor-id="add-notation-links-to-the-see-also-section">Add notation links to the <code>See Also</code> section</h2>
+<section id="add-links-to-individual-notation-notes" class="level4">
+<h4 class="anchored" data-anchor-id="add-links-to-individual-notation-notes">Add links to individual notation notes</h4>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L355" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="add_notation_note_to_see_also" class="level3">
+<h3 class="anchored" data-anchor-id="add_notation_note_to_see_also">add_notation_note_to_see_also</h3>
+<blockquote class="blockquote">
+<pre><code> add_notation_note_to_see_also
+                                (notation_note:trouver.markdown.obsidian.v
+                                ault.VaultNote, info_note:Optional[trouver
+                                .markdown.obsidian.vault.VaultNote]=None,
+                                do_not_repeat:bool=True)</code></pre>
+</blockquote>
+<p>Add a link to a notation note in the <code>See Also</code> section of a standard information note.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>NoteDoesNotExistError
+<ul>
+<li>If the information note to link to does not exist.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>VaultNote</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>info_note</td>
+<td>typing.Optional[trouver.markdown.obsidian.vault.VaultNote]</td>
+<td>None</td>
+<td>The note in which to link <code>notation_note</code>. Defaults to <code>None</code>, in which case the main note is determined to be the first linked note of <code>notation_note</code>.</td>
+</tr>
+<tr class="odd">
+<td>do_not_repeat</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, do not add a link to <code>notation_note</code> in if there is already a such a link.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#add_notation_note_to_see_also"><code>add_notation_note_to_see_also</code></a> method adds a link to the specified notation note to the specified standard information note.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'divisor_class_group_of_a_curve'</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)    </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"The note's text before adding the link:"</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(info_note.text(), <span class="st">'</span><span class="ch">\n\n</span><span class="st">'</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    add_notation_note_to_see_also(notation_note, info_note)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"The note's text after adding the link:"</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(info_note.text())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The note's text before adding the link:
+---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/definition, _meta/notation]
+---
+# Divisor class group of a curve[^1]
+Let $C/k$ be a curve.
+
+The **divisor class group** of $C$, denoted **$\operatorname{Pic} C$**, is defined as $\operatorname{Div} C / \operatorname{Princ} C$.  
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Citation
+ 
+
+
+The note's text after adding the link:
+---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _meta/definition, _meta/notation]
+---
+# Divisor class group of a curve[^1]
+Let $C/k$ be a curve.
+
+The **divisor class group** of $C$, denoted **$\operatorname{Pic} C$**, is defined as $\operatorname{Div} C / \operatorname{Princ} C$.  
+
+# See Also
+- [[some_reference_name_notation_Pic_C]]
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Citation
+</code></pre>
+</div>
+</div>
+<p>If <code>info_note</code> is not specified or is <code>None</code>, then the information note to add the link is determined to be the first note that <code>notation_note</code> links to:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    add_notation_note_to_see_also(notation_note)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the information note to add the link does not exist, then a <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#notedoesnotexisterror"><code>NoteDoesNotExistError</code></a> is raised:</p>
+<p>If <code>do_not_repeat</code> is not specified or is <code>True</code>, then the link to the notation note is added only if such a link is not already present:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'foag_notation_M_n_bullet'</span>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'twist_of_a_graded_module'</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    original_text <span class="op">=</span> info_note.text()</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    add_notation_note_to_see_also(notation_note, do_not_repeat<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    new_text <span class="op">=</span> info_note.text()</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> original_text <span class="op">==</span> new_text</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># notation_note = VaultNote(temp_vault, name='some_reference_name_notation_Pic_C')</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add_notation_note_to_see_also(notation_note)</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># assert notation_note_is_linked_in_see_also_section(notation_note)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Otherwise, the link to the notation note is added even if such a link is already present:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'foag_notation_M_n_bullet'</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'twist_of_a_graded_module'</span>)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    original_text <span class="op">=</span> info_note.text()</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    add_notation_note_to_see_also(notation_note, do_not_repeat<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    new_text <span class="op">=</span> info_note.text()</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> original_text <span class="op">!=</span> new_text</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(new_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note]
+---
+# Twist of graded module[^1]
+
+Suppose $M_\bullet$ is a graded $S_\bullet$-module. Define the graded module **$M(n)_\bullet$** by $M(n)_{m}:=M_{n+m}$. Thus the quasicoherent sheaf $M(n)_\bullet$ satisfies
+
+$$ \Gamma\left(D(f), \widetilde{M(n)}_{\bullet}\right)=\left(\left(M_{\bullet}\right)_{f}\right)_{n} $$
+
+where here the subscript means we take the nth graded piece.
+
+# See Also
+- [[foag_notation_M_n_bullet]]
+- [[foag_notation_M_n_bullet]]
+# Meta
+## References
+![[_reference_foag]]
+
+## Citations and Footnotes
+[^1]: Vakil, Invertible 15.2, Page 412
+</code></pre>
+</div>
+</div>
+<p>If a link to the notation note is not already present, then <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#add_notation_note_to_see_also"><code>add_notation_note_to_see_also</code></a> adds such a link to the info note whether or not <code>do_not_repeat</code> is <code>True</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'divisor_class_group_of_a_curve'</span>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)    </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    add_notation_note_to_see_also(notation_note, info_note, do_not_repeat<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note, info_note)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="add-links-to-notation-notes-for-all-notation-notes-in-a-specified-subdirectory." class="level4">
+<h4 class="anchored" data-anchor-id="add-links-to-notation-notes-for-all-notation-notes-in-a-specified-subdirectory.">Add links to notation notes for all notation notes in a specified subdirectory.</h4>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L386" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="add_missing_notation_links_to_information_notes" class="level3">
+<h3 class="anchored" data-anchor-id="add_missing_notation_links_to_information_notes">add_missing_notation_links_to_information_notes</h3>
+<blockquote class="blockquote">
+<pre><code> add_missing_notation_links_to_information_notes (vault:os.PathLike,
+                                                  subdirectory:Optional[os
+                                                  .PathLike]=None, note:Op
+                                                  tional[trouver.markdown.
+                                                  obsidian.vault.VaultNote
+                                                  ]=None)</code></pre>
+</blockquote>
+<p>For each notation note in a specified subdirectory, Add links to notation notes in their main information notes if the notation links are not already present.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>ValueError
+<ul>
+<li>If <code>subdirectory</code> and <code>note</code> are both <code>None</code>.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>Path to the vault directory.</td>
+</tr>
+<tr class="even">
+<td>subdirectory</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>Path to the subdirectory, relative to <code>vault</code>, to find the notation notes and their main notes. Searches for all notation notes here and in subdirectories of this subdirectory. If <code>None</code>, then the <code>note</code> parameter is used to determine <code>subdirectory</code>. Defaults to <code>None</code>.</td>
+</tr>
+<tr class="odd">
+<td>note</td>
+<td>typing.Optional[trouver.markdown.obsidian.vault.VaultNote]</td>
+<td>None</td>
+<td>A note in the vault. The directory that this note is in determines the <code>subdirectory</code> parameter if it is <code>None</code>. Defaults to <code>None</code>, in which case <code>subdirectory</code> must be specified.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#add_missing_notation_links_to_information_notes"><code>add_missing_notation_links_to_information_notes</code></a> method adds links to notation notes of a specified directory to their main notes if these links are not already present. Note that nonexisting information notes which are the “main” notes of notation notes are ignored.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    notation_note_1 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Pic_C'</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    main_note_1 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'divisor_class_group_of_a_curve'</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    notation_note_2 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    main_note_2 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'spectrum_of_a_ring'</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    notation_note_3 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'foag_notation_O_n'</span>)</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    main_note_3 <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'foag_15.2.1'</span>)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note_1, main_note_1)</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note_2, main_note_2)</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> notation_note_is_linked_in_see_also_section(notation_note_3, main_note_3)</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    add_missing_notation_links_to_information_notes(temp_vault, <span class="st">''</span>)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note_1, main_note_1)</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note_2, main_note_2)</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(notation_note_3, main_note_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="add-notation-notes-to-notation-index-note" class="level1">
+<h1>Add notation notes to Notation index note</h1>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L415" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="notations_to_add_in_index" class="level3">
+<h3 class="anchored" data-anchor-id="notations_to_add_in_index">notations_to_add_in_index</h3>
+<blockquote class="blockquote">
+<pre><code> notations_to_add_in_index (vault:os.PathLike, notation_index_note=&lt;class
+                            'trouver.markdown.obsidian.vault.VaultNote'&gt;,
+                            subdirectory:Optional[os.PathLike]=None, note:
+                            Optional[trouver.markdown.obsidian.vault.Vault
+                            Note]=None)</code></pre>
+</blockquote>
+<p>Returns notations and links of notation notes to that ought to be added in the corresponding notation index, i.e.&nbsp;are in the reference folder but not linked by the notation index note.</p>
+<p>If a notation note is not properly formatted, e.g.&nbsp;does not have a notation, then the notation and link for the notation note will not be included.</p>
+<p><strong>Raises</strong> - ValueError - If <code>subdirectory</code> and <code>note</code> are both <code>None</code>.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>Path to the vault directory.</td>
+</tr>
+<tr class="even">
+<td>notation_index_note</td>
+<td>type</td>
+<td>VaultNote</td>
+<td>The notation index note in the vault where the notations should be added to.</td>
+</tr>
+<tr class="odd">
+<td>subdirectory</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>Path to the subdirectory, relative to <code>vault</code>, to find the notation notes. Searches for all notation notes here and in subdirectories of this subdirectory. If <code>None</code>, then the <code>note parameter is used to determined the subdirectory. If</code>subdirectory<code>is the empty str, then all notation notes in the vault are searched. Defaults to</code>None<code>. | | note | typing.Optional[trouver.markdown.obsidian.vault.VaultNote] | None | The directory that this note is in determines the argument to</code>subdirectory<code>parameter if it is</code>None<code>. Defaults to</code>None<code>, in which case</code>subdirectory<code>must be specified. | | **Returns** | **list** |  | **Each tuple in the list consists of the notation str of the notation note (including surrounding dollar signs</code>$`) and the (nonembedded) ObsidianLink object for a link to the notation note.**</td>
+</tr>
+</tbody>
+</table>
+<p>We can identify notation notes which exist in a reference folder but are not linked in the notation index note for the reference:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: make test</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># VaultNote.clear_cache()</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_6'</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>reference <span class="op">=</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="ss">f'_index_</span><span class="sc">{</span>reference<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>notation_index_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="ss">f'_notation_</span><span class="sc">{</span>reference<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notations_to_add_in_index(vault, notation_index_note, note<span class="op">=</span>note)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> notation_str, link <span class="kw">in</span> sample_output:</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(notation_str, link.to_string())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$\mathbb{Z}/n\mathbb{Z}$ ![[number_theory_reference_1_notation_Z_nZ_ring_of_integers_modulo_n]]</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L455" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="index_notation_note_formatted_entry" class="level3">
+<h3 class="anchored" data-anchor-id="index_notation_note_formatted_entry">index_notation_note_formatted_entry</h3>
+<blockquote class="blockquote">
+<pre><code> index_notation_note_formatted_entry (notation_str:str,
+                                      link:trouver.markdown.obsidian.links
+                                      .ObsidianLink)</code></pre>
+</blockquote>
+<p>Return a str formatted for an index notation note entry.</p>
+<p>It is recommended to pass the outputs of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#notations_to_add_in_index"><code>notations_to_add_in_index</code></a> to this function.</p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_str</td>
+<td>str</td>
+<td>The str of the notation, including the surrounding dollar signs <code>$</code>.</td>
+</tr>
+<tr class="even">
+<td>link</td>
+<td>ObsidianLink</td>
+<td>The embedded link to the notation note.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>str</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#index_notation_note_formatted_entry"><code>index_notation_note_formatted_entry</code></a> function returns a formatted str to add in the index notation note:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(index_notation_note_formatted_entry(sample_output[<span class="dv">0</span>][<span class="dv">0</span>], sample_output[<span class="dv">0</span>][<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>### $\mathbb{Z}/n\mathbb{Z}$
+- ![[number_theory_reference_1_notation_Z_nZ_ring_of_integers_modulo_n]]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="making-a-notation-note" class="level1">
+<h1>Making a notation note</h1>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L467" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="make_a_notation_note" class="level3">
+<h3 class="anchored" data-anchor-id="make_a_notation_note">make_a_notation_note</h3>
+<blockquote class="blockquote">
+<pre><code> make_a_notation_note
+                       (main_note:trouver.markdown.obsidian.vault.VaultNot
+                       e, vault:os.PathLike, notation:str,
+                       description:str, notation_note_name:str,
+                       destination:Optional[os.PathLike]=None,
+                       overwrite:bool=False, add_to_main:bool=True)</code></pre>
+</blockquote>
+<p>Make a new notation note, optionally add a link to it in the <code>See Also</code> section of its main note, returns it.</p>
+<p>The notation note is created in the same directory as the main note. The meta of the notation note has a <code>latex_in_original</code> section which lists the contents of the latex string in the main note from which the notation note comes from. This is so that the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts"><code>make_notation_notes_from_double_asts</code></a> method can distinguish between notations for which a note has been created and for which a note has not been created.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>main_note</td>
+<td>VaultNote</td>
+<td></td>
+<td>The note from which the notation originates.</td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>notation</td>
+<td>str</td>
+<td></td>
+<td>The notation typed in latex. May or may not be surrounded by dollar signs</td>
+</tr>
+<tr class="even">
+<td>description</td>
+<td>str</td>
+<td></td>
+<td>The rest of the text describing notation.</td>
+</tr>
+<tr class="odd">
+<td>notation_note_name</td>
+<td>str</td>
+<td></td>
+<td>The name of the new notation note to be created.</td>
+</tr>
+<tr class="even">
+<td>destination</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>The directory to create the new notation note in. If <code>None</code>, then creates the new notation note in the same place as the note specified by <code>note_name</code></td>
+</tr>
+<tr class="odd">
+<td>overwrite</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>True</code>, overwrite file of the same path as the new notation file to be written, if such a file exists. Otherwise, does nothing. Even if a link to the old notation note exists in <code>main_note</code>, a new link will still be added. Defaults to <code>False</code>.</td>
+</tr>
+<tr class="even">
+<td>add_to_main</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, adds a link to the notation note in the <code>See Also</code> section of the main note.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>typing.Optional[trouver.markdown.obsidian.vault.VaultNote]</strong></td>
+<td></td>
+<td><strong>The newly created notation note. If no note is created, then returns <code>None</code>.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We can make a notation note with the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_a_notation_note"><code>make_a_notation_note</code></a> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'galois_group'</span>)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> make_a_notation_note(</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>        note, temp_vault, <span class="vs">r'\operatorname</span><span class="sc">{Gal}</span><span class="vs">(L/K)'</span>, <span class="st">''</span>, notation_note_name<span class="op">=</span><span class="st">'some_reference_name_notation_Gal_L_K_galois_group'</span>)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    mf <span class="op">=</span> MarkdownFile.from_vault_note(notation_note)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> mf.has_metadata()</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    meta <span class="op">=</span> mf.metadata()</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'detect_regex'</span> <span class="kw">in</span> meta</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'latex_in_original'</span> <span class="kw">in</span> meta</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(meta, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Gal}</span><span class="st">(L/K)'</span> <span class="kw">in</span> meta[<span class="st">'latex_in_original'</span>]</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(mf, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>    main_mf <span class="op">=</span> MarkdownFile.from_vault_note(note)</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(main_mf)</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note.name <span class="kw">in</span> <span class="bu">str</span>(main_mf)  <span class="co"># A link has been created</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'detect_regex': [], 'latex_in_original': ['\\operatorname{Gal}(L/K)']} 
+
+---
+detect_regex: []
+latex_in_original: ["\\operatorname{Gal}(L/K)"]
+---
+$\operatorname{Gal}(L/K)$ [[galois_group|denotes]]  
+</code></pre>
+</div>
+</div>
+<p>Note that the surrounding dollar signs for LaTeX math mode can be included in the argument for <code>notation</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'galois_group'</span>)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> make_a_notation_note(</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>        note, temp_vault, <span class="vs">r'$\operatorname</span><span class="sc">{Gal}</span><span class="vs">(L/K)$'</span>, <span class="st">''</span>, notation_note_name<span class="op">=</span><span class="st">'some_reference_name_notation_Gal_L_K_galois_group'</span>)</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    mf <span class="op">=</span> MarkdownFile.from_vault_note(notation_note)</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> mf.has_metadata()</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    meta <span class="op">=</span> mf.metadata()</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'detect_regex'</span> <span class="kw">in</span> meta</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'latex_in_original'</span> <span class="kw">in</span> meta</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(meta, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Gal}</span><span class="st">(L/K)'</span> <span class="kw">in</span> meta[<span class="st">'latex_in_original'</span>]</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(mf, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    main_mf <span class="op">=</span> MarkdownFile.from_vault_note(note)</span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(main_mf)</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note.name <span class="kw">in</span> <span class="bu">str</span>(main_mf)  <span class="co"># A link has been created</span></span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'detect_regex': [], 'latex_in_original': ['\\operatorname{Gal}(L/K)']} 
+
+---
+detect_regex: []
+latex_in_original: ["\\operatorname{Gal}(L/K)"]
+---
+$\operatorname{Gal}(L/K)$ [[galois_group|denotes]]  
+</code></pre>
+</div>
+</div>
+<p>Setting <code>add_to_main=False</code> only creates the notation note, but does not add a link to the notation note in the main note:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'galois_group'</span>)</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> make_a_notation_note(</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        note, temp_vault, <span class="vs">r'\operatorname</span><span class="sc">{Gal}</span><span class="vs">(L/K)'</span>, <span class="st">''</span>, notation_note_name<span class="op">=</span><span class="st">'_reference_notation_Gal_L_K_galois_group'</span>,</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>        add_to_main<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    mf <span class="op">=</span> MarkdownFile.from_vault_note(notation_note)</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> mf.has_metadata()</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    meta <span class="op">=</span> mf.metadata()</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'detect_regex'</span> <span class="kw">in</span> meta</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'latex_in_original'</span> <span class="kw">in</span> meta</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(meta, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Gal}</span><span class="st">(L/K)'</span> <span class="kw">in</span> meta[<span class="st">'latex_in_original'</span>]</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(mf, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    main_mf <span class="op">=</span> MarkdownFile.from_vault_note(note)</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(main_mf)</span></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note.name <span class="kw">not</span> <span class="kw">in</span> <span class="bu">str</span>(main_mf)  <span class="co"># No link has been created</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'detect_regex': [], 'latex_in_original': ['\\operatorname{Gal}(L/K)']} 
+
+---
+detect_regex: []
+latex_in_original: ["\\operatorname{Gal}(L/K)"]
+---
+$\operatorname{Gal}(L/K)$ [[galois_group|denotes]]  
+</code></pre>
+</div>
+</div>
+<p>If the notation note of the specified name (<code>notation_note_name</code>) already exists, then by default no note is created and no link is added in the main note.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'spectrum_of_a_ring'</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> make_a_notation_note(</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>        note, temp_vault, <span class="vs">r'\operatorname</span><span class="sc">{Spec}</span><span class="vs"> A'</span>, <span class="st">''</span>, notation_note_name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>)</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note <span class="kw">is</span> <span class="va">None</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    main_mf <span class="op">=</span> MarkdownFile.from_vault_note(note)</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(main_mf)</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> main_mf.get_headings_and_text()[<span class="st">'# See Also'</span>].strip() <span class="op">==</span> <span class="st">''</span>  <span class="co"># No link has been added</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Setting <code>overwrite=True</code>, however, will overwrite the existing note. The method will also add a link to the (overwritten) notation note.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'spectrum_of_a_ring'</span>)</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    notation_note <span class="op">=</span> make_a_notation_note(</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>        note, temp_vault, <span class="vs">r'\operatorname</span><span class="sc">{Spec}</span><span class="vs"> A'</span>, <span class="st">''</span>, notation_note_name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>,</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>        overwrite<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    main_mf <span class="op">=</span> MarkdownFile.from_vault_note(note)</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> notation_note.name <span class="kw">in</span> <span class="bu">str</span>(main_mf)</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>    notation_mf <span class="op">=</span> MarkdownFile.from_vault_note(notation_note) </span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># notation_mf has been overwritten</span></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(notation_mf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---
+detect_regex: []
+latex_in_original: ["\\operatorname{Spec} A"]
+---
+$\operatorname{Spec} A$ [[spectrum_of_a_ring|denotes]] </code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L568" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="make_notation_notes_from_double_asts" class="level3">
+<h3 class="anchored" data-anchor-id="make_notation_notes_from_double_asts">make_notation_notes_from_double_asts</h3>
+<blockquote class="blockquote">
+<pre><code> make_notation_notes_from_double_asts
+                                       (main_note:trouver.markdown.obsidia
+                                       n.vault.VaultNote,
+                                       vault:os.PathLike,
+                                       reference_name:str, destination:Opt
+                                       ional[os.PathLike]=None,
+                                       overwrite:bool=False,
+                                       add_to_main:bool=True)</code></pre>
+</blockquote>
+<p>Make notation notes based on double asterisks surrounding LaTeX text in a standard information note.</p>
+<p>Notations are deemed to be completely LaTeX text in info notes that are surrounded by double asterisks. In basicality, if such a LaTeX text (without surrounding dollars signs <code>$</code> or <code>$$</code>) is listed in the <code>latex_in_original</code> metadata section of some notation note in the same directory as the info note whose main note is the info note in question, then a new notation note for that LaTeX text is not created. However, if there are multiple instances of the same LaTeX text, then some notation notes may be created so that the number of times the LaTeX text appears in the info note is the no more than the number of times the LaTeX text appears in <code>latex_in_original</code> metadata sections of notation notes (in the same directory as the info note whose main note is the info note).</p>
+<p>For example, if there is an info note with notations <code>A</code>, <code>A</code>, <code>'A'</code>, <code>'A'</code>, and <code>B</code> and if there is a single notation note in the same directory as the info note with two <code>'A'</code> and <code>'A'</code> entries in its <code>latex_in_original</code> metadata section, then three notation notes will be created: two with <code>'A'</code> listed in their <code>latex_in_original</code> sections, and one with <code>'B'</code> listed in its <code>latex_in_original</code> section.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>Warning
+<ul>
+<li>If there are notation notes whose main note is determined to be to <code>main_note</code> and whose notations “excessively cover” those in <code>main_note</code>, i.e.&nbsp;the notation notes have more notations than <code>main_note</code> introduces. The main note and the excessive notations are printed; the notations are printed instead of the notation notes because the same notation may span either multiple or single notation notes.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>main_note</td>
+<td>VaultNote</td>
+<td></td>
+<td>The standard information note from which the notations are marked with double asterisks</td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>The name of the reference; the notation note’s name will start with <code>{reference_name}_notation_</code>.</td>
+</tr>
+<tr class="odd">
+<td>reference_name</td>
+<td>str</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>destination</td>
+<td>typing.Optional[os.PathLike]</td>
+<td>None</td>
+<td>The directory to create the new notation notes in. If <code>None</code>, then creates the new notation note in the same place as the note specified by <code>note_name</code></td>
+</tr>
+<tr class="odd">
+<td>overwrite</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>True</code>, overwrite file of the same path as the new notation file to be written, if such a file exists. Otherwise, does nothing. Defaults to <code>False</code>.</td>
+</tr>
+<tr class="even">
+<td>add_to_main</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, adds links to the notation note in the <code>See Also</code> section of the main note.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>list</strong></td>
+<td></td>
+<td><strong>The list of VaultNotes that are newly created/modified.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>As described in <code>markdown.obsidian.personal.machine_learning.notation_identification</code>, we surround a LaTeX math mode string with double asterisks <code>**</code> to indicate that the string introduces a notation.</p>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts"><code>make_notation_notes_from_double_asts</code></a> method parses LaTeX surrounded by double asterisks <code>**</code> in a standard information note and automatically creates notation notes for said LaTeX.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_6'</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_6'</span>, temp_vault)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'reference_for_notation_notes_introducing_some_notations'</span>)</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>    new_notes <span class="op">=</span> make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'reference_for_notation_notes'</span>)</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(new_notes) <span class="op">==</span> <span class="dv">3</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> new_note <span class="kw">in</span> new_notes:</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> new_note.exists()</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> notation_note_is_linked_in_see_also_section(new_note, info_note)</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: add more tests - overwrite=True, add_to_main=False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the following example, we prompt <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts"><code>make_notation_notes_from_double_asts</code></a> to make notation notes for an info note with no notations - nothing is modified:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_6'</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_6'</span>, temp_vault)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'reference_for_notation_notes_no_notations_introduced_here'</span>)</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    info_note_content_before <span class="op">=</span> info_note.text()</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    new_notes <span class="op">=</span> make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'reference_for_notation_notes'</span>)</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>    info_note_content_after <span class="op">=</span> info_note.text()</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(new_notes) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> info_note_content_before <span class="op">==</span> info_note_content_after</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the following example, we prompt <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts"><code>make_notation_notes_from_double_asts</code></a> on the same info note twice - no new notation notes are created the second time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_6'</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_6'</span>, temp_vault)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'reference_for_notation_notes_introducing_some_notations'</span>)</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'milne_av'</span>)</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    new_notes <span class="op">=</span> make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'milne_av'</span>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(new_notes) <span class="op">==</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the following example, an info note contains two of the same notation. One notation note for each of these notations is created, but with different names:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'note_with_repeated_notation'</span>)</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    new_notes <span class="op">=</span> make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'some_reference_name'</span>)</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(new_notes) <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(new_notes[<span class="dv">0</span>].name)</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(new_notes[<span class="dv">1</span>].name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>some_reference_name_notation_Cl_K
+some_reference_name_notation_Cl_K_1</code></pre>
+</div>
+</div>
+<p>In the following example, there are notation notes with the info note as their main note, but some of the notations in these notation notes cover those in the info note “excessively” - in this case, only notation notes to uncovered notations are created, and warnings are raised to indicate which notations are covered excessively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'tmp_dir_'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> tmp_dir:</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    tmp_dir <span class="op">=</span> Path(tmp_dir)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> tmp_dir <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    info_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'note_with_some_excessive_notation_notes'</span>)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    new_notes <span class="op">=</span> make_notation_notes_from_double_asts(info_note, temp_vault, <span class="st">'some_reference_name'</span>)</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(new_notes) <span class="op">==</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\hyunj\AppData\Local\Temp\ipykernel_23252\2876467275.py:57: UserWarning: The following note has the following excess notations: note_with_some_excessive_notation_notes, \mathcal{B}(\mathbb{R}), \operatorname{Jac}(C)
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: move notation notes to directory of main notes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="decomposition-of-notation" class="level1">
+<h1>Decomposition of notation</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #| export</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="co"># def decompose_notation_as_sequence(</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="co">#         notation # latex styled. Assumed to not be surrounded with `'$'`.</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co">#         ) -&gt; list:</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     """</span></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     **Parameters**</span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     - notation - str</span></span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     **Returns**</span></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     - list of str</span></span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     """</span></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     str_index = 0</span></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     decomposition = []</span></span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     while str_index &lt; len(notation):</span></span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         if notation[str_index] == '\\':</span></span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a><span class="co">#             j = 1</span></span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a><span class="co">#             while (str_index + j &lt; len(notation)</span></span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                     and notation[str_index + j] not in [' ', '\\', '{', '(']):</span></span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a><span class="co">#                 j += 1</span></span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a><span class="co">#             latex_command = notation[str_index:str_index + j]</span></span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a><span class="co">#             decomposition.append(latex_command)</span></span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a><span class="co">#             str_index += j</span></span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a><span class="co">#         if str_index &lt; len(notation):</span></span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a><span class="co">#             decomposition.append(notation[str_index])</span></span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a><span class="co">#         str_index += 1</span></span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a><span class="co">#     return decomposition</span></span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a><span class="co"># def compare_notations_for_sorting(</span></span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a><span class="co">#         notation1, # latex styled. Assumed to not be surrounded with `'$'`.</span></span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a><span class="co">#         notation2, # latex styled. Assumed to not be surrounded with `'$'`.</span></span>
+<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a><span class="co">#         character_ordering_list</span></span>
+<span id="cb66-33"><a href="#cb66-33" aria-hidden="true" tabindex="-1"></a><span class="co">#         ) -&gt; int:</span></span>
+<span id="cb66-34"><a href="#cb66-34" aria-hidden="true" tabindex="-1"></a><span class="co">#     """</span></span>
+<span id="cb66-35"><a href="#cb66-35" aria-hidden="true" tabindex="-1"></a><span class="co">#     **Parameters**</span></span>
+<span id="cb66-36"><a href="#cb66-36" aria-hidden="true" tabindex="-1"></a><span class="co">#     - notation - str</span></span>
+<span id="cb66-37"><a href="#cb66-37" aria-hidden="true" tabindex="-1"></a><span class="co">#         - latex styled. Assumed to not be covered with `'$'`.</span></span>
+<span id="cb66-38"><a href="#cb66-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-39"><a href="#cb66-39" aria-hidden="true" tabindex="-1"></a><span class="co">#     **Returns**</span></span>
+<span id="cb66-40"><a href="#cb66-40" aria-hidden="true" tabindex="-1"></a><span class="co">#     - int</span></span>
+<span id="cb66-41"><a href="#cb66-41" aria-hidden="true" tabindex="-1"></a><span class="co">#         - 1 if `notation2` is considered to come "earlier", -1 if</span></span>
+<span id="cb66-42"><a href="#cb66-42" aria-hidden="true" tabindex="-1"></a><span class="co">#         `notation1` is considered to come "earlier", and 0 otherwise.</span></span>
+<span id="cb66-43"><a href="#cb66-43" aria-hidden="true" tabindex="-1"></a><span class="co">#     """</span></span>
+<span id="cb66-44"><a href="#cb66-44" aria-hidden="true" tabindex="-1"></a><span class="co">#     decomposition1 = decompose_notation_as_sequence(notation1)</span></span>
+<span id="cb66-45"><a href="#cb66-45" aria-hidden="true" tabindex="-1"></a><span class="co">#     decomposition2 = decompose_notation_as_sequence(notation2)</span></span>
+<span id="cb66-46"><a href="#cb66-46" aria-hidden="true" tabindex="-1"></a><span class="co">#     index1, index2 = 0, 0</span></span>
+<span id="cb66-47"><a href="#cb66-47" aria-hidden="true" tabindex="-1"></a><span class="co">#     while index1 &lt; len(decomposition1) and index2 &lt; len(decomposition2):</span></span>
+<span id="cb66-48"><a href="#cb66-48" aria-hidden="true" tabindex="-1"></a><span class="co">#         return  #TODO</span></span>
+<span id="cb66-49"><a href="#cb66-49" aria-hidden="true" tabindex="-1"></a><span class="co">#     if index1 &lt; len(decomposition1):</span></span>
+<span id="cb66-50"><a href="#cb66-50" aria-hidden="true" tabindex="-1"></a><span class="co">#         return 1</span></span>
+<span id="cb66-51"><a href="#cb66-51" aria-hidden="true" tabindex="-1"></a><span class="co">#     if index2 &lt; len(decomposition2):</span></span>
+<span id="cb66-52"><a href="#cb66-52" aria-hidden="true" tabindex="-1"></a><span class="co">#         return -1</span></span>
+<span id="cb66-53"><a href="#cb66-53" aria-hidden="true" tabindex="-1"></a><span class="co">#     return 0</span></span>
+<span id="cb66-54"><a href="#cb66-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-55"><a href="#cb66-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-56"><a href="#cb66-56" aria-hidden="true" tabindex="-1"></a><span class="co"># def _find_next_effective_character(decomposition, index):</span></span>
+<span id="cb66-57"><a href="#cb66-57" aria-hidden="true" tabindex="-1"></a><span class="co">#     while (index &lt; len(decomposition)</span></span>
+<span id="cb66-58"><a href="#cb66-58" aria-hidden="true" tabindex="-1"></a><span class="co">#             and decomposition[index] in ['{', '}', '(', ')', '[', ']', r'\tilde',</span></span>
+<span id="cb66-59"><a href="#cb66-59" aria-hidden="true" tabindex="-1"></a><span class="co">#                                          r'\hat', r'\bar', 'r\overline']):</span></span>
+<span id="cb66-60"><a href="#cb66-60" aria-hidden="true" tabindex="-1"></a><span class="co">#         return</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># decompose_notation_as_sequence(r'\tilde{K} (X)')</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="co"># decompose_notation_as_sequence(r'P(X;*,A)')</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co"># decompose_notation_as_sequence(r'\operatorname{Spec} A')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="detect-notations-being-used-in-reference" class="level2">
+<h2 class="anchored" data-anchor-id="detect-notations-being-used-in-reference">Detect notations being used in reference</h2>
+<section id="regex-from-latex" class="level3">
+<h3 class="anchored" data-anchor-id="regex-from-latex">Regex from latex</h3>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L693" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="regex_from_latex" class="level3">
+<h3 class="anchored" data-anchor-id="regex_from_latex">regex_from_latex</h3>
+<blockquote class="blockquote">
+<pre><code> regex_from_latex (latex:str, replaceables:dict[str,set[str]]={'mathrm':
+                   {'rm', 'mathrm', 'text', 'operatorname'},
+                   'operatorname': {'rm', 'mathrm', 'text',
+                   'operatorname'}, 'rm': {'rm', 'mathrm', 'text',
+                   'operatorname'}, 'text': {'rm', 'mathrm', 'text',
+                   'operatorname'}, 'mathbf': {'mathbf', 'bf'}, 'bf':
+                   {'mathbf', 'bf'}, 'mathit': {'it', 'mathit'}, 'it':
+                   {'it', 'mathit'}}, special_characters:list[str]=['.',
+                   '+', '*', '?', '^', '$', '(', ')', '[', ']', '{', '}',
+                   '|', '\\'])</code></pre>
+</blockquote>
+<p>Returns regex to match latex math mode string which is essentially equivalent to a specified latex math mode string.</p>
+<p>The outputs of this function may not work correctly. The regex pattern does not have to fully match equivalent string.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>latex - str
+<ul>
+<li>The latex math mode string. Does not include math mode delimiters such as <code>$</code>, <code>$$</code>, <code>\[ \]</code> (although the characters <code>'\['</code> and <code>'\]'</code> can still be part of the string, e.g.&nbsp;for optional arguments of a macro/operator). Can include “placeholders” <code>r''</code>, <code>r''</code>, <code>r''</code>, etc. to indicate substitutable/generics; the placeholders can be substituted with any string.</li>
+</ul></li>
+<li>replaceables - dict[str, set[str]]
+<ul>
+<li>latex strings/commands which are considered “interreplacable”</li>
+</ul></li>
+<li>special_characters - list[str]
+<ul>
+<li>characters to add a backslash <code>''</code> in front of for regex. Defaults to a list consisting of special characters in regex.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r"""e"""</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(regex_from_latex(text, REPLACEABLES))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(?:[ \{\}]*?)e(?:[ \{\}]*?)(?:[ \{\}]*)</code></pre>
+</div>
+</div>
+</section>
+<section id="get-regex-from-notation-note" class="level3">
+<h3 class="anchored" data-anchor-id="get-regex-from-notation-note">Get regex from notation note</h3>
+<p>So far, I have just made notation notes in the form <code>'$math_mode_string$ denotes ...'</code>. I want to add frontmatter metadata in notation notes to indicate regex to detect the notation with placeholders.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/notation.py#L779" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="regex_from_notation_note" class="level3">
+<h3 class="anchored" data-anchor-id="regex_from_notation_note">regex_from_notation_note</h3>
+<blockquote class="blockquote">
+<pre><code> regex_from_notation_note (vault:os.PathLike,
+                           note:trouver.markdown.obsidian.vault.VaultNote)</code></pre>
+</blockquote>
+<p>Returns a regex str to detect the notation of the notation note.</p>
+<p>The regex detection strings should be in a list labeled <code>detect_regex</code> in the yaml frontmatter. If multiple strings are in the list, then the regex will detect latex math mode strings roughly corresponding to any of them. If multiple strings are in the list, then they must be ordered “by priority”, with the higher priority regexes coming first. It is good to have these string in quotes <code>""</code> to make sure that yaml can load them safely. When doing so, make sure to escape characters, e.g.&nbsp;backslash should be typed as <code>\</code>, etc.</p>
+<p>The strings in <code>detect_regex</code> can include placeholders, cf. <code>[</code>regex_from_latex<code>](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#regex_from_latex)</code>.</p>
+<p><strong>Parameters</strong> - vault - PathLike - note - VaultNote</p>
+<p><strong>Returns</strong> - str - Of the regex used to detect the notation. The regex does not need to fully match instances of the notation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

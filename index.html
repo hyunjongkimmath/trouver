@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+
+<title>trouver</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="trouver">
+<meta property="og:description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+<meta property="og:image" content="https://hyunjongkimmath.github.io/trouver/images/index_setup_reference_from_latex_parts_demonstration.png">
+<meta property="og:site-name" content="trouver">
+<meta property="og:image:height" content="1020">
+<meta property="og:image:width" content="1920">
+<meta name="twitter:title" content="trouver">
+<meta name="twitter:description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+<meta name="twitter:image" content="https://hyunjongkimmath.github.io/trouver/images/index_setup_reference_from_latex_parts_demonstration.png">
+<meta name="twitter:image-height" content="1020">
+<meta name="twitter:image-width" content="1920">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">trouver</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#disclaimer" id="toc-disclaimer" class="nav-link active" data-scroll-target="#disclaimer">Disclaimer</a></li>
+  <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install">Install</a></li>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to use</a>
+  <ul class="collapse">
+  <li><a href="#parse-latex-documents-and-split-them-into-parts" id="toc-parse-latex-documents-and-split-them-into-parts" class="nav-link" data-scroll-target="#parse-latex-documents-and-split-them-into-parts">Parse LaTeX documents and split them into parts</a></li>
+  <li><a href="#ml-model-utilities" id="toc-ml-model-utilities" class="nav-link" data-scroll-target="#ml-model-utilities">ML model utilities</a></li>
+  <li><a href="#use-an-ml-model-to-categorize-and-label-the-note-types" id="toc-use-an-ml-model-to-categorize-and-label-the-note-types" class="nav-link" data-scroll-target="#use-an-ml-model-to-categorize-and-label-the-note-types">Use an ML model to categorize and label the note types</a></li>
+  <li><a href="#use-an-ml-model-to-find-notations-introduced-in-text" id="toc-use-an-ml-model-to-find-notations-introduced-in-text" class="nav-link" data-scroll-target="#use-an-ml-model-to-find-notations-introduced-in-text">Use an ML model to find notations introduced in text</a></li>
+  <li><a href="#use-an-ml-model-to-summarize-notations-introduced-in-text" id="toc-use-an-ml-model-to-summarize-notations-introduced-in-text" class="nav-link" data-scroll-target="#use-an-ml-model-to-summarize-notations-introduced-in-text">Use an ML model to summarize notations introduced in text</a></li>
+  </ul></li>
+  <li><a href="#how-the-examplestests-are-structured" id="toc-how-the-examplestests-are-structured" class="nav-link" data-scroll-target="#how-the-examplestests-are-structured">How the examples/tests are structured</a>
+  <ul class="collapse">
+  <li><a href="#miscellaneous" id="toc-miscellaneous" class="nav-link" data-scroll-target="#miscellaneous">Miscellaneous</a></li>
+  </ul></li>
+  <li><a href="#for-developers" id="toc-for-developers" class="nav-link" data-scroll-target="#for-developers">For developers</a>
+  <ul class="collapse">
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  </ul></li>
+  <li><a href="#copyright" id="toc-copyright" class="nav-link" data-scroll-target="#copyright">Copyright</a></li>
+  <li><a href="#special-thanks" id="toc-special-thanks" class="nav-link" data-scroll-target="#special-thanks">Special Thanks</a></li>
+  <li><a href="#release-notes" id="toc-release-notes" class="nav-link" data-scroll-target="#release-notes">Release notes</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">trouver</h1>
+</div>
+
+<div>
+  <div class="description">
+    Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<ul>
+<li><a href="https://sites.google.com/wisc.edu/hyunjongkim">Author’s academic website</a></li>
+<li><a href="https://github.com/hyunjongkimmath/trouver#readme">GitHub repository</a></li>
+<li><a href="https://hyunjongkimmath.github.io/trouver/">Documentation website</a></li>
+<li><a href="https://pypi.org/project/trouver/">pypi page</a></li>
+</ul>
+<p>Mathematicians constantly need to learn and read about concepts with which they are unfamiliar. Keeping mathematical notes in an <a href="https://obsidian.md/"><code>Obsidian.md</code></a> vault can help with this learning process as <code>Obsidian.md</code> makes it easy to edit notes, link notes to one another, organize notes, read notes, and access notes.</p>
+<p>This library currently includes functionalities to 1. Parse LaTeX documents (e.g.&nbsp;those available on <a href="https://arxiv.org/"><code>arxiv.org</code></a>) and divide them into reasonably lengthed parts/notes/excerpts as <code>.md</code> files, especially for viewing and editing on <code>Obsidian.md</code>. 2. Use a machine learning model to categorize the type of text each excerpt is (e.g.&nbsp;introducing definitions/notations, presenting a concept, presenting a proof). 3. Use a machine learning model to identify notations introduced in each excerpt. 4. Create accompanying notes for each notation as more <code>.md</code> files. 5. Use a machine learning model to summarize what these notations denote in the created accompanying notes.</p>
+<p>As some of these functionalities use machine learning models, they ultimately cannot run perfectly. Nevertheless, some of these models, particularly those described in 2 and 3, perform well enough that these functionalities are quite useful as tools to help reading mathematical papers.</p>
+<p>Moreover, the results of the machine learning models are recorded in the notes/<code>.md</code> files. One can very well correct these recorded results by manually editing the affected <code>.md</code> files with any file editor.</p>
+<section id="disclaimer" class="level2">
+<h2 class="anchored" data-anchor-id="disclaimer">Disclaimer</h2>
+<p>At the time of this writing (04/03/2023), there is only one author/contributor of this library. Nevertheless, the author often refers to himself as <em>the author</em>, <em>the authors</em>, or <em>the author/authors</em> in writing this library. Moreover, the author often uses the <a href="https://en.wikipedia.org/wiki/We#Editorial_we"><em>editorial we</em></a> in writing this library.</p>
+<p>Use this library at your own risk as using this library can write or modify files in your computer and as the documentation of some components of this library may be inaccurate or outdated. Moreover, there are components of this library which use external API’s (including but possibly not limited to OpenAI’s API) that may not be free to use. By using this library, you agree that the author/authors of this library is/are not responsible for any damages or losses, including but not limited to data or monetary losses, from this library and related components.</p>
+<p>This library is still somewhere in-between prototype and alpha. Moreover, the library itself may be unstable and subject to abrupt changes.</p>
+<p>The author/authors of this library is/are also not affiliated with <code>Obsidian.md</code>, <code>fast.ai</code>, <code>Hugging Face</code>, and <code>OpenAI</code>.</p>
+</section>
+<section id="install" class="level2">
+<h2 class="anchored" data-anchor-id="install">Install</h2>
+<p>We recommend having at least 3GB of free space to install <code>trouver</code> and related components.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install trouver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You may also have to manually install other libraries which are required by the <code>fast.ai</code> and/or <code>Hugging Face</code> libraries.</p>
+<p>We recommend installing <a href="https://obsidian.md/">Obsidian.md</a> to view, edit, and modify mathematical notes created by or which interact with <code>trouver</code>.</p>
+<p>See <code>how_to.install_trouver</code> for more details on installation.</p>
+<blockquote class="blockquote">
+<p><strong>Warning</strong> At the time of this writing, <code>trouver</code> has not been tested on MacOS extensively. We have also found that running the latest Python versions in Jupyter notebooks on modern MacOS machines (e.g.&nbsp;those using the M1 processor and in particular the arm64 architecture) lead to some issues. cf.&nbsp;stackexchange discussions such as</p>
+<pre><code>- https://apple.stackexchange.com/questions/436801/m1-mac-mach-o-file-but-is-an-incompatible-architecture-have-x86-64-need-a
+- https://stackoverflow.com/questions/71502583/jupiter-wont-launch-from-terminal-on-m1-macbook.</code></pre>
+<!--- > One can also try running `trouver` on an older version of Python (e.g. version 3.7) to avoid these Jupyter problems. In this case, one may need to install some additional Python packages, such as [`graphlib-backport`](https://pypi.org/project/graphlib-backport/). -->
+</blockquote>
+</section>
+<section id="how-to-use" class="level1">
+<h1>How to use</h1>
+<p>In the following section, we present some of <code>trouver</code>’s functionalities with some sample code. To run code, make sure to copy the contents of the <code>nbs/_tests</code> folder of the <code>trouver</code> GitHub repository into the working directory (as a folder names <code>_tests</code>).</p>
+<p>See also <code>tutorial.walkthrough</code> for a tutorial to set up a basic <code>trouver</code> workflow.</p>
+<section id="parse-latex-documents-and-split-them-into-parts" class="level2">
+<h2 class="anchored" data-anchor-id="parse-latex-documents-and-split-them-into-parts">Parse LaTeX documents and split them into parts</h2>
+<p><code>Trouver</code> can parse <code>LaTeX</code> documents and split them up into parts which are convenient to read in <code>Obsidian.md</code> and to take notes on. For example, the following code splits up this <a href="https://arxiv.org/abs/2106.10586">paper</a> in creates a folder in an Obsidian.md vault[^4].</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.helper <span class="im">import</span> _test_directory, text_from_file</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.latex.convert <span class="im">import</span> (</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    divide_preamble, divide_latex_text, custom_commands,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    setup_reference_from_latex_parts</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This context manager is implemented to make sure that a temporary</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># folder is created and copies contents from `test_vault_5` in `nbs/_tests`,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># only the contents of the temporary folder are modified, and </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    sample_latex_file <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'latex_examples'</span> <span class="op">/</span> <span class="st">'kim_park_ga1dcmmc'</span> <span class="op">/</span> <span class="st">'main.tex'</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    sample_latex_text <span class="op">=</span> text_from_file(sample_latex_file)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    preamble, _ <span class="op">=</span> divide_preamble(sample_latex_text)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> divide_latex_text(sample_latex_text)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    cust_comms <span class="op">=</span> custom_commands(preamble)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    vault <span class="op">=</span> temp_vault</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    location <span class="op">=</span> Path(<span class="st">''</span>) <span class="co"># The path relative to the vault of the directory in which to make the new folder containing the new notes.</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    reference_name <span class="op">=</span> <span class="st">'kim_park_ga1dcmmc'</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    author_names <span class="op">=</span> [<span class="st">'Kim'</span>, <span class="st">'Park'</span>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    setup_reference_from_latex_parts(</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        parts, cust_comms, vault, location,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        reference_name,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        author_names)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(os.getcwd()) # This open the current working directory; find the temporary folder in here.</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input() # There should be an input prompt; make an input here when you are done viewing the</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/index_setup_reference_from_latex_parts_demonstration.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The created folder in Obsidian.md looks like this in <code>Obsidian.md</code> The text in magenta are links, each to a file in the <code>Obsidian.md</code> vault</figcaption>
+</figure>
+</div>
+<p>While <code>Obsidian.md</code> is not strictly necessary to use <code>trouver</code> or to read and write the files created by <a href="https://hyunjongkimmath.github.io/trouver/latex.convert.html#setup_reference_from_latex_parts"><code>setup_reference_from_latex_parts</code></a> (in fact, any traditional file reader/writer can be used for such purposes), reading and writing the files on <code>Obsidian.md</code> can be convenient. Moreover, even when you use Obsidian, your data is in a local folder. In particular, even if <code>Obsidian.md</code> happens to get shut down, get bought, or change privacy policy, you will (supposedly) not lose access to your data.</p>
+</section>
+<section id="ml-model-utilities" class="level2">
+<h2 class="anchored" data-anchor-id="ml-model-utilities">ML model utilities</h2>
+<p>We have trained a few ML models to detect/predict and provide information about short (or at least not-too-long) mathematical text. These ML models are available on <a href="https://huggingface.co/"><code>Hugging Face</code></a> and as such, they can be downloaded to and used from one’s local machines. Please note that ML models can be large and the locations that the Hugging Face <a href="https://huggingface.co/docs/transformers/index">Transformers</a> library downloads such models to can vary from machine to machine.</p>
+<p>For each of these models, we may or may not have also written some instructions on how to train similar models given appropriately formatted data<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Note that the data used to train these models contains mathematical text pertaining mostly to fields closely related to number theory and algebraic geometry.</p>
+</section>
+<section id="use-an-ml-model-to-categorize-and-label-the-note-types" class="level2">
+<h2 class="anchored" data-anchor-id="use-an-ml-model-to-categorize-and-label-the-note-types">Use an ML model to categorize and label the note types</h2>
+<p>One of these ML models predicts the type of a piece of mathematical writing. For example, this model may predict that</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K<span class="co">[</span><span class="ot">x</span><span class="co">]</span>$ such that $f(\alpha) = 0$.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>introduces a definition. For the purposes of <code>trouver</code>, an <code>Obsidian.md</code> note containing ought to be labeled with the <code>#_meta/definition</code> tag by adding the text <code>_meta/definition</code> to the <code>tags</code> field in the frontmatter YAML metadata of the note:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/index_example_of_a_note_with_meta_definition_tag.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">In this note, there is a <code>_meta/definition</code> in the <code>tags</code> field in the frontmatter YAML metadata of the note</figcaption>
+</figure>
+</div>
+<p>See <code>markdown.obsidian.personal.machine_learning.information_note_types</code> for more details.</p>
+<p>This ML model is trained using the <a href="https://www.fast.ai/">fast.ai</a> library with the <a href="https://docs.fast.ai/tutorial.text.html#the-ulmfit-approach">ULMFiT approach</a>; see <code>how_to.train_ml_model.fastai</code> for the steps taken to train this model. This ML model is also available on <a href="https://huggingface.co/">Hugging Face</a> under the repository <a href="https://huggingface.co/hyunjongkimmath/information_note_type">hyunjongkimmath/information_note_type</a></p>
+<p>The following code downloads the model into the local Hugging Face cache (if necessary) and loads the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pathlib</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> WindowsPath</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> platform</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> huggingface_hub <span class="im">import</span> from_pretrained_fastai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>repo_id <span class="op">=</span> <span class="st">'hyunjongkimmath/information_note_type'</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># There is a PosixPath problem when trying to load</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the model on Windows; we get around this problem</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># within the `if` statement.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> platform.system() <span class="op">==</span> <span class="st">'Windows'</span>:</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> pathlib.PosixPath <span class="co"># See https://stackoverflow.com/questions/57286486/i-cant-load-my-model-because-i-cant-put-a-posixpath</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    pathlib.PosixPath <span class="op">=</span> pathlib.WindowsPath</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    information_note_type_model <span class="op">=</span> from_pretrained_fastai(repo_id)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    pathlib.PosixPath <span class="op">=</span> temp</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    information_note_type_model <span class="op">=</span> from_pretrained_fastai(repo_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"b4f0938e081f4c32adb3ac7ba39202dc","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sample_prediction_1 <span class="op">=</span> information_note_type_model.predict(<span class="vs">r'Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_prediction_1) </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>sample_prediction_2 <span class="op">=</span> information_note_type_model.predict(<span class="vs">r'Theorem. Let $q$ be a prime power. Up to isomorphism, there is exactly one field with $q$ elements.'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_prediction_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(['#_meta/definition', '#_meta/notation'], tensor([False, False, False, False, False, False,  True, False, False, False,
+         True, False, False, False]), tensor([1.9631e-03, 3.4931e-04, 1.7551e-02, 4.8163e-02, 5.7628e-06, 3.0610e-06,
+        9.6544e-01, 2.3179e-03, 2.4539e-03, 1.6170e-02, 5.8807e-01, 4.5185e-03,
+        2.5055e-04, 4.6183e-03]))
+(['#_meta/concept', '#_meta/proof'], tensor([False, False, False,  True, False, False, False, False, False, False,
+        False,  True, False, False]), tensor([3.4701e-03, 6.6588e-05, 7.8861e-02, 9.7205e-01, 8.8357e-06, 6.1183e-06,
+        9.5552e-02, 4.0747e-03, 2.7043e-04, 2.7545e-02, 1.3064e-02, 5.6198e-01,
+        1.5603e-04, 5.5122e-03]))</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<p>At the time of this writing (01/18/2023), the model seems to incorrect predict - in <code>sample_prediction_1</code> that the text introduces a notation. - in <code>sample_prediction_2</code> that the text contains a proof.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from trouver.markdown.obsidian.personal.machine_learning.information_note_types import</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>While one can make use of the model’s <code>predict</code> method as is, <code>trouver</code> also provides functions which predict the types of mathematical text written in notes formatted in a specific way and record on these notes the predictions made. This way, one can make the model predict once and use these predictions for later, which can save computational resources.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.vault <span class="im">import</span> VaultNote</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.notes <span class="im">import</span> notes_linked_in_notes_linked_in_note</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.machine_learning.information_note_types <span class="im">import</span> automatically_add_note_type_tags</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_8'</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_8'</span>, temp_vault)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    reference <span class="op">=</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    index_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_index_</span><span class="sc">{</span>reference<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># `notes` below is a list of `VaultNote` objects.</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Also, the `notes_linked_in_note` function can be a useful</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alternative to the `notes_linked_in_notes_linked_in_note` function.</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    notes <span class="op">=</span> notes_linked_in_notes_linked_in_note(index_note, as_dict<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"This is what one of the notes looks like before predicting its note type:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(notes[<span class="dv">0</span>].text())</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">Tagging notes</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `information_note_type_model` was loaded previously.</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    automatically_add_note_type_tags(information_note_type_model, temp_vault, notes)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"This is what the same note looks like after predicting its note type:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(notes[<span class="dv">0</span>].text())</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(os.getcwd()) # This opens the current working directory; find the temporary folder in here and explore it if desired.</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input() # There should be an input prompt; make an input here when you are done viewing the</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is what one of the notes looks like before predicting its note type:
+
+
+---
+cssclass: clean-embeds
+aliases: [number_theory_reference_1_ring]
+tags: [_meta/literature_note, _reference/number_theory_reference_1]
+---
+# Ring[^1]
+
+A **(commutative) ring** is a set $R$, equipped with two binary operators, denoted $+$ and $\cdot$, such that the following hold:
+
+1. $R$ is an abelian group under $+$ with identity element $0$.
+2. $R$ is an commutative monoid under $\cdot$ with identity element $1$.
+3. For all $a,b,c \in R$, we have $a \cdot (b+c) = a \cdot b + a \cdot c$.
+
+# See Also
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, Definition 1.1, Page 1
+
+
+Tagging notes
+
+
+This is what the same note looks like after predicting its note type:
+
+
+---
+cssclass: clean-embeds
+aliases: [number_theory_reference_1_ring]
+tags: [_reference/number_theory_reference_1, _meta/literature_note, _auto/_meta/definition]
+---
+# Ring[^1]
+
+A **(commutative) ring** is a set $R$, equipped with two binary operators, denoted $+$ and $\cdot$, such that the following hold:
+
+1. $R$ is an abelian group under $+$ with identity element $0$.
+2. $R$ is an commutative monoid under $\cdot$ with identity element $1$.
+3. For all $a,b,c \in R$, we have $a \cdot (b+c) = a \cdot b + a \cdot c$.
+
+# See Also
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, Definition 1.1, Page 1</code></pre>
+</div>
+</div>
+</section>
+<section id="use-an-ml-model-to-find-notations-introduced-in-text" class="level2">
+<h2 class="anchored" data-anchor-id="use-an-ml-model-to-find-notations-introduced-in-text">Use an ML model to find notations introduced in text</h2>
+<p>Another ML model predicts locations of notations introduced in text. This model is trained as a categorizer - given a piece of mathematical text in LaTeX in which a single LaTeX math mode string (surrounded either by the dollar sign <code>$</code> or double dollar signs <code>$$</code>) is surrounded by double asterisks <code>**</code>, the model should determine whether or not the LaTeX math mode string contains a newly introduced notation.</p>
+<p>For example, suppose that we want to find notations introduced in the following text:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Let $L/K$ be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of $L$ fixing $K$ pointwise.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our approach is to consider each latex math mode strings in this text (of which there are 4: <span class="math inline">\(L/K\)</span>, <span class="math inline">\(\operatorname{Gal}(L/K)\)</span>, <span class="math inline">\(L\)</span>, and <span class="math inline">\(K\)</span>), consider the four alternate versions of this text in which double asterisks <code>**</code> are surround one of these math mode strings, and use the model to predict whether that math mode string contains a newly introduced notation. In particular, we pass through the model the following pieces of text:</p>
+<ol type="1">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Let **$L/K$** be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of $L$ fixing $K$ pointwise.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb16"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Let $L/K$ be a Galois field extension. Its Galois group **$\operatorname{Gal}(L/K)$** is defined as the group of automorphisms of $L$ fixing $K$ pointwise.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Let $L/K$ be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of **$L$** fixing $K$ pointwise.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="4" type="1">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb18"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Let $L/K$ be a Galois field extension. Its Galois group $\operatorname{Gal}(L/K)$ is defined as the group of automorphisms of $L$ fixing **$K$** pointwise.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Ideally, the model should determine only the second version of text to contain a newly introduced notation</p>
+<p>See <code>markdown.obsidian.personal.machine_learning.notation_identifcation</code> for more details.</p>
+<p>This ML model is also trained using the <code>fast.ai</code> library with the <a href="https://docs.fast.ai/tutorial.text.html#the-ulmfit-approach">ULMFiT approach</a>, and is available on <code>Hugging Face</code> under the repository <a href="https://huggingface.co/hyunjongkimmath/notation_identification">hyunjongkimmath/notation_identification</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pathlib</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> WindowsPath</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> platform</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> huggingface_hub <span class="im">import</span> from_pretrained_fastai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>repo_id <span class="op">=</span> <span class="st">'hyunjongkimmath/notation_identification'</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># There is a PosixPath problem when trying to load</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the model on Windows; we get around this problem</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># within the `if` statement.</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> platform.system() <span class="op">==</span> <span class="st">'Windows'</span>:</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> pathlib.PosixPath <span class="co"># See https://stackoverflow.com/questions/57286486/i-cant-load-my-model-because-i-cant-put-a-posixpath</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    pathlib.PosixPath <span class="op">=</span> pathlib.WindowsPath</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    notation_identification_model <span class="op">=</span> from_pretrained_fastai(repo_id)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    pathlib.PosixPath <span class="op">=</span> temp</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    notation_identification_model <span class="op">=</span> from_pretrained_fastai(repo_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"9e1af6f2f8a4491e81d5b786f66b7e22","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>contains_a_notation <span class="op">=</span> notation_identification_model.predict(<span class="vs">r'Let $L/K$ be a Galois field extension. Its Galois group **$\operatorname</span><span class="sc">{Gal}</span><span class="vs">(L/K)$** is defined as the group of automorphisms of $L$ fixing $K$ pointwise.'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>does_not_contain_a_notation <span class="op">=</span> notation_identification_model.predict(<span class="vs">r'Let **$L/K$** be a Galois field extension. Its Galois group $\operatorname</span><span class="sc">{Gal}</span><span class="vs">(L/K)$ is defined as the group of automorphisms of $L$ fixing $K$ pointwise.'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(contains_a_notation)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(does_not_contain_a_notation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>('True', tensor(1), tensor([9.0574e-08, 1.0000e+00]))
+('False', tensor(0), tensor([1.0000e+00, 4.8617e-06]))</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: examples of using functions in markdown.obsidian.personal.machine_learning.notation_identifcation.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Similarly as with the <code>information_note_type</code> model, <code>trouver</code> provides functions (namely <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations"><code>automatically_mark_notations</code></a>) which locate within notes mathematical notations that are newly introduced in the text of the notes and record on these notes locations of such notations (by surrounding double asterisks <code>**</code> to LaTeX math mode strings). Note that this is done by applying the <code>notation_identification</code> model’s <code>predict</code> method as many times on a single piece of text as there are LaTeX math mode strings in the text. As such, these predictions often take a long time.</p>
+<p>To save time, it is recommended to apply <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations"><code>automatically_mark_notations</code></a> only on notes which have the <code>_meta/definition</code> or <code>_meta/notation</code> tags (or <code>_auto/_meta/definittion</code> or <code>_auto/_meta/notation</code>) in their frontmatter YAML metadata<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<blockquote class="blockquote">
+<p><strong>Warning</strong> The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations"><code>automatically_mark_notations</code></a> function not only adds double asterisks <code>**</code> to LaTeX math mode strings, but also removes components such as links and footnotes from the text of the note. It is recommended to only apply this function to notes whose text has not been embellished with such components<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Moreover, the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations"><code>automatically_mark_notations</code></a> is currently buggy and should not be applied to the same note twice</p>
+</blockquote>
+<p>The test vault used in the below example contains a single note which has already been marked with the <code>_meta/definition</code> and <code>_meta/notation</code> notes. The following example in particular locates notations in that note at the very least.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.markdown.<span class="bu">file</span> <span class="im">import</span> MarkdownFile</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.vault <span class="im">import</span> VaultNote</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.notes <span class="im">import</span> notes_linked_in_notes_linked_in_note</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.machine_learning.notation_identification <span class="im">import</span> automatically_mark_notations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_8'</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_8'</span>, temp_vault)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    reference <span class="op">=</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    index_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_index_</span><span class="sc">{</span>reference<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># `notes` below is a list of `VaultNote` objects.</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Also, the `notes_linked_in_note` function can be a useful</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alternative to the `notes_linked_in_notes_linked_in_note` function.</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    notes <span class="op">=</span> notes_linked_in_notes_linked_in_note(index_note, as_dict<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    one_note_with_notation_tag <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'number_theory_reference_1_Definition 1.7'</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"This is what one of the notes looks like before locating notations introduced:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(one_note_with_notation_tag.text())</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">Finding notations</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `information_note_type_model` was loaded previously.</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    automatically_add_note_type_tags(notation_identification_model, temp_vault, notes)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    note_mfs <span class="op">=</span> [MarkdownFile.from_vault_note(note) <span class="cf">for</span> note <span class="kw">in</span> notes]</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The below code ensures that the model searches for notations only in </span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># notes marked with a `_meta/definition` or a `_meta/notation`tag or</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># their `_auto` versions. </span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    notation_introducing_notes <span class="op">=</span> [</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>        note <span class="cf">for</span> note, mf <span class="kw">in</span> <span class="bu">zip</span>(notes, note_mfs)</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> mf.has_tag(<span class="st">'_auto/_meta/definition'</span>) <span class="kw">or</span> mf.has_tag(<span class="st">'_auto/_meta/notation'</span>)</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> mf.has_tag(<span class="st">'_meta/definition'</span>) <span class="kw">or</span> mf.has_tag(<span class="st">'_meta/notation'</span>)]</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> note <span class="kw">in</span> notation_introducing_notes:</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>        automatically_mark_notations(note, notation_identification_model, reference_name<span class="op">=</span>reference)</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"This is what the same note looks like after locating notations introduced:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(one_note_with_notation_tag.text())</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(os.getcwd()) # This opens the current working directory; find the temporary folder in here and explore it if desired.</span></span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input() # There should be an input prompt; make an input here when you are done viewing the</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is what one of the notes looks like before locating notations introduced:
+
+
+---
+cssclass: clean-embeds
+aliases: [number_theory_reference_1_ring_of_integers_modulo_n]
+tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+---
+# Ring of integers modulo $n$[^1]
+The ring of integers modulo $n$, denoted $\mathbb{Z}/n\mathbb{Z}$ has the elements $[m]$ for each integer $m$ where $[m_1] = [m_2]$ if and only if $m_1-m_2$ is divisible by $n$. As a ring, it has the following structure:
+
+1. $[m_1] + [m_2] = [m_1+m_2]$
+2. $[m_1] \cdot [m_2] = [m_1 \cdot m_2]$.
+
+
+# See Also
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, Definition 1.7, Page 3
+
+
+Finding notations
+
+
+This is what the same note looks like after locating notations introduced:
+
+
+---
+cssclass: clean-embeds
+aliases: [number_theory_reference_1_ring_of_integers_modulo_n]
+tags: [_meta/literature_note, _auto/l, _auto/e, _auto/F, _meta/notation, _auto/a, _meta/definition, _reference/number_theory_reference_1, _auto/s]
+---
+# Topic[^1]
+The ring of integers modulo $n$, denoted **$\mathbb{Z}/n\mathbb{Z}$** has the elements $[m]$ for each integer $m$ where $[m_1] = [m_2]$ if and only if $m_1-m_2$ is divisible by $n$. As a ring, it has the following structure:
+
+1. $[m_1] + [m_2] = [m_1+m_2]$
+2. $[m_1] \cdot [m_2] = [m_1 \cdot m_2]$.
+
+# See Also
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, Definition 1.7, Page 3</code></pre>
+</div>
+</div>
+<p><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+</section>
+<section id="use-an-ml-model-to-summarize-notations-introduced-in-text" class="level2">
+<h2 class="anchored" data-anchor-id="use-an-ml-model-to-summarize-notations-introduced-in-text">Use an ML model to summarize notations introduced in text</h2>
+<p>Now that we have found notations introduced in text and created notation notes for them in our <code>Obisidian.md</code> vault, we now generate summaries for these notations.</p>
+<p>The ML model in question fine-tuned from a <a href="https://huggingface.co/docs/transformers/model_doc/t5"><code>T5</code> model</a></p>
+<p>This ML model is available on <code>Hugging Face</code> under the repository <a href="https://huggingface.co/hyunjongkimmath/notation_summarizations_model"><code>hyunjongkimmath/notation_summarizations_model</code></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelForSeq2SeqLM, AutoTokenizer, pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForSeq2SeqLM.from_pretrained(<span class="st">'hyunjongkimmath/notation_summarizations_model'</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(<span class="st">'hyunjongkimmath/notation_summarizations_model'</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>summarizer <span class="op">=</span> pipeline(<span class="st">'summarization'</span>, model<span class="op">=</span>model, tokenizer<span class="op">=</span>tokenizer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The summarizer pipeline can be used to summarize notations newly introduced in a piece of mathematical text. The text needs to be formatted as follows:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="an">summarize:</span><span class="co"> &lt;mathematical_text_goes_here&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>latex_in_original: $<span class="kw">&lt;notation_to_summarize&gt;</span>$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(summarizer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>transformers.pipelines.text2text_generation.SummarizationPipeline</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>summarizer(<span class="st">"summarize:Let us now define the upper half plane $\mathbb</span><span class="sc">{H}</span><span class="st">$ as the set of all complex numbers of real part greater than $1$.</span><span class="ch">\n\n\n</span><span class="st">latex_in_original: $\mathbb</span><span class="sc">{H}</span><span class="st">$"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Your max_length is set to 200, but you input_length is only 54. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=27)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'summary_text': 'the upper half plane of the real part greater than $1$. It is defined as the set of all complex numbers of real parts greater than $$.'}]</code></pre>
+</div>
+</div>
+<p>In the above example, the summarizer determines that the notation <code>$\mathbb{H}$</code> introduced in the text</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Let us now define the upper half plane $\mathbb{H}$ as the set of all complex numbers of real part greater than $1$.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>denotes <code>'the upper half plane of the complex plane $\\ mathbb{ H} $. It is defined as the set of all complex numbers of real part greater than $1$.'</code>.</p>
+<p>Once we mark notations introduced in information notes by surrounding LaTeX math mode strings with double asterisks <code>**</code> (manually and/or by using the <code>notation_identification</code> model, see <a href="#use-an-ml-model-to-find-notations-introduced-in-text">the section about the <code>notation_identification</code> model</a> above), we can use the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_double_asts"><code>make_notation_notes_from_double_asts</code></a> function to make notation notes dedicated to those introduced notations and to link these newly created notation notes to the information notes.</p>
+<p>After making these notation notes, we can use the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_summary_to_notation_note"><code>append_summary_to_notation_note</code></a> function to predict what each notation is supposed to denote and add these predicted summaries to the notation notes themselves.</p>
+<p>For the example below, there is at least one information note with notations already marked with double asterisks <code>**</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.notation <span class="im">import</span> make_notation_notes_from_double_asts, notation_notes_linked_in_see_also_section</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.machine_learning.notation_summarization <span class="im">import</span> append_summary_to_notation_note</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_8'</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_8'</span>, temp_vault)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    reference <span class="op">=</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    index_note <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_index_</span><span class="sc">{</span>reference<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Also, the `notes_linked_in_note` function can be a useful</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alternative to the `notes_linked_in_notes_linked_in_note` function.</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    notes <span class="op">=</span> notes_linked_in_notes_linked_in_note(index_note, as_dict<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    one_note_with_notations_marked <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'number_theory_reference_1_Definition 2.3'</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"This is what the information note looks like before we add the links to the notation notes:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(one_note_with_notations_marked.text())</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> note <span class="kw">in</span> notes:</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>        new_notation_notes <span class="op">=</span> make_notation_notes_from_double_asts(note, temp_vault, reference_name<span class="op">=</span>reference)</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">This is what the information note looks like after we add the links to the notation notes:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(one_note_with_notations_marked.text())</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> note <span class="kw">in</span> notes:</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>        notation_notes_linked_in_note <span class="op">=</span> notation_notes_linked_in_see_also_section(note, temp_vault)</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> notation_note <span class="kw">in</span> notation_notes_linked_in_note:</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>            append_summary_to_notation_note(notation_note, temp_vault, summarizer)</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">This is what the newly created notation notes look like after we add the predicted summaries:</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>    notation_notes_linked_in_the_one_note <span class="op">=</span> notation_notes_linked_in_see_also_section(</span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>        one_note_with_notations_marked, temp_vault)</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> notation_note <span class="kw">in</span> notation_notes_linked_in_note:</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(notation_note.text(), <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)
+Your max_length is set to 200, but you input_length is only 166. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=83)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is what the information note looks like before we add the links to the notation notes:
+
+
+---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+---
+# Quotient ring of a ring by an ideal[^1]
+
+Let $R$ be a ring and let $I$ be an ideal. The quotient ring **$R/I$** is the ring whose elements are the equivalence classes of elements of $R$ with respect to the equivalence relation **$\sim$** given by $x \sim y$ if $x-y \in I$ and whose ring structure is given by
+
+$$\begin{align*}
+[x]+[y] &amp;= [x+y] \\
+[x] \cdot [y] &amp;= [x \cdot y].
+\end{align*}$$
+
+
+# See Also
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, 
+
+
+This is what the information note looks like after we add the links to the notation notes:
+
+
+---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note, _reference/number_theory_reference_1, _meta/definition, _meta/notation]
+---
+# Quotient ring of a ring by an ideal[^1]
+
+Let $R$ be a ring and let $I$ be an ideal. The quotient ring **$R/I$** is the ring whose elements are the equivalence classes of elements of $R$ with respect to the equivalence relation **$\sim$** given by $x \sim y$ if $x-y \in I$ and whose ring structure is given by
+
+$$\begin{align*}
+[x]+[y] &amp;= [x+y] \\
+[x] \cdot [y] &amp;= [x \cdot y].
+\end{align*}$$
+
+
+# See Also
+- [[number_theory_reference_1_notation_R_I]]
+- [[number_theory_reference_1_notation_sim]]
+
+# Meta
+## References
+![[_reference_number_theory_reference_1]]
+
+## Citations and Footnotes
+[^1]: Kim, 
+
+
+This is what the newly created notation notes look like after we add the predicted summaries:
+
+
+---
+detect_regex: []
+latex_in_original: [R/I]
+tags: [_auto/notation_summary]
+---
+$R/I$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring of the ideal $R/I$. It is the ring whose elements are the equivalence classes of elements of $R$. 
+
+---
+detect_regex: []
+latex_in_original: ["\\sim"]
+tags: [_auto/notation_summary]
+---
+$\sim$ [[number_theory_reference_1_Definition 2.3|denotes]] the quotient ring of the ideal $R/I$. It is the ring whose elements are the equivalence classes of elements of a ring $R$. 
+</code></pre>
+</div>
+</div>
+<p>At the time of this writing (1/30/2023), the author of <code>trouver</code> believes that this summarization model could be improved upon with more data; thus far, this model was trained on less than 1700 data points.</p>
+</section>
+</section>
+<section id="how-the-examplestests-are-structured" class="level1">
+<h1>How the examples/tests are structured</h1>
+<p>Many of the functions and methods in this library are accompanied by examples demonstrating how one might use them.</p>
+<p>These examples are usually also tests of the functions/methods; the developer of this library can use <code>nbdev</code>’s <a href="https://nbdev.fast.ai/api/test.html#nbdev_test"><code>nbdev_test</code></a> command-line command to automatically run these tests<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Moreover, there is a GitHub workflow in the repository for this library (see the <code>.github/workflows/test.yaml</code>) which automatically runs these examples/tests on GitHub Actions when changes to are <a href="https://github.com/git-guides/git-commit">committed to the GitHub repository</a><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>These examples may use a combination of the following:</p>
+<ul>
+<li>Mock patching via Python’s <a href="https://docs.python.org/3/library/unittest.mock.html"><code>unittest.mock</code></a> library.</li>
+<li>The <a href="https://fastcore.fast.ai/test.html"><code>fastcore.test</code></a> module as assertion statements.</li>
+<li>example/test files in the <code>nbs/_tests</code> folder in the repository<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.
+<ul>
+<li>The <code>_test_directory()</code> function in the <code>helper</code> module obtains this folder.</li>
+<li>Many of these examples also use the <a href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory"><code>tempfile.TemporaryDirectory</code></a> class along with the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree"><code>shutil.copytree</code></a> to create a Python context manager of a temporary directory with contents copied from the <code>nbs/_tests</code> folder. The temporary directory is automatically deleted once the context manager ends. We do this to run tests/examples which modify files/folders without modifying the files/folders in the <code>nbs/_tests</code> directory themselves.
+<ul>
+<li>For example, the code</li>
+</ul>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir:</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_1'</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_1'</span>, temp_vault)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># run the rest of the example here</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Uncomment the below lines of code to view the end-results of the example; </span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(os.getcwd())</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.input()  # this line pauses the process until the user makes an input so the deletion of the temporary directory is delayed.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+first creates a temporary directory starting <code>temp_dir</code> in the current working directory and copies into this temporary directory the contents of <code>test_vault_1</code> in the <code>nbs/_tests</code> folder. One the example/test has finished running, the temporary directory is removed whether or not the test succeeds.</li>
+</ul></li>
+</ul>
+<section id="miscellaneous" class="level2">
+<h2 class="anchored" data-anchor-id="miscellaneous">Miscellaneous</h2>
+<p>This repository is still in its preliminary stages and much of the code and documentation may be faulty or not well formatted. The author greatly appreciates reports of these issues, notifications of typos, and suggestions on edits; please feel free to report them on the <code>Issues</code> section of the GitHub repository for this library. The <a href="https://sites.google.com/wisc.edu/hyunjongkim">author</a> of this repository, who is primarily a mathematician (a PhD student at the time of this writing), does not guarantee quick responses or resolutions to such issues, but will do his best to address them.</p>
+</section>
+</section>
+<section id="for-developers" class="level1">
+<h1>For developers</h1>
+<p>This repository is based on the <a href="https://nbdev.fast.ai/"><code>nbdev</code></a> template. As such, code for the packages as well as the documentation for the repository are written in jupyter notebooks (the <code>.ipynb</code> files in the <code>nbs</code> folder) and the Python modules are auto-generated via the command-line command <a href="https://nbdev.fast.ai/api/doclinks.html#nbdev_export"><code>nbdev_export</code></a> (or <a href="https://nbdev.fast.ai/tutorials/tutorial.html#prepare-your-changes"><code>nbdev_prepare</code></a>, which among other things runs <code>nbdev_export</code>.).</p>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>In the <code>nbs/_tests</code> folder, make sure that the folders that you want to test are not empty; since git does not track empty folders, empty folders will not be pushed in GitHub and the tests in GitHub Actions may yield different results than in a local computer.</li>
+</ul>
+</section>
+</section>
+<section id="copyright" class="level1">
+<h1>Copyright</h1>
+<p>Copyright © 2023 onward Hyun Jong Kim. Licensed under the Apache License, Version 2.0 (the “License”); you may not use this project’s files except in compliance with the License. A copy of the License is provided in the LICENSE file in this repository.</p>
+</section>
+<section id="special-thanks" class="level1">
+<h1>Special Thanks</h1>
+<p>The author of <code>trouver</code> thanks <a href="https://sites.google.com/wisc.edu/spark483">Sun Woo Park</a> for agreeing to allow their coauthored paper, <a href="https://arxiv.org/abs/2106.10586"><em>Global <span class="math inline">\(\mathbb{A}^1\)</span>-degrees covering maps between modular curves</em></a>, along with some of Park’s expository writings, to be used in examples in this library. The author of <code>trouver</code> further thanks Sun Woo Park for his help in testing <code>trouver</code> on a MacOS computer and for reviewing the <code>tutorial.walkthrough</code> page.</p>
+<p><code>trouver</code> was built using <a href="https://nbdev.fast.ai/"><code>nbdev</code></a> as a template.</p>
+</section>
+<section id="release-notes" class="level1">
+<h1>Release notes</h1>
+<p>See <code>release_notes</code>.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Given time, the author of <code>trouver</code> eventually plans on writing instructions on training each of the models.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>At the time of this writing (1/30/2023), the <code>information_note_type</code> model is fairly good at telling when a note introduces a definition or a notation, but will often conflate the two. In other words, the model may predict that a note ought to have the <code>_meta/definition</code> tag assigned to it when the <code>_meta/notation</code> tag should be assigned to it and vice versa, but the model will fairly usually assign at least one of the tags when the note introduces a definition or a notation and will assign neither of the tags when the note does not introduce a definition or a notation.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>More precisely, <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_identification.html#automatically_mark_notations"><code>automatically_mark_notations</code></a> first applies <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_processing.html#process_standard_information_note"><code>process_standard_information_note</code></a> to a <a href="https://hyunjongkimmath.github.io/trouver/markdown.markdown.file.html#markdownfile"><code>MarkdownFile</code></a> object constructed from the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> object to roughly obtain the <em>raw text</em> of the note, uses that raw text to locate notations, marks the notations in the raw text, and then replaces the text from the note with the raw text with notations marked. In the process of obtaining the raw text, the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_processing.html#process_standard_information_note"><code>process_standard_information_note</code></a> function removes components such as links and footnotes from the text.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>There seems to be a bug in the above example where inexplicable tags (e.g.&nbsp;<code>_auto/s</code>, <code>_auto/a</code>) are added to the note along with the double asterisks <code>**</code>. This issue is reported as <a href="https://github.com/hyunjongkimmath/trouver/issues/33">Issue #33</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>cf.&nbsp;<a href="https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-examples-tests-and-docs">nbdev’s End-To-End Walkthrough</a> to see how to use <code>nbdev_test</code><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>There are also tests which are hidden from the documentation website; one can find these tests in the jupyter notebook files in the <code>nbs</code> folder in the repository for this library as notebook cells marked with the <code>#| hide</code> flag, cf.&nbsp;<a href="https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-frontmatter">nbdev’s End-to-End Walkthrough</a> to see what the <code>#| hide</code> flag does.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>The <code>.github/workflows/test.yaml</code> GitHub workflow file is set up in such a way that that allows GitHub Actions to access/use the contents of the <code>nbs/_tests</code> directory upon running the tests/examples.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>The <code>.github/workflows/test.yaml</code> GitHub workflow file is set up in such a way that that allows GitHub Actions to access/use the contents of the <code>nbs/_tests</code> directory upon running the tests/examples.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script type="application/vnd.jupyter.widget-state+json">
+{"state":{},"version_major":2,"version_minor":0}
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

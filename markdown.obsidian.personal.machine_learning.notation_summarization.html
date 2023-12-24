@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Functions for summarizing notations">
+
+<title>trouver - markdown.obsidian.personal.machine_learning.notation_summarization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="trouver - markdown.obsidian.personal.machine_learning.notation_summarization">
+<meta property="og:description" content="Functions for summarizing notations">
+<meta property="og:site-name" content="trouver">
+<meta name="twitter:title" content="trouver - markdown.obsidian.personal.machine_learning.notation_summarization">
+<meta name="twitter:description" content="Functions for summarizing notations">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html">markdown.obsidian.personal.machine_learning.notation_summarization</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#gather-ml-data-from-notation-notes" id="toc-gather-ml-data-from-notation-notes" class="nav-link active" data-scroll-target="#gather-ml-data-from-notation-notes">Gather ML data from notation notes</a>
+  <ul class="collapse">
+  <li><a href="#get_latex_in_original_from_parsed_notation_note_data" id="toc-get_latex_in_original_from_parsed_notation_note_data" class="nav-link" data-scroll-target="#get_latex_in_original_from_parsed_notation_note_data">get_latex_in_original_from_parsed_notation_note_data</a></li>
+  <li><a href="#notation_summarization_data_from_note" id="toc-notation_summarization_data_from_note" class="nav-link" data-scroll-target="#notation_summarization_data_from_note">notation_summarization_data_from_note</a></li>
+  <li><a href="#gather_notation_note_summaries" id="toc-gather_notation_note_summaries" class="nav-link" data-scroll-target="#gather_notation_note_summaries">gather_notation_note_summaries</a></li>
+  <li><a href="#append_to_notation_note_summarization_database" id="toc-append_to_notation_note_summarization_database" class="nav-link" data-scroll-target="#append_to_notation_note_summarization_database">append_to_notation_note_summarization_database</a></li>
+  </ul></li>
+  <li><a href="#format-data" id="toc-format-data" class="nav-link" data-scroll-target="#format-data">Format Data</a>
+  <ul class="collapse">
+  <li><a href="#single_input_for_notation_summarization" id="toc-single_input_for_notation_summarization" class="nav-link" data-scroll-target="#single_input_for_notation_summarization">single_input_for_notation_summarization</a></li>
+  <li><a href="#append_column_for_single_text" id="toc-append_column_for_single_text" class="nav-link" data-scroll-target="#append_column_for_single_text">append_column_for_single_text</a></li>
+  </ul></li>
+  <li><a href="#use-ml-model-to-fill-in-notation-notes" id="toc-use-ml-model-to-fill-in-notation-notes" class="nav-link" data-scroll-target="#use-ml-model-to-fill-in-notation-notes">Use ML model to fill in notation notes</a>
+  <ul class="collapse">
+  <li><a href="#fix_summary_formatting" id="toc-fix_summary_formatting" class="nav-link" data-scroll-target="#fix_summary_formatting">fix_summary_formatting</a></li>
+  <li><a href="#summarize_notation" id="toc-summarize_notation" class="nav-link" data-scroll-target="#summarize_notation">summarize_notation</a></li>
+  <li><a href="#append_summary_to_notation_note" id="toc-append_summary_to_notation_note" class="nav-link" data-scroll-target="#append_summary_to_notation_note">append_summary_to_notation_note</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">markdown.obsidian.personal.machine_learning.notation_summarization</h1>
+</div>
+
+<div>
+  <div class="description">
+    Functions for summarizing notations
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>In <code>markdown.obsidian.personal.machine_learning.notation_identification</code>, we defined functions to gather ML data to identify notations and functions to use an ML model to predict where notations are defined. In <code>how_to.train_ml_model.fastai</code>, we showed how to train this ML model from the data. <code>markdown.obsidian.personal.notation</code> also has some functions to create and interact with notation notes.</p>
+<p>It would be further convenient to train an ML model to summarize details about notations. This module defines functions to gather data to train such a model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unittest <span class="im">import</span> mock</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># from torch import Tensor</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.helper <span class="im">import</span> _test_directory</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="gather-ml-data-from-notation-notes" class="level1">
+<h1>Gather ML data from notation notes</h1>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L28" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_latex_in_original_from_parsed_notation_note_data" class="level3">
+<h3 class="anchored" data-anchor-id="get_latex_in_original_from_parsed_notation_note_data">get_latex_in_original_from_parsed_notation_note_data</h3>
+<blockquote class="blockquote">
+<pre><code> get_latex_in_original_from_parsed_notation_note_data (metadata:dict[str],
+                                                       notation_str:str)</code></pre>
+</blockquote>
+<p>Return the string that should be considered the <code>latex_in_original</code> given part of the output of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#parse_notation_note"><code>parse_notation_note</code></a></p>
+<p><code>latex_in_original</code> is intended to either be 1. a substring of the main note in which the notation is introduced, if available, or 2. the notation itself.</p>
+<p>If the notation note has a <code>latex_in_original</code> field in its YAML frontmatter metadata, then the (first) str there is the <code>latex_in_original</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The metadata is empty, so the `notation_str` should be considered the `latex_in_original`.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>test_eq(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    get_latex_in_original_from_parsed_notation_note_data({}, <span class="vs">r'\mathbb</span><span class="sc">{A}</span><span class="vs">^n_k'</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r'\mathbb</span><span class="sc">{A}</span><span class="vs">^n_k'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>test_metadata_1 <span class="op">=</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'detect_regex'</span>: [],</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'latex_in_original'</span>: [</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="vs">r"c_x: \\mathbb</span><span class="sc">{P}</span><span class="vs">_k^n/(\\mathbb</span><span class="sc">{P}</span><span class="vs">_k^{n-1}) \\to \\mathbb</span><span class="sc">{P}</span><span class="vs">_k^n/(\\mathbb</span><span class="sc">{P}</span><span class="vs">_k^</span><span class="sc">{n}</span><span class="vs"> - \\{x\\}) \\cong \\mathbb</span><span class="sc">{P}</span><span class="vs">_k^n/(\\mathbb</span><span class="sc">{P}</span><span class="vs">_k^{n-1})"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        ]}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>test_notation_str_1 <span class="op">=</span> <span class="vs">r'c_x'</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>test_eq(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    get_latex_in_original_from_parsed_notation_note_data(test_metadata_1, test_notation_str_1),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    test_metadata_1[<span class="st">'latex_in_original'</span>][<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L65" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="notation_summarization_data_from_note" class="level3">
+<h3 class="anchored" data-anchor-id="notation_summarization_data_from_note">notation_summarization_data_from_note</h3>
+<blockquote class="blockquote">
+<pre><code> notation_summarization_data_from_note
+                                        (notation_note:trouver.markdown.ob
+                                        sidian.vault.VaultNote,
+                                        vault:os.PathLike)</code></pre>
+</blockquote>
+<p>Obtain notation summzarization data from the notation note.</p>
+<p><code>None</code> is returned instead of a `dict if</p>
+<ol type="1">
+<li>the notation is determined to have not been (fully) summarized,
+<ul>
+<li>Currently, this is implemented as follows: a notation note is not fully summarized if it does not have any content beyond <code>&lt;notation&gt; denotes</code> or if the notation note has <code>#_meta/TODO</code> marked in its content (except in the trailing bulleted list of notations used in the notation note)</li>
+</ul></li>
+<li>the main note of the notation not does not exist or is essentially empty
+<ul>
+<li>Essentially empty means that the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.note_processing.html#process_standard_information_note"><code>process_standard_information_note</code></a> function applied to the a <a href="https://hyunjongkimmath.github.io/trouver/markdown.markdown.file.html#markdownfile"><code>MarkdownFile</code></a> object of the main note yields a <a href="https://hyunjongkimmath.github.io/trouver/markdown.markdown.file.html#markdownfile"><code>MarkdownFile</code></a> object whose <code>__str__</code> method returns a string of only blank characters.</li>
+</ul></li>
+<li>the notation note is marked with an <code>_auto/notation_summary</code> tag in its YAML frontmatter meta.
+<ul>
+<li>If a notation note is marked with an <code>_auto/notation_summary</code> tag, then that means that its summary has been auto-generated by an ML model using the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_summary_to_notation_note"><code>append_summary_to_notation_note</code></a> function</li>
+</ul></li>
+</ol>
+<p>The notion of whether the notation “has been summarized” is not exactly implemented, but should be sufficient for gathering data.</p>
+<p>This function is mainly used in <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#gather_notation_note_summaries"><code>gather_notation_note_summaries</code></a>.</p>
+<p>TODO: there are some notation notes drawing information from multiple notes; separate text in notation notes corresponding to each note.</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><p>Union[dict[str, str], None]</p>
+<ul>
+<li>If the notation note is determined to have been summarized (i.e.&nbsp;contains text beyond <code>&lt;notation&gt; denotes</code> and does not have the <code>#_meta/TODO</code> tag) then the output is a <code>dict</code> whose key-value pairs are
+<ul>
+<li><code>"Notation note name"</code> - The name of the notation note</li>
+<li><code>"Notation"</code> - The notation of the note</li>
+<li><code>"Latex in original"' - The entry of the</code>latex_in_original<code>field of the note if available, cf. [</code>make_a_notation_note`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_a_notation_note)</li>
+<li><code>"Summary"</code> - The summary of the notation.</li>
+<li><code>"Main note name"</code> - The name of the main note of the notation note</li>
+<li><code>"Processed main note contents"</code> - The processed contents of the main note</li>
+</ul></li>
+<li>Otherwise, the output is `None.</li>
+</ul></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>VaultNote</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>typing.Optional[dict[str, str]]</strong></td>
+<td><strong>The keys to the dict are “Notation note name”, “Notation”, “Latex in oiriginal”, “Summary”, and “Main note name”. However, <code>None</code> is returned instead of a <code>dict</code> if the notation note is determined to have not been summarized, if the main note of the notation note does not exist, or the notation note is marked with the <code>_auto/notation_summary</code> tag.</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_Spec_A'</span>) </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> notation_summarization_data_from_note(notation_note, vault)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span> sample_output[<span class="st">'Processed main note contents'</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>test_eq(sample_output,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'Notation note name'</span>: <span class="st">'some_reference_name_notation_Spec_A'</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>     <span class="st">'Notation'</span>: <span class="st">'$</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Spec}</span><span class="st"> A$'</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>     <span class="st">'Latex in original'</span>: <span class="st">'</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Spec}</span><span class="st"> A'</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>     <span class="st">'Summary'</span>: <span class="st">'the spectrum of the ring $A$.'</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>     <span class="st">'Main note name'</span>: <span class="st">'spectrum_of_a_ring'</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>     <span class="co"># 'Processed main note contents': 'Let $A$ be a ring.\n\nThe Spectrum $\\operatorname{Spec} A$ is the set of prime ideals of $A$. It is equipped with a topology, called the Zariski topology in which the followings sets, called the distinguished open subsets of $\\operatorname{Spec} A$, give a base for the topology:\n\n$$D(f) = \\{\\mathfrak{p} \\in \\operatorname{Spec} A: f \\not\\in \\mathfrak{p} \\}.$$\n'}</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the “main” note of the notation note cannot be identified, then <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#notation_summarization_data_from_note"><code>notation_summarization_data_from_note</code></a> returns <code>None</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_O_X_this_file_has_no_links'</span>) </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The following note has no main note link:</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(notation_note.text())</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>test_eq(notation_summarization_data_from_note(notation_note, vault), <span class="va">None</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_k_t_formal_power_series_ring'</span>) </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">The following note has a main note link, but the main note does not actually exist:</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(notation_note.text())</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>test_eq(notation_summarization_data_from_note(notation_note, vault), <span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following note has no main note link:
+
+---
+detect_regex: []
+latex_in_original: ["\\mathscr{O}_X"]
+---
+$\mathscr{O}_X$ denotes the structure sheaf of the scheme $X$.
+
+
+The following note has a main note link, but the main note does not actually exist:
+
+$k[[t]]$ [[some_note|denotes]] the ring of formal power series where $k$ is a field.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example with embedded links</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example of a notation note without any metadata</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the notation note has not been summarized, then <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#notation_summarization_data_from_note"><code>notation_summarization_data_from_note</code></a> returns <code>None</code>, even if the main note of the notation note exists:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example where main of notation note exists, but has basically no content;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The function should return `None` in this case.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>notation_note <span class="op">=</span> VaultNote(vault, name<span class="op">=</span><span class="st">'some_reference_name_notation_B_R'</span>) </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"This is what a notation note that has not been summarized basically looks like."</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">" Note that it has YAML frontmatter metadata and starts a sentence to describe"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">" what a certain notation is supposed to denote, but ultimately does not contain"</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">" an actual summary:</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(notation_note.text())</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>test_eq(notation_summarization_data_from_note(notation_note, vault), <span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is what a notation note that has not been summarized basically looks like. Note that it has YAML frontmatter metadata and starts a sentence to describe what a certain notation is supposed to denote, but ultimately does not contain an actual summary:
+
+---
+detect_regex: []
+latex_in_original: ["\\mathcal{B}(\\mathbb{R})"]
+---
+$\mathcal{B}(\mathbb{R})$ [[note_with_some_excessive_notation_notes|denotes]]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example where notation note has _auto/notation_summary tag; the notation summarization data should not be added.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L162" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="gather_notation_note_summaries" class="level3">
+<h3 class="anchored" data-anchor-id="gather_notation_note_summaries">gather_notation_note_summaries</h3>
+<blockquote class="blockquote">
+<pre><code> gather_notation_note_summaries (vault:os.PathLike,
+                                 notes:list[trouver.markdown.obsidian.vaul
+                                 t.VaultNote])</code></pre>
+</blockquote>
+<p>Return a <code>pandas.DataFrame</code> encapsulating the data of notation note summaries.</p>
+<p>cf.&nbsp;<a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#notation_summarization_data_from_note"><code>notation_summarization_data_from_note</code></a>, which is the function from which the notation note summaries are drawn.</p>
+<p>This function is mainly used in <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_to_notation_note_summarization_database"><code>append_to_notation_note_summarization_database</code></a>.</p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>notes</td>
+<td>list</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>DataFrame</strong></td>
+<td><strong>Has columns <code>Time added</code>, <code>Time modified</code>, <code>Notation note name</code>, <code>Notation</code>, <code>Latex in original</code>, ‘Summary’, ‘Main note name’, and ‘Processed main note contents’.</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example verifying that outputs of `None` from `notation_summarization_data_from_note`</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># are weeded out.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L187" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="append_to_notation_note_summarization_database" class="level3">
+<h3 class="anchored" data-anchor-id="append_to_notation_note_summarization_database">append_to_notation_note_summarization_database</h3>
+<blockquote class="blockquote">
+<pre><code> append_to_notation_note_summarization_database (vault:os.PathLike,
+                                                 file:os.PathLike, notes:l
+                                                 ist[trouver.markdown.obsi
+                                                 dian.vault.VaultNote],
+                                                 backup:bool=True)</code></pre>
+</blockquote>
+<p>Either create a <code>csv</code> file containing data for notation note summarization or append to an existing <code>csv</code> file.</p>
+<p>The columns of the database file are as follows:</p>
+<ul>
+<li><code>Time added</code> - The time when the row was added.</li>
+<li><code>Time modified</code> - The time when the labels of the row</li>
+<li><code>Notation note name</code> - The name of the note from which the data for the row was derived.</li>
+<li>‘Notation’ - The notation which is being summarized</li>
+<li>‘Latex in original’ - The entry of the <code>latex_in_original</code> field of the note if available, cf.&nbsp;<a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_a_notation_note"><code>make_a_notation_note</code></a></li>
+<li><code>"Summary"</code> - The summary of the notation.</li>
+<li><code>"Main note name"</code> - The name of the main note of the notation note</li>
+<li><code>"Processed main note contents"</code> - The processed contents of the main note</li>
+</ul>
+<p>All timestamps are in UTC time and specify time to minutes (i.e.&nbsp;no seconds/microseconds).</p>
+<p>TODO: implement updating rows and rewrite the next paragraph to accurately reflect the implementation. I would like the ‘Notation’, ‘Latex in original’, ‘Summary’, ‘processed main note contents’ to be the “pivot_cols”</p>
+<p>If a “new” note has the same processed content as a pre-existing note and anything is different about the “new” note, then update the row of the existing note. In particular, the following are updated: - Time modified (set to current time) - Notation (overwritten) - Latex in original (overwritten) - Summary (overwritten) - Main note name (overwritten) - Processed main note contents (overwritten)</p>
+<p>This method assumes that all the processed content in the CSV file are all distinct if the CSV file exists.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>The vault freom which the data is drawn</td>
+</tr>
+<tr class="even">
+<td>file</td>
+<td>PathLike</td>
+<td></td>
+<td>The path to a CSV file</td>
+</tr>
+<tr class="odd">
+<td>notes</td>
+<td>list</td>
+<td></td>
+<td>the notation notes to consider adding to the database.</td>
+</tr>
+<tr class="even">
+<td>backup</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, makes a copy of <code>file</code> in the same directory and with the same name, except with an added extension of <code>.bak</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> basic example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example of appending instead of making an entirely new CSV file</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example of notation notes existing, but none of them are to be added to the database by virtue of either the notation summary</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># not being written or by virtue of their main notes not existing.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> basic example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example of appending instead of making an entirely new CSV file</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example of notation notes existing, but none of them are to be added to the database by virtue of either the notation summary</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># not being written or by virtue of their main notes not existing.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="format-data" class="level1">
+<h1>Format Data</h1>
+<p>Given the contents of the CSV file generated in <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_to_notation_note_summarization_database"><code>append_to_notation_note_summarization_database</code></a>, we create a single column representing the data upon which the ML model should train.</p>
+<p>Since a single piece of text can introduce multiple notations, we should indicate which the notation we want summarized. The entry in the <code>Latex in original</code> column of the CSV file can indicate this notation; as explained in <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_a_notation_note"><code>make_a_notation_note</code></a>, this entry is not necessarily the notation itself, but rather the substring of the text in which the notation is introduced. For example, in the text</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Let $R$ be a ring and let $M$ be a module. We define the dual of $M$ as </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>$$M^\vee := \operatorname{Hom}_R(R,M).$$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The notation <code>M^\vee</code> is introduced, and it is in the display math mode string.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L252" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="single_input_for_notation_summarization" class="level3">
+<h3 class="anchored" data-anchor-id="single_input_for_notation_summarization">single_input_for_notation_summarization</h3>
+<blockquote class="blockquote">
+<pre><code> single_input_for_notation_summarization (main_note_content:str,
+                                          latex_in_original:str, latex_in_
+                                          original_comes_first:bool=True)</code></pre>
+</blockquote>
+<p>Format an input for a <code>transformers.pipelines.text2text_generation.SummarizationPipeline</code> object to summarize a notation introduced in a mathematical text.</p>
+<p>The input consists of <code>main_note_content</code> as well as a part that is formatted as <code>f"latex_in_original: {latex_in_original}"</code>.</p>
+<p>Note that this function is used to format data used to train/validate the summarization model within the <code>SummarizationPipeline</code>.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>main_note_content</td>
+<td>str</td>
+<td></td>
+<td>The mathematical text that introduces the notation and from which to summarize a notation.</td>
+</tr>
+<tr class="even">
+<td>latex_in_original</td>
+<td>str</td>
+<td></td>
+<td>A substring in main_note_content which is a latex string in which the notation is introduced.</td>
+</tr>
+<tr class="odd">
+<td>latex_in_original_comes_first</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, the <code>latex_in_original</code> piece appears before the <code>main_note_content</code></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>str</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#single_input_for_notation_summarization"><code>single_input_for_notation_summarization</code></a> function formats an input for the notation summarization model to train on or to predict. Such an input consists of a mathematical excerpt and the <code>latex_in_original</code> field, which is a latex string containing a notation supposedly introduced in the mathematical excerpt.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>test_content <span class="op">=</span> <span class="st">"This is a test content introducing notation: $\mathbb</span><span class="sc">{Z}</span><span class="st">/n\mathbb</span><span class="sc">{Z}</span><span class="st">$ denotes this. $\mathbb</span><span class="sc">{F}</span><span class="st">_q$ denotes that"</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>latex_in_original <span class="op">=</span> <span class="st">"\mathbb</span><span class="sc">{Z}</span><span class="st">/n\mathbb</span><span class="sc">{Z}</span><span class="st">"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># In this example, `latex_in_orignal_comex_first` is set to `False`.</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> single_input_for_notation_summarization(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    test_content,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    latex_in_original,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    latex_in_original_comes_first<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'</span><span class="ch">\n\n</span><span class="st">latex_in_original: '</span> <span class="kw">in</span> sample_output</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output, <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is a test content introducing notation: $\mathbb{Z}/n\mathbb{Z}$ denotes this. $\mathbb{F}_q$ denotes that
+
+latex_in_original: \mathbb{Z}/n\mathbb{Z} 
+</code></pre>
+</div>
+</div>
+<p>Originally, this function was implemented in a way that places the <code>latex_in_original</code> at the end of the string (tantamount to letting <code>latex_in_original_comes_first=False</code> in the current implementation). Letting <code>latex_in_original_comes_first=False</code> places the <code>latex_in_original</code> field before the mathematical excerpt.</p>
+<p>This change in implementation is an experimental attempt to improve the model; the author hypothesizes that placing the <code>latex_in_original</code> field before the mathematical excerpt will improve the model by allowing it to know what notation it is supposed to summarize before considering the mathematical excerpt.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In this example, `latex_in_orignal_comex_first` is set to `True`.</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> single_input_for_notation_summarization(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    test_content,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    latex_in_original,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    latex_in_original_comes_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_output.startswith(<span class="st">'latex_in_original: '</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>latex_in_original: \mathbb{Z}/n\mathbb{Z}
+
+This is a test content introducing notation: $\mathbb{Z}/n\mathbb{Z}$ denotes this. $\mathbb{F}_q$ denotes that</code></pre>
+</div>
+</div>
+<p>If <code>latex_in_original</code> is None, TODO: finish explanation</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: finish example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L276" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="append_column_for_single_text" class="level3">
+<h3 class="anchored" data-anchor-id="append_column_for_single_text">append_column_for_single_text</h3>
+<blockquote class="blockquote">
+<pre><code> append_column_for_single_text (df:pandas.core.frame.DataFrame,
+                                latex_in_original_comes_first:bool=True)</code></pre>
+</blockquote>
+<p>Append a column <code>"Single text"</code> to the notation note summarization DataFrame to represent the input into an ML model as a single text</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>df</td>
+<td>DataFrame</td>
+<td></td>
+<td>Assumed to be structured just as a dataframe of a CSV file created/modified by append_to_notation_note_summarization_database`<code>| | latex_in_original_comes_first | bool | True | This is a parameter to pass to calls to the [</code>single_input_for_notation_summarization<code>](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#single_input_for_notation_summarization) function. If</code>True<code>, the</code>latex_in_original<code>piece appears before the</code>main_note_content`</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>csv_file <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'ml_examples'</span> <span class="op">/</span> <span class="st">'notation_summarizations.csv'</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(csv_file)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Time added</th>
+<th data-quarto-table-cell-role="th">Time modified</th>
+<th data-quarto-table-cell-role="th">Notation note name</th>
+<th data-quarto-table-cell-role="th">Notation</th>
+<th data-quarto-table-cell-role="th">Latex in original</th>
+<th data-quarto-table-cell-role="th">Summary</th>
+<th data-quarto-table-cell-role="th">Main note name</th>
+<th data-quarto-table-cell-role="th">Processed main note contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_Gal_L_K</td>
+<td>$\operatorname{Gal}(L/K)$</td>
+<td>$\operatorname{ann} M$</td>
+<td>the Galois group of the Galois field extension...</td>
+<td>reference_name_Galois_group</td>
+<td>If $L/K$ is a Galois field extension, then its...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_I_J</td>
+<td>$\mathbb{Z}/n\mathbb{Z}$</td>
+<td>$\mathbb{Z}/n\mathbb{Z}$</td>
+<td>The ring of integers modulo $n$. It is defined...</td>
+<td>reference_name_Definition 1</td>
+<td>The ring $\mathbb{Z}/n\mathbb{Z}$, called the ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_M_vee_dual_of_a_module</td>
+<td>$M^\vee$</td>
+<td>$M^\vee$</td>
+<td>the dual of the $R$-module $M$. It is defined ...</td>
+<td>reference_name_Definition 17</td>
+<td>Let $M$ be an $R$-module. We define the dual m...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_F_q</td>
+<td>$\mathbb{F}_q$</td>
+<td>$\mathbb{F}_q$</td>
+<td>the finite field of $q$ elements, where $q$ is...</td>
+<td>reference_name_Theorem 1</td>
+<td>Theorem. Let $q$ be a prime power. There is a ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_X_N</td>
+<td>$X(N)$</td>
+<td>$X(N)$</td>
+<td>the quotient of $\mathbb{H}^*$ by $\Gamma(N)$,...</td>
+<td>reference_name_Definition 200</td>
+<td>Now we discuss modular curves, whose points pa...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>append_column_for_single_text(df)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Time added</th>
+<th data-quarto-table-cell-role="th">Time modified</th>
+<th data-quarto-table-cell-role="th">Notation note name</th>
+<th data-quarto-table-cell-role="th">Notation</th>
+<th data-quarto-table-cell-role="th">Latex in original</th>
+<th data-quarto-table-cell-role="th">Summary</th>
+<th data-quarto-table-cell-role="th">Main note name</th>
+<th data-quarto-table-cell-role="th">Processed main note contents</th>
+<th data-quarto-table-cell-role="th">Single text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_Gal_L_K</td>
+<td>$\operatorname{Gal}(L/K)$</td>
+<td>$\operatorname{ann} M$</td>
+<td>the Galois group of the Galois field extension...</td>
+<td>reference_name_Galois_group</td>
+<td>If $L/K$ is a Galois field extension, then its...</td>
+<td>If $L/K$ is a Galois field extension, then its...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_I_J</td>
+<td>$\mathbb{Z}/n\mathbb{Z}$</td>
+<td>$\mathbb{Z}/n\mathbb{Z}$</td>
+<td>The ring of integers modulo $n$. It is defined...</td>
+<td>reference_name_Definition 1</td>
+<td>The ring $\mathbb{Z}/n\mathbb{Z}$, called the ...</td>
+<td>The ring $\mathbb{Z}/n\mathbb{Z}$, called the ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_M_vee_dual_of_a_module</td>
+<td>$M^\vee$</td>
+<td>$M^\vee$</td>
+<td>the dual of the $R$-module $M$. It is defined ...</td>
+<td>reference_name_Definition 17</td>
+<td>Let $M$ be an $R$-module. We define the dual m...</td>
+<td>Let $M$ be an $R$-module. We define the dual m...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_F_q</td>
+<td>$\mathbb{F}_q$</td>
+<td>$\mathbb{F}_q$</td>
+<td>the finite field of $q$ elements, where $q$ is...</td>
+<td>reference_name_Theorem 1</td>
+<td>Theorem. Let $q$ be a prime power. There is a ...</td>
+<td>Theorem. Let $q$ be a prime power. There is a ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2023-01-17T01:47</td>
+<td>2023-01-17T01:47</td>
+<td>reference_name_notation_X_N</td>
+<td>$X(N)$</td>
+<td>$X(N)$</td>
+<td>the quotient of $\mathbb{H}^*$ by $\Gamma(N)$,...</td>
+<td>reference_name_Definition 200</td>
+<td>Now we discuss modular curves, whose points pa...</td>
+<td>Now we discuss modular curves, whose points pa...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="use-ml-model-to-fill-in-notation-notes" class="level1">
+<h1>Use ML model to fill in notation notes</h1>
+<p>After training the model (cf.&nbsp;<code>how_to.train_ml_model.huggingface</code>), we use it to summarize notations.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L291" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="fix_summary_formatting" class="level3">
+<h3 class="anchored" data-anchor-id="fix_summary_formatting">fix_summary_formatting</h3>
+<blockquote class="blockquote">
+<pre><code> fix_summary_formatting (summary:str)</code></pre>
+</blockquote>
+<p>Fix some latex formatting issues in a summarized text</p>
+<p>Currently, the model is inclined to decode and format its summarizations in such a way that creates formatting issues either for LaTeX or <code>Obsidian.md</code>. For example, the model would output a str containing</p>
+<ul>
+<li><code>\ &lt;command_name&gt;</code> instead of <code>\&lt;command_name&gt;</code></li>
+<li><code>{</code> when <code>{</code> is preferable</li>
+<li><code>$ &lt;latex_string&gt; $</code> when <code>$&lt;latex_string&gt;$</code> is needed for <code>Obsidian.md</code>.</li>
+</ul>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#fix_summary_formatting"><code>fix_summary_formatting</code></a> function attempts to get around some of these issues.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r'\ to'</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> fix_summary_formatting(text)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'\to'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r'$d\ in\ mathbb{ Z}_{\ geq 0} $'</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> fix_summary_formatting(text)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'\in'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'\mathbb</span><span class="sc">{Z}</span><span class="vs">'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'\geq 0'</span> <span class="kw">in</span> sample_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r'There are some extra spaces in this math mode string: $  5 + 7 = 12 $.'</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>sample_output <span class="op">=</span> fix_summary_formatting(text)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample_output)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'$5'</span> <span class="kw">in</span> sample_output</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="vs">r'12$'</span> <span class="kw">in</span> sample_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>There are some extra spaces in this math mode string: $5 + 7 = 12$.</code></pre>
+</div>
+</div>
+<section id="using-a-huggingface-pipeline-to-summarize-a-notation" class="level4">
+<h4 class="anchored" data-anchor-id="using-a-huggingface-pipeline-to-summarize-a-notation">Using a HuggingFace pipeline to summarize a notation</h4>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L310" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="summarize_notation" class="level3">
+<h3 class="anchored" data-anchor-id="summarize_notation">summarize_notation</h3>
+<blockquote class="blockquote">
+<pre><code> summarize_notation (main_content:str, latex_in_original:str, summarizer:t
+                     ransformers.pipelines.text2text_generation.Summarizat
+                     ionPipeline, fix_formatting:bool=True,
+                     latex_in_original_comes_first:bool=True)</code></pre>
+</blockquote>
+<p>Summarize a notation introduced in a mathematical text using a huggingface pipeline.</p>
+<p>Assumes that <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.information_notes.html#main_content"><code>main_content</code></a> is a mathematical text introducing a notation and that <code>latex_in_original</code> is a substring of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.information_notes.html#main_content"><code>main_content</code></a> in which a notation is introduced.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>main_content</td>
+<td>str</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>latex_in_original</td>
+<td>str</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>summarizer</td>
+<td>SummarizationPipeline</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>fix_formatting</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, run <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#fix_summary_formatting"><code>fix_summary_formatting</code></a> on <code>summarizer</code>’s summary before retuning it.</td>
+</tr>
+<tr class="odd">
+<td>latex_in_original_comes_first</td>
+<td>bool</td>
+<td>True</td>
+<td>This is a parameter to pass to calls to the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#single_input_for_notation_summarization"><code>single_input_for_notation_summarization</code></a> function. If <code>True</code>, the <code>latex_in_original</code> piece appears before the <code>main_note_content</code></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>str</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="adding-the-summary-to-the-notation-note" class="level4">
+<h4 class="anchored" data-anchor-id="adding-the-summary-to-the-notation-note">Adding the summary to the notation note</h4>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/machine_learning/notation_summarization.py#L333" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="append_summary_to_notation_note" class="level3">
+<h3 class="anchored" data-anchor-id="append_summary_to_notation_note">append_summary_to_notation_note</h3>
+<blockquote class="blockquote">
+<pre><code> append_summary_to_notation_note
+                                  (notation_note:trouver.markdown.obsidian
+                                  .vault.VaultNote, vault:os.PathLike, sum
+                                  marizer:transformers.pipelines.text2text
+                                  _generation.SummarizationPipeline, main_
+                                  note:Optional[trouver.markdown.obsidian.
+                                  vault.VaultNote]=None, overwrite_previou
+                                  s_autogenerated_summary:bool=False,
+                                  latex_in_original_comes_first:bool=True)</code></pre>
+</blockquote>
+<p>Summarize a notation introduced in a mathematical text using a huggingface pipeline and append said summarization to <code>notation_note</code>.</p>
+<p>If <code>notation_note</code> does not have a YAML frontmatter meta or does not have a <code>latex_in_original</code> field in its YAML frontmatter meta, then the actual notation is used as the <code>latex_in_original</code>.</p>
+<p>The following describes the circumstances under which the summarization does not happen:</p>
+<ul>
+<li>If <code>main_note</code> is <code>None</code> and no main note of <code>notation_note</code> can be determined via the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#main_of_notation"><code>main_of_notation</code></a> function.</li>
+<li>If <code>overwrite_previous_autogenerated_summary</code> is <code>False</code> and <code>notation_note</code> has the <code>_auto/notation_summary</code> tag in its YAML frontmatter meta (if available).</li>
+<li>If <code>notation_note</code> does not have a YAML frontmatter meta or the <code>_auto/notation_summary</code> tag is not present in the YAML frontmatter meta and <code>notation_note</code> has nontrivial content (i.e.&nbsp;its content is not merely of the form <code>$&lt;notation&gt;$ [[&lt;link_to_main_note|denotes]]</code>).</li>
+</ul>
+<p>If an auto-generated summary is appended, then this function adds an <code>_auto/notation_summary</code> tag to the notation note’s YAML frontmatter, if not already present. This tag is intended to be used as follows:</p>
+<ul>
+<li>The presence of this tag tells the reader that the summary has been autogenerated by this function.</li>
+<li>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#notation_summarization_data_from_note"><code>notation_summarization_data_from_note</code></a> function (and by extension, the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#gather_notation_note_summaries"><code>gather_notation_note_summaries</code></a> and <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#append_to_notation_note_summarization_database"><code>append_to_notation_note_summarization_database</code></a> functions) avoids gathering notation summarization data from notation notes marked with this tag</li>
+<li>The owner of the <code>Obsidian.md</code> vault can manually make modifications to the notation note if necessary and remove this tag to indicate that the summary is appropriate to be added to the note summarization database.</li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>notation_note</td>
+<td>VaultNote</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>summarizer</td>
+<td>SummarizationPipeline</td>
+<td></td>
+<td>Contains an ML model which summarizes the notation, see <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#summarize_notation"><code>summarize_notation</code></a> function.</td>
+</tr>
+<tr class="even">
+<td>main_note</td>
+<td>typing.Optional[trouver.markdown.obsidian.vault.VaultNote]</td>
+<td>None</td>
+<td>The main note from which the notation comes from. If this is <code>None</code>, then the <code>main_note</code> is obtained via the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#main_of_notation"><code>main_of_notation</code></a> function.</td>
+</tr>
+<tr class="odd">
+<td>overwrite_previous_autogenerated_summary</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>True</code>, overwrite previously autogenerated summaries</td>
+</tr>
+<tr class="even">
+<td>latex_in_original_comes_first</td>
+<td>bool</td>
+<td>True</td>
+<td>This is a parameter to pass to calls to the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.machine_learning.notation_summarization.html#single_input_for_notation_summarization"><code>single_input_for_notation_summarization</code></a> function. If <code>True</code>, the <code>latex_in_original</code> piece appears before the <code>main_note_content</code>. While the default value of <code>True</code> is recommended, passing <code>False</code> to this parameter may be necessary to use the older version of the summarization model in the repo <a href="https://huggingface.co/hyunjongkimmath/notation_summarizations_model"><code>notation_summarizations_model</code></a>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test out when a summary is written and when it is not.</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. When the main note of the notation note cannot be identified, don't write a</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summary</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(mock_notation_note, mock_vault, summarizer)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_not_called()</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_not_called()</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. When `overwrite_previous_autogenerated_summary` is `False` and</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co"># `notation_note` has the `_auto/notation_summary` tag in its YAML frontmatter meta</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a><span class="co"># then don't write a summary</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_vaultnote,</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> {<span class="st">'tags'</span>: [<span class="st">'_auto/notation_summary'</span>]}</span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="st">'main_note'</span> </span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_not_called()</span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_not_called()</span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. When `notation_note` does not have a YAML frontmatter meta or the</span></span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a><span class="co"># `_auto/notation_summary` tag is not present in the YAML frontmatter meta</span></span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a><span class="co"># and `notation_note` has nontrivial content, then don't write a summary.</span></span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_vaultnote,</span>
+<span id="cb40-48"><a href="#cb40-48" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-49"><a href="#cb40-49" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-50"><a href="#cb40-50" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-51"><a href="#cb40-51" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-52"><a href="#cb40-52" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-53"><a href="#cb40-53" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> {<span class="st">'tags'</span>: []}</span>
+<span id="cb40-54"><a href="#cb40-54" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="st">'main_note'</span> </span>
+<span id="cb40-55"><a href="#cb40-55" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> MarkdownFile.from_string(<span class="st">'The ring of integers of a number field $K$'</span>)</span>
+<span id="cb40-56"><a href="#cb40-56" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-57"><a href="#cb40-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-58"><a href="#cb40-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `overwrite_previous_autogenerated_summary` is set to `True``</span></span>
+<span id="cb40-59"><a href="#cb40-59" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-60"><a href="#cb40-60" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-61"><a href="#cb40-61" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-62"><a href="#cb40-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-63"><a href="#cb40-63" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_not_called()</span>
+<span id="cb40-64"><a href="#cb40-64" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_not_called()</span>
+<span id="cb40-65"><a href="#cb40-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-66"><a href="#cb40-66" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Now set `overwrite_previous_autogenerated_summary` to `False`</span></span>
+<span id="cb40-67"><a href="#cb40-67" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-68"><a href="#cb40-68" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-69"><a href="#cb40-69" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-70"><a href="#cb40-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-71"><a href="#cb40-71" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_not_called()</span>
+<span id="cb40-72"><a href="#cb40-72" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_not_called()</span>
+<span id="cb40-73"><a href="#cb40-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-74"><a href="#cb40-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-75"><a href="#cb40-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. When the main note is identifiable, the `_auto/notation_summary` tag is not present, and</span></span>
+<span id="cb40-76"><a href="#cb40-76" aria-hidden="true" tabindex="-1"></a><span class="co"># `notation_note` has not content, write a summary.</span></span>
+<span id="cb40-77"><a href="#cb40-77" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_vaultnote,</span>
+<span id="cb40-78"><a href="#cb40-78" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-79"><a href="#cb40-79" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-80"><a href="#cb40-80" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-81"><a href="#cb40-81" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-82"><a href="#cb40-82" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-83"><a href="#cb40-83" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> {<span class="st">'tags'</span>: []}</span>
+<span id="cb40-84"><a href="#cb40-84" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="st">'main_note'</span> </span>
+<span id="cb40-85"><a href="#cb40-85" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> MarkdownFile.from_string(<span class="st">''</span>)</span>
+<span id="cb40-86"><a href="#cb40-86" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-87"><a href="#cb40-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-88"><a href="#cb40-88" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `overwrite_previous_autogenerated_summary` is set to `True``</span></span>
+<span id="cb40-89"><a href="#cb40-89" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-90"><a href="#cb40-90" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-91"><a href="#cb40-91" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-92"><a href="#cb40-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-93"><a href="#cb40-93" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_called_once()</span>
+<span id="cb40-94"><a href="#cb40-94" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_called_once()</span>
+<span id="cb40-95"><a href="#cb40-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-96"><a href="#cb40-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-97"><a href="#cb40-97" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. When the main note is identifiable, the `_auto/notation_summary` tag is not present, and</span></span>
+<span id="cb40-98"><a href="#cb40-98" aria-hidden="true" tabindex="-1"></a><span class="co"># `notation_note` has not content, write a summary.</span></span>
+<span id="cb40-99"><a href="#cb40-99" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_vaultnote,</span>
+<span id="cb40-100"><a href="#cb40-100" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-101"><a href="#cb40-101" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-102"><a href="#cb40-102" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-103"><a href="#cb40-103" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-104"><a href="#cb40-104" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-105"><a href="#cb40-105" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> {<span class="st">'tags'</span>: []}</span>
+<span id="cb40-106"><a href="#cb40-106" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="st">'main_note'</span> </span>
+<span id="cb40-107"><a href="#cb40-107" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> MarkdownFile.from_string(<span class="st">''</span>)</span>
+<span id="cb40-108"><a href="#cb40-108" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-109"><a href="#cb40-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-110"><a href="#cb40-110" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `overwrite_previous_autogenerated_summary` is set to `True``</span></span>
+<span id="cb40-111"><a href="#cb40-111" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-112"><a href="#cb40-112" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-113"><a href="#cb40-113" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-114"><a href="#cb40-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-115"><a href="#cb40-115" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_called_once()</span>
+<span id="cb40-116"><a href="#cb40-116" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_called_once()</span>
+<span id="cb40-117"><a href="#cb40-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-118"><a href="#cb40-118" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `overwrite_previous_autogenerated_summary` is set to `False`</span></span>
+<span id="cb40-119"><a href="#cb40-119" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.reset_mock()</span>
+<span id="cb40-120"><a href="#cb40-120" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.reset_mock()</span>
+<span id="cb40-121"><a href="#cb40-121" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-122"><a href="#cb40-122" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb40-123"><a href="#cb40-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-124"><a href="#cb40-124" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_called_once()</span>
+<span id="cb40-125"><a href="#cb40-125" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_called_once()</span>
+<span id="cb40-126"><a href="#cb40-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-127"><a href="#cb40-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-128"><a href="#cb40-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-129"><a href="#cb40-129" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. When the main note is identifiable, the `_auto/notation_summary` tag is present, and</span></span>
+<span id="cb40-130"><a href="#cb40-130" aria-hidden="true" tabindex="-1"></a><span class="co"># `overwrite_previous_autogenerated_summary` is `True`, write a summary.</span></span>
+<span id="cb40-131"><a href="#cb40-131" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_vaultnote,</span>
+<span id="cb40-132"><a href="#cb40-132" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_mf_from_vault_note,</span>
+<span id="cb40-133"><a href="#cb40-133" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.parse_notation_note'</span>) <span class="im">as</span> mock_parse_notation_note,</span>
+<span id="cb40-134"><a href="#cb40-134" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._get_summary'</span>) <span class="im">as</span> mock_get_summary,</span>
+<span id="cb40-135"><a href="#cb40-135" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__._write_summary_to_notation_note'</span>) <span class="im">as</span> mock_write_summary_to_notation_note):</span>
+<span id="cb40-136"><a href="#cb40-136" aria-hidden="true" tabindex="-1"></a>    mock_notation_note <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb40-137"><a href="#cb40-137" aria-hidden="true" tabindex="-1"></a>    mock_metadata <span class="op">=</span> {<span class="st">'tags'</span>: [<span class="st">'_auto/notation_summary'</span>]}</span>
+<span id="cb40-138"><a href="#cb40-138" aria-hidden="true" tabindex="-1"></a>    mock_main_note_name <span class="op">=</span> <span class="st">'main_note'</span> </span>
+<span id="cb40-139"><a href="#cb40-139" aria-hidden="true" tabindex="-1"></a>    mock_notation_note_content_mf <span class="op">=</span> MarkdownFile.from_string(<span class="st">'the ring of integers of the number field $K$'</span>)</span>
+<span id="cb40-140"><a href="#cb40-140" aria-hidden="true" tabindex="-1"></a>    mock_parse_notation_note.return_value <span class="op">=</span> mock_metadata, <span class="vs">r'$\mathcal</span><span class="sc">{O}</span><span class="vs">_K$'</span>, mock_main_note_name, mock_notation_note_content_mf, <span class="va">None</span> </span>
+<span id="cb40-141"><a href="#cb40-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-142"><a href="#cb40-142" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that `overwrite_previous_autogenerated_summary` is set to `True``</span></span>
+<span id="cb40-143"><a href="#cb40-143" aria-hidden="true" tabindex="-1"></a>    mock_vault <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb40-144"><a href="#cb40-144" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(</span>
+<span id="cb40-145"><a href="#cb40-145" aria-hidden="true" tabindex="-1"></a>        mock_notation_note, mock_vault, summarizer, overwrite_previous_autogenerated_summary<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-146"><a href="#cb40-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-147"><a href="#cb40-147" aria-hidden="true" tabindex="-1"></a>    mock_get_summary.assert_called_once()</span>
+<span id="cb40-148"><a href="#cb40-148" aria-hidden="true" tabindex="-1"></a>    mock_write_summary_to_notation_note.assert_called_once()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelForSeq2SeqLM, AutoTokenizer, pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForSeq2SeqLM.from_pretrained(<span class="st">'hyunjongkimmath/notation_summarizations_model'</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(<span class="st">'hyunjongkimmath/notation_summarizations_model'</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>summarizer <span class="op">=</span> pipeline(<span class="st">'summarization'</span>, model<span class="op">=</span>model, tokenizer<span class="op">=</span>tokenizer)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_7'</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_7'</span>, temp_vault)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    notation_note_to_be_summarized <span class="op">=</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'foag_notation_O_text_Proj__S__n'</span>)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    append_summary_to_notation_note(notation_note_to_be_summarized, temp_vault, summarizer)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(notation_note_to_be_summarized.text())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Your max_length is set to 200, but you input_length is only 138. You might consider decreasing max_length manually, e.g. summarizer('...', max_length=69)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---
+detect_regex: []
+latex_in_original: ["\\mathscr{O}_{\\text {Proj } S_{*}}(n)"]
+tags: [_auto/notation_summary]
+---
+$\mathscr{O}_{\text {Proj } S_{*}}(n)$ [[foag_15.2.1|denotes]] the graded ring $generated in degree 1, where$S_\bullet$is a graded$ring. It is defined as $\widehat{S(n)\$.</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
