@@ -13,7 +13,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import re
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 from ....helper import path_name_no_ext
 from trouver.markdown.markdown.file import (
@@ -177,8 +177,9 @@ def reference_of_information_note(note: VaultNote) -> VaultNote:
     
 
 # %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 19
-# TODO: reformat
-def citation_location_string(citation_location):
+def citation_location_string(
+        citation_location: tuple[str, int]
+        ):
     """Formats a pair specifying the Numbering label and page
     
     **Parameters**
@@ -197,10 +198,13 @@ def citation_location_string(citation_location):
         return ''
 
 # %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 20
-# TODO: reformat
 def fill_info_note_with_template(
-        vn: VaultNote, template: VaultNote, 
-        citation_location: tuple = (), content: str = '', tags_to_add=None) -> None:
+        vn: VaultNote,
+        template: VaultNote, 
+        citation_location: tuple[str, int] = (),
+        content: str = '',
+        tags_to_add: Union[str, list[str], tuple[str], None] = None
+        ) -> None:
     """Fills in the note with a template with optionally tags.
 
     Current implementation adds content to line 5 of the note.
@@ -455,6 +459,8 @@ def _index_note_in_parent_directory(
 
     This is a helper function of `index_note_of_note`
     """
+    if index_note is not None:
+        return index_note
     # Determine if the index note is in the parent directory of `note`
     search_index_note_in_parent_directory = index_note_of_a_directory(
         note.vault, note.directory(relative=True).parent)
