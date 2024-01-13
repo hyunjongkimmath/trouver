@@ -13,7 +13,7 @@ import warnings
 import yaml
 
 from trouver.helper import (
-    find_regex_in_text 
+    find_regex_in_text
 )
 from trouver.markdown.markdown.heading import (
     heading_level, heading_title
