@@ -263,6 +263,7 @@ def main_of_notation(
         return main_note_name
 
 # %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 32
+# TODO: change to also recognize html elements
 def notation_str_in_a_standard_information_note(
         info_note: VaultNote
         ) -> list[str]: # Each str is a LaTeX str, beginning and trailing dollar signs `$` (single or double) included.

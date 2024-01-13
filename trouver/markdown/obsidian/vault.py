@@ -353,7 +353,8 @@ class VaultNote:
             cls,
             vault: PathLike,
             name: str) -> Union[list[str], None]:
-        """Return the cache's list of notes of the specified name in the
+        """Return the
+        cache's list of notes of the specified name in the
         specified vault.
 
         If no such list exists in the cache, then return `None`.

@@ -11,7 +11,7 @@ LABEL_TAGS = [
     '#_meta/narrative', '#_meta/notation', '#_meta/proof', '#_meta/remark',
     '#_meta/TODO/split', '#_meta/TODO/merge', '#_meta/TODO/delete', '#_meta/hint',
     '#_meta/how_to', '#_meta/conjecture', '#_meta/convention',
-    '#_meta/context',
+    '#_meta/context', '#_meta/permanent_note'
 ]
 
 # %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 6

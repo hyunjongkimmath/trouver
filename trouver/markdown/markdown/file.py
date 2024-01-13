@@ -986,6 +986,16 @@ class MarkdownFile:
                 parts_to_remove.append(i)
         for i in reversed(parts_to_remove):
             self.remove_line(i)
+
+    def remove_html_tags(self) -> None:
+        """Remove HTML tags that are typeset in single lines.
+
+        HTML tags that span multiple lines are ignored.
+        """
+        for i, part in enumerate(self.parts):
+            # self.parts[i-1]['']
+            return
+        return
     
     def merge_display_math_mode(self) -> None:
         """Merge chunks of display_math_mode latex lines into single lines"""
