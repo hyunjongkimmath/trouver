@@ -15,21 +15,24 @@ from os import PathLike
 from pathlib import Path
 from pathvalidate import sanitize_filename
 import platform
+import random
 import re
 from typing import Callable, Optional, Pattern, Sequence, Union
 
+import bs4
+from bs4 import BeautifulSoup
 from deprecated import deprecated
 from natsort import natsorted
 
 # %% auto 0
 __all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'CHARACTER_ORDERING_LIST',
            'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE', 'TO_SUBSTITUTE',
-           'find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices', 'notation_asterisk_indices',
-           'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices', 'is_number', 'existing_path',
-           'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
-           'current_time_formatted_to_minutes', 'containing_string_priority', 'default_str_comparison',
-           'natsort_comparison', 'graph_for_topological_sort', 'dict_with_keys_topologically_sorted',
-           'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
+           'remove_html_tags_in_text', 'find_regex_in_text', 'replace_string_by_indices', 'double_asterisk_indices',
+           'notation_asterisk_indices', 'definition_asterisk_indices', 'defs_and_notats_separations', 'latex_indices',
+           'is_number', 'existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file',
+           'files_of_format_sorted', 'current_time_formatted_to_minutes', 'containing_string_priority',
+           'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
+           'dict_with_keys_topologically_sorted', 'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
            'alphabet_or_latex_command_to_alphabet_group', 'latex_to_path_accepted_string']
 
 # %% ../nbs/00_helper.ipynb 5
@@ -49,6 +52,80 @@ def _test_directory() -> Path:
         return Path(cwd) / 'nbs'/ '_tests'
 
 # %% ../nbs/00_helper.ipynb 11
+def remove_html_tags_in_text(
+        text: str, # The text in which to remove the HTML tags.
+        replace_with_attributes: Optional[Union[str, list[str]]] = None, # Attribute(s) within the HTML tags which should be used to replace the text of the tags. If `None`, then the texts are not replaced with the attributes. If multiple attributes are specified, then only one attribute is used to replace the text for each HTML tag (independently at random of other replacements). Each attribute's text has an equal chance of being selected for replacement. Repeats are ignored.
+        definitely_replace: bool = False, # If `True` and if a given HTML tag has an attribute specified in `replace_with_attributes`, then the text for that tag will definitely be replaced by the text of one of the attributes. Otherwise, the original text and each attribute's text have an equal chance of being selected.
+        seed: int = None # Random seed 
+        ) -> tuple[str, list[tuple[bs4.element.Tag, int, int]]]: # The text `removed` without HTML tags and a list whose elements consist of the removed HTML tags and the starting and ending indices of the text corresponding to the removed tags within `removed`.
+    """Remove the HTML tags in `text`.
+
+    HTML tags are assumed to be not nested.
+
+    """
+    random.seed(seed)
+    parsed_soup = BeautifulSoup(text, 'html.parser')
+    replace_with_attributes = _init_replace_with_attributes(
+        replace_with_attributes)
+
+    position = 0
+    replaced_contents = []
+    for content in parsed_soup.contents:
+        position = _process_content(
+            parsed_soup, replace_with_attributes, definitely_replace, content,
+            position, replaced_contents)
+
+    return str(parsed_soup), replaced_contents
+
+
+def _init_replace_with_attributes(
+        replace_with_attributes: Optional[Union[str, list[str]]]
+        ) -> set[str]:
+    if replace_with_attributes is None:
+        replace_with_attributes = []
+    elif isinstance(replace_with_attributes, str):
+        replace_with_attributes = [replace_with_attributes]
+    return set(replace_with_attributes)
+
+
+def _select_replacement_text(
+        content: bs4.element.Tag,
+        replace_with_attributes: set[str],
+        definitely_replace: bool) -> str:
+    if not replace_with_attributes:
+        return content.string
+    selection_pool = []    
+    if not definitely_replace:
+        selection_pool.append(content.string)
+    for attribute, value in content.attrs.items():
+        if attribute not in replace_with_attributes:
+            continue
+        selection_pool.append(value)
+    return random.choice(selection_pool)
+
+
+def _process_content(
+        parsed_soup: BeautifulSoup,
+        replace_with_attributes: set[str],
+        definitely_replace: bool,
+        content,
+        position: int,
+        replaced_contents: list) -> int:
+    
+    if not isinstance(content, bs4.element.Tag):
+        return position + len(content)
+    replacement_text = _select_replacement_text(
+        content, replace_with_attributes, definitely_replace)
+    replaced_content = content.replace_with(
+        parsed_soup.new_string(replacement_text))
+    replaced_contents.append((
+        replaced_content,
+        position,
+        position + len(replacement_text)))
+    return position + len(replacement_text)
+    
+
+# %% ../nbs/00_helper.ipynb 23
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
         pattern: str | Pattern[str] # The regex pattern
@@ -60,7 +137,7 @@ def find_regex_in_text(
     matches = re.finditer(pattern, text)
     return [match.span() for match in matches]
 
-# %% ../nbs/00_helper.ipynb 20
+# %% ../nbs/00_helper.ipynb 32
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -125,7 +202,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../nbs/00_helper.ipynb 27
+# %% ../nbs/00_helper.ipynb 39
 def double_asterisk_indices(
         text: str # the str in which to find the indices of double asterisk surrounded text.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
@@ -143,7 +220,7 @@ def double_asterisk_indices(
 
 
 
-# %% ../nbs/00_helper.ipynb 29
+# %% ../nbs/00_helper.ipynb 41
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -178,7 +255,7 @@ def definition_asterisk_indices(
     notations = notation_asterisk_indices(text)
     return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
 
-# %% ../nbs/00_helper.ipynb 43
+# %% ../nbs/00_helper.ipynb 55
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
@@ -201,7 +278,7 @@ def defs_and_notats_separations(
     return [(start, end, (start, end) in notations)
             for start, end in all_double_asterisks]
 
-# %% ../nbs/00_helper.ipynb 47
+# %% ../nbs/00_helper.ipynb 59
 def latex_indices(text: str) -> list[tuple[int]]:
     """Returns the indices in the text containing LaTeX str.
     
@@ -223,7 +300,7 @@ def latex_indices(text: str) -> list[tuple[int]]:
     return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
     # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
 
-# %% ../nbs/00_helper.ipynb 55
+# %% ../nbs/00_helper.ipynb 67
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -241,7 +318,7 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../nbs/00_helper.ipynb 60
+# %% ../nbs/00_helper.ipynb 72
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -323,7 +400,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../nbs/00_helper.ipynb 73
+# %% ../nbs/00_helper.ipynb 85
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -335,7 +412,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../nbs/00_helper.ipynb 80
+# %% ../nbs/00_helper.ipynb 92
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -345,7 +422,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../nbs/00_helper.ipynb 84
+# %% ../nbs/00_helper.ipynb 96
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -359,7 +436,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../nbs/00_helper.ipynb 87
+# %% ../nbs/00_helper.ipynb 99
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -369,7 +446,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../nbs/00_helper.ipynb 91
+# %% ../nbs/00_helper.ipynb 103
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -383,7 +460,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 99
+# %% ../nbs/00_helper.ipynb 111
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -434,7 +511,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 100
+# %% ../nbs/00_helper.ipynb 112
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -464,7 +541,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 101
+# %% ../nbs/00_helper.ipynb 113
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -492,7 +569,7 @@ def dict_with_keys_topologically_sorted(
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
 
-# %% ../nbs/00_helper.ipynb 104
+# %% ../nbs/00_helper.ipynb 116
 ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
 ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
 def alphabet_to_alphabet_group(character) -> str:
@@ -531,7 +608,7 @@ def alphabet_or_latex_command_to_alphabet_group(character):
     return alphabet_to_alphabet_group(
         alphabet_or_latex_command_to_alphabet(character))
 
-# %% ../nbs/00_helper.ipynb 107
+# %% ../nbs/00_helper.ipynb 119
 CHARACTER_ORDERING_LIST =\
     ['A', 'a', r'\Alpha', r'\alpha', 'B', 'b', r'\Beta', r'\beta', 'C', 'c', r'\Gamma',
      r'\gamma', 'D', 'd', r'\Delta', r'\delta', 'E', 'e', r'\Epsilon', r'\epsilon',
@@ -548,7 +625,7 @@ DECORATING_CHARACTERS =\
 NONEFFECTIVE_CHARACTERS =\
     ['^', '_', '{', '}', '(', ')', '[', ']']
 
-# %% ../nbs/00_helper.ipynb 108
+# %% ../nbs/00_helper.ipynb 120
 TO_REMOVE = [
     '.', '$', ':', '?', '!', '#', '%', '&',
     '<', '>', '*', '?', '"', '@', '`', '|',  
