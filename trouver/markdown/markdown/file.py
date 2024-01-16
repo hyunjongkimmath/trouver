@@ -13,7 +13,7 @@ import warnings
 import yaml
 
 from trouver.helper import (
-    find_regex_in_text
+    find_regex_in_text, remove_html_tags_in_text
 )
 from trouver.markdown.markdown.heading import (
     heading_level, heading_title
@@ -992,14 +992,13 @@ class MarkdownFile:
 
         HTML tags that span multiple lines are ignored.
         """
-        for i, part in enumerate(self.parts):
+        # TODO: test
+        for _, part in enumerate(self.parts):
+            part['line'], _ = remove_html_tags_in_text(part['line'])
             # self.parts[i-1]['']
-            return
-        return
     
     def merge_display_math_mode(self) -> None:
         """Merge chunks of display_math_mode latex lines into single lines"""
-        # TODO: test
         i = 0
         ils = MarkdownLineEnum.DISPLAY_LATEX_START
         while i < len(self.parts):

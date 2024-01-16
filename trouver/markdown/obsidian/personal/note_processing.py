@@ -31,6 +31,7 @@ def remove_double_asterisks_in_markdown_file(
         part['line'] = part['line'].replace('**', '')
 
 # %% ../../../../nbs/19_markdown.obsidian.personal.note_processing.ipynb 9
+# TODO: add functionality to remove footnotes altogether.
 def process_standard_information_note(
         markdown_file: Union[MarkdownFile, str],
         vault: PathLike,
@@ -39,6 +40,7 @@ def process_standard_information_note(
         remove_meta_section: bool = True, # If `True`, remove the `# Meta` section. Defaults to `True`.
         remove_references_section: bool = True, # If `True`, removes the `## References` section. Defaults to `True`.
         remove_double_asterisks: bool = True, # If `True`, removes double asterisks. Defaults to `True`.
+        remove_html_tags: bool = True, # If `True`, remove HTML tags. Defaults to `True``
         remove_links: bool = True, # If `True`, removes nonembedded links and replaces them with their display text. Defaults to `True`.
         remove_in_line_tags: bool = True, # If `True`, removes in-line tags (the lines that start with a tag).  Defaults to `True`.
         remove_footnotes_to_embedded: bool = True, # If `True`, removes footnotes to embedded notes. Defaults to `True`.
@@ -52,7 +54,9 @@ def process_standard_information_note(
     """Process/modify a str/MarkdownFile of a standard information note.
         
     TODO: implement remove_citation_footnote properly.
-    
+
+    Even if `remove_html_tags` is set to `True`, only the HTML tags
+    which are written within a single line of text are removed.
     """
     if isinstance(markdown_file, str):
         markdown_file = MarkdownFile.from_string(markdown_file)
@@ -72,6 +76,8 @@ def process_standard_information_note(
         markdown_file.remove_section('References')
     if remove_double_asterisks:
         remove_double_asterisks_in_markdown_file(markdown_file)
+    if remove_html_tags:
+        markdown_file.remove_html_tags()
     if remove_links: 
         markdown_file.replace_links_with_display_text()
     if remove_in_line_tags:
