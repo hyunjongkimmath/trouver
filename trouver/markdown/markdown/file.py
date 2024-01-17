@@ -212,9 +212,11 @@ class MarkdownFile:
     - parts - list[dict[str, Union[MarkdownLineEnum, str]]]
         - Represents the lines of the markdown file.
         Each dict has two keys, `'type'` and `'line'`, which respectively
-        hold a `MarkdownLineEnum` and a `str` as values. Each value of
-        `'line'` does not includes a new line character `\n` at the end
-        by default.
+        hold a `MarkdownLineEnum` and a `str` as values. While a value
+        of `'line'` may have new line characters `'\n'`, it does not
+        need to --- more specifically, the `__str__` method (and the
+        `text_of_lines` method) adds new line characters `'\n'` in
+        between lines.
     """
     
     def __init__(self, parts: list[dict[str, Union[MarkdownLineEnum, str]]]):
@@ -222,6 +224,7 @@ class MarkdownFile:
         self.parts = parts
 
     def __str__(self):
+        """Return the text representation of the `MarkdownFile` object"""
         return self.text_of_lines(0, len(self.parts))
 
     def text_of_lines(
@@ -229,7 +232,8 @@ class MarkdownFile:
             start: int,
             end: int
             ) -> str:
-        """ Return the text of `self.parts[start:end]`. """
+        """Return the text of `self.parts[start:end]`,
+        adding new line characters `'\n'` in between. """
         return '\n'.join([
             line_dict['line'] for line_dict in self.parts[start:end]])
 
@@ -418,7 +422,7 @@ class MarkdownFile:
     def remove_lines(
             self,
             start: int, # The index of the first line to remove from `self.parts`.
-            end: int # The end index to remove; the line of index `end` is not removed.
+            end: int # The end index to remove; the line of index `end` is not removed, but the line of index `end - ` is.
             ) -> None:
         """Remove lines from `self.parts`."""
         del self.parts[start:end]
@@ -668,7 +672,7 @@ class MarkdownFile:
     
     def add_tags(
             self,
-            tags: list[str], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
+            tags: Union[str, list[str]], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
             skip_repeats: bool = True, # If `True`, then this MarkdownFile will just have unique tags; merges pre-existing repeated tags if necessary. Also, the order of the tags may be changed.
             skip_repeated_auto: bool = True, # If `True`, then only add tags starting with '_auto/' if the corresponding non-auto tag does not exist, e.g.  '_auto/_meta/definition' is not added if the note already has '_meta/definition'.
             enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
@@ -681,7 +685,10 @@ class MarkdownFile:
         Ultimately the `replace_metadata` method is used to modify the YAML metadata.
         Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
         `replace_metadata` invocation preserves enquoted metadata values. 
+
         """
+        if isinstance(tags, str):
+            tags = [tags]
         self.add_metadata_section(check_exists=True)
         metadata = self.metadata()
         if not metadata:
