@@ -2,24 +2,25 @@
 
 # %% auto 0
 __all__ = ['convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile', 'html_data_from_note',
-           'tokenize_html_data', 'def_or_notat_from_html_tag']
+           'tokenize_html_data', 'def_or_notat_from_html_tag', 'auto_mark_def_and_notats']
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 3
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 4
 import os 
 from os import PathLike
 from pathlib import Path
 from typing import Union
+import warnings
 
 import bs4
 import pandas as pd
 from transformers import BatchEncoding, PreTrainedTokenizer, PreTrainedTokenizerFast
 
-from .....helper import current_time_formatted_to_minutes, definition_asterisk_indices, double_asterisk_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
-from ....markdown.file import MarkdownFile
+from .....helper import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, double_asterisk_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
+from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 7
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 8
 def convert_double_asterisks_to_html_tags(
         text: str
         ) -> str:
@@ -51,7 +52,7 @@ def _html_tag_from_double_ast(
         return f'<b definition="">{no_asts}</b>'
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 9
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 10
 def raw_text_with_html_tags_from_markdownfile(
         mf: MarkdownFile,
         vault: PathLike
@@ -67,7 +68,7 @@ def raw_text_with_html_tags_from_markdownfile(
 
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 17
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 18
 # TODO: implement a measure to not get the definition identification data, e.g. by 
 # detecting a `_auto/definition_identification` tag.
 def html_data_from_note(
@@ -108,7 +109,7 @@ def html_data_from_note(
         "Raw text": raw_text,
         "Tag data": tags_and_locations}
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 20
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 21
 def tokenize_html_data(
         html_locus: dict, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -139,7 +140,10 @@ def tokenize_html_data(
         _set_ner_ids_for_tag(
             ner_ids, start_seq, start_index_in_seq, end_seq, end_index_in_seq,
             label2id, ner_tag)
-    return tokenized["input_ids"], ner_ids
+    # return tokenized["input_ids"], ner_ids
+    tokens = [tokenizer.convert_ids_to_tokens(tokens_for_seq)
+              for tokens_for_seq in tokenized["input_ids"]]
+    return tokens, ner_ids
 
 
 def _start_end_seqs_indices_for_html_tag(
@@ -268,3 +272,246 @@ def def_or_notat_from_html_tag(
     elif "notation" in tag.attrs:
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 45
+def _html_tag_data_from_part(
+        main_text: str,
+        part: list[dict[str]]) -> tuple[bs4.element.Tag, int, int]:
+    """
+    Helper function to `_html_tags_from_token_preds`
+    """
+    start_token = part[0]
+    end_token = part[-1]
+    start_char = start_token['start']
+    end_char = end_token['end']
+    # the `'entity'` is either 'I-definition', 'B-definition', 'I-notation',
+    # or 'B-notation'
+    entity_type = start_token['entity'][2:]
+    html_text = main_text[start_char:end_char]
+    if entity_type == 'definition':
+        tag = bs4.BeautifulSoup(
+            f'<b definition="">{html_text}</b>', "html.parser")
+    else:
+        tag = bs4.BeautifulSoup(
+            f'<span style="border-width:1px;border-style:solid;'
+            f'padding:3px" notation="">{html_text}</span>',
+            "html.parser")
+    return (tag, start_char, end_char)
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 47
+def _current_token_continues_the_previous_token(
+        current_token: dict, previous_token: dict, note: VaultNote
+        ) -> bool:
+    """
+    Helper function to `_divide_token_preds_into_parts`.
+    """
+    if current_token['entity'].startswith('I-'):
+        if current_token['entity'][2:] == previous_token['entity'][2:]:
+            return True
+        else:
+            warnings.warn(rf"""
+                In the note {note.name} at {note.path()},
+                The token '{previous_token['word']}' is marked as '{previous_token['entity']}'
+                and the subsequent token '{current_token['word']}' is marked as '{current_token['entity']}',
+                which is unusual because the two consecutive tokens seem to be of different
+                entities, and yet the latter token does not start with a 'B-'.
+
+                The latter token will be treated like the beginning of a new entity."""
+                    )
+            return False
+    else:
+        return False
+        
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 49
+def _divide_token_preds_into_parts(
+        token_preds: list[dict[str]],
+        note: VaultNote,
+        excessive_space_threshold: int
+        ) -> list[list[dict[str]]]:
+    """
+    Divide `token_preds` into parts so that each part
+    represents a single definition/notation marking.
+
+    Helper function to `_html_tags_from_token_preds`.
+    """
+    token_preds_parts = []
+    for current_token in token_preds:
+        if not token_preds_parts:
+            token_preds_parts.append([current_token])
+            continue
+        prev_token = token_preds_parts[-1][-1]
+        if _current_token_continues_the_previous_token(
+                current_token, prev_token, note):
+            prev_token_end = prev_token['end']
+            cur_token_start = current_token['start']
+            if prev_token_end + excessive_space_threshold >= cur_token_start:
+                Warning(rf"""
+                    In the note {note.name} at {note.path()},
+                    There seems to be excessive space between the token
+                    {prev_token['word']} and {current_token['word']}, which
+                    seem to be part of the same entity"""
+                        )
+            token_preds_parts[-1].append(current_token)
+        else:
+            token_preds_parts.append([current_token])
+    return token_preds_parts
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 51
+def _html_tags_from_token_preds(
+        main_text: str,
+        token_preds: list[dict[str]],
+        note: VaultNote,
+        excessive_space_threshold: int
+        ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
+    """
+    Return HTML tags for definition and notation classification.
+
+    Helper function to `auto_mark_def_and_notats`.
+    """
+    parts = _divide_token_preds_into_parts(
+        token_preds, note, excessive_space_threshold)
+    return [_html_tag_data_from_part(main_text, part) for part in parts]
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 52
+def _collate_html_tags(
+        tag_data_1: list[tuple[bs4.element.Tag, int, int]],
+        tag_data_2: list[tuple[bs4.element.Tag, int, int]],
+    ) -> list[tuple[bs4.element.Tag], int, int]:
+    """
+    Collates the lists of HTML tags and the indices within a certain text
+    (which is not-needed for this function and hence not included)
+    that the HTML tags need to replace.
+
+    If there are entries in `tag_data_1` and `tag_data_2` with overlapping
+    ranges, then the entry from `tag_data_1` is prioritized and the entry
+    from `tag_data_2` is discarded.
+
+    Helper function to `auto_mark_def_and_notats`
+    """
+    collated_list = []
+    i, j = 0, 0
+    while i < len(tag_data_1) and j < len(tag_data_2):
+        current_1 = tag_data_1[i]
+        current_2 = tag_data_2[j]
+        if _ranges_overlap(current_1, current_2): # Ignore current_2
+            j += 1
+            continue
+        if current_1[1] > current_2[1]:
+            collated_list.append(current_2)
+            j += 1
+        else:
+            collated_list.append(current_1)
+            i += 1
+    while i < len(tag_data_1):
+        collated_list.append(tag_data_1[i])
+        i += 1
+    while j < len(tag_data_2):
+        collated_list.append(tag_data_2[j])
+        j += 1
+    return collated_list
+
+
+
+def _ranges_overlap(
+        current_1: tuple[bs4.element.Tag, int, int],
+        current_2: tuple[bs4.element.Tag, int, int]
+        ) -> bool:
+    """
+    Based on https://stackoverflow.com/a/64745177
+
+    Helper function to `_collate_html_tags`.
+    """
+    return max(current_1[1], current_2[1]) < min(current_1[2], current_2[2])
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 54
+def _add_nice_boxing_attrs_to_notation_tags(
+        html_tag_data: list[tuple[bs4.element.Tag, int, int]]
+        ) -> list[tuple[bs4.element.Tag, int, int]]:
+    """
+    Add HTML tag attributes to draw boxes around notation data
+
+    Helper function to `auto_mark_def_and_notats`.
+    """
+    listy = []
+    for tag, start, end in html_tag_data:
+        if 'notation' in tag.attrs and 'style' not in tag.attrs:
+            tag.attrs['style'] = "border-width:1px;border-style:solid;padding:3px"
+        listy.append((tag, start, end)) 
+    return listy
+
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 56
+def auto_mark_def_and_notats(
+        note: VaultNote,
+        pipeline,
+        # remove_existing_def_and_notat_markings: bool = False,  # If `True`, remove definition and notation markings (both via surrounding by double asterisks `**` as per the legacy method and via HTML tags)
+        excessive_space_threshold: int = 2,
+        add_boxing_attr_to_existing_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
+    ) -> None:
+    """
+    Predict and mark where definitions and notation occur in a note.
+
+    Assumes that the note is a standard information note that does not
+    have a lot of "user modifications", such as footnotes, links,
+    and HTML tags. If
+    there are many modifications, then these might be deleted.
+
+    Existing markings for definition and notation data (i.e. by
+    surrounding with double asterisks or by HTML tags) are preserved
+    (and turned into HTML tags), unless the markings overlap with 
+    predictions, in which case the original is preserved (and still
+    turned into an HTML tag if possible)
+
+    
+    **Raises**
+    Warning messages (`UserWarning`) are printed in the following situations:
+
+    - There are two consecutive tokens within the `pipeline`'s predictions
+      of different entity types (e.g. one is predicted to belong within a
+      definition and the other within a notation), but the latter token's
+      predicted `'entity'` more specifically begins with `'I-'` (i.e. is
+      `'I-definition'` or `'I-notation'`) as opposed to `'B-'`.
+        - `note`'s name, and path are included in the warning message in
+          this case.
+    - There are two consecutive tokens within the `pipeline`'s predictions
+      which the pipeline predicts to belong to the same entity, and yet
+      there is excessive space (specified by `excessive_space_threshold`)
+      between the end of the first token and the start of the second.
+
+    """
+    mf = MarkdownFile.from_vault_note(note)
+    tuppy = mf.metadata_lines()
+    if tuppy is not None:
+        first_non_metadata_line = tuppy[1] + 1
+    else:
+        first_non_metadata_line = 0 
+    see_also_line = mf.get_line_number_of_heading('See Also')
+     
+    main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
+    main_text = add_space_to_lt_symbols_without_space(main_text)
+    main_text = convert_double_asterisks_to_html_tags(main_text)
+    main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
+    if add_boxing_attr_to_existing_notat_markings:
+        existing_html_tag_data = _add_nice_boxing_attrs_to_notation_tags(
+            existing_html_tag_data)
+    html_tags_to_add = _html_tags_from_token_preds(
+        main_text, pipeline(main_text), note, excessive_space_threshold)
+
+    html_tags_to_add_back = _collate_html_tags(
+        existing_html_tag_data, html_tags_to_add)
+    main_text = add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
+    mf.remove_lines(first_non_metadata_line, see_also_line)
+    mf.insert_line(first_non_metadata_line,
+                   {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
+    # mf.insert_line(first_non_metadata_line,
+    #                {'type': MarkdownLineEnum.HEADING, 'line': '# Topic[^1]'})
+    mf.add_tags('_auto/def_and_notat_identified')
+    mf.write(note)
+
+
