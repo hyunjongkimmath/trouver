@@ -2,20 +2,20 @@
 
 # %% auto 0
 __all__ = ['convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile', 'html_data_from_note',
-           'tokenize_html_data', 'def_or_notat_from_html_tag', 'auto_mark_def_and_notats']
+           'tokenize_html_data', 'def_or_notat_from_html_tag', 'def_and_notat_preds_by_model',
+           'auto_mark_def_and_notats']
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 4
 import os 
 from os import PathLike
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 import warnings
 
 import bs4
-import pandas as pd
 from transformers import BatchEncoding, PreTrainedTokenizer, PreTrainedTokenizerFast
 
-from .....helper import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, double_asterisk_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
+from .....helper import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, double_asterisk_indices, latex_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
@@ -273,7 +273,29 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 45
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 46
+def _make_tag(
+        text: str,
+        entity_type: str # 'definition' or 'notation'
+        ) -> bs4.element.Tag:
+    """
+    Helper function to `_html_tag_data_from_part` and `_consolidate_token_preds`.
+    """
+    soup = bs4.BeautifulSoup('', 'html.parser')
+    if entity_type == 'definition':
+        tag = soup.new_tag(
+            'b',
+            style="border-width:1px;border-style:solid;padding:3px",
+            definition="")
+    else:
+        tag = soup.new_tag(
+            'span',
+            style="border-width:1px;border-style:solid;padding:3px",
+            notation="")
+    tag.string = text
+    return tag
+
+
 def _html_tag_data_from_part(
         main_text: str,
         part: list[dict[str]]) -> tuple[bs4.element.Tag, int, int]:
@@ -288,20 +310,12 @@ def _html_tag_data_from_part(
     # or 'B-notation'
     entity_type = start_token['entity'][2:]
     html_text = main_text[start_char:end_char]
-    if entity_type == 'definition':
-        tag = bs4.BeautifulSoup(
-            f'<b definition="">{html_text}</b>', "html.parser")
-    else:
-        tag = bs4.BeautifulSoup(
-            f'<span style="border-width:1px;border-style:solid;'
-            f'padding:3px" notation="">{html_text}</span>',
-            "html.parser")
-    return (tag, start_char, end_char)
+    return (_make_tag(html_text, entity_type), start_char, end_char)
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 47
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 48
 def _current_token_continues_the_previous_token(
-        current_token: dict, previous_token: dict, note: VaultNote
+        current_token: dict, previous_token: dict, note: Optional[VaultNote]
         ) -> bool:
     """
     Helper function to `_divide_token_preds_into_parts`.
@@ -309,7 +323,7 @@ def _current_token_continues_the_previous_token(
     if current_token['entity'].startswith('I-'):
         if current_token['entity'][2:] == previous_token['entity'][2:]:
             return True
-        else:
+        elif note:
             warnings.warn(rf"""
                 In the note {note.name} at {note.path()},
                 The token '{previous_token['word']}' is marked as '{previous_token['entity']}'
@@ -324,7 +338,7 @@ def _current_token_continues_the_previous_token(
         return False
         
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 49
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 50
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
         note: VaultNote,
@@ -346,7 +360,7 @@ def _divide_token_preds_into_parts(
                 current_token, prev_token, note):
             prev_token_end = prev_token['end']
             cur_token_start = current_token['start']
-            if prev_token_end + excessive_space_threshold >= cur_token_start:
+            if prev_token_end + excessive_space_threshold >= cur_token_start and note:
                 Warning(rf"""
                     In the note {note.name} at {note.path()},
                     There seems to be excessive space between the token
@@ -359,7 +373,115 @@ def _divide_token_preds_into_parts(
     return token_preds_parts
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 51
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 52
+def _ranges_overlap(
+        current_1: tuple[bs4.element.Tag, int, int],
+        current_2: tuple[bs4.element.Tag, int, int]
+        ) -> bool:
+    """
+    Based on https://stackoverflow.com/a/64745177
+
+    Helper function to `_collate_html_tags`, `_consolidate_token_preds`.
+    """
+    return max(current_1[1], current_2[1]) < min(current_1[2], current_2[2])
+
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 54
+def _consolidate_token_preds(
+        main_text: str,
+        tag_data: list[tuple[bs4.element.Tag, int, int]]
+        ) -> list[tuple[bs4.element.Tag, int, int]]:
+    """
+    Since the model's predictions can yield some odd results
+    (e.g. notations not being marked for an entire LaTeX string
+    $<span notation="">$S_k := ...</span>$$), this function tries
+    to consolidate some oddities.
+    
+    """
+    latex_inds = latex_indices(main_text)
+    extended_tag_data = _extend_tag_data_ranges(main_text, latex_inds, tag_data)
+    tag_data_notats_chopped = _cutoff_notation_tag_data(main_text, extended_tag_data)
+    # Go through the extended tag data to throw out overlapping ones.
+    ultimate_tag_data = []
+    for tag_point in tag_data_notats_chopped:
+        if _no_overlap_with_previous_tag_data(ultimate_tag_data, tag_point):
+            ultimate_tag_data.append(tag_point)
+    return ultimate_tag_data
+
+
+def _extend_tag_data_ranges(
+        main_text: str,
+        latex_inds: list[tuple[int, int]],
+        tag_data: list[tuple[bs4.element.Tag, int, int]],
+        ) -> list[tuple[bs4.element.Tag, int, int]]:
+    """Helper function to `_consolidate_token_preds`.
+
+    Extend tag data so that the tag data does not start or
+    end within any latex math mode string. 
+    """
+    extended_tag_data = []
+    for tag_tuple in tag_data:
+    # for tex_range in latex_inds:
+        combined_range = (tag_tuple[1], tag_tuple[2])
+        for tex_range in latex_inds:
+        # for tag_tuple in tag_data:
+            if not _ranges_overlap((0, tex_range[0], tex_range[1]), tag_tuple):
+                continue
+            combined_range = (min(combined_range[0], tex_range[0]), max(combined_range[1], tex_range[1]))
+        new_text = main_text[combined_range[0]:combined_range[1]]
+        tag_type = 'definition' if 'definition' in tag_tuple[0].attrs else 'notation'
+        extended_tag = _make_tag(new_text, tag_type)
+        extended_tag_data.append((extended_tag, combined_range[0], combined_range[1]))
+    return extended_tag_data
+
+
+def _cutoff_notation_tag_data(
+        main_text: str,
+        tag_data: list[tuple[bs4.element.Tag, int, int]],
+        ) -> list[tuple[bs4.element.Tag, int, int]]:
+    """
+    Helper function to `_consolidate_token_preds`.
+
+    Guarantees that a notation tag is a pure math mode latex string
+    by cutting only the pure math mode string
+    that occurs within it. Assumes that `_extend_tag_data_ranges`
+    works as intended.
+    """
+    cutout_notation_tag_data = []
+    for tag, start, end in tag_data:
+        if not 'notation' in tag.attrs:
+            cutout_notation_tag_data.append((tag, start, end))
+            continue
+        tag_text = main_text[start:end]
+        tex_inds_in_tagged = latex_indices(tag_text)
+        for sub_start, sub_end in tex_inds_in_tagged:
+            tex_str = main_text[start+sub_start:start+sub_end]
+            cutout_tag = _make_tag(tex_str, 'notation')
+            cutout_notation_tag_data.append(
+                (cutout_tag, start+sub_start, start+sub_end))
+    return cutout_notation_tag_data
+
+
+
+def _no_overlap_with_previous_tag_data(
+        ultimate_tag_data: list[tuple[bs4.element.Tag, int, int]],
+        current_tag_data: tuple[bs4.element.Tag, int, int]  # Current tag data
+        ) -> bool:
+    """
+    Return `True`, if the `current_tag_data` does not overlap with
+    any tag data that will be ultimately added. 
+
+    Helper function for `_consolidate_token_preds`.
+    """
+    # current_range = (current_tag_data[1], current_tag_data[2])
+    for prev in reversed(ultimate_tag_data):
+        # prev_range = (prev[1], prev[2])
+        if _ranges_overlap(prev, current_tag_data):
+            return False
+    return True
+    
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 56
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]],
@@ -376,7 +498,7 @@ def _html_tags_from_token_preds(
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 52
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 57
 def _collate_html_tags(
         tag_data_1: list[tuple[bs4.element.Tag, int, int]],
         tag_data_2: list[tuple[bs4.element.Tag, int, int]],
@@ -416,19 +538,8 @@ def _collate_html_tags(
 
 
 
-def _ranges_overlap(
-        current_1: tuple[bs4.element.Tag, int, int],
-        current_2: tuple[bs4.element.Tag, int, int]
-        ) -> bool:
-    """
-    Based on https://stackoverflow.com/a/64745177
 
-    Helper function to `_collate_html_tags`.
-    """
-    return max(current_1[1], current_2[1]) < min(current_1[2], current_2[2])
-
-
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 54
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 59
 def _add_nice_boxing_attrs_to_notation_tags(
         html_tag_data: list[tuple[bs4.element.Tag, int, int]]
         ) -> list[tuple[bs4.element.Tag, int, int]]:
@@ -446,7 +557,22 @@ def _add_nice_boxing_attrs_to_notation_tags(
 
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 56
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 61
+def def_and_notat_preds_by_model(
+        text: str,  
+        pipeline # The pipeline object created using the token classification model and its tokenizer
+        ) -> list[tuple[bs4.element.Tag, int, int]]: # Each tuple consists of an HTML tag carrying the data of the prediction and ints marking where in `text` the definition or notation is at.
+    """
+    Predict and mark where definitions and notations occur in `text`
+
+    This function uses some of the same helper functions as
+    `auto_mark_def_and_notats`, but does not raise warning messages as
+    in `auto_mark_def_and_notats`.
+    """
+    tag_data = _html_tags_from_token_preds(text, pipeline(main_text), None, 2)
+    return tag_data
+
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 63
 def auto_mark_def_and_notats(
         note: VaultNote,
         pipeline,
@@ -455,7 +581,8 @@ def auto_mark_def_and_notats(
         add_boxing_attr_to_existing_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
     ) -> None:
     """
-    Predict and mark where definitions and notation occur in a note.
+    Predict and mark where definitions and notation occur in a note using
+    a token classification ML model.
 
     Assumes that the note is a standard information note that does not
     have a lot of "user modifications", such as footnotes, links,
@@ -468,6 +595,11 @@ def auto_mark_def_and_notats(
     predictions, in which case the original is preserved (and still
     turned into an HTML tag if possible)
 
+    Since the model can make "invalid" predictions (mostly those which
+    start or end within a LaTeX math mode str), the actual markings
+    are not necessarily direct translates from the model's predictions.
+    See the helper function `_consolidate_token_preds` for more details
+    on how this is implemented.
     
     **Raises**
     Warning messages (`UserWarning`) are printed in the following situations:
@@ -486,6 +618,8 @@ def auto_mark_def_and_notats(
 
     """
     mf = MarkdownFile.from_vault_note(note)
+    mf.merge_display_math_mode()
+    mf.merge_display_math_mode_into_preceding_text()
     tuppy = mf.metadata_lines()
     if tuppy is not None:
         first_non_metadata_line = tuppy[1] + 1
@@ -502,6 +636,8 @@ def auto_mark_def_and_notats(
             existing_html_tag_data)
     html_tags_to_add = _html_tags_from_token_preds(
         main_text, pipeline(main_text), note, excessive_space_threshold)
+    html_tags_to_add = _consolidate_token_preds(
+        main_text, html_tags_to_add)
 
     html_tags_to_add_back = _collate_html_tags(
         existing_html_tag_data, html_tags_to_add)

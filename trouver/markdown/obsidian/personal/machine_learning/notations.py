@@ -18,19 +18,10 @@ from trouver.helper import (
     notation_asterisk_indices,
     double_asterisk_indices, latex_indices
 )
-# from trouver.machine_learning.text.encoder_decoder import (
-#     EncoderRNN, AttnDecoderRNN, train, trainIters, evaluate,
-#     evaluateRandomly
-# )
-# from trouver.machine_learning.text.tokenize import (
-#     replace_bold, replace_math_mode_strings, special_cases
-# )
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from trouver.markdown.obsidian.personal.note_processing import (
     process_standard_information_note
 )
 from ..notes import notes_linked_in_note, notes_linked_in_notes_linked_in_note
-# from trouver.markdown.obsidian.personal.notation import (
-#     make_a_notation_note, latex_to_path_accepted_string, make_notation_notes_from_double_asts)
 
 from ...vault import VaultNote
