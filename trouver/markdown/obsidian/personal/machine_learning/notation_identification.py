@@ -225,9 +225,6 @@ def automatically_mark_notations(
         'type': MarkdownLineEnum.DEFAULT, 'line': with_double_asts})
     original_mf.write(vn)
 
-    # if create_notation_notes:
-    #     make_notation_notes_from_double_asts(vn, vn.vault, reference_name)
-
 
 def _get_notation_indices_to_add(
         no_double_asts: str, index_data: list[list[int, bool]],
