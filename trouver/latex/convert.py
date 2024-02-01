@@ -812,6 +812,15 @@ def _consider_part_to_add(
 
 
 # %% ../../nbs/16_latex.convert.ipynb 130
+def _argument_detection(group_num: int) -> str:
+    """
+    Helper function to `regex_pattern_detecting_command`, and `_commands_from_def`
+
+    This basically helps detect balanced curly braces for invocations of commands.
+    """
+    return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
+
+# %% ../../nbs/16_latex.convert.ipynb 131
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -826,8 +835,8 @@ def custom_commands(
     """
     preamble = remove_comments(preamble)
     latex_commands = _commands_from_newcommand_and_declaremathoperator(preamble)
-    # tex_commands = _commands_from_def(preamble)
-    return latex_commands
+    tex_commands = _commands_from_def(preamble)
+    return latex_commands + tex_commands
 
 
 def _commands_from_newcommand_and_declaremathoperator(
@@ -836,6 +845,8 @@ def _commands_from_newcommand_and_declaremathoperator(
     """
     Get custom commands from invocations of `\newcommand` and `DeclareMathOperator`
     in the preamble.
+
+    Helper function to `custom_commands`
     """
     # newcommand_regex = regex.compile(
     #     r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*\{\\\s*(\w+)\s*\}\s*(?:\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?4)\})*)\}', re.MULTILINE)
@@ -865,17 +876,22 @@ def _commands_from_newcommand_and_declaremathoperator(
     return commands
 
 
-# def _commands_from_def(
-#         preamble: str
-#         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-#     """
-#     """
-#     def_regex = regex.compile(
-#         r'(?<!%)\s*\\def\s*(\\[a-z0-9]+)'
-#     )
+def _commands_from_def(
+        preamble: str
+        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+    """
+    """
+    def_command_identifying = r'(?<!%)\s*\\def\s*'
+    command_name_identifying = r'\\\s*(\w+)\s*'
+    command_def = _argument_detection(2)
+    def_regex = regex.compile(
+        f"{def_command_identifying}{command_name_identifying}{command_def}"
+    )
+    return [(match.group(1), 0, None, match.group(2))
+            for match in def_regex.finditer(preamble)]
 
 
-# %% ../../nbs/16_latex.convert.ipynb 133
+# %% ../../nbs/16_latex.convert.ipynb 134
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -890,7 +906,6 @@ def regex_pattern_detecting_command(
     command_name, num_parameters, optional_arg, _ = command_tuple
     backslash_name = fr"\\{command_name}"
     optional_argument_detection = fr"(?:\[(.*?)\])?" if optional_arg is not None else ""
-    argument_detection = r""
     if optional_arg is not None:
         trailing_arguments = [_argument_detection(i) for i in range(2, 1+num_parameters)]
         trailing_args_pattern = "\\s*".join(trailing_arguments)
@@ -905,11 +920,9 @@ def regex_pattern_detecting_command(
         pattern = f"{backslash_name}(?![^\W_])"
     return regex.compile(pattern)
 
-def _argument_detection(group_num: int):
-    return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
     
 
-# %% ../../nbs/16_latex.convert.ipynb 135
+# %% ../../nbs/16_latex.convert.ipynb 137
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -932,12 +945,17 @@ def replace_command_in_text(
         text)
     return text
 
+
 def _replace_command(
         match: regex.match,
         command_tuple: tuple[str, int, Union[None, str], str],
         command_pattern: regex.Pattern,
         replace_pattern: re.Pattern) -> str:
-    """Replace the matched command with the display text"""
+    """
+    Replace the matched command with the display text
+    
+    This is a helper function to `replace_command_in_text`.
+    """
     command_name, num_parameters, optional_arg, display_text = command_tuple
     start, end = match.span()
     matched_string_to_replace = match.string[start:end]
@@ -949,23 +967,49 @@ def _replace_command(
         return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
 
 
+# def _replace_nonexplicit_instances_of_command(
+#         text: str,
+#         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+#     ) -> str:
+#     """
+#     Replace the nonexplicitly instances of a custom command. 
 
-# %% ../../nbs/16_latex.convert.ipynb 137
+#     Sometimes, a LaTeX command is used nonexplicitly, i.e. the arguments are not
+#     explicitly typed with surrounding curly braces `{}`.  An example of this phenomenon
+#     is a command named `\til` defined by `\newcommand{\til}[1]{{\widetilde{#1}}}`
+#     that is later invoked using `$\til \calh_g$`.
+
+#     This function is only a workaround.
+
+#     This is a helper function to `replace_command_in_text`.
+#     """
+
+
+
+# %% ../../nbs/16_latex.convert.ipynb 140
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+        repeat: int = 1 # The number of times to repeat replacing the commands throughout the text. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
     ) -> str:
     """
     Replaces all invocations of the specified commands in `text` with the
     display text with the arguments used in the display text.
 
     Assumes that '\1', '\2', '\3', etc. are not part of the display text. 
+
+    If `repeat` is set to `-1`, then this function attempts to replace
+    custom commands until no commands to replace are found. However, this
+    might cause infinite loops for some documents.
+
     """
-    for command_tuple in command_tuples:
-        text = replace_command_in_text(text, command_tuple)
+    while repeat != 0:
+        for command_tuple in command_tuples:
+            text = replace_command_in_text(text, command_tuple)
+        repeat -= 1
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 139
+# %% ../../nbs/16_latex.convert.ipynb 145
 def replace_commands_in_latex_document(
         docment: str
         ) -> str:
@@ -989,7 +1033,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/16_latex.convert.ipynb 143
+# %% ../../nbs/16_latex.convert.ipynb 149
 # TODO: give the option to replace quotations ``'' and `enquote`, e.g. ```unlikely intersections''` into `"unlikely intersections"`
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 def adjust_common_syntax_to_markdown(
@@ -1008,7 +1052,7 @@ def adjust_common_syntax_to_markdown(
     text = re.sub(r'(\\end\{(?:align|equation|eqnarray)\*?\})', r'\1$$', text)
     return text
 
-# %% ../../nbs/16_latex.convert.ipynb 146
+# %% ../../nbs/16_latex.convert.ipynb 152
 def _replace_custom_commands_in_parts(
         parts: list[tuple[str, str]],
         custom_commands: list[tuple[str, int, Union[str, None], str]]
@@ -1023,7 +1067,7 @@ def _adjust_common_syntax_to_markdown_in_parts(
     return [(title, adjust_common_syntax_to_markdown(text))
             for title, text in parts]
 
-# %% ../../nbs/16_latex.convert.ipynb 148
+# %% ../../nbs/16_latex.convert.ipynb 154
 def _adjust_common_section_titles_in_parts(
         parts: list[tuple[str, str]],
         reference_name: str):
@@ -1064,7 +1108,7 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/16_latex.convert.ipynb 151
+# %% ../../nbs/16_latex.convert.ipynb 157
 def _create_notes_from_parts(
         parts: list[tuple[str, str]],
         chapters: list[list[str]],
@@ -1226,7 +1270,7 @@ def _update_links_to_make(
 
 
 
-# %% ../../nbs/16_latex.convert.ipynb 152
+# %% ../../nbs/16_latex.convert.ipynb 158
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
