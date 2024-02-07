@@ -13,7 +13,7 @@ from typing import Optional, Union
 import warnings
 
 import bs4
-from transformers import BatchEncoding, PreTrainedTokenizer, PreTrainedTokenizerFast
+from transformers import BatchEncoding, pipelines, PreTrainedTokenizer, PreTrainedTokenizerFast
 
 from .....helper import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, double_asterisk_indices, latex_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
@@ -540,7 +540,7 @@ def _collate_html_tags(
 
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 59
-def _add_nice_boxing_attrs_to_notation_tags(
+def _add_nice_boxing_attrs_to_def_and_notat_tags(
         html_tag_data: list[tuple[bs4.element.Tag, int, int]]
         ) -> list[tuple[bs4.element.Tag, int, int]]:
     """
@@ -550,7 +550,7 @@ def _add_nice_boxing_attrs_to_notation_tags(
     """
     listy = []
     for tag, start, end in html_tag_data:
-        if 'notation' in tag.attrs and 'style' not in tag.attrs:
+        if ('notation' in tag.attrs or 'definition' in tag.attrs) and 'style' not in tag.attrs:
             tag.attrs['style'] = "border-width:1px;border-style:solid;padding:3px"
         listy.append((tag, start, end)) 
     return listy
@@ -574,11 +574,11 @@ def def_and_notat_preds_by_model(
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 63
 def auto_mark_def_and_notats(
-        note: VaultNote,
-        pipeline,
+        note: VaultNote,  # The standard information note in which to find the definitions and notations.
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
         # remove_existing_def_and_notat_markings: bool = False,  # If `True`, remove definition and notation markings (both via surrounding by double asterisks `**` as per the legacy method and via HTML tags)
         excessive_space_threshold: int = 2,
-        add_boxing_attr_to_existing_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
+        add_boxing_attr_to_existing_def_and_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
     ) -> None:
     """
     Predict and mark where definitions and notation occur in a note using
@@ -628,11 +628,43 @@ def auto_mark_def_and_notats(
     see_also_line = mf.get_line_number_of_heading('See Also')
      
     main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
+    # main_text = add_space_to_lt_symbols_without_space(main_text)
+    # main_text = convert_double_asterisks_to_html_tags(main_text)
+    # main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
+    # if add_boxing_attr_to_existing_def_and_notat_markings:
+    #     existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
+    #         existing_html_tag_data)
+    # html_tags_to_add = _html_tags_from_token_preds(
+    #     main_text, pipeline(main_text), note, excessive_space_threshold)
+    # html_tags_to_add = _consolidate_token_preds(
+    #     main_text, html_tags_to_add)
+
+    # html_tags_to_add_back = _collate_html_tags(
+    #     existing_html_tag_data, html_tags_to_add)
+    # main_text = add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
+    main_text = _format_main_text_and_add_html_tag_data(
+        note, pipeline, add_boxing_attr_to_existing_def_and_notat_markings,
+        excessive_space_threshold, main_text)
+    mf.remove_lines(first_non_metadata_line, see_also_line)
+    mf.insert_line(first_non_metadata_line,
+                   {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
+    mf.add_tags('_auto/def_and_notat_identified')
+    mf.write(note)
+
+
+def _format_main_text_and_add_html_tag_data(
+        note: VaultNote,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
+        add_boxing_attr_to_existing_def_and_notat_markings: bool,
+        excessive_space_threshold: int,
+        main_text: str,  # The main text to format and to add HTML tag data to
+        ) -> str:
+
     main_text = add_space_to_lt_symbols_without_space(main_text)
     main_text = convert_double_asterisks_to_html_tags(main_text)
     main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
-    if add_boxing_attr_to_existing_notat_markings:
-        existing_html_tag_data = _add_nice_boxing_attrs_to_notation_tags(
+    if add_boxing_attr_to_existing_def_and_notat_markings:
+        existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
             existing_html_tag_data)
     html_tags_to_add = _html_tags_from_token_preds(
         main_text, pipeline(main_text), note, excessive_space_threshold)
@@ -641,13 +673,5 @@ def auto_mark_def_and_notats(
 
     html_tags_to_add_back = _collate_html_tags(
         existing_html_tag_data, html_tags_to_add)
-    main_text = add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
-    mf.remove_lines(first_non_metadata_line, see_also_line)
-    mf.insert_line(first_non_metadata_line,
-                   {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
-    # mf.insert_line(first_non_metadata_line,
-    #                {'type': MarkdownLineEnum.HEADING, 'line': '# Topic[^1]'})
-    mf.add_tags('_auto/def_and_notat_identified')
-    mf.write(note)
-
+    return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
 
