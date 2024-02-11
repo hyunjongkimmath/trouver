@@ -69,11 +69,10 @@ def raw_text_with_html_tags_from_markdownfile(
 
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 18
-# TODO: implement a measure to not get the definition identification data, e.g. by 
-# detecting a `_auto/definition_identification` tag.
 def html_data_from_note(
-        note: VaultNote,
-        vault: PathLike
+        note_or_mf: Union[VaultNote, MarkdownFile], # Either a `VaultNote`` object to a note or a `MarkdownFile` object from which to extra html data.
+        vault: Optional[PathLike] = None, # If vault to use when processing the `MarkdownFile` objects (if `note_of_mf` is a `VaultNote`, then this `MarkdownFile` object is created from the text of the note), cf. the `process_standard_information_note` function.
+        note_name: Optional[str] = None, # If `note_or_mf` is a `MarkdownFile`, `note_name` should be the name of the note from which the `MarkdownFile` comes from if applicable. If `note_or_mf` is a `VaultNote` object, then `note_name` is ignored and `note_or_mf.name` is used instead.
         ) -> Union[dict, None]: # The keys to the dict are "Note name", "Raw text", "Tag data". However, `None` is returned if `note` does not exist or the note is marked with auto-generated, unverified data.
     # TODO: implement obtaining multiple datapoints from a single note
     # Via typos for example.
@@ -97,19 +96,23 @@ def html_data_from_note(
                 - Each element of the list is a tuple consisting of a ``bs4.element.Tag``
                   and two ints.
     """
-    if not note.exists():
+    if isinstance(note_or_mf, VaultNote) and not note_or_mf.exists():
         return None
-    mf = MarkdownFile.from_vault_note(note)
+    if isinstance(note_or_mf, VaultNote):
+        mf = MarkdownFile.from_vault_note(note_or_mf)
+        note_name = note_or_mf.name
+    else: # isinstance(note_or_mf, MarkdownFile):
+        mf = note_or_mf.copy(deep=False)
     if mf.has_tag('_auto/def_and_notat_identified'):
         return None
     raw_text_with_tags = raw_text_with_html_tags_from_markdownfile(mf, vault)
     raw_text, tags_and_locations = remove_html_tags_in_text(raw_text_with_tags)
     return {
-        "Note name": note.name,
+        "Note name": note_name,
         "Raw text": raw_text,
         "Tag data": tags_and_locations}
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 21
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 29
 def tokenize_html_data(
         html_locus: dict, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -273,7 +276,7 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 46
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 55
 def _make_tag(
         text: str,
         entity_type: str # 'definition' or 'notation'
@@ -313,7 +316,7 @@ def _html_tag_data_from_part(
     return (_make_tag(html_text, entity_type), start_char, end_char)
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 48
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 57
 def _current_token_continues_the_previous_token(
         current_token: dict, previous_token: dict, note: Optional[VaultNote]
         ) -> bool:
@@ -338,7 +341,7 @@ def _current_token_continues_the_previous_token(
         return False
         
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 50
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 59
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
         note: VaultNote,
@@ -373,7 +376,7 @@ def _divide_token_preds_into_parts(
     return token_preds_parts
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 52
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 61
 def _ranges_overlap(
         current_1: tuple[bs4.element.Tag, int, int],
         current_2: tuple[bs4.element.Tag, int, int]
@@ -386,7 +389,7 @@ def _ranges_overlap(
     return max(current_1[1], current_2[1]) < min(current_1[2], current_2[2])
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 54
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 63
 def _consolidate_token_preds(
         main_text: str,
         tag_data: list[tuple[bs4.element.Tag, int, int]]
@@ -481,7 +484,7 @@ def _no_overlap_with_previous_tag_data(
     return True
     
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 56
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 65
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]],
@@ -498,7 +501,7 @@ def _html_tags_from_token_preds(
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 57
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 66
 def _collate_html_tags(
         tag_data_1: list[tuple[bs4.element.Tag, int, int]],
         tag_data_2: list[tuple[bs4.element.Tag, int, int]],
@@ -539,7 +542,7 @@ def _collate_html_tags(
 
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 59
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 68
 def _add_nice_boxing_attrs_to_def_and_notat_tags(
         html_tag_data: list[tuple[bs4.element.Tag, int, int]]
         ) -> list[tuple[bs4.element.Tag, int, int]]:
@@ -557,7 +560,7 @@ def _add_nice_boxing_attrs_to_def_and_notat_tags(
 
 
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 61
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 70
 def def_and_notat_preds_by_model(
         text: str,  
         pipeline # The pipeline object created using the token classification model and its tokenizer
@@ -572,7 +575,7 @@ def def_and_notat_preds_by_model(
     tag_data = _html_tags_from_token_preds(text, pipeline(main_text), None, 2)
     return tag_data
 
-# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 63
+# %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 72
 def auto_mark_def_and_notats(
         note: VaultNote,  # The standard information note in which to find the definitions and notations.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
