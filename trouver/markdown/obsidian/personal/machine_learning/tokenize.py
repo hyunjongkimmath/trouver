@@ -572,7 +572,7 @@ def def_and_notat_preds_by_model(
     `auto_mark_def_and_notats`, but does not raise warning messages as
     in `auto_mark_def_and_notats`.
     """
-    tag_data = _html_tags_from_token_preds(text, pipeline(main_text), None, 2)
+    tag_data = _html_tags_from_token_preds(text, pipeline(text), None, 2)
     return tag_data
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 72
