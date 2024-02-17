@@ -6,6 +6,7 @@ __all__ = ['convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_fro
            'auto_mark_def_and_notats']
 
 # %% ../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.ipynb 4
+from itertools import pairwise
 import os 
 from os import PathLike
 from pathlib import Path
@@ -592,6 +593,11 @@ def auto_mark_def_and_notats(
     and HTML tags. If
     there are many modifications, then these might be deleted.
 
+    Assumes that the paragraphs in the text of the note are "not too long".
+    Currently, this means that the paragraphs in the number of tokens
+    in the text of the note should (roughly) not exceed 
+    `pipeline.tokenizer.model_max_length`.
+
     Existing markings for definition and notation data (i.e. by
     surrounding with double asterisks or by HTML tags) are preserved
     (and turned into HTML tags), unless the markings overlap with 
@@ -621,38 +627,47 @@ def auto_mark_def_and_notats(
 
     """
     mf = MarkdownFile.from_vault_note(note)
+    _process_mf(mf)
+    first_non_metadata_line, see_also_line = _get_main_text_lines(mf)
+    # mf.merge_display_math_mode()
+    # mf.merge_display_math_mode_into_preceding_text()
+    # tuppy = mf.metadata_lines()
+    # if tuppy is not None:
+    #     first_non_metadata_line = tuppy[1] + 1
+    # else:
+    #     first_non_metadata_line = 0 
+    # see_also_line = mf.get_line_number_of_heading('See Also')
+     
+    main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
+    main_text = _format_main_text_and_add_html_tag_data(
+        note, pipeline, add_boxing_attr_to_existing_def_and_notat_markings,
+        excessive_space_threshold, main_text)
+    _write_text_with_html_tag_preds_to_note(
+        note, mf, main_text, first_non_metadata_line, see_also_line)
+    # mf.remove_lines(first_non_metadata_line, see_also_line)
+    # mf.insert_line(first_non_metadata_line,
+    #                {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
+    # mf.add_tags('_auto/def_and_notat_identified')
+    # mf.write(note)
+
+
+def _process_mf(
+        mf: MarkdownFile) -> None:
+    """Helper function to `auto_mark_def_and_notats`"""
     mf.merge_display_math_mode()
     mf.merge_display_math_mode_into_preceding_text()
+
+
+def _get_main_text_lines(
+        mf: MarkdownFile) -> tuple[int, int]:
+    """Helper function to `auto_mark_def_and_notats`"""
     tuppy = mf.metadata_lines()
     if tuppy is not None:
         first_non_metadata_line = tuppy[1] + 1
     else:
         first_non_metadata_line = 0 
     see_also_line = mf.get_line_number_of_heading('See Also')
-     
-    main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
-    # main_text = add_space_to_lt_symbols_without_space(main_text)
-    # main_text = convert_double_asterisks_to_html_tags(main_text)
-    # main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
-    # if add_boxing_attr_to_existing_def_and_notat_markings:
-    #     existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
-    #         existing_html_tag_data)
-    # html_tags_to_add = _html_tags_from_token_preds(
-    #     main_text, pipeline(main_text), note, excessive_space_threshold)
-    # html_tags_to_add = _consolidate_token_preds(
-    #     main_text, html_tags_to_add)
-
-    # html_tags_to_add_back = _collate_html_tags(
-    #     existing_html_tag_data, html_tags_to_add)
-    # main_text = add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
-    main_text = _format_main_text_and_add_html_tag_data(
-        note, pipeline, add_boxing_attr_to_existing_def_and_notat_markings,
-        excessive_space_threshold, main_text)
-    mf.remove_lines(first_non_metadata_line, see_also_line)
-    mf.insert_line(first_non_metadata_line,
-                   {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
-    mf.add_tags('_auto/def_and_notat_identified')
-    mf.write(note)
+    return first_non_metadata_line, see_also_line
 
 
 def _format_main_text_and_add_html_tag_data(
@@ -662,19 +677,192 @@ def _format_main_text_and_add_html_tag_data(
         excessive_space_threshold: int,
         main_text: str,  # The main text to format and to add HTML tag data to
         ) -> str:
-
+    """Helper function to `auto_mark_def_and_notats`"""
     main_text = add_space_to_lt_symbols_without_space(main_text)
     main_text = convert_double_asterisks_to_html_tags(main_text)
     main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
     if add_boxing_attr_to_existing_def_and_notat_markings:
         existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
             existing_html_tag_data)
-    html_tags_to_add = _html_tags_from_token_preds(
-        main_text, pipeline(main_text), note, excessive_space_threshold)
-    html_tags_to_add = _consolidate_token_preds(
-        main_text, html_tags_to_add)
+
+    # html_tags_to_add = _html_tags_from_token_preds(
+    #     main_text, pipeline(main_text), note, excessive_space_threshold)
+    # html_tags_to_add = _consolidate_token_preds(
+    #     main_text, html_tags_to_add)
+    html_tags_to_add = _get_token_preds_by_dividing_main_text(
+        main_text, pipeline, note, excessive_space_threshold)
 
     html_tags_to_add_back = _collate_html_tags(
         existing_html_tag_data, html_tags_to_add)
     return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
+
+
+def _get_token_preds_by_dividing_main_text(
+        main_text: str,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
+        note: VaultNote,
+        excessive_space_threshold: int,    
+        ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
+    """
+    Divide the `main_text` into not-too-long pieces to return HTML tag predictions
+
+    Helper function for `_format_main_text_and_add_html_tag_data`.
+    """
+    pieces_start_and_end = _divide_main_text(main_text, pipeline)
+    cumulative_html_tags_in_main = []
+    for start_of_piece, end_of_piece in pieces_start_and_end:
+        # text = main_text[start_of_piece:end_of_piece]
+        text = main_text[start_of_piece:]
+        html_tags_in_piece = _html_tags_from_token_preds(
+            text, pipeline(text), note, excessive_space_threshold)
+        html_tags_in_piece = _consolidate_token_preds(
+            text, html_tags_in_piece)
+        # start and end indices need to be re-adjusted with respect to their places in `main_text`
+        html_tags_for_piece_in_main_text = [
+            (tag, start_of_piece + start, start_of_piece + end)
+            for tag, start, end in html_tags_in_piece]
+        cumulative_html_tags_in_main = _collate_html_tags(
+            cumulative_html_tags_in_main, html_tags_for_piece_in_main_text)
+    return cumulative_html_tags_in_main
+
+
+def _divide_main_text(
+        main_text: str,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
+        # ) -> list[tuple[str, int, int]]:  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
+        ) -> list[tuple[int, int]]:  # Each tuple is a start and end range for pieces of `main_text` to be considered for predictions
+    """Divides `main_text` so that predictions can be made on smaller chunks of text.
+    
+    Assumes that dividing `main_text` along newline characters `\n` will result in
+    pieces that are "not too long".
+
+    Helper function to `_format_main_text_and_add_html_tag_data`.
+
+
+    """
+    main_text.split('\n')
+    tokenizer = pipeline.tokenizer
+    newline_indices = [i for i, char in enumerate(main_text) if char == '\n']
+    newline_indices.insert(0, 0)
+    chunks = []  # list[tuple[str, int, int]]  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
+    for start, end in pairwise(newline_indices):
+        chunk = main_text[start:end]
+        chunks.append((chunk, start, len(tokenizer(chunk)['input_ids'])))
+    last_chunk = main_text[newline_indices[-1]:]
+    chunks.append((last_chunk, newline_indices[-1], len(tokenizer(chunk))))
+    return _find_places_to_divide_from_chunks(chunks, pipeline)
+
+
+def _find_places_to_divide_from_chunks(
+        chunks: list[tuple[str, int, int]], # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
+        ) -> list[tuple[int, int]]: # Each tuple is a start and end range for pieces of `main_text` to be considered for predictions
+    """Identify appropriate indices in `main_text` where (overlapping)
+    pieces in `main_text` should start/end for predictions with `pipeline`.
+    
+    Helper function to `_divide_main_text`.
+
+    We describe how this function is implemented: starting at the first chunk
+    (chunks are non-overlapping), start to consider consecutive chunks to
+    make up a piece. So maybe we have chunks
+
+        A B C D E F ....
+
+    We build a piece chunk-by-chunk, considering the total token length of the
+    built sub-piece along the way. The first chunk within a sub-piece 
+    that makes the sub-piece of token-length greater than half the max
+    token length with respect to `pipeline.tokenizer` will become the start of the
+    next piece, unless the very first chunk in the piece is already longer than half the max
+    token length with respect to the tokenizer (this is to ensure that the
+    piece-building process does not keep starting at the same chunk).
+    Moreover, a piece will stop building as soon as its token-length exceeds
+    the max length of the tokenizer.
+
+    For instance, maybe the max length for the tokenizer is 512, and the chunks
+    are of the following length:
+
+        A   B    C  D   E    F     ...
+        76  130  70 13  150  140   ...
+
+    We first build the piece starting at A:
+
+        A
+        76
+
+    We continue building the piece by "appending" B:
+
+        A   B
+        76  130
+
+    Once we append C as well, the piece's length is now 276 and hence over half of 512,
+    so the next piece will start at C: 
+
+        A   B    C
+        76  130  70
+
+    Subsequently, we continue building the piece. Only once F is appended does the 
+    length of the entire piece exceed 512 (the length is 579):
+
+        A   B    C  D   E    F
+        76  130  70 13  150  140
+    
+    And then we begin building the next piece from C.
+
+    Also, consider an example where the first chunk's length exceeds half the max length
+    of the tokenizer:
+
+        A   B    C   ...
+        300 200  100 ...
+
+    Here, the first piece will consist of the chunks A, B, and C because
+    the length of the piece exceeds the max length of 512 only after appending C.
+    To guarantee that the next piece does not start with the chunk A again, B is 
+    used as the first chunk in the next piece:
+
+        B    C   ...
+        200  100 ...
+
+    If any chunk's token length exceeds the tokenizer's max_model_length, then
+    the pipeline/model can only predict on the starting tokens in the chunk. 
+    As such, the chunks must not be "too long" for best results on the model's predictions.
+    """
+    tokenizer = pipeline.tokenizer
+    start_chunk_index, next_piece_start_chunk_index = 0, 0
+    current_piece_token_len = 0
+    pieces_start_and_end = []
+    i = 0
+    while i < len(chunks):
+        chunk = chunks[i]
+        current_piece_token_len = current_piece_token_len + chunk[2]
+        if (current_piece_token_len > tokenizer.model_max_length / 2
+                and start_chunk_index == next_piece_start_chunk_index):
+            # Mark where the next piece should start
+            next_piece_start_chunk_index = i if start_chunk_index != i else i+1
+        if (current_piece_token_len > tokenizer.model_max_length):
+            # Add a new item in the list and then Start a new piece
+            start_chunk, end_chunk = chunks[start_chunk_index], chunk
+            start_char_index = start_chunk[1]
+            end_char_index = end_chunk[1] + len(end_chunk[0])
+            pieces_start_and_end.append([start_char_index, end_char_index])
+            i, start_chunk_index = (
+                next_piece_start_chunk_index, next_piece_start_chunk_index)
+            current_piece_token_len = 0
+            continue
+        i += 1
+    return pieces_start_and_end
+
+
+def _write_text_with_html_tag_preds_to_note(
+        note: VaultNote,
+        mf: MarkdownFile,
+        main_text: str,
+        first_non_metadata_line: int,
+        see_also_line: int
+        ) -> None:
+    """Helper function to `auto_mark_def_and_notats`"""
+    mf.remove_lines(first_non_metadata_line, see_also_line)
+    mf.insert_line(first_non_metadata_line,
+                   {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
+    mf.add_tags('_auto/def_and_notat_identified')
+    mf.write(note)
 
