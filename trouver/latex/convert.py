@@ -990,7 +990,7 @@ def _replace_command(
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-        repeat: int = 1 # The number of times to repeat replacing the commands throughout the text. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
+        repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
     ) -> str:
     """
     Replaces all invocations of the specified commands in `text` with the
@@ -1004,9 +1004,12 @@ def replace_commands_in_text(
 
     """
     while repeat != 0:
+        old_text = text
         for command_tuple in command_tuples:
             text = replace_command_in_text(text, command_tuple)
         repeat -= 1
+        if old_text == text:
+            break
     return text
 
 # %% ../../nbs/16_latex.convert.ipynb 145
@@ -1037,7 +1040,8 @@ def replace_commands_in_latex_document(
 # TODO: give the option to replace quotations ``'' and `enquote`, e.g. ```unlikely intersections''` into `"unlikely intersections"`
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 def adjust_common_syntax_to_markdown(
-        text) -> str:
+        text: str  # The text containing 
+        ) -> str:
     """
     Adjust some common syntax, such as math mode delimiters and equation/align
     environments, for Markdown.
@@ -1055,10 +1059,13 @@ def adjust_common_syntax_to_markdown(
 # %% ../../nbs/16_latex.convert.ipynb 152
 def _replace_custom_commands_in_parts(
         parts: list[tuple[str, str]],
-        custom_commands: list[tuple[str, int, Union[str, None], str]]
+        custom_commands: list[tuple[str, int, Union[str, None], str]],
+        repeat_replacing_custom_commands: int
         ) -> list[tuple[str, str]]:
-    return [(title, replace_commands_in_text(text, custom_commands))
-            for title, text in parts]
+    return [
+        (title, replace_commands_in_text(
+                text, custom_commands, repeat=repeat_replacing_custom_commands))
+        for title, text in parts]
 
 
 def _adjust_common_syntax_to_markdown_in_parts(
@@ -1297,6 +1304,7 @@ def setup_reference_from_latex_parts(
         verbose: bool = False,
         replace_custom_commands: bool = True, # If `True`, replace the custom commands in the text of `parts` when making the notes.
         adjust_common_latex_syntax_to_markdown: bool = True, # If `True`, apply `adjust_common_syntax_to_markdown` to the text in `parts` when making the notes.`
+        repeat_replacing_custom_commands: int = 1, # The number of times to repeat replacing the custom commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to any negative number (e.g. `-1``), then this function attempts to replace custom commands until no commands to replace are found. 
         ) -> None:
     """Set up a reference folder in `vault` using an output of `divide_latex_text`, create
     notes from `parts`, and link notes in index files in the reference folder.
@@ -1341,7 +1349,8 @@ def setup_reference_from_latex_parts(
     template_mf = MarkdownFile.from_vault_note(template_note)
 
     if replace_custom_commands:
-        parts = _replace_custom_commands_in_parts(parts, custom_commands)
+        parts = _replace_custom_commands_in_parts(
+            parts, custom_commands, repeat_replacing_custom_commands)
     if adjust_common_latex_syntax_to_markdown:
         parts = [(title, adjust_common_syntax_to_markdown(text))
                  for title, text in parts]
