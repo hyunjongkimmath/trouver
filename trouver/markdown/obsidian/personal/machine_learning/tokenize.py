@@ -840,16 +840,33 @@ def _find_places_to_divide_from_chunks(
             next_piece_start_chunk_index = i if start_chunk_index != i else i+1
         if (current_piece_token_len > tokenizer.model_max_length):
             # Add a new item in the list and then Start a new piece
-            start_chunk, end_chunk = chunks[start_chunk_index], chunk
-            start_char_index = start_chunk[1]
-            end_char_index = end_chunk[1] + len(end_chunk[0])
-            pieces_start_and_end.append([start_char_index, end_char_index])
+            # start_chunk, end_chunk = chunks[start_chunk_index], chunk
+            # start_char_index = start_chunk[1]
+            # end_char_index = end_chunk[1] + len(end_chunk[0])
+            # pieces_start_and_end.append([start_char_index, end_char_index])
+            _append_to_pieces_start_and_end(
+                pieces_start_and_end, chunks[start_chunk_index], chunk)
             i, start_chunk_index = (
                 next_piece_start_chunk_index, next_piece_start_chunk_index)
             current_piece_token_len = 0
             continue
         i += 1
+    # Add the last chunk at the end
+    _append_to_pieces_start_and_end(
+        pieces_start_and_end, chunks[start_chunk_index], chunks[-1])
     return pieces_start_and_end
+
+
+def _append_to_pieces_start_and_end(
+        pieces_start_and_end: list[tuple[int, int]],
+        start_chunk: tuple[str, int, int],
+        end_chunk: tuple[str, int, int]
+        ) -> None:
+    """Helper function to `_find_places_to_divide_from_chunks`"""
+    start_char_index = start_chunk[1]
+    end_char_index = end_chunk[1] + len(end_chunk[0])
+    pieces_start_and_end.append([start_char_index, end_char_index])
+
 
 
 def _write_text_with_html_tag_preds_to_note(
