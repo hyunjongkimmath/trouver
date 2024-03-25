@@ -1,83 +1,31 @@
-% This example is based on https://arxiv.org/abs/2210.03035
 % In this example, there are enumerate environments, which should not get their
 % own `part`, cf. `divide_latex_text` in `16_latex.convert.ipynb`.
 \documentclass[10pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{mhchem}
-\usepackage{stmaryrd}
-\usepackage{bbold}
-\usepackage{graphicx}
-\usepackage[export]{adjustbox}
-\graphicspath{ {./images/} }
-\usepackage{hyperref}
-\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
-\urlstyle{same}
-
 \begin{document}
 
-\section{CONTENTS}
+\section{Introduction}
+
+Blahblahblah, this document has some lists.
+The `divide_latex_text` should not create a separate part for the below `enumerate`
+environment; after all, it seems better to include the list in the same file/note
+as the text that provides context for the list.
+
 \begin{enumerate}
-  \item Introduction 2
-
-  \item Preliminaries $\quad 7$
-
+  \item Rings
+  \item Fields
 \end{enumerate}
-2.1. Categorical preliminaries $\quad 7$
 
-2.2. On the motivic Spanier-Whitehead category and Milnor-Witt K-theory 8
-
-2.3. $\mathbb{A}^{1}$-derived category and $\mathbb{A}^{1}$-homology 9
+And here is another list, perhaps a grocery list:
 
 \begin{enumerate}
   \setcounter{enumi}{3}
-  \item $\mathbb{A}^{1}$-Spanier-Whitehead category of cellular smooth schemes 11
+  \item apples
+  \item bananas
+  \item milk
 \end{enumerate}
-3.1. Cellular schemes 12
 
-3.2. Cellular Spanier-Whitehead category 13
-
-\begin{enumerate}
-  \setcounter{enumi}{4}
-  \item The cellular homology of Morel-Sawant on cellular Thom spaces 14
-
-  \item Spanier-Whitehead cellular complex 18
-
-\end{enumerate}
-5.1. Definitions and basic properties 18
-
-5.2. Endomorphisms, traces, and characteristic polynomials 19
-
-5.3. Cellular Grothendieck-Lefschetz Trace Formula 21
-
-\begin{enumerate}
-  \setcounter{enumi}{6}
-  \item Rationality of the zeta function 22
-
-  \item $\mathbb{A}^{1}$-logarithmic zeta functions and real points 24
-
-  \item Computing $\mathbb{A}^{1}$-logarithmic zeta functions and examples 27
-
-\end{enumerate}
-8.1. $\mathbb{A}^{1}$-zeta function of Frobenius endomorphisms using Theorem $6.2 \quad 28$
-
-8.2. $\mathbb{A}^{1}$-logarithmic zeta functions via Hoyois's trace formula 31
-
-8.3. The logarithmic zeta function of non-cellular schemes 34
-
-\begin{enumerate}
-  \setcounter{enumi}{9}
-  \item Motivic measures 34
-\end{enumerate}
-9.1. The $\mathbb{A}^{1}$-trace as a motivic measure 35
-
-9.2. The enriched zeta function as a motivic measure 35
-
-References 36
-
-Date: October 3, 2022.
+Lalalala
 
 \end{document}

@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "2bd4db994ffeb67a",
+        "id": "38ee778b7f30a004",
         "type": "tabs",
         "children": [
           {
-            "id": "dac704e45ed67e4b",
+            "id": "71dfae262b9a2adb",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "_templates/_template_common.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -48,7 +44,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "\\Q ",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -64,8 +60,17 @@
               "type": "starred",
               "state": {}
             }
+          },
+          {
+            "id": "41cb27504ec4d153",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -85,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "_templates/_template_common.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +106,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "_templates/_template_common.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +127,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "_templates/_template_common.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -146,17 +147,43 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "dac704e45ed67e4b",
+  "active": "71dfae262b9a2adb",
   "lastOpenFiles": [
-    "number_theory/number_theory_reference_1/_glossary_number_theory_reference_1.md",
-    "number_theory/number_theory_reference_1/_notation_number_theory_reference_1.md",
-    "number_theory/number_theory_reference_1/_TODO_number_theory_reference_1.md",
-    "_templates/_template_glossary.md",
-    "_common_terms/_index_common_terms.md",
-    "_index.md",
-    "number_theory/number_theory_reference_1/1_chapter_number_theory_reference_1/2_ring_of_integers_modulo_n/number_theory_reference_1_Definition 1.7.md",
-    "_references/_reference_number_theory_reference_1.md",
-    "_templates/_template_number_theory_reference_1.md",
-    "_common_terms/_common_terms_ring.md"
+    "bruinier_yang_fhCMcdLf/_index_bruinier_yang_fhCMcdLf.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/_index_7_height_pairings_on_modular_curves.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/83_integral_model/bruinier_yang_fhCMcdLf_Theorem 8.2.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/83_integral_model/bruinier_yang_fhCMcdLf_8.3. Integral Model.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/83_integral_model/bruinier_yang_fhCMcdLf_thebibliography.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/83_integral_model/bruinier_yang_fhCMcdLf_66.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/82_the_cm_cycle_zu/bruinier_yang_fhCMcdLf_8.2. The CM cycle $Z(U)$.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/_index_8_the_case_n2.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/bruinier_yang_fhCMcdLf_comment_52.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/bruinier_yang_fhCMcdLf_comment_51.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/bruinier_yang_fhCMcdLf_8. The case $n=2$.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/bruinier_yang_fhCMcdLf_65.md",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/83_integral_model",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2/82_the_cm_cycle_zu",
+    "bruinier_yang_fhCMcdLf/8_the_case_n2",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_Theorem 7.25.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_Theorem 7.20.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_Proposition 7.23.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_Lemma 7.24.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_Lemma 7.21.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_comment_50.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_comment_49.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_comment_48.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_7.4. Pull-back of Heegner divisors.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_64.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_63.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_62.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_61.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors/bruinier_yang_fhCMcdLf_60.md",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/74_pull_back_of_heegner_divisors",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/73_the_gross_zagier_formula",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/72_the_shimura_lifting_and_hecke_eigenforms",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves/71_the_modular_curve_x_0n",
+    "bruinier_yang_fhCMcdLf/7_height_pairings_on_modular_curves",
+    "bruinier_yang_fhCMcdLf/6_the_n0_case",
+    "bruinier_yang_fhCMcdLf/5_faltings_heights_of_cm_cycles"
   ]
 }

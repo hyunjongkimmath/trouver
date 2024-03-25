@@ -1,0 +1,86 @@
+SyncTeX Version:1
+Input:1:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\numbering_example_8_subsubsections_and_theorems_share_counter\main.tex
+Input:2:C:\Program Files\MiKTeX 2.9\tex\latex\amscls\amsart.cls
+Input:3:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty
+Input:4:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty
+Input:5:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty
+Input:6:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty
+Input:7:C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty
+Input:8:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd
+Input:9:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty
+Input:10:C:\Program Files\MiKTeX 2.9\tex\latex\l3backend\l3backend-pdftex.def
+Input:11:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\numbering_example_8_subsubsections_and_theorems_share_counter\main.aux
+Input:12:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd
+Input:13:C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd
+Output:pdf
+Magnification:1000
+Unit:1
+X Offset:0
+Y Offset:0
+Content:
+!1129
+{1
+[1,31:4736286,46693416:27189412,41957130,0
+[1,31:8332738,46693416:23592960,40501248,0
+[1,31:8332738,6716456:23592960,524288,0
+(1,31:8332738,6716456:23592960,0,0
+h1,31:8332738,6716456:23592960,0,0
+)
+]
+[1,31:8332738,45906984:23592960,38273024,0
+(1,21:8332738,8289320:23592960,537394,0
+k1,21:16964704,8289320:8631966
+(1,21:16964704,8289320:983940,506811,0
+g1,21:16964704,8289320
+x1,21:17563624,8289320
+)
+x1,21:19688396,8289320
+x1,21:23293733,8289320
+g1,21:23293733,8289320
+k1,21:31925699,8289320:8631966
+)
+(1,25:8332738,9665576:23592960,546132,0
+g1,25:8332738,9665576
+x1,25:9530578,9665576
+x1,25:12585189,9665576
+g1,25:12880101,9665576
+x1,25:14256357,9665576
+k1,25:31925697,9665576:17669340
+g1,25:31925697,9665576
+)
+(1,27:8332738,11041832:23592960,509829,0
+g1,27:8332738,11041832
+x1,27:10129498,11041832
+x1,27:11182993,11041832
+x1,27:12814855,11041832
+g1,27:13090108,11041832
+x1,27:14977561,11041832
+k1,27:31925697,11041832:16948136
+g1,27:31925697,11041832
+)
+(1,29:8332738,12418088:23592960,546132,0
+x1,29:11787940,12418088
+g1,28:12082852,12418088
+x1,28:13901476,12418088
+x1,28:14147236,12418088
+k1,29:31925698,12418088:17778462
+g1,29:31925698,12418088
+)
+]
+(1,31:8332738,46693416:23592960,380108,0
+(1,31:8332738,46693416:23592960,380108,0
+k1,31:19977667,46693416:11644929
+x1,31:20280769,46693416
+k1,31:31925698,46693416:11644929
+)
+)
+]
+]
+!1343
+}1
+Input:14:C:\Users\hyunj\Documents\Development\Python\trouver\nbs\_tests\latex_examples\numbering_example_8_subsubsections_and_theorems_share_counter\main.aux
+!167
+Postamble:
+Count:47
+!25
+Post scriptum:

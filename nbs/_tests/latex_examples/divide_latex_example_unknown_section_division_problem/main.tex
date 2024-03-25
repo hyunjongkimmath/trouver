@@ -1,0 +1,190 @@
+% Based on https://arxiv.org/abs/1208.2974
+
+\documentclass[11pt]{amsart}
+ \usepackage[margin=1.5in]{geometry}
+\usepackage{bm}
+
+\usepackage{mathpazo}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}  
+\usepackage{hyperref}
+
+
+\numberwithin{equation}{subsection}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{application}[theorem]{Application}
+
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{criterion}[theorem]{Criterion}
+\def\square{\Box}
+
+\DeclareMathOperator{\orth}{O}
+\DeclareMathOperator{\po}{PO}
+\DeclareMathOperator{\Lie}{Lie}
+\DeclareMathOperator{\G}{G}
+\DeclareMathOperator{\gl}{GL}
+\def\sp{{\mathop{\rm Sp}}}
+\def\esix{{\rm E}_6}
+\def\good{{\rm good}}
+\def\stable{{\rm st}}
+\def\semistable{{\rm ss}}
+\def\ball{{\mathbb B}}
+\def\hp{{\mathbb H}}
+
+\def\cal{\mathcal}
+\newcommand{\stk}[1]{{\mathcal #1}}
+\newcommand{\tilstk}[1]{{\til{\stk #1}}}
+\newcommand{\barstk}[1]{{\bar{\stk #1}}}
+\newcommand{\coarse}[1]{{\underline{#1}}}
+\newcommand{\hitlist}[1]{{\bf #1}}
+
+\usepackage{diagrams}
+\newarrow{to}---->
+\newarrow{dashedto}{}{dash}{}{dash}>
+\newarrow{mto}|--->
+\newarrow{impto}===={=>}
+\newarrowtail{<=}\Rightarrow\Leftarrow\Uparrow\Downarrow
+\newarrow{bboth}{<=}==={=>}
+\newarrow{inject}{hooka}---{vee}
+\newarrow{iline}{hooka}----
+\newarrow{surject}----{>>}
+
+\def\marked{{\rm m}}
+\def\setcomp{\smallsetminus}
+
+%%
+\def\aff{{\mathbb A}}
+\def\cx{{\mathbb C}}
+\def\ff{{\mathbb F}}
+\def\proj{{\mathbb P}}
+\def\rat{{\mathbb Q}}
+\def\real{{\mathbb R}}
+\def\integ{{\mathbb Z}}
+\def\gp{{\mathbb G}}
+\def\vv{{\mathbb V}}
+\def\ww{{\mathbb W}}
+
+
+\def\zz{{\bm 0}}
+
+\def\mmu{\bm{\mu}}
+\def\idp{{\frak p}}
+\def\idl{{\frak l}}
+\def\idn{{\frak n}}
+\def\ida{{\frak a}}
+\def\idb{{\frak b}}
+\def\mono{{\sf M}}
+
+
+\def\call{{\mathcal L}}
+\def\calz{{\mathcal Z}}
+\def\cala{{\mathcal A}}
+\def\cald{{\mathcal D}}
+\def\calf{{\mathcal F}}
+\def\caln{{\mathcal N}}
+\def\calo{{\mathcal O}}
+\def\calt{{\mathcal T}}
+\def\calx{{\mathcal X}}
+\def\calp{{\mathcal P}}
+\def\calm{{\mathcal M}}
+\def\caly{{\mathcal Y}}
+
+\DeclareMathOperator{\T}{T}
+\DeclareMathOperator{\K}{K}
+\DeclareMathOperator{\mat}{Mat}
+
+
+\newcommand{\til}[1]{{\widetilde{#1}}}
+\newcommand{\st}[1]{\{#1\}}
+\newcommand{\ang}[1]{{{\langle #1 \rangle}}}
+\newcommand{\hang}[1]{\langle\!\langle #1 \rangle\!\rangle}
+\newcommand{\sra}[1]{\stackrel{#1}{\rightarrow}}
+\newcommand{\rest}[1]{|_{#1}}
+\newcommand{\invlim}[1]{\lim_{\stackrel{\leftarrow}{#1}}}
+\def\liehodge{{\mathfrak{hg}}}
+\def\lie{\mathfrak}
+
+
+\global\let\det\undefined
+\DeclareMathOperator{\det}{det}
+\global\let\hom\undefined
+\DeclareMathOperator{\hom}{Hom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\aut}{Aut}
+\DeclareMathOperator{\gal}{Gal}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\gu}{GU}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\fil}{Fil}
+\DeclareMathOperator{\pic}{Pic}
+\DeclareMathOperator{\Frac}{Frac}
+\def\res{\bm{{\rm R}}}
+\DeclareMathOperator{\mt}{MT}
+\DeclareMathOperator{\hg}{Hg}
+\DeclareMathOperator{\cl}{Cl}
+
+\def\gen{{\rm gen}}
+\def\u{{\rm U}}
+\DeclareMathOperator{\su}{SU}
+
+\def\fin{{\rm fin}}
+\DeclareMathOperator{\Cl}{Cl}
+
+\def\del{\partial}
+\def\ra{\rightarrow}
+\def\tensor{\otimes}
+\def\iso{\cong}
+\def\cross{\times}
+\def\inject{\hookrightarrow}
+\def\bs{\backslash}
+\def\sriso{\stackrel{\sim}{\rightarrow}}
+\def\sep{{{\rm sep}}}
+\def\derham{{\rm dR}}
+\def\cris{{\rm cris}}
+\def\units{^\cross}
+\DeclareMathOperator{\spec}{Spec}
+\def\comp{\circ}
+\def\inv{^{-1}}
+\def\twiddle{\sim}
+\newcommand{\myht}[1]{{\widehat{#1}}}
+\def\ab{^{{\rm ab}}}
+\newcommand{\half}[1]{\frac{#1}{2}}
+\newcommand{\powser}[1]{[\![#1]\!]}
+\newcommand{\laurser}[1]{(\!(#1)\!)}
+
+
+
+
+\newenvironment{alphabetize}{\begin{enumerate}
+\def\theenumi{\alph{enumi}}
+}{\end{enumerate}}
+
+\begin{document}
+
+\section{Background and Notation}
+
+\subsection{Unitary groups}
+\label{subsecunitary}
+
+where $\res_{\calo_E/\integ}$ is the restriction of scalars functor.
+Then $\su$ is the derived group of $\gu$ and of $\u$,
+
+\section{Mumford-Tate groups and endomorphism rings}
+
+\label{secmt}
+
+Carlson and Toledo have 
+
+\bibliographystyle{hamsplain}
+\bibliography{jda}
+
+\end{document}

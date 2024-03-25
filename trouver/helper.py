@@ -27,13 +27,13 @@ from natsort import natsorted
 # %% auto 0
 __all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'CHARACTER_ORDERING_LIST',
            'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE', 'TO_SUBSTITUTE',
-           'find_regex_in_text', 'replace_string_by_indices', 'latex_indices', 'html_tag_str',
-           'find_lt_symbols_without_space_in_math_mode', 'add_space_to_lt_symbols_without_space',
-           'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text', 'double_asterisk_indices',
-           'notation_asterisk_indices', 'definition_asterisk_indices', 'defs_and_notats_separations', 'is_number',
-           'existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file',
-           'files_of_format_sorted', 'current_time_formatted_to_minutes', 'containing_string_priority',
-           'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
+           'find_regex_in_text', 'separate_indices_from_str', 'replace_string_by_indices', 'latex_indices',
+           'inline_latex_indices', 'html_tag_str', 'find_lt_symbols_without_space_in_math_mode',
+           'add_space_to_lt_symbols_without_space', 'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text',
+           'double_asterisk_indices', 'notation_asterisk_indices', 'definition_asterisk_indices',
+           'defs_and_notats_separations', 'is_number', 'existing_path', 'file_existence_test', 'path_name_no_ext',
+           'path_no_ext', 'text_from_file', 'files_of_format_sorted', 'current_time_formatted_to_minutes',
+           'containing_string_priority', 'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
            'dict_with_keys_topologically_sorted', 'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
            'alphabet_or_latex_command_to_alphabet_group', 'latex_to_path_accepted_string']
 
@@ -66,6 +66,29 @@ def find_regex_in_text(
     return [match.span() for match in matches]
 
 # %% ../nbs/00_helper.ipynb 20
+def separate_indices_from_str(
+        text: str,
+        indices: list[tuple[int, int]] # The indices for substrings in `text` to separate.
+        ) -> list[str]: # Each str is a substring of `text`, either a substring of `text` specified by `indices`, or substrings in between the substrings specified by `indices`.
+    """Divide `text` into parts along the substrings specified by `indices`. 
+
+    Assumes that the pairs of indices specified by `indices` are in order from
+    first to last and the ranges specified by these pairs are all disjoint.
+
+    `''.join(output)` should recover `text`.
+    """
+    if not indices:
+        return [text]
+    parts = [text[:indices[0][0]]]
+    for index_pair, next_pair in zip(indices, indices[1:]):
+        parts.append(text[index_pair[0]:index_pair[1]])
+        parts.append(text[index_pair[1]:next_pair[0]])
+    last_pair = indices[-1]
+    parts.append(text[last_pair[0]:last_pair[1]])
+    parts.append(text[last_pair[1]:])
+    return parts
+
+# %% ../nbs/00_helper.ipynb 23
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -130,8 +153,10 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../nbs/00_helper.ipynb 26
-def latex_indices(text: str) -> list[tuple[int, int]]:
+# %% ../nbs/00_helper.ipynb 29
+def latex_indices(
+        text: str,
+        ) -> list[tuple[int, int]]:
     """Returns the indices in the text containing LaTeX str.
     
     This may not work correctly if the text has a LaTeX
@@ -156,6 +181,33 @@ def latex_indices(text: str) -> list[tuple[int, int]]:
     return find_regex_in_text(text, pattern)
 
 
+def inline_latex_indices(
+        text: str,
+        ) -> list[tuple[int, int]]:
+    """Returns the indices in the text containing inline LaTeX str surrounded by
+    `$$`.
+    
+    This may not work correctly if the text has a LaTeX
+    formatting issue or if any LaTeX string has a dollar sign `\$`.
+    
+    **Parameters**
+
+    - text - str
+
+    **Returns**
+
+    - tuple[int]
+        - Each tuple is of the form `(start, end)` where
+        `text[start:end]` is a LaTeX string, including any leading trailing
+        dollar signs (`$$`).
+    """
+    # r'(?<!\\)\$.*(?<!\\)\$|(?<!\\)\$(?<!\\)\$.*(?<!\\)\$(?<!\\)\$'
+    # return find_regex_in_text(text, '\$\$[^\$]*\$\$|\$[^\$]*\$')
+
+    # return find_regex_in_text(text, r'((?<!\\)\$\$?)[^\$]*\1')
+    pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$", re.DOTALL)
+    return find_regex_in_text(text, pattern)
+
 # def math_mode_str_in_text(
 #         text: str # The str in which to find the latex math mode str.
 #         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text.
@@ -165,10 +217,10 @@ def latex_indices(text: str) -> list[tuple[int, int]]:
 #     pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$|(?<!\\)\$.*?(?<!\\)\$", re.DOTALL)
 #     return find_regex_in_text(text, pattern)
 
-# %% ../nbs/00_helper.ipynb 33
+# %% ../nbs/00_helper.ipynb 36
 #| export
 
-# %% ../nbs/00_helper.ipynb 39
+# %% ../nbs/00_helper.ipynb 47
 def html_tag_str(
         html_tag: bs4.element.Tag
         ) -> str:
@@ -182,7 +234,7 @@ def html_tag_str(
         text_to_return = text_to_return.replace(special_char, replace_with)
     return text_to_return
 
-# %% ../nbs/00_helper.ipynb 44
+# %% ../nbs/00_helper.ipynb 52
 def find_lt_symbols_without_space_in_math_mode(
         text: str
         ) -> list[int]: # The index of  
@@ -202,7 +254,7 @@ def find_lt_symbols_without_space_in_math_mode(
     return inds_of_lt_without_spaces_after 
 
 
-# %% ../nbs/00_helper.ipynb 48
+# %% ../nbs/00_helper.ipynb 56
 def add_space_to_lt_symbols_without_space(
         text: str
         ) -> str:
@@ -216,7 +268,7 @@ def add_space_to_lt_symbols_without_space(
         replace_with=['< '] * len(lt_wo_space_inds))
     
 
-# %% ../nbs/00_helper.ipynb 52
+# %% ../nbs/00_helper.ipynb 60
 def remove_html_tags_in_text(
         text: str, # The text in which to remove the HTML tags.
         replace_with_attributes: Optional[Union[str, list[str]]] = None, # Attribute(s) within the HTML tags which should be used to replace the text of the tags. If `None`, then the texts are not replaced with the attributes. If multiple attributes are specified, then only one attribute is used to replace the text for each HTML tag (independently at random of other replacements). Each attribute's text has an equal chance of being selected for replacement. Repeats are ignored.
@@ -290,7 +342,7 @@ def _process_content(
     return position + len(replacement_text)
     
 
-# %% ../nbs/00_helper.ipynb 68
+# %% ../nbs/00_helper.ipynb 76
 def add_HTML_tag_data_to_raw_text(
         text: str, # The text onto which to add HTML tags. This is assumed to contain no HTML tags.
         tags_and_locations: list[tuple[bs4.element.Tag, int, int]] # Each tuple consists of the tag object to add as well as the indices within `text` to. The ranges specified by the tuples are assumed to not overlap with one another.
@@ -308,7 +360,7 @@ def add_HTML_tag_data_to_raw_text(
     replace_with = [html_tag_str(html_tag) for html_tag, _, _ in tags_and_locations]
     return replace_string_by_indices(text, replace_ranges, replace_with)
 
-# %% ../nbs/00_helper.ipynb 74
+# %% ../nbs/00_helper.ipynb 82
 def double_asterisk_indices(
         text: str # the str in which to find the indices of double asterisk surrounded text.
         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
@@ -326,7 +378,7 @@ def double_asterisk_indices(
 
 
 
-# %% ../nbs/00_helper.ipynb 76
+# %% ../nbs/00_helper.ipynb 84
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -361,7 +413,7 @@ def definition_asterisk_indices(
     notations = notation_asterisk_indices(text)
     return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
 
-# %% ../nbs/00_helper.ipynb 90
+# %% ../nbs/00_helper.ipynb 98
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
@@ -384,7 +436,7 @@ def defs_and_notats_separations(
     return [(start, end, (start, end) in notations)
             for start, end in all_double_asterisks]
 
-# %% ../nbs/00_helper.ipynb 94
+# %% ../nbs/00_helper.ipynb 102
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -402,7 +454,7 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../nbs/00_helper.ipynb 99
+# %% ../nbs/00_helper.ipynb 107
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -484,7 +536,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../nbs/00_helper.ipynb 112
+# %% ../nbs/00_helper.ipynb 120
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -496,7 +548,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../nbs/00_helper.ipynb 119
+# %% ../nbs/00_helper.ipynb 127
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -506,7 +558,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../nbs/00_helper.ipynb 123
+# %% ../nbs/00_helper.ipynb 131
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -520,7 +572,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../nbs/00_helper.ipynb 126
+# %% ../nbs/00_helper.ipynb 134
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -530,7 +582,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../nbs/00_helper.ipynb 130
+# %% ../nbs/00_helper.ipynb 138
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.
@@ -544,7 +596,7 @@ def current_time_formatted_to_minutes(
     formatted = dt.isoformat(timespec='minutes')
     return formatted[:16]
 
-# %% ../nbs/00_helper.ipynb 138
+# %% ../nbs/00_helper.ipynb 146
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -595,7 +647,7 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../nbs/00_helper.ipynb 139
+# %% ../nbs/00_helper.ipynb 147
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
@@ -625,7 +677,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../nbs/00_helper.ipynb 140
+# %% ../nbs/00_helper.ipynb 148
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -653,7 +705,7 @@ def dict_with_keys_topologically_sorted(
     return OrderedDict((key, dict_to_sort[key]) for key in keys_ordered)
 
 
-# %% ../nbs/00_helper.ipynb 143
+# %% ../nbs/00_helper.ipynb 151
 ALPHABET_TO_ALPHABET_GROUP_DICT = {'A': 'A-E', 'B': 'A-E', 'C': 'A-E', 'D': 'A-E', 'E': 'A-E', 'F': 'F-J', 'G': 'F-J', 'H': 'F-J', 'I': 'F-J', 'J': 'F-J', 'K': 'K-O', 'L': 'K-O', 'M': 'K-O', 'N': 'K-O', 'O': 'K-O', 'P': 'P-T', 'Q': 'P-T', 'R': 'P-T', 'S': 'P-T', 'T': 'P-T', 'U': 'U-Z', 'V': 'U-Z', 'W': 'U-Z', 'X': 'U-Z', 'Y': 'U-Z', 'Z': 'U-Z'}
 ALPHABET_OR_GREEK_TO_ALPHABET_DICT = {}
 def alphabet_to_alphabet_group(character) -> str:
@@ -692,7 +744,7 @@ def alphabet_or_latex_command_to_alphabet_group(character):
     return alphabet_to_alphabet_group(
         alphabet_or_latex_command_to_alphabet(character))
 
-# %% ../nbs/00_helper.ipynb 146
+# %% ../nbs/00_helper.ipynb 154
 CHARACTER_ORDERING_LIST =\
     ['A', 'a', r'\Alpha', r'\alpha', 'B', 'b', r'\Beta', r'\beta', 'C', 'c', r'\Gamma',
      r'\gamma', 'D', 'd', r'\Delta', r'\delta', 'E', 'e', r'\Epsilon', r'\epsilon',
@@ -709,7 +761,7 @@ DECORATING_CHARACTERS =\
 NONEFFECTIVE_CHARACTERS =\
     ['^', '_', '{', '}', '(', ')', '[', ']']
 
-# %% ../nbs/00_helper.ipynb 147
+# %% ../nbs/00_helper.ipynb 155
 TO_REMOVE = [
     '.', '$', ':', '?', '!', '#', '%', '&',
     '<', '>', '*', '?', '"', '@', '`', '|',  
