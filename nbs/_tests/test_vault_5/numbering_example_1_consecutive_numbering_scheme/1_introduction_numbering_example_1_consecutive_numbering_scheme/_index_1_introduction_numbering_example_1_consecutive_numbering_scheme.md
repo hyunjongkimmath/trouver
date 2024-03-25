@@ -1,0 +1,5 @@
+- [[numbering_example_1_consecutive_numbering_scheme_1. Introduction_numbering_example_1_consecutive_numbering_scheme]], 1. Introduction_numbering_example_1_consecutive_numbering_scheme
+- [[numbering_example_1_consecutive_numbering_scheme_Theorem 1]], Theorem 1.
+- [[numbering_example_1_consecutive_numbering_scheme_Corollary 2]], Corollary 2.
+- [[numbering_example_1_consecutive_numbering_scheme_Remark]], Remark
+- [[numbering_example_1_consecutive_numbering_scheme_Definition 3]], Definition 3.

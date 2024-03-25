@@ -1,0 +1,188 @@
+{
+  "main": {
+    "id": "5e7c4882049252db",
+    "type": "split",
+    "children": [
+      {
+        "id": "1a26bb63cd438e59",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ebce523bab528791",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7b12307eb95ce35f",
+    "type": "split",
+    "children": [
+      {
+        "id": "36c94c7ab135ec8d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7d21c595a34c13a6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "96ebfa2cdd103783",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "1a42cc7f31a0ced8",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          },
+          {
+            "id": "41cb27504ec4d153",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6716005f89e80bd8",
+    "type": "split",
+    "children": [
+      {
+        "id": "6065ead3345a22d2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "455d6a8b7022bfb2",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "657a74c5272e951b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d2ec210bca7f0e97",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "9524aad02df6d8f0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "ebce523bab528791",
+  "lastOpenFiles": [
+    "_index_numbering_example_1_consecutive_numbering_scheme.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/_index_1_introduction_numbering_example_1_consecutive_numbering_scheme.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_1. Introduction_numbering_example_1_consecutive_numbering_scheme.md",
+    "2_another_section/_index_2_another_section.md",
+    "2_another_section/numbering_example_1_consecutive_numbering_scheme_2. Another Section.md",
+    "2_another_section/numbering_example_1_consecutive_numbering_scheme_Theorem 4.md",
+    "2_another_section/numbering_example_1_consecutive_numbering_scheme_2.md",
+    "2_another_section/numbering_example_1_consecutive_numbering_scheme_Corollary 5.md",
+    "2_another_section/numbering_example_1_consecutive_numbering_scheme_Definition 6.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Definition 3.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Remark.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Corollary 2.md",
+    "1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Theorem 1.md",
+    "numbering_example_1_consecutive_numbering_scheme_untitled_section/_index_numbering_example_1_consecutive_numbering_scheme_untitled_section.md",
+    "numbering_example_1_consecutive_numbering_scheme/2_another_section/numbering_example_1_consecutive_numbering_scheme_Theorem 4.md",
+    "numbering_example_1_consecutive_numbering_scheme/1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Definition 3.md",
+    "numbering_example_1_consecutive_numbering_scheme/1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Remark.md",
+    "numbering_example_1_consecutive_numbering_scheme/1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Corollary 2.md",
+    "numbering_example_1_consecutive_numbering_scheme/1_introduction_numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_Theorem 1.md",
+    "numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_untitled_section/numbering_example_1_consecutive_numbering_scheme_1.md",
+    "numbering_example_1_consecutive_numbering_scheme/_temp/_index_temp_numbering_example_1_consecutive_numbering_scheme.md",
+    "numbering_example_1_consecutive_numbering_scheme/_temp",
+    "numbering_example_1_consecutive_numbering_scheme/_glossary_numbering_example_1_consecutive_numbering_scheme.md",
+    "numbering_example_1_consecutive_numbering_scheme/_notation_numbering_example_1_consecutive_numbering_scheme.md",
+    "numbering_example_1_consecutive_numbering_scheme/_template_numbering_example_1_consecutive_numbering_scheme_2.md",
+    "_templates/K-O/N/_template_numbering_example_1_consecutive_numbering_scheme.md",
+    "_references/K-O/N/_reference_numbering_example_1_consecutive_numbering_scheme.md",
+    "numbering_example_1_consecutive_numbering_scheme/2_another_section",
+    "numbering_example_1_consecutive_numbering_scheme/numbering_example_1_consecutive_numbering_scheme_untitled_section",
+    "numbering_example_1_consecutive_numbering_scheme/1_introduction_numbering_example_1_consecutive_numbering_scheme",
+    "numbering_example_1_consecutive_numbering_scheme",
+    "drinfeld_DGqDGc/10_proof_of_propositionsrefcorollary_refexactnessoftoandfrom_andrefadmis/103_proof_of_proposition_refexactnessoftoandfrom",
+    "drinfeld_DGqDGc/10_proof_of_propositionsrefcorollary_refexactnessoftoandfrom_andrefadmis/102_proof_of_proposition_refcorollary",
+    "drinfeld_DGqDGc/10_proof_of_propositionsrefcorollary_refexactnessoftoandfrom_andrefadmis/101_proof_of_proposition_refadmis",
+    "drinfeld_DGqDGc/10_proof_of_propositionsrefcorollary_refexactnessoftoandfrom_andrefadmis",
+    "drinfeld_DGqDGc/8_proof_of__theorem_refmain/86_proof_of_lemma_reflimit"
+  ]
+}

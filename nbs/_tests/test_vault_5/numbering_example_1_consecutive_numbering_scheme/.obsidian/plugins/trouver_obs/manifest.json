@@ -1,0 +1,11 @@
+{
+	"id": "trouver-obs",
+	"name": "Trouver Obsidian Interface",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Provides functionalities for editing notes for the Python library `trouver`.",
+	"author": "Hyun Jong Kim",
+	"authorUrl": "https://sites.google.com/wisc.edu/hyunjongkim",
+	"fundingUrl": "",
+	"isDesktopOnly": false
+}

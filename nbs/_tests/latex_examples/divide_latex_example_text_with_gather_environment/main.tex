@@ -1,0 +1,16 @@
+% In this example, there are enumerate environments, which should not get their
+% own `part`, cf. `divide_latex_text` in `16_latex.convert.ipynb`.
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\begin{document}
+
+\section{Introduction}
+
+There is an equation
+\begin{align*}
+asdf
+\end{align*}
+but this equation should not get to start its own part.
+
+\end{document}
