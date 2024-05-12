@@ -2,10 +2,11 @@
 
 # %% auto 0
 __all__ = ['SECOND_PARAMETER_PATTERN', 'SECOND_PARAMETER_PATTERN_WITH_OPTIONAL_STAR', 'THIRD_PARAMETER_PATTERN',
-           'THIRD_PARAMETER_PATTERN_WITH_OPTIONAL_STAR', 'DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG',
-           'NoDocumentNodeError', 'find_document_node', 'environment_names_used',
-           'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble', 'display_names_of_environments',
-           'get_node_from_simple_text', 'text_from_node', 'swap_numbers_invoked', 'divide_latex_text']
+           'THIRD_PARAMETER_PATTERN_WITH_OPTIONAL_STAR', 'SECTION_LIKE_PATTERN', 'ENVIRONMENT_PATTERN',
+           'DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG', 'NoDocumentNodeError', 'find_document_node',
+           'environment_names_used', 'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble',
+           'display_names_of_environments', 'get_node_from_simple_text', 'text_from_node', 'swap_numbers_invoked',
+           'divide_latex_text']
 
 # %% ../../nbs/29_latex.divide.ipynb 2
 from itertools import product
@@ -74,6 +75,19 @@ THIRD_PARAMETER_PATTERN_WITH_OPTIONAL_STAR = regex.compile(
     r'\s*'
     r'(\[\s*(\w+)\s*\])?',
     regex.MULTILINE)
+
+# matches \section{title}, \subsection{title}, \subsubsection{title}, \section*{title}, etc.
+SECTION_LIKE_PATTERN = regex.compile(
+        r'\\(?:section|subsection|subsubsection)\s*(?:\[.*\])?(\*)?\s*'
+        r'\{((?>[^{}]+|\{(?2)\})*)\}',
+        regex.MULTILINE)
+    
+
+# matches \begin{theorem},
+ENVIRONMENT_PATTERN = regex.compile(
+        r'\\begin\s*'
+        r'\{((?>[^{}]+|\{(?1)\})*)\}',
+        regex.MULTILINE)
 
 
 # %% ../../nbs/29_latex.divide.ipynb 9
@@ -457,34 +471,68 @@ def _section_title(
     # Note that the `section` command has the optional argument `toc-title` which appears
     # in the table of contents, cf.
     # http://latexref.xyz/_005csection.html
-    pattern = regex.compile(
-        r'\\(?:section|subsection|subsubsection)\s*(?:\[.*\])?(\*)?\s*'
-        r'\{((?>[^{}]+|\{(?2)\})*)\}',
-        regex.MULTILINE
-    )
-    regex_search = regex.search(pattern, text)
+    # pattern = regex.compile(
+    #     r'\\(?:section|subsection|subsubsection)\s*(?:\[.*\])?(\*)?\s*'
+    #     r'\{((?>[^{}]+|\{(?2)\})*)\}',
+    #     regex.MULTILINE
+    # )
+    regex_search = regex.search(SECTION_LIKE_PATTERN, text)
     is_numbered = regex_search.group(1) is None
     title = regex_search.group(2)
     return is_numbered, title
 
 
 # %% ../../nbs/29_latex.divide.ipynb 72
-def _is_section_node(node):
+def _is_section_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
 
-def _is_subsection_node(node):
+def _is_subsection_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'subsection')
 
-def _is_subsubsection_node(node):
+def _is_subsubsection_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'subsubsection')
 
-def _is_environment_node(node):
+def _is_environment_node(node: LatexNode):
     return node.isNodeType(LatexEnvironmentNode)
 
-# %% ../../nbs/29_latex.divide.ipynb 74
+def _text_is_of_section_like_node(text: str):
+    """Return `True` if `text` represents the text for a section node.
+
+    In principal, this function should act like 
+    `_is_section_node or _is_subsection_node or _is_subsubsection_node`
+    except that it takes a `str` as its argument instead of a `LatexNode`.
+    This function is
+    implemented using a regex pattern instead of using
+    `_is_section_node` to save time.
+    """
+    return bool(regex.match(SECTION_LIKE_PATTERN, text.lstrip()))
+
+
+def _text_is_of_environment_node(text: str):
+    """Return `True` if `text` represents an environment node
+    (at least at the start).
+    
+    In principal, this function should act like `_is_environment_node`
+    except that it takes a `str` as its argument instead of a `LatexNode`.
+    This function is implemented using a regex pattern instead of using
+    '_is_environment_node` to save time.
+    """
+    return bool(regex.match(ENVIRONMENT_PATTERN, text.lstrip()))
+
+
+def _environment_name_of_text(text: str):
+    """Return `True` if `text` represents an environment node
+    (at least at the start).
+    
+    Assumes that `_text_is_of_environment_node(text)` is `True`.
+    """
+    match = regex.match(ENVIRONMENT_PATTERN, text.lstrip())
+    return match.group(1)
+
+# %% ../../nbs/29_latex.divide.ipynb 75
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, str]
@@ -497,7 +545,7 @@ def _is_numbered(
     else:
         return False
 
-# %% ../../nbs/29_latex.divide.ipynb 76
+# %% ../../nbs/29_latex.divide.ipynb 77
 def get_node_from_simple_text(
         text: str) -> LatexNode:
     """Return the (first) `LatexNode` object from a str."""
@@ -521,7 +569,7 @@ def text_from_node(
     # return LatexNodes2Text().node_to_text(node)
 
 
-# %% ../../nbs/29_latex.divide.ipynb 79
+# %% ../../nbs/29_latex.divide.ipynb 80
 def _change_counters(
         node,
         counters,
@@ -628,7 +676,7 @@ def _subsubnodes(
 
 
 
-# %% ../../nbs/29_latex.divide.ipynb 82
+# %% ../../nbs/29_latex.divide.ipynb 83
 def _node_numbering(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -672,7 +720,7 @@ def _numbering_helper(
         counters)
     
 
-# %% ../../nbs/29_latex.divide.ipynb 84
+# %% ../../nbs/29_latex.divide.ipynb 85
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -772,7 +820,7 @@ def _title_for_environment_node(
         return f'{display_name} {numbering}.'
         
 
-# %% ../../nbs/29_latex.divide.ipynb 86
+# %% ../../nbs/29_latex.divide.ipynb 87
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
@@ -783,7 +831,7 @@ def swap_numbers_invoked(
     preamble = remove_comments(preamble)
     return '\swapnumbers' in preamble
 
-# %% ../../nbs/29_latex.divide.ipynb 88
+# %% ../../nbs/29_latex.divide.ipynb 89
 def _node_warrants_own_part(
         node, environments_to_not_divide_along: list[str],
         accumulation: str, parts: list[tuple[str, str]]) -> bool:
@@ -802,7 +850,7 @@ def _node_warrants_own_part(
         return True
     return node.environmentname not in environments_to_not_divide_along
 
-# %% ../../nbs/29_latex.divide.ipynb 90
+# %% ../../nbs/29_latex.divide.ipynb 91
 def _node_is_proof_immediately_following_a_theorem_like_environment(
         node, accumulation, parts, display_names) -> bool:
     """Return `True` if `node` is that of a proof environment that immediately
@@ -818,10 +866,13 @@ def _node_is_proof_immediately_following_a_theorem_like_environment(
         return False
     if accumulation.strip() != '':
         return False
-    previous_node = get_node_from_simple_text(parts[-1][1])
-    if not _is_environment_node(previous_node):
+    if not _text_is_of_environment_node(parts[-1][1]):
         return False
-    return previous_node.environmentname in display_names
+    return _environment_name_of_text(parts[-1][1]) in display_names
+    # previous_node = get_node_from_simple_text(parts[-1][1])
+    # if not _is_environment_node(previous_node):
+    #     return False
+    # return previous_node.environmentname in display_names
 
 
 def _node_is_nonspecial_following_a_sectionlike_node(
@@ -832,25 +883,25 @@ def _node_is_nonspecial_following_a_sectionlike_node(
     
     This is a helper function for `_process_node`.
     """
-    # TODO: write tests
     if ((_is_environment_node(node) and node.environmentname not in environments_to_not_divide_along)
             or _is_section_node(node)
             or _is_subsection_node(node)
             or _is_subsubsection_node(node)):
         return False
-    if not len(parts) > 0:
+    if len(parts) == 0:
         return False
     if accumulation.strip() != '':
         return False
-    previous_node = get_node_from_simple_text(parts[-1][1])
-    return _is_section_node(previous_node) or _is_subsection_node(previous_node) or _is_subsubsection_node(previous_node)
+    # previous_node = get_node_from_simple_text(parts[-1][1])
+    # return _is_section_node(previous_node) or _is_subsection_node(previous_node) or _is_subsubsection_node(previous_node)
+    return _text_is_of_section_like_node(parts[-1][1])
     
 
-# %% ../../nbs/29_latex.divide.ipynb 92
+# %% ../../nbs/29_latex.divide.ipynb 93
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
     'align', 'align*', 'diagram', 'displaymath', 'displaymath*', 'enumerate', 'eqnarray', 'eqnarray*',
     'equation', 'equation*', 'gather', 'gather*', 'itemize', 'label',
-    'multiline', 'multiline*',
+    'multiline', 'multiline*', 'multline', 'multline*',
     'proof', 'quote', 'tabular', 'table', ]
 def divide_latex_text(
         document: str, 
