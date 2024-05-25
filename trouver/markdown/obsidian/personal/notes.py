@@ -30,7 +30,7 @@ def notes_linked_in_note(
     if as_dict:
         return {link.file_name: VaultNote(list_note.vault, name=link.file_name) for link in links}
     else:
-        return [VaultNote(list_note.vault, name=link.file_name) for link in links]
+        return [VaultNote(list_note.vault, name=link.file_name, update_cache=False) for link in links]
 
 
 def notes_linked_in_notes_linked_in_note(

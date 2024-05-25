@@ -338,7 +338,7 @@ def notation_notes_linked_in_see_also_section(
         note_type=PersonalNoteTypeEnum.NOTATION_NOTE)
     note_names = [link.file_name for link in links]
     if as_vault_notes:
-        return [VaultNote(vault, name=note_name) for note_name in note_names]
+        return [VaultNote(vault, name=note_name, update_cache=False) for note_name in note_names]
     else:
         return note_names
 

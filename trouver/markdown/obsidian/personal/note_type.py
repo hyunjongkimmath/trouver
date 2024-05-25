@@ -19,7 +19,6 @@ from trouver.markdown.obsidian.vault import (
 )
 
 # %% ../../../../nbs/14_markdown.obsidian.personal.note_type.ipynb 6
-# TODO: Make these methods private.
 def _is_index_note(vault_note: VaultNote) -> bool:
     """Returns `True` if the markdown file is determined to
     be an index note.
@@ -91,25 +90,6 @@ def _is_standard_information_note(vault_note: VaultNote) -> bool:
         warnings.warn('The following file seems to be a standard information'
                       f' note, but this is ambiguous: {vault_note.name}')
     return True
-
-
-# TODO: delete
-@deprecated
-def _is_module_information_note(vault_note: VaultNote) -> bool:
-    """Returns `True` if the markdown file is determined to
-    be a module information note.
-
-    **Parameters**
-    - `vault_note` - VaultNote
-    
-    **Returns**
-    - `bool`
-    
-    **Notes**
-    - This function may return incorrect results.
-    """
-    # TODO figure out which files the card is embedded in
-    return 
 
 
 def _is_notation_note(vault_note: VaultNote) -> bool:
@@ -184,12 +164,6 @@ def _is_template_note(vault_note: VaultNote):
     return vault_note.name.startswith('_template')
 
 
-# TODO: delete
-@deprecated
-def _is_tag_note(vault_note: VaultNote):
-    return
-
-
 def _is_notes_note(vault_note: VaultNote):
     # TODO
     """Returns `True` if the markdown file is determined to
@@ -243,13 +217,11 @@ class PersonalNoteTypeEnum(Enum):
     """
     INDEX_NOTE = auto()
     STANDARD_INFORMATION_NOTE = auto()
-    MODULE_INFORMATION_NOTE = auto()
     INDEX_OF_NOTATION_NOTE = auto()
     NOTATION_NOTE = auto()
     PREMISE_NOTE = auto()
     COMMON_TERMS_NOTE = auto()
     TEMPLATE_NOTE = auto()
-    TAG_NOTE = auto()
     NOTES_NOTE = auto()
     MATHEMATICIAN_NOTE = auto()
     EQUATION_NOTE = auto()
@@ -264,13 +236,11 @@ class PersonalNoteTypeEnum(Enum):
 PersonalNoteTypeEnum._type_method_dict = {
     PersonalNoteTypeEnum.INDEX_NOTE: _is_index_note,
     PersonalNoteTypeEnum.STANDARD_INFORMATION_NOTE: _is_standard_information_note,
-    PersonalNoteTypeEnum.MODULE_INFORMATION_NOTE: _is_module_information_note,
     PersonalNoteTypeEnum.INDEX_OF_NOTATION_NOTE: _is_index_of_notation_note,
     PersonalNoteTypeEnum.NOTATION_NOTE: _is_notation_note,
     PersonalNoteTypeEnum.PREMISE_NOTE: _is_premise_note,
     PersonalNoteTypeEnum.COMMON_TERMS_NOTE: _is_common_terms_note,
     PersonalNoteTypeEnum.TEMPLATE_NOTE: _is_template_note,
-    PersonalNoteTypeEnum.TAG_NOTE: _is_tag_note,
     PersonalNoteTypeEnum.NOTES_NOTE: _is_notes_note,
     PersonalNoteTypeEnum.MATHEMATICIAN_NOTE: _is_mathematician_note,
     PersonalNoteTypeEnum.EQUATION_NOTE: _is_equation_note,
