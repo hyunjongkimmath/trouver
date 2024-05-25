@@ -12,7 +12,7 @@ from os import PathLike
 from trouver.helper import (
     path_name_no_ext, path_no_ext
 )
-from typing import Union
+from typing import Optional, Union
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 7
 class NoteNotUniqueError(FileNotFoundError):
@@ -284,7 +284,8 @@ class VaultNote:
             rel_path: PathLike = None, # The note's path relative to the vault. If `None`, then the `name` parameter is used to determine the note instead. Defaults to `None`.
             name: str = None, # The name of the note. If `None`, then the `rel_path` parameter is used to determine the note instead. Defaults to `None` 
             subdirectory: Union[PathLike, None] = '', # The relative path to a subdirectory in the Obsidian vault. If `None`, then denotes the root of the vault. Defaults to the empty str. 
-            hints: list[PathLike] = [] # Paths, relative to `subdirectory`, to directories where the note file may be found. This is for speedup. Defaults to the empty list, in which case the vault note is searched in all of `subdirectory`.
+            hints: list[PathLike] = [], # Paths, relative to `subdirectory`, to directories where the note file may be found. This is for speedup. Defaults to the empty list, in which case the vault note is searched in all of `subdirectory`.
+            update_cache: Optional[bool] = True # If `True` and if `rel_path` is not specified (and hence `name` is specified), update the cache
             ):
         self.vault = Path(vault)
         if rel_path is None and name is None:
@@ -298,7 +299,7 @@ class VaultNote:
         else:
             self.name = name
             self.rel_path = None
-            self.identify_rel_path(update_cache=True)
+            self.identify_rel_path(update_cache=update_cache)
 
     def obsidian_identifier(self) -> str:
         """Return the Obsidian identifier of the `VaultNote` object.
@@ -372,20 +373,28 @@ class VaultNote:
             update_cache=False # If `True`, then update the cache and try to identify `self.rel_path` before verifying whether the note exists in the vault.
             ) -> bool:
         """Returns `True` if `self.rel_path` is identified and
-        if the note exists in the vault."""
+        if the note exists in the vault.
+        
+        Setting `update_cache` to `True` updates the cache before verifying
+        whether the `VaultNote` object exists if the `VaultNote` object is
+        specified by `name` and not `rel_path`. Doing so guarantees that the
+        output is correct at the possible cost of runtime.
+        """
         if self.rel_path is None:
             if update_cache:
                 self.identify_rel_path(update_cache=True)
             else:
                 return False
-        return os.path.exists(self.path())
+        try:
+            abs_path = self.path()        
+        except NotePathIsNotIdentifiedError as e:
+            return False
+        return os.path.exists(abs_path)
             
     def path(self,
-             relative=False # If `True`, then return the path relative to the vault.
+             relative=False # If `True`, then return the path relative to the vault. Otherwise, return the absolute path.
              ) -> Union[Path, None]: # Path to the note if self.rel_path is deterined. `None` otherwise.
         """Returns the path to the note.
-
-        Assumes that `self.rel_path` has been identified.
 
         **Raises**
         - NotePathIsNotIdentifiedError

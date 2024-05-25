@@ -74,7 +74,9 @@ def index_note_for_reference(
             f" {type(reference)} instead.")
     if isinstance(reference, str):
         reference_name = reference
-        index_note = VaultNote(vault, name=f'_index_{reference_name}')
+        index_note = VaultNote(
+            vault, name=f'_index_{reference_name}',
+            update_cache=False)
     elif isinstance(reference, PathLike):
         reference_name = Path(reference).name
         index_note = VaultNote(
@@ -86,7 +88,8 @@ def index_note_for_reference(
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 8
 def reference_directory(
         vault: PathLike, # The vault in which the reference folder resides.
-        reference: Union[str, Path] # - The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name `_index_{reference}.md`, - or a `Path` object (not just a pathlike!) relative to `vault`, in which case the path will be the path to the reference folder. 
+        reference: Union[str, Path], # - The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name `_index_{reference}.md`, - or a `Path` object (not just a pathlike!) relative to `vault`, in which case the path will be the path to the reference folder. 
+
         ) -> Path: # Relative to `vault`.
     """
     Returns the path to the reference directory in a vault.
@@ -104,7 +107,7 @@ def reference_directory(
     
     """
     index_note = index_note_for_reference(vault, reference)
-    if index_note.exists(update_cache=False):
+    if index_note.exists(update_cache=True):
         return Path(index_note.path(relative=True)).parent
     else:
         raise NoteDoesNotExistError.from_note_name(index_note.name)

@@ -83,7 +83,7 @@ def bulleted_links_of_type_in_section(
         except LinkFormatError as e:
             continue
         note_name = link_object.file_name
-        linked_note = VaultNote(vault, name=note_name)
+        linked_note = VaultNote(vault, name=note_name, update_cache=False)
         if note_is_of_type(linked_note, note_type):
             list_of_note_names_of_type.append(link_object)
         # if note_is_of_type(note_type, note_path_by_name(note_name, vault),

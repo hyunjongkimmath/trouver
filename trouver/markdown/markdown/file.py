@@ -161,7 +161,7 @@ def replace_embedded_links_with_text(
         link = text[start:end]
         link_object = ObsidianLink.from_text(link)
         try:
-            vn = VaultNote(vault, name=link_object.file_name)
+            vn = VaultNote(vault, name=link_object.file_name, update_cache=False)
             replace = vn.text()
             #mf = MarkdownFile.from_vault_note(vn)
             #replace = str(mf)
@@ -884,7 +884,9 @@ class MarkdownFile:
             link_object = ObsidianLink.from_text(text[start:end])
             if link_object.file_name:
                 try:
-                    link_note = VaultNote(vault, name=link_object.file_name)
+                    link_note = VaultNote(
+                        vault, name=link_object.file_name,
+                        update_cache=False)
                     link_file = MarkdownFile.from_vault_note(link_note)
                 except (NoteDoesNotExistError, NotePathIsNotIdentifiedError):
                     text = text[:start] + text[end:]
