@@ -22,7 +22,7 @@ from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, Latex
 from ....helper import latex_indices, latex_to_path_accepted_string, notation_asterisk_indices, remove_html_tags_in_text
 from ...markdown.file import MarkdownFile, MarkdownLineEnum
 from trouver.markdown.obsidian.links import (
-    find_links_in_markdown_text, LinkType, ObsidianLink, MARKDOWNLINK_PATTERN, WIKILINK_PATTERN
+    find_links_in_markdown_text, LinkType, ObsidianLink, MARKDOWNLINK_PATTERN, MARKDOWNLINK_CAPTURE_PATTERN, WIKILINK_PATTERN
 )
 from .information_notes import bulleted_links_of_type_in_section
 from trouver.markdown.obsidian.personal.note_type import (
@@ -63,9 +63,10 @@ def _main_of_notation_from_text(
 # %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 11
 def _divide_bulleted_list_mf_at_end(
         mf: MarkdownFile
-        ) -> tuple[MarkdownFile, Union[MarkdownFile, None]]: # The first MarkdownFile contains the main content. The second MarkdonwFile contains the bulleted list at the end; if no such bulleted list exists, then this is None.
-    """Divide a `MarkdownFile` for a notation note into two MarkdownFiles, one
-    of the main content and the other for the trailing bulleted list of links
+        ) -> tuple[MarkdownFile, list[tuple[str, str]]]: # The first MarkdownFile contains the main content. The second MarkdonwFile contains the bulleted list at the end; if no such bulleted list exists, then this is None.
+    """Return a `MarkdownFile` consisting of just the main content
+    of a notation note along with the list of tuples capturing the
+    information of the trailing bulleted list of links
     for notations used in the notation note.
 
     Assumes that the bulleted list is formatted correctly
@@ -84,11 +85,16 @@ def _divide_bulleted_list_mf_at_end(
         last_part = main_parts.pop() # Should be the same as `part`
         trailing_parts.insert(0, last_part)
     
-    if trailing_parts:
-        bulleted_list_mf = MarkdownFile(trailing_parts)
-    else:
-        bulleted_list_mf = None
-    return MarkdownFile(main_parts), bulleted_list_mf
+    bulleted_list = [
+        _notat_str_and_linked_notat_note_name_from_bullet_point_part(part)
+        for part in trailing_parts]
+    return MarkdownFile(main_parts), bulleted_list
+    
+    # if trailing_parts:
+    #     bulleted_list_mf = MarkdownFile(trailing_parts)
+    # else:
+    #     bulleted_list_mf = None
+    # return MarkdownFile(main_parts), bulleted_list_mf
 
 def _part_is_unordered_list_and_is_of_markdownstyle_link(
         part: dict[str, Union[str, MarkdownLineEnum]]
@@ -106,17 +112,23 @@ def _part_is_unordered_list_and_is_of_markdownstyle_link(
     return True
     
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 13
+def _notat_str_and_linked_notat_note_name_from_bullet_point_part(
+        part: dict[str, Union[str, MarkdownLineEnum]]
+        ) -> tuple[str, str]:
+    match = re.match(MARKDOWNLINK_CAPTURE_PATTERN, part['line'][2:])
+    return match[1], match[2]
+
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 14
 def parse_notation_note(
         notation_note: Union[str, VaultNote],
-        vault: Optional[PathLike] = None # The vault If `None`, then uses th
+        vault: Optional[PathLike] = None # The vault If `None`, then uses `notation_note.vault`
         ) -> tuple[Union[dict, None], Union[str, None], str, MarkdownFile,
-                   Union[MarkdownFile, None]]:
+                   list[tuple[str, str]]]:
     """Parse information from the notation note.
 
     **Returns**
 
-    - tuple[Union[dict, None], str, ObsidianLink, MarkdownFile, MarkdownFile]
+    - tuple[Union[dict, None], str, ObsidianLink, MarkdownFile, list[tuple[str, str]]]
         - The first entry is the YAML frontmatter meta, if available.
         - The second entry is the notation string
         - The third entry is the name of the "main note" of the notation note. This is usual
@@ -124,10 +136,11 @@ def parse_notation_note(
           exists, then this is `None`.
         - The fourth entry is the MarkdownFile consisting of the "main" content of the note,
           which excludes the information given by all of the other entries.
-        - The fifth entry is the MarkdownFile consisting of the ending bulleted list, listing
-          the notations used in the notation notes along with links to the notation notes
-          describing these notations. If there is not such bulleted list, then this entry
-          is `None`. 
+        - The fifth entry is a list of tuples of two `str`'s representing a
+          bulleted list of notation notes to which `notation_note` links to.
+          Each tuple is of the form `(latex_str, notation_note_name)` and
+          the corresponding entry in the bulleted list is of the form
+          `- [<latex_str>](<notation_note_name)`.
 
     **Raises**
 
@@ -154,12 +167,12 @@ def parse_notation_note(
 
     file_text = str(mf_without_metadata)
 
-    main_mf, mf_with_links_to_notations = _divide_bulleted_list_mf_at_end(mf_without_metadata)
+    main_mf, linked_notations_list = _divide_bulleted_list_mf_at_end(mf_without_metadata)
     _remove_the_notation_str_and_denotes_in_main_mf(main_mf, notation_note)
 
     return (metadata, _get_notation_string(file_text, notation_note),
             _main_of_notation_from_text(file_text), main_mf,
-            mf_with_links_to_notations)
+            linked_notations_list)
 
 
 def _get_notation_string(
@@ -204,7 +217,7 @@ def _remove_the_notation_str_and_denotes_in_main_mf(
             break
     
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 20
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 21
 def notation_in_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None 
@@ -240,7 +253,7 @@ def notation_in_note(
     _, notation_in_note, _, _, _ = parse_notation_note(notation_note, vault)
     return notation_in_note
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 23
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 24
 def main_of_notation(
         notation_note: VaultNote, # The VaultNote object representing the notation note.
         as_note: bool = False # If `False`, then returns the name of the note, and returns a VaultNote object with the same vault as `notation_note` otherwise. The vault used to get the `VaultNote` is the vault of `notation_note`.
@@ -262,7 +275,7 @@ def main_of_notation(
     else:
         return main_note_name
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 34
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 35
 def notat_str_from_doub_asts_in_std_info_note(
         info_note: VaultNote
         ) -> list[str]: # Each str is a LaTeX str, beginning and trailing dollar signs `$` (single or double) included.
@@ -280,7 +293,7 @@ def notat_str_from_doub_asts_in_std_info_note(
             part['line'][start+2:end-2] for start, end in indices])
     return notations
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 40
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 41
 def notat_str_from_html_tags(
         info_note: VaultNote
         ) -> list[tuple[str, str]]: # Each str is a LaTeX str, the first of which is the text of and surrounded by the HTML tag and the second of which is a string (without surrounding dollar signs) specifying the actual notation introduced in the first text.
@@ -320,7 +333,7 @@ def notat_str_from_html_tags(
                 recognized as a pure LaTeX math mode string""")
     return pairs
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 44
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 45
 def notation_notes_linked_in_see_also_section(
         info_note: VaultNote,
         vault: PathLike, # Path to the vault directory.
@@ -343,7 +356,7 @@ def notation_notes_linked_in_see_also_section(
         return note_names
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 53
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 54
 def notations_and_main_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note parameter is used to determined the subdirectory. If `subdirectory` is the empty str, then all notation notes in the vault are searched. Defaults to `None`. 
@@ -376,7 +389,7 @@ def notations_and_main_notes(
     return {vn.name: main_of_notation(vn) for vn in vn_objects
             if note_is_of_type(vn, PersonalNoteTypeEnum.NOTATION_NOTE)}
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 61
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 62
 def notation_note_is_linked_in_see_also_section(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None # The note in which to find the link to `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -391,7 +404,7 @@ def notation_note_is_linked_in_see_also_section(
     return notation_note.name in notes
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 68
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 69
 def add_notation_note_to_see_also(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None, # The note in which to link `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -422,7 +435,7 @@ def add_notation_note_to_see_also(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 81
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 82
 def add_missing_notation_links_to_information_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes and their main notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note` parameter is used to determine `subdirectory`. Defaults to `None`. 
@@ -451,7 +464,7 @@ def add_missing_notation_links_to_information_notes(
         except NoteDoesNotExistError:
             continue
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 85
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 86
 def notations_to_add_in_index(
         vault: PathLike, # Path to the vault directory.
         notation_index_note = VaultNote, # The notation index note in the vault where the notations should be added to.
@@ -491,7 +504,7 @@ def notations_to_add_in_index(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 88
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 89
 def index_notation_note_formatted_entry(
         notation_str: str, # The str of the notation, including the surrounding dollar signs `$`.
         link: ObsidianLink # The embedded link to the notation note. 
@@ -503,7 +516,7 @@ def index_notation_note_formatted_entry(
     """
     return f'### {notation_str}\n- {link.to_string()}'
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 92
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 93
 def make_a_notation_note(
         main_note: VaultNote, # The note from which the notation originates.
         vault: PathLike,
@@ -584,7 +597,7 @@ def _raw_notation(notation: str):
     return notation
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 106
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 107
 MAX_NOTE_NAME_LENGTH = 80
 def _make_notat_notes_from_sifted_notats(
         main_note: VaultNote, vault: PathLike, reference_name: str,
@@ -617,7 +630,7 @@ def _make_notat_notes_from_sifted_notats(
     return new_notes
     
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 109
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 110
 def make_notation_notes_from_double_asts(
         main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
         vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
@@ -722,7 +735,7 @@ def _latex_in_original_from_notat_notes_to_main_note(
 
 
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 124
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 125
 def make_notation_notes_from_HTML_tags(
         main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
         vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
@@ -795,7 +808,7 @@ def make_notation_notes_from_HTML_tags(
         main_note, vault, reference_name, notations_to_create,
         destination, overwrite, add_to_main)
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 131
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 132
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -901,7 +914,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 135
+# %% ../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 136
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     """Returns a regex str to detect the notation of the notation note.
     
