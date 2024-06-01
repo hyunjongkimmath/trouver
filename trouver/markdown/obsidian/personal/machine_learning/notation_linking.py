@@ -4,13 +4,18 @@
 __all__ = ['data_from_notation_notes', 'data_points_for_reference', 'text_from_data_point']
 
 # %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 5
+from os import PathLike
 import random
+import re
 from typing import Optional, Union
 
 from ....markdown.file import MarkdownFile
+from ...links import MARKDOWNLINK_CAPTURE_PATTERN
 from ..information_notes import reference_of_information_note
-from ..notation import main_of_notation, parse_notation_note
+from ..notation import parse_notation_note, notation_notes_linked_in_see_also_section
 from ..note_processing import process_standard_information_note
+from ..note_type import note_is_of_type, type_of_note, PersonalNoteTypeEnum
+from ..notes import notes_linked_in_notes_linked_in_note
 from .notation_summarization import _notation_note_has_auto_summary_tag
 from ...vault import VaultNote
 
@@ -74,14 +79,30 @@ def _notat_str(
 
 
 def _origin_links_to_relied(
-        linked_notat_notes: list[tuple], # One of the outputs of `parse_notation_note``
+        linked_notat_notes: list[tuple], # One of the outputs of `parse_notation_note`
+        origin_content: MarkdownFile,  # One of the outputs of `parse_notation_note`
         relied_notation_note: VaultNote
         ) -> bool:
-    r"""Helper function to `data_from_notation_notes`"""
+    r"""Returns `True` if the origin notation note links to `relied_notation_note`.
+
+    Helper function to `data_from_notation_notes`.
+    
+    This function checks both the trailing list of links as well as any links within
+    the content of the origin notation note.
+    """
+
+    linked_note_names = []
     for _, notat_note_name in linked_notat_notes:
         if notat_note_name.endswith('.md'):
             notat_note_name = notat_note_name[:-3]
-        if notat_note_name == relied_notation_note.name:
+        linked_note_names.append(notat_note_name)
+        # if notat_note_name == relied_notation_note.name:
+        #     return True
+    linked_note_names.extend(
+        _linked_note_names_from_content(str(origin_content)))
+        
+    for note_name in linked_note_names:
+        if note_name == relied_notation_note.name:
             return True
     return False
 
@@ -102,6 +123,26 @@ def _adjust_content(
             meta is not None and 'tags' in meta and '_auto/notation_summary' in meta['tags']):
         return ""
     return content
+
+
+def _linked_note_names_from_content(content: str):
+    linked_note_names = []
+    for match in re.findall(MARKDOWNLINK_CAPTURE_PATTERN, content):
+        link_name = match[1]
+        if link_name.endswith('.md'):
+            link_name = link_name[:-3]
+        linked_note_names.append(link_name)
+    return linked_note_names
+        
+
+def _linked_notat_note_names_from_content(content: str, vault: PathLike):
+    linked_note_names = _linked_note_names_from_content(content)
+    linked_notation_note_names = []
+    for linked_note_name in linked_note_names:
+        note = VaultNote(vault, name=linked_note_name, update_cache=False)
+        if note_is_of_type(note, PersonalNoteTypeEnum.NOTATION_NOTE):
+            linked_notation_note_names.append(note.name)
+    return linked_notation_note_names
 
 # %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 11
 # TODO: test
@@ -188,7 +229,7 @@ def data_from_notation_notes(
         _notat_str(origin_meta, origin_notat_str),
         _notat_str(relied_meta, relied_notat_str),
         origin_notat_str, relied_notat_str,
-        _origin_links_to_relied(linked_notat_notes, relied_notation_note)
+        _origin_links_to_relied(linked_notat_notes, origin_content, relied_notation_note)
         )
 
 
@@ -232,7 +273,7 @@ def data_points_for_reference(
 
     # Get all positive pairs of notation notes
     positive_linked_notat_note_pairs = _positive_pairs_of_notation_notes(
-        confirmed_summary_notat_note_names, notation_notes_and_parsed)
+        confirmed_summary_notat_note_names, notation_notes_and_parsed, vault)
     data_points = _positive_data_points(
         reference_index_note, positive_linked_notat_note_pairs,
         notation_notes_and_parsed, info_notes_and_processed_content)
@@ -246,7 +287,8 @@ def data_points_for_reference(
 
 def _positive_pairs_of_notation_notes(
         confirmed_summary_notat_note_names: list[str],
-        notation_notes_and_parsed: dict[str, tuple]
+        notation_notes_and_parsed: dict[str, tuple],
+        vault: PathLike
         ) -> list[tuple[str, str]]:
     r"""Return the pairs `(<origin_notat_note_name>, <linked_notat_note_name>)`
     where `origin_notat_note_name` is the name of a notation note whose notation
@@ -260,7 +302,13 @@ def _positive_pairs_of_notation_notes(
         for _, linked_notat_note_name in parsed[4]:
             if linked_notat_note_name.endswith('.md'):
                 linked_notat_note_name = linked_notat_note_name[:-3]
-            positive_linked_notat_note_pairs.append((notat_note_name, linked_notat_note_name))
+            positive_linked_notat_note_pairs.append(
+                (notat_note_name, linked_notat_note_name))
+        for linked_notat_note_name in _linked_notat_note_names_from_content(
+                str(parsed[3]), vault):
+            positive_linked_notat_note_pairs.append(
+                (notat_note_name, linked_notat_note_name))
+
     return positive_linked_notat_note_pairs
     
 
