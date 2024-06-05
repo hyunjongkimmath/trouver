@@ -567,7 +567,7 @@ def def_and_notat_preds_by_model(
         pipeline # The pipeline object created using the token classification model and its tokenizer
         ) -> list[tuple[bs4.element.Tag, int, int]]: # Each tuple consists of an HTML tag carrying the data of the prediction and ints marking where in `text` the definition or notation is at.
     """
-    Predict and mark where definitions and notations occur in `text`
+    Predict where definitions and notations occur in `text`
 
     This function uses some of the same helper functions as
     `auto_mark_def_and_notats`, but does not raise warning messages as
