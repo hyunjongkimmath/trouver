@@ -3,8 +3,9 @@
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'MATH_MODE_DELIMITERS', 'BEGIN_END_EQUATIONLIKE_ENV',
            'REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES', 'REMOVE_COMMENTS', 'INLINE_MATHMODE_TO_OWN_PARAGRAPH',
-           'MERGE_MULTILINE_PARAGRAPH', 'custom_commands', 'regex_pattern_detecting_command', 'replace_command_in_text',
-           'replace_commands_in_text', 'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown']
+           'MERGE_MULTILINE_PARAGRAPH', 'is_number', 'custom_commands', 'regex_pattern_detecting_command',
+           'replace_command_in_text', 'replace_commands_in_text', 'replace_commands_in_latex_document',
+           'adjust_common_syntax_to_markdown']
 
 # %% ../../nbs/31_latex.formatting.ipynb 2
 import re
@@ -12,19 +13,38 @@ from typing import Union
 
 import regex
 
-from trouver.helper import (
-    inline_latex_indices, separate_indices_from_str, text_from_file
+from trouver.helper.files_and_folders import (
+    text_from_file
 )
+from ..helper.regex import inline_latex_indices, separate_indices_from_str
 from .comments import remove_comments
 from .preamble import divide_preamble 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 3
+# %% ../../nbs/31_latex.formatting.ipynb 4
+def is_number(
+        x: Union[float, int, complex, str]
+        ) -> bool:
+    """Return `True` if the input `x` represents a number.
+    
+    This function is different from Python's built-in `is_numeric`
+    function, which returns `True` when all characters of a string
+    are digits.
+    """
+    if isinstance(x, (float, int, complex)):
+        return True
+    #For the case where string is None
+    if x is None:
+        return False
+    if x and x[0] == '-': x = x[1:]
+    return x.replace(".", "1", 1).isdigit()
+
+# %% ../../nbs/31_latex.formatting.ipynb 6
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/31_latex.formatting.ipynb 8
+# %% ../../nbs/31_latex.formatting.ipynb 11
 def _argument_detection(group_num: int) -> str:
     """
     Helper function to `regex_pattern_detecting_command`, and `_commands_from_def`
@@ -33,7 +53,7 @@ def _argument_detection(group_num: int) -> str:
     """
     return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
 
-# %% ../../nbs/31_latex.formatting.ipynb 9
+# %% ../../nbs/31_latex.formatting.ipynb 12
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -104,7 +124,7 @@ def _commands_from_def(
             for match in def_regex.finditer(preamble)]
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 12
+# %% ../../nbs/31_latex.formatting.ipynb 15
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -135,7 +155,7 @@ def regex_pattern_detecting_command(
 
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 14
+# %% ../../nbs/31_latex.formatting.ipynb 17
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -199,7 +219,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 17
+# %% ../../nbs/31_latex.formatting.ipynb 20
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -225,7 +245,7 @@ def replace_commands_in_text(
             break
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 22
+# %% ../../nbs/31_latex.formatting.ipynb 25
 def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
@@ -252,7 +272,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 26
+# %% ../../nbs/31_latex.formatting.ipynb 29
 def _replace_math_mode_delimiters(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     text = re.sub(r'\\\(|\\\)', '$', text)
@@ -274,7 +294,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 27
+# %% ../../nbs/31_latex.formatting.ipynb 30
 def _inline_mathmode_to_own_paragraph(text: str):
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
@@ -358,7 +378,7 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 30
+# %% ../../nbs/31_latex.formatting.ipynb 33
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -416,7 +436,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/31_latex.formatting.ipynb 32
+# %% ../../nbs/31_latex.formatting.ipynb 35
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.

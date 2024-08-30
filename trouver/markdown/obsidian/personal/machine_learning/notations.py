@@ -4,24 +4,4 @@
 __all__ = []
 
 # %% ../../../../../nbs/18_markdown.obsidian.personal.machine_learning.notations.ipynb 2
-from deprecated import deprecated
-from os import PathLike
-import re
-from typing import Optional
-
-from fastai.text.all import *
-import pandas as pd
-import spacy
-from trouver.helper import (
-    current_time_formatted_to_minutes, find_regex_in_text,
-    defs_and_notats_separations, replace_string_by_indices,
-    notation_asterisk_indices,
-    double_asterisk_indices, latex_indices
-)
-from ....markdown.file import MarkdownFile, MarkdownLineEnum
-from trouver.markdown.obsidian.personal.note_processing import (
-    process_standard_information_note
-)
-from ..notes import notes_linked_in_note, notes_linked_in_notes_linked_in_note
-
-from ...vault import VaultNote
+#| export

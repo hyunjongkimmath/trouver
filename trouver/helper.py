@@ -13,7 +13,6 @@ from itertools import product
 import os
 from os import PathLike
 from pathlib import Path
-from pathvalidate import sanitize_filename
 import platform
 import random
 import re
@@ -25,17 +24,16 @@ from deprecated import deprecated
 from natsort import natsorted
 
 # %% auto 0
-__all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'CHARACTER_ORDERING_LIST',
-           'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE', 'TO_SUBSTITUTE',
-           'find_regex_in_text', 'separate_indices_from_str', 'replace_string_by_indices', 'latex_indices',
-           'inline_latex_indices', 'html_tag_str', 'find_lt_symbols_without_space_in_math_mode',
-           'add_space_to_lt_symbols_without_space', 'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text',
-           'double_asterisk_indices', 'notation_asterisk_indices', 'definition_asterisk_indices',
-           'defs_and_notats_separations', 'is_number', 'existing_path', 'file_existence_test', 'path_name_no_ext',
-           'path_no_ext', 'text_from_file', 'files_of_format_sorted', 'current_time_formatted_to_minutes',
-           'containing_string_priority', 'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
+__all__ = ['ALPHABET_TO_ALPHABET_GROUP_DICT', 'ALPHABET_OR_GREEK_TO_ALPHABET_DICT', 'find_regex_in_text',
+           'separate_indices_from_str', 'replace_string_by_indices', 'latex_indices', 'inline_latex_indices',
+           'html_tag_str', 'find_lt_symbols_without_space_in_math_mode', 'add_space_to_lt_symbols_without_space',
+           'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text', 'double_asterisk_indices',
+           'notation_asterisk_indices', 'definition_asterisk_indices', 'defs_and_notats_separations', 'is_number',
+           'existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file',
+           'files_of_format_sorted', 'current_time_formatted_to_minutes', 'containing_string_priority',
+           'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
            'dict_with_keys_topologically_sorted', 'alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet',
-           'alphabet_or_latex_command_to_alphabet_group', 'latex_to_path_accepted_string']
+           'alphabet_or_latex_command_to_alphabet_group']
 
 # %% ../nbs/00_helper.ipynb 5
 def _test_directory() -> Path:
@@ -748,56 +746,3 @@ def alphabet_or_latex_command_to_alphabet(character):
 def alphabet_or_latex_command_to_alphabet_group(character):
     return alphabet_to_alphabet_group(
         alphabet_or_latex_command_to_alphabet(character))
-
-# %% ../nbs/00_helper.ipynb 157
-CHARACTER_ORDERING_LIST =\
-    ['A', 'a', r'\Alpha', r'\alpha', 'B', 'b', r'\Beta', r'\beta', 'C', 'c', r'\Gamma',
-     r'\gamma', 'D', 'd', r'\Delta', r'\delta', 'E', 'e', r'\Epsilon', r'\epsilon',
-     'F', 'f', 'G', 'g', 'H', 'h', r'\Eta', r'\eta', 'I', 'i', r'\Iota', r'\iota',
-     'J', 'j', 'K', 'k', r'\Kappa', r'\kappa', 'L', 'l', r'\Lambda', r'\lambda', 'M',
-     'm', r'\Mu', r'\mu', 'N', 'n', r'\Nu', r'\nu', 'O', 'o', r'\Omicron', r'\omicron'
-     'P', 'p', r'\Pi', r'\pi', r'\Phi', r'\phi', r'\Psi', r'\psi', 'Q', 'q', 'R', 'r', 
-     r'\Rho', r'\rho', 'S', 's', r'\Sigma', r'\sigma', 'T', 't', r'\Theta', r'\theta',
-     r'\Tau', r'\tau', 'U', 'u', r'\Upsilon', r'\upsilon', 'V', 'v', 'W', 'w', r'\Omega', r'\omega',
-     'X', 'x', '\Chi', '\chi', 'Y', 'y', 'Z', 'z', '\Zeta', '\zeta', '*', r'\bullet']
-DECORATING_CHARACTERS =\
-    [r'\tilde', r'\hat', r'\overline', r'\bar', r'\mathscr', r'\mathcal',
-     r'\mathfrak', r'\\operatorname', r'\\text', r'\\bf']
-NONEFFECTIVE_CHARACTERS =\
-    ['^', '_', '{', '}', '(', ')', '[', ']']
-
-# %% ../nbs/00_helper.ipynb 158
-TO_REMOVE = [
-    '.', '$', ':', '?', '!', '#', '%', '&',
-    '<', '>', '*', '?', '"', '@', '`', '|',  
-    'mathscr', 'mathbf', 'mathrm', 'mathfrak', 'mathcal', 'mathbb', 'operatorname',
-    'boldsymbol', 'bf',
-    'text', 'begin', 'end', 'equation' , 'aligned', 'array', 'pmatrix', 'bmatrix',
-    'quad', 'longrightarrow', 'rightarrow', 'left', 'right', 'longmapsto', 'mapsto',
-    'stackrel']
-TO_UNDERSCORE = [' ', '-', '^', '(', ',', '/', '{', '}', '[', ']', '(', ')', '\\', '=',]
-TO_SUBSTITUTE = {
-    '*': 'star',
-    '+': 'plus',
-    'leqslant': 'leq',
-    'geqslant': 'geq',
-    '\'': '_prime'
-}
-
-# TODO: make a universal latex to path string; it seems that latex.convert
-# might do something different when naming files.
-
-def latex_to_path_accepted_string(latex: str) -> str:
-    """Convert a latex string to a path accepted string
-    """
-    for to_underscore in TO_UNDERSCORE:
-        latex, _ = re.subn(re.escape(to_underscore), '_', latex)
-    for symbol_to_substitute, substitute_with in TO_SUBSTITUTE.items():
-        latex, _ = re.subn(re.escape(symbol_to_substitute), substitute_with, latex)
-    for to_remove in TO_REMOVE:
-        latex, _ = re.subn(re.escape(to_remove), '', latex)
-    latex, _ = re.subn('_+', '_', latex)
-    latex, _ = re.subn('^_', '', latex)
-    latex, _ = re.subn('_$', '', latex)
-    latex = sanitize_filename(latex)
-    return latex

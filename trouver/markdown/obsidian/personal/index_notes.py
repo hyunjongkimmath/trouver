@@ -18,6 +18,7 @@ from typing import Union
 from natsort import natsorted
 from pathvalidate import sanitize_filename
 
+from ....helper.files_and_folders import path_name_no_ext
 from trouver.markdown.markdown.file import (
     MarkdownFile, MarkdownLineEnum
 )

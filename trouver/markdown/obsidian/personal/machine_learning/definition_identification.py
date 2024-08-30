@@ -11,7 +11,8 @@ from typing import Union
 
 import pandas as pd
 
-from .....helper import current_time_formatted_to_minutes, definition_asterisk_indices
+from .....helper.date_and_time import current_time_formatted_to_minutes
+from .....helper.definition_and_notation import definition_asterisk_indices
 from ....markdown.file import MarkdownFile
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote

@@ -25,7 +25,7 @@ import warnings
 from fastai.text.learner import TextLearner
 import pandas as pd
 
-from .....helper import current_time_formatted_to_minutes
+from .....helper.date_and_time import current_time_formatted_to_minutes
 from ....markdown.file import MarkdownFile
 from .database_update import max_ID, append_to_database
 from ..note_processing import process_standard_information_note

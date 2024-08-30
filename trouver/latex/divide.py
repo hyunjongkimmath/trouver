@@ -22,9 +22,7 @@ from pylatexenc.latex2text import (
 )
 import regex
 
-from trouver.helper import (
-    text_from_file
-)
+from ..helper.files_and_folders import text_from_file
 
 from .comments import remove_comments
 from .formatting import replace_commands_in_latex_document

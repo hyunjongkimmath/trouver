@@ -11,7 +11,7 @@ from typing import Optional, Union
 
 from pathvalidate import sanitize_filename
 
-from trouver.helper import (
+from trouver.helper.files_and_folders import (
     text_from_file
 )
 from trouver.markdown.markdown.file import (

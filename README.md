@@ -116,7 +116,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from trouver.helper import _test_directory, text_from_file
+from trouver.helper.tests import _test_directory, text_from_file
 from trouver.latex.convert import (
     divide_preamble, divide_latex_text, custom_commands,
     setup_reference_from_latex_parts

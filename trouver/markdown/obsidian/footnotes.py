@@ -8,9 +8,7 @@ __all__ = ['find_footnote_descriptions_in_markdown_text', 'find_footnote_mention
 import os
 from pathlib import Path
 import re
-from trouver.helper import (
-    find_regex_in_text, replace_string_by_indices
-)
+from ...helper.regex import find_regex_in_text, replace_string_by_indices
 from trouver.markdown.obsidian.links import (
     ObsidianLink
 )
