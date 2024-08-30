@@ -20,9 +20,8 @@ from typing import Union, Optional
 import warnings
 
 
-from trouver.helper import (
-    path_name_no_ext, alphabet_to_alphabet_group
-)
+from ....helper.files_and_folders import path_name_no_ext
+from ....helper.alphabet import alphabet_to_alphabet_group
 from trouver.markdown.markdown.file import (
     MarkdownFile, MarkdownLineEnum
 )

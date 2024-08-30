@@ -12,9 +12,8 @@ from typing import Iterator, Union, Optional
 import warnings
 import yaml
 
-from trouver.helper import (
-    find_regex_in_text, remove_html_tags_in_text
-)
+from ...helper.html import remove_html_tags_in_text
+from ...helper.regex import find_regex_in_text
 from trouver.markdown.markdown.heading import (
     heading_level, heading_title
 )

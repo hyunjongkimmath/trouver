@@ -2,13 +2,12 @@
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 3
 from __future__ import annotations
-from deprecated import deprecated
 from enum import Enum
 from pathlib import Path
 import re
-from trouver.helper import (
-    find_regex_in_text, text_from_file
-)
+
+from ...helper.files_and_folders import text_from_file
+from ...helper.regex import find_regex_in_text
 from trouver.markdown.obsidian.vault import (
     all_paths_to_notes_in_vault, VaultNote, NoteDoesNotExistError
 )

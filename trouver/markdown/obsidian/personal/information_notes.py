@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 from typing import Optional, Union, Tuple
 
-from ....helper import path_name_no_ext
+from ....helper.files_and_folders import path_name_no_ext
 from trouver.markdown.markdown.file import (
     MarkdownFile, MarkdownLineEnum
 )

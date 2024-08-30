@@ -9,8 +9,8 @@ __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NotePathIsNotIdentifi
 from pathlib import Path
 import os
 from os import PathLike
-from trouver.helper import (
-    path_name_no_ext, path_no_ext
+from trouver.helper.files_and_folders import (
+    path_no_ext, path_name_no_ext
 )
 from typing import Optional, Union
 

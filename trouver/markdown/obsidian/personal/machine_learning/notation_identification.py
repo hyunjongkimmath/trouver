@@ -9,23 +9,20 @@ import os
 from os import PathLike
 from pathlib import Path
 import pandas as pd
-import re
-from typing import Optional, Union
-import warnings
 
 from fastai.text.learner import TextLearner
 
-from trouver.helper import (
-    find_regex_in_text, latex_indices, notation_asterisk_indices,
-    defs_and_notats_separations, replace_string_by_indices,
-    current_time_formatted_to_minutes
+from trouver.helper.definition_and_notation import (
+    defs_and_notats_separations,
 )
+from .....helper.date_and_time import current_time_formatted_to_minutes
+from .....helper.regex import latex_indices, replace_string_by_indices
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ..note_processing import process_standard_information_note
 from .database_update import append_to_database
 from trouver.markdown.obsidian.vault import(
     # all_note_paths_by_name, note_path_by_name,
-    VaultNote, NoteDoesNotExistError
+    VaultNote
 )
 
 

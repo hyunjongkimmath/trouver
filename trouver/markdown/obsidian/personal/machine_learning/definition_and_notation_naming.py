@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from transformers import pipelines
 import warnings
 
-from .....helper import remove_html_tags_in_text, add_HTML_tag_data_to_raw_text
+from .....helper.html import remove_html_tags_in_text, add_HTML_tag_data_to_raw_text
 from ....markdown.file import MarkdownFile
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote

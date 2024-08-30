@@ -4,20 +4,6 @@
 __all__ = ['max_ID', 'append_to_database']
 
 # %% ../../../../../nbs/22_markdown.obsidian.personal.machine_learninig.database_update.ipynb 3
-# from bisect import bisect_left, bisect_right
-# from os import PathLike
-# from random import sample, choices
-# import re
-# from typing import Union
-
-# # from fastai.text.all import *
-# import pandas as pd
-
-# from trouver.helper import latex_indices, find_regex_in_text, current_time_formatted_to_minutes
-# from trouver.markdown.markdown.file import MarkdownFile
-# from trouver.markdown.obsidian.footnotes import (
-#     remove_footnote_mentions_in_markdown_text
-# )
 import os
 from os import PathLike
 from pathlib import Path

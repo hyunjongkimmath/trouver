@@ -31,6 +31,13 @@ website:
       - 26_markdown.obsidian.personal.machine_learning.definition_identification.ipynb
       - 27_markdown.obsidian.personal.vault.ipynb
       - 28_markdown.obsidian.personal.machine_learning.tokenize.ipynb
+      - 29_latex.divide.ipynb
+      - 30_latex.folders.ipynb
+      - 31_latex.formatting.ipynb
+      - 32_latex.preamble.ipynb
+      - 33_latex.comments.ipynb
+      - 34_markdown.obsidian.machine_learning.notation_linking.ipynb
+      - 35_markdown.obsidian.personal.machine_learning.definition_and_notation_naming.ipynb
       - TODO.ipynb
       - how_to.install_trouver.ipynb
       - how_to.train_ml_model.fastai.ipynb

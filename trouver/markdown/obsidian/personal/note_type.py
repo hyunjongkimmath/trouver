@@ -4,18 +4,12 @@
 __all__ = ['PersonalNoteTypeEnum', 'type_of_note', 'note_is_of_type', 'NoteTypeError', 'assert_note_is_of_type']
 
 # %% ../../../../nbs/14_markdown.obsidian.personal.note_type.ipynb 3
-from deprecated import deprecated
 from enum import Enum, auto
-import os
-from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 import warnings
 
-from trouver.helper import (
-    file_existence_test
-)
 from trouver.markdown.obsidian.vault import (
-    note_path_by_name, note_name_unique, VaultNote, NoteDoesNotExistError
+    VaultNote, NoteDoesNotExistError
 )
 
 # %% ../../../../nbs/14_markdown.obsidian.personal.note_type.ipynb 6

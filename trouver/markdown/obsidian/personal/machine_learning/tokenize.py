@@ -16,7 +16,9 @@ import warnings
 import bs4
 from transformers import BatchEncoding, pipelines, PreTrainedTokenizer, PreTrainedTokenizerFast
 
-from .....helper import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, double_asterisk_indices, latex_indices, notation_asterisk_indices, replace_string_by_indices, remove_html_tags_in_text
+from .....helper.definition_and_notation import double_asterisk_indices, notation_asterisk_indices
+from .....helper.html import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, remove_html_tags_in_text
+from .....helper.regex import latex_indices, replace_string_by_indices
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
