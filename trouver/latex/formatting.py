@@ -5,9 +5,8 @@
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'MATH_MODE_DELIMITERS', 'BEGIN_END_EQUATIONLIKE_ENV',
            'REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES', 'REMOVE_COMMENTS', 'INLINE_MATHMODE_TO_OWN_PARAGRAPH',
-           'MERGE_MULTILINE_PARAGRAPH', 'is_number', 'custom_commands', 'regex_pattern_detecting_command',
-           'replace_command_in_text', 'replace_commands_in_text', 'replace_commands_in_latex_document',
-           'adjust_common_syntax_to_markdown']
+           'MERGE_MULTILINE_PARAGRAPH', 'is_number', 'replace_command_in_text', 'replace_commands_in_text',
+           'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown']
 
 # %% ../../nbs/31_latex.formatting.ipynb 2
 import re
@@ -19,11 +18,12 @@ from trouver.helper.files_and_folders import (
     text_from_file
 )
 from ..helper.regex import inline_latex_indices, separate_indices_from_str
-from .comments import remove_comments
+from ..helper.latex.comments import remove_comments
+from ..helper.latex.macros_and_commands import custom_commands, regex_pattern_detecting_command
 from .preamble import divide_preamble 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 4
+# %% ../../nbs/31_latex.formatting.ipynb 5
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -41,123 +41,12 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../../nbs/31_latex.formatting.ipynb 6
+# %% ../../nbs/31_latex.formatting.ipynb 7
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/31_latex.formatting.ipynb 11
-def _argument_detection(group_num: int) -> str:
-    """
-    Helper function to `regex_pattern_detecting_command`, and `_commands_from_def`
-
-    This basically helps detect balanced curly braces for invocations of commands.
-    """
-    return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
-
 # %% ../../nbs/31_latex.formatting.ipynb 12
-def custom_commands(
-        preamble: str, # The preamble of a LaTeX document.
-        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-    """
-    Return a dict mapping commands (and math operators) defined in `preamble` to
-    the number of arguments display text of the commands.
-
-    Assumes that the newcommands only have at most one default parameter (newcommands with
-    multiple default parameters are not valid in LaTeX).
-
-    Ignores all comented newcommands.
-    """
-    preamble = remove_comments(preamble)
-    latex_commands = _commands_from_newcommand_and_declaremathoperator(preamble)
-    tex_commands = _commands_from_def(preamble)
-    return latex_commands + tex_commands
-
-
-def _commands_from_newcommand_and_declaremathoperator(
-        preamble: str, # The preamble of a LaTeX document
-        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-    """
-    Get custom commands from invocations of `\newcommand` and `DeclareMathOperator`
-    in the preamble.
-
-    Helper function to `custom_commands`
-    """
-    # newcommand_regex = regex.compile(
-    #     r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*\{\\\s*(\w+)\s*\}\s*(?:\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?4)\})*)\}', re.MULTILINE)
-    newcommand_regex = regex.compile(
-        r'(?<!%)\s*\\(?:(?:re)?newcommand|DeclareMathOperator)\s*(?:\{\\\s*(\w+)\s*\}|\\\s*(\w+))\s*(?:\[(\d+)\]\s*(?:\[(\w+)\])?)?\s*\{((?>[^{}]+|\{(?5)\})*)\}', re.MULTILINE)
-
-    commands = []
-    for match in newcommand_regex.finditer(preamble):
-        name_surrounded_in_parentheses = match.group(1) # e.g. \newcommand{\A}
-        name_without_parentheses = match.group(2) # e.g. \newcommand\A
-        num_args = match.group(3)
-        optional_default_arg = match.group(4)
-        definition = match.group(5)
-
-        if name_surrounded_in_parentheses is not None:
-            name = name_surrounded_in_parentheses
-        else:
-            name = name_without_parentheses
-
-        # Convert the number of arguments to an integer, if it was specified
-        if num_args is not None:
-            num_args = int(num_args)
-        else:
-            num_args = 0
-
-        commands.append((name, num_args, optional_default_arg, definition))
-    return commands
-
-
-def _commands_from_def(
-        preamble: str
-        ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-    """
-    """
-    def_command_identifying = r'(?<!%)\s*\\def\s*'
-    command_name_identifying = r'\\\s*(\w+)\s*'
-    command_def = _argument_detection(2)
-    def_regex = regex.compile(
-        f"{def_command_identifying}{command_name_identifying}{command_def}"
-    )
-    return [(match.group(1), 0, None, match.group(2))
-            for match in def_regex.finditer(preamble)]
-
-
-# %% ../../nbs/31_latex.formatting.ipynb 15
-def regex_pattern_detecting_command(
-        command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-        ) -> regex.Pattern:
-    """Return a `regex.pattern` object (not a `re.pattern` object) detecting
-    the command with the specified number of parameters, optional argument,
-    and display text.
-
-    Assumes that the curly braces used to write the invocations of the commands
-    are balanced and properly nested. Assumes that there are no two commands
-    of the same name.
-    """
-    command_name, num_parameters, optional_arg, _ = command_tuple
-    backslash_name = fr"\\{command_name}"
-    optional_argument_detection = fr"(?:\[(.*?)\])?" if optional_arg is not None else ""
-    if optional_arg is not None:
-        trailing_arguments = [_argument_detection(i) for i in range(2, 1+num_parameters)]
-        trailing_args_pattern = "\\s*".join(trailing_arguments)
-        pattern = (f"{backslash_name}\\s*{optional_argument_detection}\\s*{trailing_args_pattern}")
-    elif num_parameters > 0:
-        arguments = [_argument_detection(i) for i in range(1, 1+num_parameters)]
-        args_pattern = "\\s*".join(arguments)
-        pattern = f"{backslash_name}\\s*{args_pattern}"
-    else:
-        # Match the command name exactly without letters immediately following
-        # (but underscores following are okay).
-        pattern = f"{backslash_name}(?![^\W_])"
-    return regex.compile(pattern)
-
-    
-
-# %% ../../nbs/31_latex.formatting.ipynb 17
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -221,7 +110,7 @@ def _replace_command(
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 20
+# %% ../../nbs/31_latex.formatting.ipynb 15
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -247,7 +136,7 @@ def replace_commands_in_text(
             break
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 25
+# %% ../../nbs/31_latex.formatting.ipynb 20
 def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
@@ -274,7 +163,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 29
+# %% ../../nbs/31_latex.formatting.ipynb 24
 def _replace_math_mode_delimiters(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     text = re.sub(r'\\\(|\\\)', '$', text)
@@ -296,7 +185,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 30
+# %% ../../nbs/31_latex.formatting.ipynb 25
 def _inline_mathmode_to_own_paragraph(text: str):
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
@@ -380,7 +269,7 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 33
+# %% ../../nbs/31_latex.formatting.ipynb 28
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -438,7 +327,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/31_latex.formatting.ipynb 35
+# %% ../../nbs/31_latex.formatting.ipynb 30
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.

@@ -26,7 +26,7 @@ import regex
 
 from ..helper.files_and_folders import text_from_file
 
-from .comments import remove_comments
+from ..helper.latex.comments import remove_comments
 from .formatting import replace_commands_in_latex_document
 from .preamble import divide_preamble
 

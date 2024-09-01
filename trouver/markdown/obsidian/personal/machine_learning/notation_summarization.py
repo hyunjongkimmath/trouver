@@ -19,6 +19,7 @@ import pandas as pd
 from transformers import pipeline, pipelines
 
 from .....helper.date_and_time import current_time_formatted_to_minutes
+from .....helper.latex import reduce_unnecessary_spaces
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...links import ObsidianLink
 from .database_update import append_to_database
@@ -305,6 +306,7 @@ def fix_summary_formatting(
     # make `\` stick to the previous chunk of things
     # (e.g. r'd\in\mathbb{Z}_{\geq 0}`, then give it some
     # space, e.g. r'd \in \mathbb{Z}_{\geq 0}'.
+    summary = reduce_unnecessary_spaces(summary)
     return summary
 
 

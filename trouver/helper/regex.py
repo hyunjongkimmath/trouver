@@ -117,7 +117,7 @@ def latex_indices(
     """Returns the indices in the text containing LaTeX str.
     
     This may not work correctly if the text has a LaTeX
-    formatting issue or if any LaTeX string has a dollar sign `\$`.
+    formatting issue.
     
     **Parameters**
 
