@@ -400,7 +400,7 @@ def correct_latex_syntax_error(
     replacements = []
     for start, end in math_mode_indices:
         math_mode_text = summary[start:end]
-        if syntax_validation(math_mode_text):
+        if syntax_validation(math_mode_text) or not replacement_candidates:
             replacements.append(math_mode_text)
             continue
         delimiter = '$$' if math_mode_text.startswith('$$') else '$'
