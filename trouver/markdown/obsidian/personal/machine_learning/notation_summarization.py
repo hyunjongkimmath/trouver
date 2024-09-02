@@ -27,7 +27,7 @@ from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...links import ObsidianLink
 from .database_update import append_to_database
 from ..note_processing import process_standard_information_note
-from ..notation import parse_notation_note, main_of_notation, _notation_string_no_metadata
+from ..notation import parse_notation_note, main_of_notation, _notation_string_no_metadata, _raw_notation
 from ..note_type import note_is_of_type
 from ...vault import VaultNote
 
@@ -573,6 +573,7 @@ def _write_summary_to_notation_note(
 
     """
     _, raw_notation, main_note_name, _, _ = parse_notation_note(notation_note)
+    raw_notation = _raw_notation(raw_notation)
     without_metadata = _notation_string_no_metadata(
         raw_notation,
         ObsidianLink.from_text(f'[[{main_note_name}|denotes]]'),

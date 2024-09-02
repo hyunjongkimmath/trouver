@@ -417,6 +417,7 @@ REGEX_PATTERN_DETECTIONS = [
     ('mathbf', 1, None, None),
     ('mathcal', 1, None, None),
     ('mathfrak', 1, None, None),
+    ('mathop', 1, None, None),
     ('mathrm', 1, None, None),
     ('mathscr', 1, None, None),
     ('max', 1, None, None),
