@@ -6,7 +6,7 @@
 __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'notation_summarization_data_from_note',
            'gather_notation_note_summaries', 'append_to_notation_note_summarization_database',
            'single_input_for_notation_summarization', 'append_column_for_single_text', 'fix_summary_formatting',
-           'summarize_notation', 'append_summary_to_notation_note']
+           'correct_latex_syntax_error', 'summarize_notation', 'append_summary_to_notation_note']
 
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 3
 import os
@@ -15,11 +15,14 @@ from pathlib import Path
 import re
 from typing import Callable, Optional, Union
 
+from Levenshtein import distance
 import pandas as pd
 from transformers import pipeline, pipelines
 
+from .....helper import sublist_generator
 from .....helper.date_and_time import current_time_formatted_to_minutes
-from .....helper.latex import reduce_unnecessary_spaces
+from .....helper.latex import reduce_unnecessary_spaces, latex_indices, math_mode_string_is_syntactically_valid
+from .....helper.regex import replace_string_by_indices
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...links import ObsidianLink
 from .database_update import append_to_database
@@ -291,7 +294,7 @@ def append_column_for_single_text(
         axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 46
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 47
 def fix_summary_formatting(
         summary: str
         ) -> str:
@@ -311,13 +314,111 @@ def fix_summary_formatting(
 
 
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 51
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 52
+def _tokenize_latex_math(
+        latex_string: str
+        ) -> list[str]:
+    """
+    Tokenize `latex_string` by the following principles:
+
+    1. A latex command/macro invoked (but not the inputs) is a token.
+    2. the special characters ^ { } _ are tokens.
+    3. groups of consecutive whitespaces are tokens.
+    4. afterwards, all "words" (one or more consecutive non-whitespace non-special characters) are tokens.
+    """
+    # Define the regex pattern for tokenization
+    pattern = r"""
+        (\\[a-zA-Z]+)        # Match LaTeX commands (e.g., \alpha, \sum)
+        | ([^\\\s^{}_]+)     # Match words (consecutive non-whitespace, non-special characters)
+        | ([^\\\s])          # Match special characters (including ^, {, }, _, etc.)
+        | (\s+)              # Match groups of consecutive whitespace
+    """
+    # Use re.findall to find all matches based on the pattern
+    tokens = re.findall(pattern, latex_string, re.VERBOSE)
+    # Extract the matched groups, filtering out empty strings
+    token_list = [token for group in tokens for token in group if token]
+    return token_list
+
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 54
+def _list_of_candidates_from_math_mode_strings(
+        main_content: str, # A text of LaTeX code. In practice, this should be the `main content` of an information note, cf. `summarize_notation`.`
+        syntax_validation: Callable[str, bool] = math_mode_string_is_syntactically_valid # A test to tell whether a math mode string is syntactically  valid.
+        ) -> set[str]:
+    """
+    Return a substrings from latex math mode strings in `main_content`
+    that are syntactically valid .
+
+    None of the elements in the output have delimiters (`$`, `$$`)
+    """
+    syntactically_valid_substrings = [] 
+    math_mode_indices = latex_indices(main_content)
+    for start, end in math_mode_indices:
+        latex_str = main_content[start:end]
+        latex_str = latex_str.strip('$')
+        tokenization = _tokenize_latex_math(latex_str)
+        for sublist in sublist_generator(tokenization):
+            substring = ''.join(sublist)
+            if syntax_validation(substring):
+                syntactically_valid_substrings.append(substring.strip())
+    return set(syntactically_valid_substrings)
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 56
+def _find_closest_match(
+        math_mode_text: str,
+        replacement_candidates: list[str]
+        ) -> Union[str, None]:
+    """This is a helper function to `correct_latex_syntax_error`."""
+    if not replacement_candidates:
+        return None
+    # Calculate Levenshtein distance for each candidate
+    distances = [(candidate, distance(math_mode_text, candidate)) for candidate in replacement_candidates]
+    # Find the candidate with the minimum distance
+    closest_match = min(distances, key=lambda x: x[1])
+    return closest_match[0]
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 58
+def correct_latex_syntax_error(
+        summary: str, # The autogenerated summary
+        replacement_candidates: list[str], # A list of candidates to replace. This is expected to be an output of `_list_of_candidates_from_math_mode_strings`
+        # min_length_to_replace_math_mode_string: int = 5, # The minimum length that a math mode string needs to be (exclusing delimiting dollar signs `$`, `$$`) in summary in order to be considered for replacement.
+        syntax_validation: Callable[str, bool] = math_mode_string_is_syntactically_valid # A test to tell whether a math mode string is syntactically  valid.
+        ) -> str:
+    """
+    Attempt to replace within `summary` a modified version in which
+    the syntactically incorrect latex math mode strings are replaced
+    with the most closely resembling element of `replacement_candidates`. 
+     
+    with a modified version in which the
+    latex math mode strings within `summary` that are syntactically
+    incorrect 
+
+    TODO: consider the possibility that not all math mode str delimiters
+    are formatted correctly.
+    """
+    math_mode_indices = latex_indices(summary)
+    replacements = []
+    for start, end in math_mode_indices:
+        math_mode_text = summary[start:end]
+        if syntax_validation(math_mode_text):
+            replacements.append(math_mode_text)
+            continue
+        delimiter = '$$' if math_mode_text.startswith('$$') else '$'
+        replacement = _find_closest_match(math_mode_text, replacement_candidates)
+        replacement = f'{delimiter}{replacement}{delimiter}'
+        replacements.append(replacement)
+    return replace_string_by_indices(summary, math_mode_indices, replacements)
+
+
+
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 61
 def summarize_notation(
-        main_content: str,
+        main_content: Union[str, MarkdownFile],
         latex_in_original: str,
         summarizer: pipelines.text2text_generation.SummarizationPipeline,
         fix_formatting: bool = True, # If `True`, run `fix_summary_formatting` on `summarizer`'s summary before retuning it.
-        latex_in_original_comes_first: bool = True # This is a parameter to pass to calls to the `single_input_for_notation_summarization` function. If `True`, the `latex_in_original` piece appears before the `main_note_content`
+        latex_in_original_comes_first: bool = True, # This is a parameter to pass to calls to the `single_input_for_notation_summarization` function. If `True`, the `latex_in_original` piece appears before the `main_note_content`
+        correct_syntax_error: bool = True # If `True`, attempt to correct latex syntax error 
         ) -> str:
     """Summarize a notation introduced in a mathematical text using
     a huggingface pipeline.
@@ -325,16 +426,31 @@ def summarize_notation(
     Assumes that `main_content` is a mathematical text introducing
     a notation and that `latex_in_original` is a substring of
     `main_content` in which a notation is introduced.
+
+    By setting `correct_latex_syntax_error` to `True`, this function
+    consider each math mode text in the generated summary, and attempts
+    to, if not syntactically correct, replace it with a math mode text
+    closely resembling it within `main_content`. More specifically,
+    each math mode text within `main_content` is considered, and
+    substrings within those math mode texts are considered. The
+    syntactically correct substring (Determined via
+    `math_mode_string_is_syntactically_valid`) that also most closely
+    resembles (determined via Levenshtein distance) the math mode text
+    originally in the generated summary.
     """
     summarizer_output = summarizer(
         single_input_for_notation_summarization(
             main_content, latex_in_original, latex_in_original_comes_first))
     summary = summarizer_output[0]['summary_text']
+    if correct_syntax_error:
+        # TODO: do the below
+        replacement_candidates = _list_of_candidates_from_math_mode_strings(str(main_content))
+        summary = correct_latex_syntax_error(summary, replacement_candidates)
     if fix_formatting:
         summary = fix_summary_formatting(summary)
     return summary
 
-# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 54
+# %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 64
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
