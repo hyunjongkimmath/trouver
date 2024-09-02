@@ -4,17 +4,22 @@
 
 # %% ../../nbs/00_helper.ipynb 2
 from __future__ import annotations
-from collections import OrderedDict
-from collections.abc import Iterable
-import datetime
-from datetime import timezone
-from graphlib import TopologicalSorter
-from itertools import product
-from typing import Callable, Optional, Union
-
-from natsort import natsorted
 
 
 
 # %% auto 0
-__all__ = []
+__all__ = ['substring_generator', 'sublist_generator']
+
+# %% ../../nbs/00_helper.ipynb 4
+def substring_generator(input_string: str):
+    length = len(input_string)
+    for i in range(length):
+        for j in range(i + 1, length + 1):
+            yield input_string[i:j]
+
+
+def sublist_generator(input_list: list):
+    length = len(input_list)
+    for i in range(length):
+        for j in range(i + 1, length + 1):
+            yield input_list[i:j]
