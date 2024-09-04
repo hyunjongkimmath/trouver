@@ -8,11 +8,12 @@ __all__ = ['data_from_information_note', 'predict_names', 'add_names_to_html_tag
 # %% ../../../../../nbs/35_markdown.obsidian.personal.machine_learning.definition_and_notation_naming.ipynb 4
 from typing import Optional
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from transformers import pipelines
 import warnings
 
 from .....helper.html import remove_html_tags_in_text, add_HTML_tag_data_to_raw_text
+from .....helper.latex import fix_autogen_formatting, correct_latex_syntax_error, _list_of_candidates_from_math_mode_strings, math_mode_string_is_syntactically_valid
 from ....markdown.file import MarkdownFile
 from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
@@ -130,6 +131,8 @@ def add_names_to_html_tags_in_info_note(
         notat_pipeline: Optional[pipelines.text2text_generation.SummarizationPipeline] = None, # A pipeline wrapping an ML model which predicts the naming of notations. 
         # summarizer: pipelines.text2text_generation.SummarizationPipeline, # The pipeline with the ML model
         overwrite: bool = False, # If `True`, overwrite pre-existing, nonempty attributes. If `False`, ignore pre-existing, nonempty attributes and only write on attributes that are empty.
+        fix_formatting: bool = True, # If `True`, fix the formatting for notation names.
+        correct_syntax: bool = True, # If `True`, attempt to fix syntax errors for notation names.
         ) -> None:
     """
     Predict the names of definitions and notations marked with
@@ -165,6 +168,10 @@ def add_names_to_html_tags_in_info_note(
             def_or_notat = 'definition'
         elif 'notation' in tag.attrs:
             def_or_notat = 'notation'
+            if correct_syntax and math_mode_string_is_syntactically_valid(name):
+                name = _correct_syntax(name, tag)
+            if fix_formatting:
+                name = fix_autogen_formatting(name)
         else:
             # tag could be neither a definition nor a notation tag.
             def_or_notat = ''
@@ -178,3 +185,14 @@ def add_names_to_html_tags_in_info_note(
     if any_preds_written:
         mf.add_tags('_auto/def_and_notat_names_added')
     mf.write(info_note)
+
+
+def _correct_syntax(
+        name: str,
+        tag: Tag
+        ) -> str:
+    """
+    This is a helper function of `add_names_to_html_tags_in_info_note`.
+    """
+    replacement_candidates = _list_of_candidates_from_math_mode_strings(tag.text)
+    return correct_latex_syntax_error(name, replacement_candidates)
