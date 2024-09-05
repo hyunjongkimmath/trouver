@@ -14,6 +14,7 @@ from os import PathLike
 from trouver.helper.files_and_folders import (
     path_no_ext, path_name_no_ext
 )
+from .links import ObsidianLink, LinkType, replace_links_in_text
 from typing import Optional, Union
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 7
@@ -256,7 +257,7 @@ class VaultNote:
         names in the vault of the (unique) note of that name, and whose
         values are list of string, which are paths to the note relative to the
         vault. The cache is not automatically updated when notes are
-        moved.
+        moved, unless the `.move_to` method or its derivatives are invoked.
     
     **Parameters**
 
@@ -449,6 +450,8 @@ class VaultNote:
                 ) -> None:
         """Move/rename the note to the specified location in the vault,
         assuming that it exists.
+
+        Nothing is done if the note does not exist.
         """
         if not self.exists():
             return
@@ -464,9 +467,44 @@ class VaultNote:
                        rel_dir: PathLike # The path of the directory in which to move `self` to, relative to `self.vault`.
                        ) -> None:
         """Move the note to the specified folder in the vault, assuming that
-        if exists.
+        it exists.
         """
         self.move_to(Path(rel_dir) / f'{self.name}.md')
+
+    def rename(
+            self,
+            new_name: str,  # The new name to give the note('s file). Should not include the `.md` extension.`
+            replace_links_in_vault: bool = True  # If `True`, then replace the links in the vault pointing to `note` to reflect the new name.
+            ):
+        """
+        Rename the file underlying `self` to `new_name`. The directory that the file is in remains unchanged.
+
+        Assumes that
+        
+        1. the name of `self` is unique among note names in `self.vault`s
+        2. No pre-existing note in `vault` has `new_name` as its name. Use the `note_name_unique`
+           function to check whether or not this is the case.
+        3. the class' `.cache` accurately reflects the files in `vault`
+
+        """
+        parent_dir = Path(os.path.dirname(self.rel_path))
+        old_wikilink_pattern_by_name = ObsidianLink(
+            is_embedded=False, file_name=self.name, anchor=-1, custom_text=-1)
+        old_markdownlink_pattern_by_name_1 = ObsidianLink(
+            is_embedded=False, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+        old_markdownlink_pattern_by_name_2 = ObsidianLink(
+            is_embedded=False, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+        self.move_to(parent_dir / f'{new_name}.md')
+        for name, paths in self.__class__.cache[str(self.vault)].items():
+            for path in paths:
+                other_note = VaultNote(vault=self.vault, rel_path=path)
+                text = other_note.text()
+                text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
+                text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, new_link_name=f'{new_name}.md')
+                text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, new_link_name=f'{new_name}')
+                with open(other_note.path(), 'w', encoding='utf-8') as file:
+                    file.write(text)
+                    file.close()
         
     def text(self
             ) -> str: # Text contained in the note, assuming that the note exists.
