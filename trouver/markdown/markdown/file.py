@@ -71,12 +71,6 @@ def dict_to_metadata_lines(
     lines = [
         _line_str(key, value, enquote_entries_in_fields)
         for key, value in data.items()]
-    # lines = []
-    # for key, value in data.items():
-    #     if isinstance(value, list):
-    #         _add_line_for_list(lines, key, value, key in enquote_entries_in_fields)
-    #         continue
-    #     lines.append(f'{key}: {value}')
     return lines
 
 def _line_str(
@@ -95,18 +89,6 @@ def _line_str(
     else:
         return f"{key}: {escaped_strings_in_list_value[0]}"
 
-# def _add_line_for_list(
-#         lines: list[str], key: str, list_value: list, enquote: bool):
-#     """This is a helper function for `dict_to_metadata_lines`."""
-#     escaped_strings_in_list_value = [
-#         _enquote(single_value.replace('\\', '\\\\'))
-#         if _list_string_for_yaml_metadata_needs_quotes(single_value) 
-#         else single_value
-#         for single_value in list_value]
-#     lines.append(f"{key}: [{', '.join(escaped_strings_in_list_value)}]")
-
-# def _list_string_for_yaml_metadata_needs_quotes(single_value):
-#     return isinstance(single_value, str) and bool(re.compile(r'[\\\{\[\|\*]').match(single_value))
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 20
 # TODO: apply this function to the MarkdownFile.metadata function and the MarkdownFile.write function
@@ -389,18 +371,45 @@ class MarkdownFile:
         vn: VaultNote, # Represents the file.
         mode: str = 'w', # The specific mode to write the file with.
         # enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+        check_validity: bool = True # If `True`, then check whether a MarkdownFile object could be instantiated from `self.__str__()` before writing to the file. If not, then a `ValueError` is raised.
         ) -> None:
         """
         Write to the file specified by a `VaultNote` object.
 
         If the file that the `VaultNote` object represents does not exist,
         then this method creates it.
+
+        **Raises**
+        - `ValueError`
+            - If `check_validity` is `True` and if `str(self)` cannot be parsed
+            as a `MarkdownFile` object. If this error is raised, then most likely the
+            issue is that the frontmatter metadata cannot be parsed by `pyyaml` and
+            the metadata field elements need to be escaped and/or enquoted.    
+            It is recommended to use `.replace_metadata` and passing arguments to the
+            `enquote_entries_in_fields` parameter or to use the `dict_to_metadata_lines`
+            function to ensure that metadata fields are
+            enquoted and escaped.
         """
         if not vn.exists():
             vn.create()
         # if enquote_entries_in_metadata_fields:
         #     self.replace_metadata(
         #         self.metadata(), enquote_entries_in_metadata_fields)
+        if check_validity:
+            try:
+                new_mf = MarkdownFile.from_string(str(self))
+                new_mf.metadata()
+            except Exception as e:
+                raise ValueError(f"""Tried to write the MarkdownFile object to {vn.path()}, 
+but the output of `.__str__()` on the MarkdownFile object is not parseable as as MarkdownFile object. 
+Most likely, the YAML frontmatter cannot be parsed, and metadata field elements need to
+be enquoted and/or escaped (say via using double slashes `\\` instead of single slashes `\`
+and by using `\"` instead of just `"`). It is recommended to apply the `.replace_metadata` method of the
+`MarkdownFile` object, specifying arguments for the `enquote_entries_in_fields` parameter.
+The following is the MarkdownFile object's str representation:
+\n\n{str(self)}
+""")
+
         with open(vn.path(), mode, encoding='utf-8') as file:
             file.write(str(self))
             file.close()
@@ -543,9 +552,6 @@ class MarkdownFile:
         """
         Return the frontmatter metadata as a dict.
 
-        Writing the metadata read with this function can be faulty if
-        the metadata attempts to escape characters that cannot be read by
-        YAML; the escapes are not preserved upon writing.
 
         **Raises**
 
@@ -554,6 +560,11 @@ class MarkdownFile:
             the YAML metadata. In doing so, `str(self)` is printed. Moreover,
             the appropriate `yaml.parser.ParserError`, `yaml.scanner.ScannerError`,
             or `yaml.reader.ReaderError` is also raised.
+
+        **Warning**
+        Writing the metadata read with this function can be faulty if
+        the metadata attempts to escape characters that cannot be read by
+        YAML; the escapes are not preserved upon writing.
         """
         md_parts = self.metadata_parts()
         return parse_metadata_string('\n'.join(md_parts[1:-1]))

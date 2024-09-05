@@ -68,7 +68,8 @@ def _notation_note_has_auto_summary_tag(
 # %% ../../../../../nbs/25_markdown.obsidian.personal.machine_learning.notation_summarization.ipynb 11
 def notation_summarization_data_from_note(
         notation_note: VaultNote,
-        vault: PathLike
+        vault: PathLike,
+        # gather_data_for_blank_content_notation_notes: bool = False,
         ) -> Union[dict[str, str], None]: # The keys to the dict are "Notation note name", "Notation", "Latex in oiriginal", "Summary", and "Main note name". However, `None` is returned instead of a `dict` if the notation note is determined to have not been summarized, if the main note of the notation note does not exist, or the notation note is marked with the `_auto/notation_summary` tag.
     """Obtain notation summzarization data from the notation note.
 
