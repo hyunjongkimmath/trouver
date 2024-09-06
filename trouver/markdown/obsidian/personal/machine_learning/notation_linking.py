@@ -16,7 +16,8 @@ from typing import Optional, Union
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...links import MARKDOWNLINK_CAPTURE_PATTERN
 from ..information_notes import reference_of_information_note
-from ..notation import parse_notation_note, notation_notes_linked_in_see_also_section
+from ..notation.in_standard_information_note import notation_notes_linked_in_see_also_section
+from ..notation.parse import parse_notation_note
 from ..note_processing import process_standard_information_note
 from ..note_type import note_is_of_type, type_of_note, PersonalNoteTypeEnum
 from ..notes import notes_linked_in_notes_linked_in_note

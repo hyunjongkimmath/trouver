@@ -116,7 +116,8 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from trouver.helper.tests import _test_directory, text_from_file
+from trouver.helper.tests import _test_directory
+from trouver.helper.files_and_folders import  text_from_file
 from trouver.latex.convert import (
     divide_preamble, divide_latex_text, custom_commands,
     setup_reference_from_latex_parts
@@ -237,8 +238,6 @@ if platform.system() == 'Windows':
 else:
     information_note_type_model = from_pretrained_fastai(repo_id)
 ```
-
-    Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
 
 ``` python
 sample_prediction_1 = information_note_type_model.predict(r'Let $L/K$ be an field extension. An element $\alpha \in L$ is said to be algebraic over $K$ if there exists some polynomial $f(x) \in K[x]$ such that $f(\alpha) = 0$.')
@@ -726,7 +725,8 @@ For the example below, there is at least one information note with
 notations already marked with double asterisks `**`.
 
 ``` python
-from trouver.markdown.obsidian.personal.notation import make_notation_notes_from_double_asts, notation_notes_linked_in_see_also_section
+from trouver.markdown.obsidian.personal.notation import make_notation_notes_from_double_asts
+from trouver.markdown.obsidian.personal.notation.in_standard_information_note import notation_notes_linked_in_see_also_section
 from trouver.markdown.obsidian.personal.machine_learning.notation_summarization import append_summary_to_notation_note
 ```
 
