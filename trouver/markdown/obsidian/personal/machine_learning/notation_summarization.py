@@ -139,7 +139,7 @@ def notation_summarization_data_from_note(
 
     process_standard_information_note(main_mf, vault)
     processed_summary = str(main_mf)
-    if len(processed_summary.strip()) == 0:
+    if check_for_actual_summarization and len(processed_summary.strip()) == 0:
         return None
 
     if main_of_notation is None:

@@ -24,7 +24,8 @@ from trouver.markdown.obsidian.links import (
 from .parse import notation_in_note
 from trouver.markdown.obsidian.personal.notation.in_standard_information_note import (
     notat_str_from_doub_asts_in_std_info_note, notations_and_main_notes,
-    add_notation_note_to_see_also, notation_note_is_linked_in_see_also_section
+    add_notation_note_to_see_also, notation_note_is_linked_in_see_also_section,
+    notat_str_from_html_tags
 )
 from trouver.markdown.obsidian.personal.note_type import (
     PersonalNoteTypeEnum, note_is_of_type
@@ -152,7 +153,8 @@ def _full_notation_string(
     before_meta = _notation_string_no_metadata(
         raw_notation, denote_link, description)
     return (f'---\ndetect_regex: []\n'
-            f'latex_in_original: ["{meta_latex_in_original}"]'
+            f'latex_in_original: ["{meta_latex_in_original}"]\n'
+            f'tags: []'
             f'\n---\n{before_meta}')
 
 
