@@ -632,6 +632,7 @@ def fix_autogen_formatting(
     # (e.g. r'd\in\mathbb{Z}_{\geq 0}`, then give it some
     # space, e.g. r'd \in \mathbb{Z}_{\geq 0}'.
     text = reduce_unnecessary_spaces(text)
+    text = _insert_newline_or_spaces_around_latex(text)
     return text
 
 
