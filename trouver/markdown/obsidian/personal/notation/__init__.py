@@ -5,7 +5,8 @@
 # %% auto 0
 __all__ = ['MAX_NOTE_NAME_LENGTH', 'SPECIAL_CHARACTERS', 'replaceable_groups', 'REPLACEABLES', 'notations_to_add_in_index',
            'index_notation_note_formatted_entry', 'make_a_notation_note', 'make_notation_notes_from_double_asts',
-           'make_notation_notes_from_HTML_tags', 'regex_from_latex', 'regex_from_notation_note']
+           'make_notation_notes_from_HTML_tags', 'notation_note_has_no_verified_content', 'remove_bad_notation_notes',
+           'reorder_notation_note_links_in_see_also_section', 'regex_from_latex', 'regex_from_notation_note']
 
 # %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 2
 from os import PathLike
@@ -16,12 +17,13 @@ import warnings
 from multiset import Multiset
 from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, LatexGroupNode, LatexCharsNode
 
+from .....helper.html import remove_html_tags_in_text
 from .....helper.path_accepted_string import latex_to_path_accepted_string
-from ....markdown.file import MarkdownFile
+from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from trouver.markdown.obsidian.links import (
-    LinkType, ObsidianLink
+    LinkType, LinkFormatError, ObsidianLink
 )
-from .parse import notation_in_note
+from .parse import notation_in_note, parse_notation_note
 from trouver.markdown.obsidian.personal.notation.in_standard_information_note import (
     notat_str_from_doub_asts_in_std_info_note, notations_and_main_notes,
     add_notation_note_to_see_also, notation_note_is_linked_in_see_also_section,
@@ -31,6 +33,8 @@ from trouver.markdown.obsidian.personal.note_type import (
     PersonalNoteTypeEnum, note_is_of_type
 )
 from ...vault import VaultNote
+from ...vault_and_links import all_links_in_vault
+# import trouver.markdown.obsidian.vault_and_links
 
 # %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 5
 def notations_to_add_in_index(
@@ -278,7 +282,8 @@ def make_notation_notes_from_double_asts(
     
 
 def _latex_in_original_in_notat(
-        notation_note: VaultNote
+        notation_note: VaultNote,
+        default_to_notation_in_note: bool = True # If `True`, then the list with the single item `notation_note_note(notation_note)` is returned.
         ) -> list[str]:
     """Return the `latex_in_original` metadata section of the notation note.
     
@@ -291,8 +296,10 @@ def _latex_in_original_in_notat(
     if metadata is not None:
         return metadata.get('latex_in_original',
                             [notation_in_note(notation_note).strip('$')])
-    else:
+    elif default_to_notation_in_note:
         return [notation_in_note(notation_note)]
+    else:
+        return []
 
     
 def _latex_in_original_from_notat_notes_to_main_note(
@@ -317,11 +324,11 @@ def _latex_in_original_from_notat_notes_to_main_note(
 
 
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 45
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 46
 def make_notation_notes_from_HTML_tags(
-        main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
-        vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
-        reference_name: str,
+        main_note: VaultNote, # The standard information note in which the notations are marked with HTML tags.
+        vault: PathLike, 
+        reference_name: str, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
         destination: Optional[PathLike] = None, # The directory to create the new notation notes in.  If `None`, then creates the new notation note in the same place as the note specified by `note_name`
         overwrite: bool = False, # If `True`, overwrite file of the same path as the new notation file to be written, if such a file exists.  Otherwise, does nothing. Defaults to `False`.
         add_to_main: bool = True # If `True`, adds links to the notation note in the `See Also` section of the main note.
@@ -390,7 +397,238 @@ def make_notation_notes_from_HTML_tags(
         main_note, vault, reference_name, notations_to_create,
         destination, overwrite, add_to_main)
 
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 50
+def notation_note_has_no_verified_content(
+    notation_note: VaultNote,
+    ) -> bool:
+    r"""
+    Return `True` if `notation_note` has no genuine content
+    or if the content is determined to have been auto-generated.
+    is determined to not
+    have any genuine content or the content is auto-generated.
+
+    """
+    mf = MarkdownFile.from_vault_note(notation_note)
+    _, _, _, content, links = parse_notation_note(notation_note)
+    if not str(content).strip():
+        return True
+    # In the absence of the `_auto/notation_summary` tag, 
+    # any content that is present is probably not auto-generated.
+    if not mf.has_tag('_auto/notation_summary'):
+        return False
+    # If the notation note has a link, then its content is
+    # probably not auto-generated.
+    if links:
+        return False
+    return True
+
 # %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 52
+def remove_bad_notation_notes(
+        main_note: VaultNote, # The standard information note in which the notations are marked with HTML tags and which notation notes are to be removed as appropriate.
+        vault: PathLike, 
+        # reference_name: str, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
+        # destination: Optional[PathLike] = None, # The directory to create the new notation notes in.  If `None`, then creates the new notation note in the same place as the note specified by `note_name`
+        # overwrite: bool = False, # If `True`, overwrite file of the same path as the new notation file to be written, if such a file exists.  Otherwise, does nothing. Defaults to `False`.
+        # add_to_main: bool = True, # If `True`, adds links to the notation note in the `See Also` section of the main note.
+        links_in_vault: Optional[dict[str, list[str]]] = None, # An output to `all_links_in_vault` with `backlinks` set to `True`. If `None`, then this is computed on-the-fly. 
+        ) -> list[VaultNote]: # The list of VaultNotes that are newly created/modified.
+    r"""
+    Remove "bad" notation notes associated to `main_note`
+
+    A "bad" notation note is one which satisfies all of the
+    following:
+
+    1. is determined to essentially have no verified content (via
+       the `notation_note_has_no_verified_content` function).
+    2. is not linked to anything in `vault` except for `main_note`.
+    # 3. all entries of the `latex_in_original` field in the YAML
+       frontmatter meta are not present in `main_note`
+
+    """
+    if not links_in_vault:
+        links_in_vault = all_links_in_vault(vault, backlinks=True)
+    
+    mf = MarkdownFile.from_vault_note(main_note)
+    # heading_index = mf.get_line_number_of_heading(title='See Also')
+    lines_to_remove = _remove_notation_notes(mf, vault, links_in_vault)
+    for line_to_remove in reversed(lines_to_remove):
+        mf.remove_line(line_to_remove)
+    mf.write(main_note)
+
+
+def _remove_notation_notes(
+        mf: MarkdownFile, # The `MarkdownFile` object constructed from `main_note`
+        vault: PathLike,
+        links_in_vault: dict[str, list[str]]
+        ) -> list[int]:
+    """
+    Find notation notes linked to the main notes, delete the bad ones,
+    and return a list of indices for lines in `mf` corresponding
+    to bulleted links in the `'See Also'` section.
+
+    This is a Helper function to ```remove_bad_notation_notes```.
+
+    """
+    heading_index = mf.get_line_number_of_heading(title='See Also')
+    lines_to_remove = []
+    for ind, part in enumerate(mf.parts[heading_index+1:]):
+        if part['type'] == MarkdownLineEnum.HEADING:
+            break
+        line_text = part['line']
+        link_text = line_text.strip('- \n\t\r')
+        try:
+            link_object = ObsidianLink.from_text(link_text)
+        except LinkFormatError as e:
+            continue
+        note_name = link_object.file_name
+        linked_note = VaultNote(vault, name=note_name, update_cache=False)
+        if not note_is_of_type(linked_note, PersonalNoteTypeEnum.NOTATION_NOTE):
+            continue
+        if _notation_note_is_bad(linked_note, links_in_vault):
+            lines_to_remove.append(ind + heading_index + 1)
+            linked_note.delete()
+    return lines_to_remove
+
+
+
+
+
+def _notation_note_is_bad(
+        notation_note: VaultNote,
+        links_in_vault: dict[str, list[str]],
+        ) -> bool:
+    r"""
+    "Bad" notes are to be removed.
+
+    This is a helper function to `remove_bad_notation_notes`.
+    """
+    if not notation_note_has_no_verified_content(notation_note):
+        return False
+    mf = MarkdownFile.from_vault_note(notation_note)
+    # metadata = mf.metadata()
+    # if 'latex_in_original' not in metadata:
+    #     return False
+
+    # latex_in_original_candidates = set(
+    #     _latex_in_original_of_html_tags(str(mf)))
+    # for entry in metadata['latex_in_original']:
+    #     entry = entry.replace(r'\\', "\\")
+    #     if entry in latex_in_original_candidates:
+    #         return False
+
+    if (notation_note.name in links_in_vault
+            and len(links_in_vault[notation_note.name]) > 1):
+        return False
+    return True
+
+
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 55
+def _latex_in_original_of_html_tags(text: str) -> list[str]:
+    r"""
+    Each string represents the latex string
+    (without surrounding dollar signs) encapsulated by the
+    HTML tags with the 'notation' attribute.
+    """
+    _, html_tags = remove_html_tags_in_text(text)
+    return [tag.getText().strip('$') for tag, _, _ in html_tags
+            if 'notation' in tag.attrs.keys()]
+
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 56
+def reorder_notation_note_links_in_see_also_section(
+    main_note: VaultNote,
+    vault: PathLike
+    ) -> None:
+    r"""
+    Reorder the bulleted links to the notation notes
+    in the `# See Also` section to match the order
+    of the "latex in original" latex strings as they
+    appear in `main_note`. 
+
+    Assumes that the `# See Also` section begins with bulleted
+    links to notation notes and that all bulleted links to
+    notation notes in `main_note` reside at the beginning
+    of the `# See Also` section.
+    """
+    mf = MarkdownFile.from_vault_note(main_note)
+    heading_index = mf.get_line_number_of_heading(title='See Also')
+    notation_note_names = []
+    for ind, part in enumerate(mf.parts[heading_index+1:]):
+        if part['type'] == MarkdownLineEnum.HEADING:
+            break
+        line_text = part['line']
+        link_text = line_text.strip('- \n\t\r')
+        try:
+            link_object = ObsidianLink.from_text(link_text)
+        except LinkFormatError as e:
+            continue
+        note_name = link_object.file_name
+        linked_note = VaultNote(vault, name=note_name, update_cache=False)
+        if note_is_of_type(linked_note, PersonalNoteTypeEnum.NOTATION_NOTE):
+            notation_note_names.append(link_object.file_name)
+        else:
+            break
+    notation_note_names = _order_of_notat_notes(mf, vault, notation_note_names)
+    mf.remove_lines(heading_index + 1, ind + heading_index + 1)
+    for name in reversed(notation_note_names):
+        mf.add_line_in_section(
+            'See Also',
+            {'line': f'- [[{name}]]',
+             'type': MarkdownLineEnum.UNORDERED_LIST})
+    mf.write(main_note)
+    
+
+
+def _first_latex_in_original(
+        notation_note: VaultNote):
+    """
+    Helper function to `reorder_notation_note_links_in_see_also_section`.
+    """
+    listy = _latex_in_original_in_notat(notation_note, default_to_notation_in_note=False)
+    if listy:
+        return listy[0].replace(r'\\', '\\')
+    return None
+
+
+def _get_index_of_latex_in_original(
+        latex_in_original: str,
+        notat_note_names_and_inds: dict[str, int]
+        ) -> int:
+    """
+    Helper function to `reorder_notation_note_links_in_see_also_section`.
+    """
+    if latex_in_original in notat_note_names_and_inds:
+        return notat_note_names_and_inds[latex_in_original]
+    return -1
+
+
+def _order_of_notat_notes(
+        mf: MarkdownFile, # The `MarkdownFile` object constructed from mthe main note.
+        vault: PathLike,
+        notation_note_names: list[str]
+        ) -> list[str]:
+    """
+    Return the names of the notation notes in the order
+    that they should appear in the `# See Also` section
+    of the main note.
+    """
+    notat_note_names_and_latex_in_original = [
+        (name, _first_latex_in_original(VaultNote(vault, name=name)))
+         for name in notation_note_names]
+    _, html_tags = remove_html_tags_in_text(str(mf))
+    latex_in_original_order = {}
+    # for (tag, _, _), ind in enumerate(html_tags):
+    #     latex_in_original_order[tag.getText().strip('$')] = ind
+    latex_in_original_order = {
+        tag.getText().strip('$'): ind
+        for ind, (tag, _, _) in enumerate(html_tags)}
+    notat_note_names_and_inds = [
+        (name, _get_index_of_latex_in_original(
+            latex_in_original, latex_in_original_order))
+         for (name, latex_in_original) in notat_note_names_and_latex_in_original]
+    notat_note_names_and_inds = sorted(notat_note_names_and_inds, key=lambda x: x[1])
+    return [name for name, _ in notat_note_names_and_inds]
+
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 65
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -496,7 +734,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 56
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 69
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     """Returns a regex str to detect the notation of the notation note.
     

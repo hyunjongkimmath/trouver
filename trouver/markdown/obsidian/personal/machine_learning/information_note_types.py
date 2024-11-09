@@ -4,8 +4,9 @@
 
 # %% auto 0
 __all__ = ['LABEL_TAGS', 'note_is_labeled_with_tag', 'note_labels', 'gather_information_note_types',
-           'append_to_information_note_type_database', 'predict_text_types', 'predict_note_types',
-           'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
+           'append_to_information_note_type_database', 'possible_text_type_labels',
+           'predict_text_types_with_one_learner', 'consolidate_single_text_predictions_by_sum_of_confidence',
+           'predict_note_types', 'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
 
 # %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 3
 LABEL_TAGS = [
@@ -21,11 +22,12 @@ import os
 from os import PathLike
 from pathlib import Path
 import shutil
-from typing import Optional
+from typing import Callable, Optional
 import warnings
 
 from fastai.text.learner import TextLearner
 import pandas as pd
+import torch
 
 from .....helper.date_and_time import current_time_formatted_to_minutes
 from ....markdown.file import MarkdownFile
@@ -75,6 +77,7 @@ def note_labels(
 def gather_information_note_types(
         vault: PathLike,
         notes: list[VaultNote],
+        raise_error_that_arises: bool = True,
         ) -> pd.DataFrame: # Has columns `Time added`, `Time modified`, `Note name`, `Full note content`, `Processed note content` as well as columns for each tag label. See `append_to_information_note_type_database` for more details about these columns.
     """
     Return a `pandas.DataFrame` encapsulating the data of note labels.
@@ -82,23 +85,30 @@ def gather_information_note_types(
     labels_of_notes = [note_labels(note) for note in notes]
     rows = []
     current_time = current_time_formatted_to_minutes()
-    for i, (note, labels_of_note) in enumerate(zip(notes, labels_of_notes)):
+    for _, (note, labels_of_note) in enumerate(zip(notes, labels_of_notes)):
         mf = MarkdownFile.from_vault_note(note)
-        rows.append({
-            'Time added': current_time,
-            'Time modified': current_time,
-            'Note name': note.name,
-            'Full note content': str(mf), 
-            'Processed note content': str(process_standard_information_note(
-                mf, vault)),
-            **labels_of_note
-        })
+        try:
+            rows.append({
+                'Time added': current_time,
+                'Time modified': current_time,
+                'Note name': note.name,
+                'Full note content': str(mf), 
+                'Processed note content': str(process_standard_information_note(
+                    mf, vault)),
+                **labels_of_note
+            })
+        except Exception as e:
+            print(f'Error occurred when trying to gather note type labels from the following note: {note.name}')
+            print('The note produced the following error:')
+            print(e)
+            if raise_error_that_arises:
+                raise(e)
     return pd.DataFrame(rows)
     # notes_with_processed_text_and_
     # process_standard_information_note
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 16
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 17
 def append_to_information_note_type_database(
         vault: PathLike, # The vault freom which the data is drawn
         file: PathLike, # The path to a CSV file
@@ -149,38 +159,121 @@ def append_to_information_note_type_database(
         file, new_df, cols, 'Processed note content', cols_to_update, backup)
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 20
-def predict_text_types(
-        learn: TextLearner, # The ML model predicting note types.
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 21
+def possible_text_type_labels(
+        learn: TextLearner
+        ) -> list[str]:
+    """Return the possible labels outputted by `learn.predict`
+    """
+    return learn.dls.vocab.items[1]
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 22
+def predict_text_types_with_one_learner(
+        learner: TextLearner, # The ML models predicting note types.
         texts: list[str],
-        remove_NO_TAG: bool = True # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
-        ) -> list[list[str]]: # Each list corresponds to a text and contains the predicted types of the text.
+        remove_NO_TAG: bool = True, # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
+        include_probabilities: bool = False, # If `True`, then  
+        ) -> list[list[str] | tuple[list[str], dict[str, float]]]: # Each list or tuple corresponds to each entry from `text` and contains the predicted types of the text. A `list[str]` consists of the predicted types/labels of the text and a `tuple[list[str], dict[str,float]]` contains the list of predicted types along with a dict of all possible types predictable by `learn` along with probabilities.
     """Predict the types of mathematical texts using an ML model."""
     predictions = []
     for text in texts:
-        with learn.no_bar(), learn.no_logging():
-            pred, loss, _ = learn.predict(text)
+        with learner.no_bar(), learner.no_logging():
+            pred, _, probabilities = learner.predict(text)
         if remove_NO_TAG and 'NO_TAG' in pred:
             pred.remove('NO_TAG')
-        predictions.append(list(pred))
+        if include_probabilities:
+            predictions.append(
+                (list(pred), 
+                 _make_probability_dict(probabilities,
+                                        possible_text_type_labels(learner))))
+        else:
+            predictions.append(list(pred))
     return predictions
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 24
+
+def _make_probability_dict(
+        probabilities: list[torch.Tensor],
+        possible_labels: list[str]
+        ) -> dict[str, float]:
+    return {label: prob.item() for label, prob in zip(possible_labels, probabilities)}
+
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 27
+def consolidate_single_text_predictions_by_sum_of_confidence(
+        predictions_for_single_text: list[tuple[list[str], dict[str, float]]] # Each tuple corresponds to the predictions made by each model.
+        ) -> list[str]: # The labels
+    """
+    Consolidate single text predictions by summing the "probabilities"
+    predicted by the various models. If the sum of the probabilities that
+    the label should be predicted is greater than the sum of the probabilities
+    that the label should not be predicted, then the label is predicted.
+
+    This is a sample input to the `consolidation` parameter of the
+    `predict_note_types` function
+
+    """
+    all_keys = set.union(
+        *[set(probs.keys()) for _, probs in predictions_for_single_text])
+    # If tally is positive in the end, then the label is predicted
+    # Otherwise, the label is not predicted.
+    tally = {key: 0 for key in all_keys}
+    for _, probs in predictions_for_single_text:
+        for key in tally:
+            if key in probs:
+                tally[key] += probs[key] - (1- probs[key])
+    return [key for key in tally if tally[key] > 0]
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 28
 def predict_note_types(
-        learn: TextLearner, # The ML model predicting note types.
+        learners: TextLearner|list[TextLearner], # The ML models predicting note types.
         vault: PathLike, # The vault with the notes.
         notes: list[VaultNote], # The notes with texts to predict
-        remove_NO_TAG: bool = True # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
-        ) -> list[list[str]]:
+        remove_NO_TAG: bool = True, # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
+        consolidation: Optional[Callable] = consolidate_single_text_predictions_by_sum_of_confidence, # The method to consolidate between different predictions made by the possibly more-than-one model in `learners`.
+        ) -> list[list[str]]: # Each `list[str]`` corresponds to an item in `notes` and contains the predicted note types for that note.
+    """
+
+    **Parameters**
+
+    **Returns**
+
+
+    """
+    if not isinstance(learners, list):
+        learners = [learners]
     markdown_files = [
         MarkdownFile.from_vault_note(note) for note in notes]
     raw_note_contents = [
         str(process_standard_information_note(mf, vault)) for mf in markdown_files]
-    return predict_text_types(learn, raw_note_contents, remove_NO_TAG)
+    predictions_by_learners = [
+        predict_text_types_with_one_learner(
+            learner, raw_note_contents, remove_NO_TAG,
+            include_probabilities=True)
+        for learner in learners]
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 28
+    predictions_by_texts = _transpose_list(predictions_by_learners)
+    consolidated_predictions = [
+        consolidation(predictions_by_text)
+        for predictions_by_text in predictions_by_texts]
+    if remove_NO_TAG:
+        for preds in consolidated_predictions:
+            if 'NO_TAG' in preds:
+                preds.remove('NO_TAG')
+    return consolidated_predictions
+
+
+
+
+    # return predict_text_types(learners, raw_note_contents, remove_NO_TAG)
+
+def _transpose_list(original_list: list[list]):
+    return list(map(list, zip(*original_list)))
+
+
+
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 32
 def automatically_add_note_type_tags(
-        learn: TextLearner, # The ML model predicting note types.
+        learners: TextLearner|list[TextLearner], # The ML model(s) predicting note types.
         vault: PathLike, # The vault with the notes
         notes: list[VaultNote],
         add_auto_label: bool = True, # If `True`, adds `"_auto"` to the front of the note type tag to indicate that the tags were added via this automated script.
@@ -200,11 +293,13 @@ def automatically_add_note_type_tags(
         and `learn` predicts different note types as those in the note.
     
     """
+    if not isinstance(learners, list):
+        learners = [learners]
     if overwrite not in ['w', 'ws', 'ww', 'a'] and overwrite is not None:
         raise ValueError(
             f"`overwrite` was expected to be 'w', 'ws,', 'ww', 'a', or None," 
             f" but was {overwrite}")
-    predictions = predict_note_types(learn, vault, notes)
+    predictions = predict_note_types(learners, vault, notes)
     # remove hashtags
     predictions = [[tag[1:] if tag.startswith('#') else tag for tag in tags]
                    for tags in predictions]
@@ -288,7 +383,7 @@ def _has_any_label_tags(
             return False
     return True
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 42
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 46
 def convert_auto_tags_to_regular_tags_in_notes(
         notes: list[VaultNote], 
         exclude: list[str] = ['links_added', 'notations_added'] # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.

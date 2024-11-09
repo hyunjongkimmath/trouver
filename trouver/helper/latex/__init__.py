@@ -20,6 +20,15 @@ from ..regex import latex_indices, replace_string_by_indices
 from .macros_and_commands import regex_pattern_detecting_command
 
 # %% ../../../nbs/47_helper.latex.ipynb 9
+def _does_not_end_with_script(s):
+    """
+    This is a helper function to `math_mode_string_is_syntactically_valid`.
+    `s` is not supposed to have math mode delimits
+    """
+    s = s.strip(' $')
+    return not s.endswith('_') and not s.endswith('^')
+
+# %% ../../../nbs/47_helper.latex.ipynb 11
 def _is_balanced_braces(s):
     """
     This is a helper function to `math_mode_string_is_syntactically_valid`.
@@ -44,7 +53,7 @@ def _is_balanced_braces(s):
     return len(stack) == 0
 
 
-# %% ../../../nbs/47_helper.latex.ipynb 11
+# %% ../../../nbs/47_helper.latex.ipynb 13
 def _detect_backslash_space_curly(
         text: str
         ) -> bool:
@@ -61,7 +70,7 @@ def _detect_backslash_space_curly(
     match = re.search(pattern, text)
     return bool(match)
 
-# %% ../../../nbs/47_helper.latex.ipynb 13
+# %% ../../../nbs/47_helper.latex.ipynb 15
 def _is_left_right_balanced(
         latex_string: str
         ) -> bool:
@@ -127,7 +136,7 @@ def _is_left_right_balanced(
     # # Check if all counts are zero (balanced)
     # return all(count == 0 for count in brace_counts.values()) 
 
-# %% ../../../nbs/47_helper.latex.ipynb 15
+# %% ../../../nbs/47_helper.latex.ipynb 17
 def _is_semantically_left_right_balanced(
         latex_string: str
         ) -> bool:
@@ -178,7 +187,7 @@ def _is_semantically_left_right_balanced(
     return len(stack) == 0
 
 
-# %% ../../../nbs/47_helper.latex.ipynb 17
+# %% ../../../nbs/47_helper.latex.ipynb 19
 def _has_invalid_left_right_bracket(
         latex_string: str
         ) -> bool:
@@ -228,14 +237,12 @@ def _has_invalid_left_right_bracket(
     # return False, None
     return False
 
-# %% ../../../nbs/47_helper.latex.ipynb 19
-import re
-
+# %% ../../../nbs/47_helper.latex.ipynb 21
 def _has_double_script(
         latex_string: str
         ) -> bool:
     """
-    Return `True` is there is at least one double superscript
+    Return `True` if there is at least one double superscript
     or double subscript in `latex_string` 
 
     This function fails to give correct outputs for more
@@ -286,7 +293,23 @@ def _has_double_script(
 
     return False
 
-# %% ../../../nbs/47_helper.latex.ipynb 21
+# %% ../../../nbs/47_helper.latex.ipynb 23
+def _has_double_script_literal(
+        latex_string: str
+        ) -> bool:
+    """
+    Return `True` if there is at least one double superscript
+    or double subscript in `latex_string` by virtue of having
+    `__`, `_^`, `^_, `^^`
+
+    This is a helper function of `math_mode_string_is_syntactically_valid`
+    """
+    for bad_text in ['__', '_^', '^_', '^^']:
+        if bad_text in latex_string:
+            return True
+    return False
+
+# %% ../../../nbs/47_helper.latex.ipynb 25
 def _has_unescaped_dollar(s):
     # Pattern explanation:
     # (?<!\\) is a negative lookbehind assertion that ensures the dollar sign is not preceded by a backslash
@@ -295,7 +318,7 @@ def _has_unescaped_dollar(s):
     match = re.search(pattern, s)
     return bool(match)
 
-# %% ../../../nbs/47_helper.latex.ipynb 24
+# %% ../../../nbs/47_helper.latex.ipynb 28
 def extract_latex_commands(latex_string):
     # Create a LatexWalker instance
     walker = LatexWalker(latex_string)
@@ -365,7 +388,7 @@ def _detect_begin_and_end_environments(
     
     return result
 
-# %% ../../../nbs/47_helper.latex.ipynb 27
+# %% ../../../nbs/47_helper.latex.ipynb 31
 # Some arguments that can be used towards `regex_pattern_detecting_command`
 # for some basic latex arguments.
 # Note that the last argument doesn't actually matter, because
@@ -473,7 +496,7 @@ REGEX_PATTERN_DETECTIONS = temp_dict
 
 
 
-# %% ../../../nbs/47_helper.latex.ipynb 28
+# %% ../../../nbs/47_helper.latex.ipynb 32
 def detect_incorrect_latex_commands(
         latex_string: str,
         ) -> bool:
@@ -506,7 +529,7 @@ def detect_incorrect_latex_commands(
         #     return True
     return False
 
-# %% ../../../nbs/47_helper.latex.ipynb 30
+# %% ../../../nbs/47_helper.latex.ipynb 34
 def detect_unbalanced_environments(
         latex_string: str) -> list[str]:
     # Define a regex pattern to match \begin{...} and \end{...}
@@ -539,7 +562,7 @@ def detect_unbalanced_environments(
 
     return errors
 
-# %% ../../../nbs/47_helper.latex.ipynb 32
+# %% ../../../nbs/47_helper.latex.ipynb 36
 def math_mode_string_is_syntactically_valid(
         text: str,
         ) -> bool:
@@ -565,6 +588,8 @@ def math_mode_string_is_syntactically_valid(
             return False
         if (math_mode_indices[0][0] != 0 or math_mode_indices[0][1] != len(text)):
             return False
+    if not _does_not_end_with_script(text):
+        return False
     if _detect_backslash_space_curly(text):
         return False
     if not _is_balanced_braces(text):
@@ -575,6 +600,8 @@ def math_mode_string_is_syntactically_valid(
         return False
     if _has_double_script(text):
         return False
+    if _has_double_script_literal(text):
+        return False
     if detect_incorrect_latex_commands(text):
         return False
     if bool(detect_unbalanced_environments(text)):
@@ -583,7 +610,7 @@ def math_mode_string_is_syntactically_valid(
 
 
 
-# %% ../../../nbs/47_helper.latex.ipynb 47
+# %% ../../../nbs/47_helper.latex.ipynb 51
 # def math_mode_string_is_syntactically_clean(
 #         text: str,
 #         ) -> bool:
@@ -598,7 +625,7 @@ def math_mode_string_is_syntactically_valid(
 #     if r'\\' in text:
 #         return False
 
-# %% ../../../nbs/47_helper.latex.ipynb 50
+# %% ../../../nbs/47_helper.latex.ipynb 54
 def reduce_unnecessary_spaces(
         text: str,
 
@@ -616,7 +643,7 @@ def reduce_unnecessary_spaces(
     # for char in ['{', '_', '^', '}', '\\']:
     #     text = re.sub(fr'\s*{chr}\s*', chr, text)
 
-# %% ../../../nbs/47_helper.latex.ipynb 53
+# %% ../../../nbs/47_helper.latex.ipynb 57
 def fix_autogen_formatting(
         text: str
         ) -> str:
@@ -677,7 +704,7 @@ def _insert_newline_or_spaces_around_latex(
     text = text.replace('$$\n\n\n$$', '$$\n\n$$')
     return text
 
-# %% ../../../nbs/47_helper.latex.ipynb 60
+# %% ../../../nbs/47_helper.latex.ipynb 64
 def _tokenize_latex_math(
         latex_string: str
         ) -> list[str]:
@@ -703,7 +730,7 @@ def _tokenize_latex_math(
     return token_list
 
 
-# %% ../../../nbs/47_helper.latex.ipynb 62
+# %% ../../../nbs/47_helper.latex.ipynb 66
 def _list_of_candidates_from_math_mode_strings(
         main_content: str, # A text of LaTeX code. In practice, this should be the `main content` of an information note, cf. `summarize_notation`.`
         syntax_validation: Callable[str, bool] = math_mode_string_is_syntactically_valid # A test to tell whether a math mode string is syntactically  valid.
@@ -726,7 +753,7 @@ def _list_of_candidates_from_math_mode_strings(
                 syntactically_valid_substrings.append(substring.strip())
     return set(syntactically_valid_substrings)
 
-# %% ../../../nbs/47_helper.latex.ipynb 65
+# %% ../../../nbs/47_helper.latex.ipynb 69
 def _find_closest_match(
         math_mode_text: str,
         replacement_candidates: list[str]
@@ -740,7 +767,7 @@ def _find_closest_match(
     closest_match = min(distances, key=lambda x: x[1])
     return closest_match[0]
 
-# %% ../../../nbs/47_helper.latex.ipynb 67
+# %% ../../../nbs/47_helper.latex.ipynb 71
 def correct_latex_syntax_error(
         summary: str, # The autogenerated summary
         replacement_candidates: list[str], # A list of candidates to replace. This is expected to be an output of `_list_of_candidates_from_math_mode_strings`

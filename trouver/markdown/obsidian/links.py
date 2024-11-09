@@ -235,6 +235,9 @@ class ObsidianLink:
         # TODO: Choose what to do about | vs. \|.
         return self.to_string()
 
+    def __hash__(self) -> int:
+        return hash(self.to_regex())
+
     def to_string(self
             ) -> str: # The string for the link
         """
