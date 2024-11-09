@@ -495,16 +495,22 @@ class VaultNote:
         old_markdownlink_pattern_by_name_2 = ObsidianLink(
             is_embedded=False, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
         self.move_to(parent_dir / f'{new_name}.md')
+        if not replace_links_in_vault:
+            return
         for name, paths in self.__class__.cache[str(self.vault)].items():
             for path in paths:
                 other_note = VaultNote(vault=self.vault, rel_path=path)
-                text = other_note.text()
+                if not other_note.exists():
+                    continue
+                original_text = other_note.text()
+                text = original_text
                 text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
                 text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, new_link_name=f'{new_name}.md')
                 text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, new_link_name=f'{new_name}')
-                with open(other_note.path(), 'w', encoding='utf-8') as file:
-                    file.write(text)
-                    file.close()
+                if text != original_text:
+                    with open(other_note.path(), 'w', encoding='utf-8') as file:
+                        file.write(text)
+                        file.close()
         
     def text(self
             ) -> str: # Text contained in the note, assuming that the note exists.

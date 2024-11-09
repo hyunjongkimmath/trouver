@@ -74,7 +74,7 @@ def bulleted_links_of_type_in_section(
     # parsed = MarkdownFile.from_file(Path(vault) / info_path)
     heading_index = parsed.get_line_number_of_heading(title=section)
     
-    list_of_note_names_of_type = []
+    list_of_note_links_of_type = []
     for part in parsed.parts[heading_index+1:]:
         if part['type'] == MarkdownLineEnum.HEADING:
             break
@@ -87,11 +87,11 @@ def bulleted_links_of_type_in_section(
         note_name = link_object.file_name
         linked_note = VaultNote(vault, name=note_name, update_cache=False)
         if note_is_of_type(linked_note, note_type):
-            list_of_note_names_of_type.append(link_object)
+            list_of_note_links_of_type.append(link_object)
         # if note_is_of_type(note_type, note_path_by_name(note_name, vault),
         #                    vault):
         #     list_of_note_names_of_type.append(link_object)
-    return list_of_note_names_of_type
+    return list_of_note_links_of_type
 
 # %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 8
 def links_to_common_terms_notes_in_see_also_section(
