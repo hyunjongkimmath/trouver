@@ -115,7 +115,6 @@ def reference_directory(
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 14
 # TODO: test delete reference and template files when reference folder does not exist.
-# TODO: this method is long. make private helper methods
 def delete_reference_folder(
         vault: PathLike, # The vault in which the reference folder resides.
         reference: Union[str, PathLike], # The reference to delete. Is either a str, in which case the folder to delete will be the folder containing the (unique) note of the name `_index_{reference}.md`, or a path relative to `vault`. 
@@ -163,43 +162,104 @@ def delete_reference_folder(
         reference_path = None
         reference_name = path_name_no_ext(str(reference))
     
-    try:
-        template_note = VaultNote(vault, name=f'_template_{reference_name}')
-    except NoteDoesNotExistError:
+    template_note, reference_note = _find_template_and_reference_notes(reference_name)
+    delete = _confirm_for_deletion(confirm, reference_path, absolute_path,
+                                   template_note, reference_note)
+
+    if delete:
+        _execute_deletion(reference_path, absolute_path, template_note,
+                          reference_note, verbose)
+    elif verbose:
+        print(f"Aborting deleting reference.\n")
+
+
+def _find_template_and_reference_notes(
+        reference_name = str,
+        ) -> tuple[VaultNote|None]: 
+    """
+    Helper function to `delete_reference_folder`.
+    """
+    # try:
+    #     template_note = VaultNote(vault, name=f'_template_{reference_name}')
+    # # except NoteDoesNotExistError:
+    #     template_note = None
+    # try:
+    #     reference_note = VaultNote(vault, name=f'_reference_{reference_name}')
+    # except NoteDoesNotExistError:
+    #     reference_note = None
+
+    template_note = VaultNote(vault, name=f'_template_{reference_name}')
+    reference_note = VaultNote(vault, name=f'_reference_{reference_name}')
+    if not template_note.rel_path_identified():
         template_note = None
-    try:
-        reference_note = VaultNote(vault, name=f'_reference_{reference_name}')
-    except NoteDoesNotExistError:
+    if not reference_note.rel_path_identified():
         reference_note = None
-        
+    return template_note, reference_note
+
+
+def _confirm_for_deletion(
+        confirm: bool,
+        reference_path: PathLike,
+        absolute_path: PathLike,
+        template_note: VaultNote|None,
+        reference_note: VaultNote|None,
+        ) -> bool:
+    """
+    Helper function to `delete_reference_folder`.
+    """
     if confirm:
-        input_msg = [f"Delete"]
-        if reference_path:
-            input_msg = [f"\n- all contents in the folder '{absolute_path}'"]
-        if template_note:
-            input_msg.append(f"\n- '{template_note.path()}'")
-        if reference_note:
-            input_msg.append(f"\n- '{reference_note.path()}'")
-        input_msg.append(f"?\n[Y/(n)]")
+        input_msg = _input_message(reference_path, absolute_path, template_note,
+                                   reference_note)
         command = input(''.join(input_msg))
         delete = command == 'Y'
     else:
         delete = True
+    return delete
 
-    if delete:
-        if verbose:
-            print("Deleting...")
-        if reference_path:
-            shutil.rmtree(absolute_path)
-            # TODO: delete the reference folder in a way that updates the cache.
-        if template_note:
-            template_note.delete()
-        if reference_note:
-            reference_note.delete()
-        if verbose:
-            print(f"Deleted reference.\n")
-    elif verbose:
-        print(f"Aborting deleting reference.\n")
+
+def _input_message(
+        reference_path: PathLike,
+        absolute_path: PathLike,
+        template_note: VaultNote|None,
+        reference_note: VaultNote|None,
+        ) -> list[str]:
+    """
+    Helper function to `delete_reference_folder`.
+    """
+    input_msg = [f"Delete"]
+    if reference_path:
+        input_msg = [f"\n- all contents in the folder '{absolute_path}'"]
+    if template_note:
+        input_msg.append(f"\n- '{template_note.path()}'")
+    if reference_note:
+        input_msg.append(f"\n- '{reference_note.path()}'")
+    input_msg.append(f"?\n[Y/(n)]")
+    return input_msg
+
+
+
+def _execute_deletion(
+        reference_path: PathLike,
+        absolute_path: PathLike,
+        template_note: VaultNote|None,
+        reference_note: VaultNote|None,
+        verbose: bool
+        ) -> None:
+    """
+    Helper function to `delete_reference_folder`.
+    """
+    if verbose:
+        print("Deleting...")
+    if reference_path:
+        shutil.rmtree(absolute_path)
+        # TODO: delete the reference folder in a way that updates the cache.
+    if template_note:
+        template_note.delete()
+    if reference_note:
+        reference_note.delete()
+    if verbose:
+        print(f"Deleted reference.\n")
+
 
 
 
