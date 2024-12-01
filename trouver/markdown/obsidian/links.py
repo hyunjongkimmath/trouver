@@ -13,9 +13,9 @@ from typing import Union
 
 # %% auto 0
 __all__ = ['WIKILINK_PATTERN', 'EMBEDDED_WIKILINK_PATTERN', 'WIKILINK_CAPTURE_PATTERN', 'MARKDOWNLINK_PATTERN',
-           'EMBEDDED_MARKDOWNLINK_PATERN', 'MARKDOWNLINK_CAPTURE_PATTERN', 'EMBEDDED_PATTERN',
-           'find_links_in_markdown_text', 'LinkFormatError', 'LinkType', 'ObsidianLink', 'links_from_text',
-           'remove_links_from_text', 'replace_links_in_text']
+           'EMBEDDED_MARKDOWNLINK_PATERN', 'MARKDOWNLINK_CAPTURE_PATTERN', 'EMBEDDED_PATTERN', 'link_ranges_in_text',
+           'LinkFormatError', 'LinkType', 'ObsidianLink', 'links_from_text', 'remove_links_from_text',
+           'replace_links_in_text']
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 4
 # TODO Make it so that these patterns don't capture latex code
@@ -35,11 +35,9 @@ EMBEDDED_PATTERN = f'{EMBEDDED_WIKILINK_PATTERN}|{EMBEDDED_MARKDOWNLINK_PATERN}'
 # MARKDOWNLINK_CAPTURE = r'!?\[([^\]]+)\]\(([^)#])+(#[^)]+)?\)'
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 7
-def find_links_in_markdown_text(
+def link_ranges_in_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is an obsidian internal link.
-    # TODO: rename this function, say to link_ranges_in_text, 
-    # because it is confusing when there is a links_from_text function below.
     """Return ranges in the markdown text string
     where internal links occur.
 
@@ -51,7 +49,7 @@ def find_links_in_markdown_text(
     return find_regex_in_text(text, pattern=regex)
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 12
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 11
 class LinkFormatError(Exception):
     """Error that is raised when a string cannot be parsed as an
     `ObsidianLink` object.
@@ -64,7 +62,7 @@ class LinkFormatError(Exception):
         self.text = text
         super().__init__(f'Obsidian Markdown link is not formatted properly: {text}')
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 13
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 12
 class LinkType(Enum):
     """An Enumeration indicating whether an `ObsidianLink` object is a
     Wikilink or a Markdown-style link.
@@ -81,7 +79,7 @@ class LinkType(Enum):
 
 
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 14
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 13
 class ObsidianLink:
     """Object representing an obsidian link
     
@@ -333,7 +331,7 @@ class ObsidianLink:
             and self.link_type == other.link_type)
     
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 56
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 55
 def links_from_text(
         text: str
         ) -> list[ObsidianLink]: # The `ObsidianLink` objects are ordered by appearance.
@@ -341,11 +339,11 @@ def links_from_text(
     Return a list of `ObsidianLink` objects corresponding to links
     found in the text.
     """
-    ranges = find_links_in_markdown_text(text)
+    ranges = link_ranges_in_text(text)
     link_strs = [text[start:end] for start, end in ranges]
     return [ObsidianLink.from_text(link_str) for link_str in link_strs]
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 60
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 59
 def remove_links_from_text(
         text: str,
         exclude: list[ObsidianLink] = None, # A list of `ObsidianLink` objects of links to not be removed.
@@ -359,7 +357,7 @@ def remove_links_from_text(
         exclude = []
     exclude_patterns = [re.compile(exclude_link.to_regex())
                         for exclude_link in exclude]
-    link_indices = find_links_in_markdown_text(text)
+    link_indices = link_ranges_in_text(text)
     new_text = text
     for start, end in reversed(link_indices):
         if _do_not_remove_link(text[start:end], exclude_patterns):
@@ -384,7 +382,7 @@ def _do_not_remove_link(text: str, exclude_patterns: list[re.Pattern]) -> bool:
             return True
     return False
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 69
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 68
 def replace_links_in_text(
         text: str,
         links_to_replace: ObsidianLink,
