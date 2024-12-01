@@ -29,7 +29,7 @@ def data_from_information_note(
     note.
 
     Definitions and notations should be marked by HTML tags (see
-    `markdown.obsidian.personal.machine_learning.tokenize`).
+    `markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification`).
     - A definition is to be marked by an HTML tag with a `definition` attribute,
       which is the definition's "name", i.e. words and/or phrases describing what
       the definition is called and to what objects/situations the definition
