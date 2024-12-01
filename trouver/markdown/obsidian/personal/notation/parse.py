@@ -11,7 +11,7 @@ import re
 from typing import Optional, Union
 
 from ....markdown.file import MarkdownFile, MarkdownLineEnum 
-from ...links import find_links_in_markdown_text, ObsidianLink, MARKDOWNLINK_PATTERN, MARKDOWNLINK_CAPTURE_PATTERN, WIKILINK_PATTERN
+from ...links import link_ranges_in_text, ObsidianLink, MARKDOWNLINK_PATTERN, MARKDOWNLINK_CAPTURE_PATTERN, WIKILINK_PATTERN
 from ...vault import VaultNote
 from ..note_type import assert_note_is_of_type, PersonalNoteTypeEnum
 
@@ -36,7 +36,7 @@ def _main_of_notation_from_text(
     start, end = match.span()
     file_text = file_text[end:]
     
-    link_locations = find_links_in_markdown_text(file_text)
+    link_locations = link_ranges_in_text(file_text)
     if not link_locations:
         return None
     start, end = link_locations[0]

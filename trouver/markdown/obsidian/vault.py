@@ -240,14 +240,6 @@ def note_name_from_path(
     return path_name_no_ext(note_path)
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 51
-# TODO: when making NoteNotFoundInCacheError, add it to
-# markdown.obsidian.personal.reference.delete_reference_folder
-
-# TODO: modify the constructor so that it does not need the note of the specified name to exist
-# TODO: look at parts where the cache is accessed/modified. Factor them out into getter/setter methods
-# taking in the vault and name as inputs.
-# TODO: look at how NoteDoesNotExistError is used and make modifications to account for the modification
-# of the constructor.
 # TODO: test hidden methods
 class VaultNote:
     """Represents a note in an Obsidian vault, without regards to the contents.

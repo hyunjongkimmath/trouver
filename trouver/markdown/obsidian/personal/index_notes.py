@@ -26,7 +26,7 @@ from trouver.markdown.markdown.file import (
 )
 from ...markdown.heading import heading_title
 from trouver.markdown.obsidian.links import (
-    find_links_in_markdown_text, ObsidianLink, links_from_text
+    link_ranges_in_text, ObsidianLink, links_from_text
 )
 from trouver.markdown.obsidian.vault import (
     VaultNote, note_name_unique, note_path_by_name
@@ -212,7 +212,7 @@ def move_information_notes_to_correct_folder_for_all_indices(
     """
     index_of_index_file = MarkdownFile.from_vault_note(index_of_index_notes)
     text = str(index_of_index_file)
-    index_files = find_links_in_markdown_text(text)
+    index_files = link_ranges_in_text(text)
     index_files = [ObsidianLink.from_text(text[start:end])
                    for start, end in index_files]
     for link in index_files:
