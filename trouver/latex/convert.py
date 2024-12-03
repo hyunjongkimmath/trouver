@@ -54,12 +54,6 @@ def _replace_custom_commands_in_parts(
         for title, text in parts]
 
 
-# def _adjust_common_syntax_to_markdown_in_parts(
-#         parts: list[tuple[str, str]]
-#         ) -> list[tuple[str, str]]:
-#     return [(title, adjust_common_syntax_to_markdown(text))
-#             for title, text in parts]
-
 # %% ../../nbs/16_latex.convert.ipynb 16
 def _adjust_common_section_titles_in_parts(
         parts: list[tuple[str, str]],

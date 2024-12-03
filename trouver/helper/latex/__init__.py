@@ -107,35 +107,6 @@ def _is_left_right_balanced(
     
     return True
 
-
-
-    # # Dictionary to store counts of left and right commands for each brace type
-    # brace_counts = {
-    #     '(': 0, ')': 0,
-    #     '[': 0, ']': 0,
-    #     '{': 0, '}': 0,
-    #     '|': 0,
-    #     '\\|': 0,
-    #     '\\{': 0, '\\}': 0,
-    #     '.': 0  # For \left. and \right.
-    # }
-    
-    # # Regular expression to match \left and \right commands
-    # pattern = r'\\(left|right)(\(|\)|\[|\]|{|}|\||\\\||\\{|\\}|\.)'
-    
-    # # Find all matches in the latex_string
-    # matches = re.finditer(pattern, latex_string)
-    
-    # for match in matches:
-    #     command, brace = match.groups()
-    #     if command == 'left':
-    #         brace_counts[brace] += 1
-    #     elif command == 'right':
-    #         brace_counts[brace] -= 1
-    
-    # # Check if all counts are zero (balanced)
-    # return all(count == 0 for count in brace_counts.values()) 
-
 # %% ../../../nbs/47_helper.latex.ipynb 17
 def _is_semantically_left_right_balanced(
         latex_string: str
@@ -628,7 +599,6 @@ def math_mode_string_is_syntactically_valid(
 # %% ../../../nbs/47_helper.latex.ipynb 54
 def reduce_unnecessary_spaces(
         text: str,
-
         ) -> str:
     """
     Return a string modifying `text` by removing spaces which are
