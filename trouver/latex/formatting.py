@@ -185,7 +185,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 25
+# %% ../../nbs/31_latex.formatting.ipynb 26
 def _inline_mathmode_to_own_paragraph(text: str):
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
@@ -269,7 +269,7 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 28
+# %% ../../nbs/31_latex.formatting.ipynb 29
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -327,7 +327,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/31_latex.formatting.ipynb 30
+# %% ../../nbs/31_latex.formatting.ipynb 31
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
