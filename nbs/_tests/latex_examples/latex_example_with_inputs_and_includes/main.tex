@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+\newcommand{\mycommand}[1]{{\bf #1}}
+\newcommand{\customsection}[1]{\section*{\underline{#1}}}
+
+\begin{document}
+
+\customsection{Introduction}
+This is the main document. We use \mycommand{custom commands} here.
+
+\input{definitions}
+
+Now we can use \newlydefinedfunc{input command}.
+
+\include{chapter1}
+
+Let's use \chaptercommand{include command} from chapter1.
+
+\input{subsection}
+
+Finally, we use \subsectioncommand{another input}.
+
+\end{document}

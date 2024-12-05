@@ -5,12 +5,17 @@
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'MATH_MODE_DELIMITERS', 'BEGIN_END_EQUATIONLIKE_ENV',
            'REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES', 'REMOVE_COMMENTS', 'INLINE_MATHMODE_TO_OWN_PARAGRAPH',
-           'MERGE_MULTILINE_PARAGRAPH', 'is_number', 'replace_command_in_text', 'replace_commands_in_text',
-           'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown']
+           'MERGE_MULTILINE_PARAGRAPH', 'REMOVE_XSPACE', 'REMOVE_ENSUREMATH', 'is_number', 'replace_command_in_text',
+           'replace_commands_in_text', 'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown',
+           'replace_input_and_include']
 
 # %% ../../nbs/31_latex.formatting.ipynb 2
 import re
 from typing import Union
+import os
+from os import PathLike
+from pathlib import Path
+import warnings
 
 import regex
 
@@ -90,30 +95,10 @@ def _replace_command(
     else:
         return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
 
-
-# def _replace_nonexplicit_instances_of_command(
-#         text: str,
-#         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-#     ) -> str:
-#     """
-#     Replace the nonexplicitly instances of a custom command. 
-
-#     Sometimes, a LaTeX command is used nonexplicitly, i.e. the arguments are not
-#     explicitly typed with surrounding curly braces `{}`.  An example of this phenomenon
-#     is a command named `\til` defined by `\newcommand{\til}[1]{{\widetilde{#1}}}`
-#     that is later invoked using `$\til \calh_g$`.
-
-#     This function is only a workaround.
-
-#     This is a helper function to `replace_command_in_text`.
-#     """
-
-
-
-# %% ../../nbs/31_latex.formatting.ipynb 15
+# %% ../../nbs/31_latex.formatting.ipynb 14
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
-        command_tuples: tuple[str, int, Union[None, str], str], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+        command_tuples: list[tuple[str, int, Union[None, str], str]], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
     ) -> str:
     """
@@ -136,7 +121,7 @@ def replace_commands_in_text(
             break
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 20
+# %% ../../nbs/31_latex.formatting.ipynb 19
 def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
@@ -150,20 +135,20 @@ def replace_commands_in_latex_document(
     Assumes that, if commands with the same name are defined multiple times,
     only the finally defined command is used. 
 
+    This function does not replace `\input`'s and `\include`'s with the code of the
+    corresponding files. See `replace_input_and_include`, which accomplishes this.
+
     Even replaces these invocations incommented out text.
     """
     preamble, document = divide_preamble(document)
     commands = custom_commands(preamble)
     # Note that `command_tuple[0]` is the name of the command.
-    # print(commands)
     unique_commands = {command_tuple[0]: command_tuple for command_tuple in commands} 
     document = replace_commands_in_text(document, list(unique_commands.values()), repeat)
-    # for _, command_tuple in unique_commands.items():
-    #     document = replace_command_in_text(document, command_tuple)
     return document
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 24
+# %% ../../nbs/31_latex.formatting.ipynb 23
 def _replace_math_mode_delimiters(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     text = re.sub(r'\\\(|\\\)', '$', text)
@@ -185,7 +170,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 26
+# %% ../../nbs/31_latex.formatting.ipynb 25
 def _inline_mathmode_to_own_paragraph(text: str):
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
@@ -269,7 +254,7 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 29
+# %% ../../nbs/31_latex.formatting.ipynb 28
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -327,7 +312,38 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/31_latex.formatting.ipynb 31
+# %% ../../nbs/31_latex.formatting.ipynb 30
+def _remove_xspace(
+        text: str) -> str:
+    r"""
+    Remove invocations of `\xspace`.
+
+    Helper function to `adjust_common_syntax_to_markdown`.
+    """
+    return text.replace('\\xspace', '')
+
+
+def _remove_ensuremath(
+        text: str,
+        remove_braces: bool = True) -> str:
+    r"""
+    Remove invocations of `\ensuremath`.
+
+    Helper function to `adjust_common_syntax_to_markdown`.
+    """
+    if not remove_braces:
+        return text.replace('\\ensuremath', '')
+    pattern = r'\\ensuremath\s*\{((?:[^{}]|{(?:[^{}]|{[^{}]*})*})*)\}'
+    return re.sub(pattern, _replace_ensuremath, text)
+
+def _replace_ensuremath(match):
+    """
+    Helper of `_remove_ensuremath`
+    """
+    content = match.group(1)
+    return content
+
+# %% ../../nbs/31_latex.formatting.ipynb 32
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -341,6 +357,8 @@ REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES = 'replace_backtick_and_apostrophe_quotes
 REMOVE_COMMENTS = 'remove_comments'
 INLINE_MATHMODE_TO_OWN_PARAGRAPH = 'inline_mathmode_to_own_paragraph'
 MERGE_MULTILINE_PARAGRAPH = 'merge_multiline_paragraph'
+REMOVE_XSPACE = 'remove_xspace'
+REMOVE_ENSUREMATH = 'remove_ensuremath'
 def adjust_common_syntax_to_markdown(
         text: str,  # The LaTeX code to adjust to Markdown.
         options: list[str] = [
@@ -350,6 +368,8 @@ def adjust_common_syntax_to_markdown(
             REMOVE_COMMENTS,
             INLINE_MATHMODE_TO_OWN_PARAGRAPH,
             MERGE_MULTILINE_PARAGRAPH,
+            REMOVE_XSPACE,
+            REMOVE_ENSUREMATH
             ],  # Each `str` specifies what formatting should be done.
         ) -> str:
     """
@@ -388,6 +408,12 @@ def adjust_common_syntax_to_markdown(
           line. Including this option merges "normal" paragraphs into a single
           line. 
             - Inline-mathmode text are not affected by this option.
+    - `"remove_xspace"`
+        - Some writiers include `\\xspace` in their code (such as in their custom commands)
+          Obsidian does not render these.
+    - `"remove_ensuremath"`
+        - Some writiers include `\\ensuremath` in their code (such as in their custom commands)
+          Obsidian does not render these.
     """
     if MATH_MODE_DELIMITERS in options:
         text = _replace_math_mode_delimiters(text)
@@ -401,4 +427,70 @@ def adjust_common_syntax_to_markdown(
         text = _inline_mathmode_to_own_paragraph(text)
     if MERGE_MULTILINE_PARAGRAPH in options:
         text = _merge_multilines(text)
+    if REMOVE_XSPACE in options:
+        text = _remove_xspace(text)
+    if REMOVE_ENSUREMATH in options:
+        text = _remove_ensuremath(text)
     return text
+
+# %% ../../nbs/31_latex.formatting.ipynb 44
+def replace_input_and_include(
+        document: str,
+        dir: PathLike, # The directory containing the `.tex` files which are to be included.
+        commands: list[tuple[str, int, Union[str, None], str]],
+        repeat_replacing_commands: int = -1 # this is passed as the `repeat` argument into the invocation of `replace_commands_in_text`.
+        ) -> str:
+    r"""
+    Sequentially replace invocations of `\input` or `\include` with the contents of the corresponding files,
+    updating and applying custom commands as needed.
+
+    """
+    def process_chunk(chunk: str) -> str:
+        nonlocal commands
+        if chunk.strip().startswith(r'\input') or chunk.strip().startswith(r'\include'):
+            return process_input_or_include(chunk.strip())
+        else:
+            return replace_commands_in_text(chunk, commands, repeat_replacing_commands)
+
+    def process_input_or_include(command: str) -> str:
+        nonlocal commands
+        match = re.match(r'\\(input|include)\{([^}]+)\}', command)
+        if not match:
+            return command
+
+        cmd_type, filename = match.groups()
+        if not filename.endswith('.tex'):
+            filename += '.tex'
+        file_path = Path(dir) / filename
+
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+
+            if cmd_type == 'include':
+                preamble_pattern = r'\\documentclass.*?\\begin{document}'
+                if re.search(preamble_pattern, content, flags=re.DOTALL):
+                    warnings.warn(f"Preamble detected in \\include file {filename}. Removing preamble.", UserWarning)
+                    preamble, body = divide_preamble(content)
+                    new_commands = custom_commands(content)
+                    commands[:0] = new_commands
+                    content = body
+                else:
+                    new_commands = custom_commands(content)
+                    commands[:0] = new_commands
+                    content = re.sub(r'\\newcommand\{.*?\}.*?\n', '', content, flags=re.DOTALL)
+            else:  # input
+                new_commands = custom_commands(content)
+                commands[:0] = new_commands
+                content = re.sub(r'\\newcommand\{.*?\}.*?\n', '', content, flags=re.DOTALL)
+            
+            return replace_commands_in_text(content, commands, repeat_replacing_commands)
+        except FileNotFoundError:
+            # warnings.warn(f"File {file_path} not found. Keeping original \\{cmd_type} command.", UserWarning)
+            return command
+
+    # Split the document into chunks (code between \input or \include commands)
+    chunks = re.split(r'(\\(?:input|include)\{[^}]+\})', document)
+    # Process each chunk
+    processed_chunks = [process_chunk(chunk) for chunk in chunks]
+    return ''.join(processed_chunks)
