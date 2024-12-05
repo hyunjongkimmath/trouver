@@ -174,7 +174,10 @@ def file_is_compressed(
     return file_extension.lower() in compressed_extensions
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 38
-def uncompress_file(file_path):
+def uncompress_file(
+        file_path: PathLike,
+        verbose: bool = False
+        ):
     # Check the file extension
     file_path = str(file_path)
     _, file_extension = os.path.splitext(file_path)
@@ -185,13 +188,15 @@ def uncompress_file(file_path):
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
                 zip_ref.extractall(os.path.dirname(file_path))
                 uncompressed_files = [os.path.join(os.path.dirname(file_path), name) for name in zip_ref.namelist()]
-            print(f"Uncompressed {file_path} into {os.path.dirname(file_path)}")
+            if verbose:
+                print(f"Uncompressed {file_path} into {os.path.dirname(file_path)}")
 
         elif file_extension in ['.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz']:
             with tarfile.open(file_path, 'r:*') as tar_ref:
                 tar_ref.extractall(os.path.dirname(file_path))
                 uncompressed_files = [os.path.join(os.path.dirname(file_path), name) for name in tar_ref.getnames()]
-            print(f"Uncompressed {file_path} into {os.path.dirname(file_path)}")
+            if verbose:
+                print(f"Uncompressed {file_path} into {os.path.dirname(file_path)}")
 
         elif file_extension == '.gz':
             output_file_path = file_path[:-3]  # Remove the .gz extension
@@ -199,7 +204,8 @@ def uncompress_file(file_path):
                 with open(output_file_path, 'wb') as out_file:
                     out_file.write(gz_file.read())
             uncompressed_files.append(output_file_path)
-            print(f"Uncompressed {file_path} into {output_file_path}")
+            if verbose:
+                print(f"Uncompressed {file_path} into {output_file_path}")
 
         elif file_extension == '.bz2':
             output_file_path = file_path[:-4]  # Remove the .bz2 extension
@@ -207,7 +213,8 @@ def uncompress_file(file_path):
                 with open(output_file_path, 'wb') as out_file:
                     out_file.write(bz2_file.read())
             uncompressed_files.append(output_file_path)
-            print(f"Uncompressed {file_path} into {output_file_path}")
+            if verbose:
+                print(f"Uncompressed {file_path} into {output_file_path}")
 
         elif file_extension == '.xz':
             output_file_path = file_path[:-3]  # Remove the .xz extension
@@ -215,12 +222,15 @@ def uncompress_file(file_path):
                 with open(output_file_path, 'wb') as out_file:
                     out_file.write(xz_file.read())
             uncompressed_files.append(output_file_path)
-            print(f"Uncompressed {file_path} into {output_file_path}")
+            if verbose:
+                print(f"Uncompressed {file_path} into {output_file_path}")
 
         else:
-            print(f"Unsupported file format: {file_extension}")
+            if verbose:
+                print(f"Unsupported file format: {file_extension}")
 
     except Exception as e:
-        print(f"An error occurred while uncompressing {file_path}: {e}")
+        if verbose:
+            print(f"An error occurred while uncompressing {file_path}: {e}")
 
     return uncompressed_files

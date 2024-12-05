@@ -1,0 +1,25 @@
+{
+    "arxiv_id": "http://arxiv.org/abs/1605.08386v1",
+    "authors": [
+        "Caprice Stanley",
+        "Tobias Windisch"
+    ],
+    "title": "Heat-bath random walks with Markov bases",
+    "summary": "Graphs on lattice points are studied whose edges come from a finite set of\nallowed moves of arbitrary length. We show that the diameter of these graphs on\nfibers of a fixed integer matrix can be bounded from above by a constant. We\nthen study the mixing behaviour of heat-bath random walks on these graphs. We\nalso state explicit conditions on the set of moves so that the heat-bath random\nwalk, a generalization of the Glauber dynamics, is an expander in fixed\ndimension.",
+    "primary_category": "math.CO",
+    "categories": [
+        "math.CO",
+        "math.ST",
+        "stat.TH",
+        "Primary: 05C81, Secondary: 37A25, 11P21"
+    ],
+    "published": "2016-05-26T17:59:46+00:00",
+    "updated": "2016-05-26T17:59:46+00:00",
+    "doi": null,
+    "comment": "20 pages, 3 figures",
+    "journal_ref": null,
+    "links": [
+        "http://arxiv.org/abs/1605.08386v1",
+        "http://arxiv.org/pdf/1605.08386v1"
+    ]
+}
