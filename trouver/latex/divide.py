@@ -12,6 +12,7 @@ __all__ = ['SECOND_PARAMETER_PATTERN', 'SECOND_PARAMETER_PATTERN_WITH_OPTIONAL_S
 
 # %% ../../nbs/29_latex.divide.ipynb 2
 from itertools import product
+from os import PathLike
 import re
 from typing import Optional, Union
 
@@ -27,8 +28,8 @@ import regex
 from ..helper.files_and_folders import text_from_file
 
 from ..helper.latex.comments import remove_comments
-from .formatting import replace_commands_in_latex_document
-from .preamble import divide_preamble
+from .formatting import replace_commands_in_latex_document, replace_input_and_include, custom_commands
+from .preamble import divide_preamble, replace_inclusion_of_style_file_with_code
 
 
 # %% ../../nbs/29_latex.divide.ipynb 4
@@ -312,15 +313,6 @@ def display_names_of_environments(
 
     """
     preamble, _ = divide_preamble(document)
-    # # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{proposition}[theorem]{Proposition}`
-    # # does not match `\newtheorem{theorem}{Theorem}[Section]`
-    # second_parameter_pattern = re.compile(
-    #     # In this case, the optional parameter (if any) should not follow the newtheorem.
-    #     r'\\newtheorem\*?\s*\{\s*(\w+\*?)\s*\}\s*(\[\s*(\w+)\s*\])?\s*\{\s*(.*)\s*\}(?!\s*\[\s*(\w+)\s*\])')
-    # # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{theorem}{Theorem}[Section]`,
-    # # does not match `\newtheorem{proposition}[theorem]{Proposition}`
-    # third_parameter_pattern = re.compile(
-    #     r'\\newtheorem\*?\s*\{\s*(\w+\*?)\s*\}\s*\{\s*(.*)\s*\}\s*(\[\s*(\w+)\s*\])?')
     second_results = _search_display_names_by_pattern(preamble, SECOND_PARAMETER_PATTERN_WITH_OPTIONAL_STAR, 4)
     third_results = _search_display_names_by_pattern(preamble, THIRD_PARAMETER_PATTERN_WITH_OPTIONAL_STAR, 2)
     return second_results | third_results
@@ -907,6 +899,7 @@ def divide_latex_text(
         document: str, 
         # environments_to_divide_along: list[str], # A list of the names of environments that warrant a new note
         # numbered_environments: list[str], # A list of the names of environments which are numbered in the latex code. 
+        dir: Optional[PathLike], # The directory where the included files and style files are not be found.
         environments_to_not_divide_along: list[str] = DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG, # A list of the names of the environemts along which to not make a new note, unless the environment starts a section (or the entire document).
         replace_commands_in_document_first: bool = True,  # If `True`, invoke `replace_commands_in_latex_document` on `document` to first replace custom commands (in the document minus the preamble) before starting to divide the document.
         repeat_replacing_commands: int = -1,  # If `replace_commands_in_document_first` is `True`, then this is passed as the `repeat` argument into the invocation of `replace_commands_in_latex_document`.
@@ -932,8 +925,13 @@ def divide_latex_text(
         numbertheorem_counters, display_names)
     # Eventually gets returned
     preamble, main_document = divide_preamble(document)
+    preamble = replace_inclusion_of_style_file_with_code(preamble, dir)
+    preamble_commands = custom_commands(preamble)
     if replace_commands_in_document_first:
-        main_document = replace_commands_in_latex_document(document, repeat_replacing_commands)
+        main_document = replace_input_and_include(
+            main_document, dir, preamble_commands,
+            repeat_replacing_commands)
+        # main_document = replace_commands_in_latex_document(document, repeat_replacing_commands)
     document_node = find_document_node(main_document)
     swap_numbers = swap_numbers_invoked(preamble)
     parts = []
