@@ -2,9 +2,10 @@
 
 # %% auto 0
 __all__ = ['existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
-           'file_is_compressed', 'uncompress_file']
+           'file_is_compressed', 'uncompress_file', 'get_download_path', 'get_huggingface_cache_dir']
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 1
+import bz2
 import errno
 import gzip
 import lzma
@@ -14,12 +15,13 @@ from pathlib import Path
 import platform
 import tarfile
 from typing import Optional
+import winreg
 import zipfile
-import bz2
 
 from deprecated import deprecated
 import glob
 from natsort import natsorted
+
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 5
 def existing_path(
@@ -139,7 +141,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 32
+# %% ../../nbs/46_helper.files_and_folders.ipynb 33
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -149,7 +151,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 36
+# %% ../../nbs/46_helper.files_and_folders.ipynb 37
 def file_is_compressed(
         filename: str
         ):
@@ -173,7 +175,7 @@ def file_is_compressed(
     # Check if the file extension is in the set of compressed extensions
     return file_extension.lower() in compressed_extensions
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 38
+# %% ../../nbs/46_helper.files_and_folders.ipynb 39
 def uncompress_file(
         file_path: PathLike,
         verbose: bool = False
@@ -234,3 +236,97 @@ def uncompress_file(
             print(f"An error occurred while uncompressing {file_path}: {e}")
 
     return uncompressed_files
+
+# import os
+# import zipfile
+# import tarfile
+# import gzip
+# import bz2
+# import lzma
+# from pathlib import Path
+
+# def uncompress_file(
+#         file_path: PathLike,
+#         verbose: bool = False
+#         ):
+#     file_path = Path(file_path)
+#     output_dir = file_path.parent
+#     uncompressed_files = []
+
+#     try:
+#         if file_path.suffix == '.zip':
+#             with zipfile.ZipFile(file_path, 'r') as zip_ref:
+#                 zip_ref.extractall(output_dir)
+#                 uncompressed_files = [output_dir / name for name in zip_ref.namelist()]
+
+#         elif file_path.suffix in ['.tar', '.gz', '.tgz', '.bz2', '.tbz']:
+#             if file_path.suffix == '.gz' and not tarfile.is_tarfile(file_path):
+#                 # Handle single gzipped file
+#                 with gzip.open(file_path, 'rb') as gz_file:
+#                     content = gz_file.read()
+#                     # Try to get the original filename from the gzip header
+#                     original_name = gz_file.name
+#                     if original_name:
+#                         output_file = output_dir / Path(original_name).name
+#                     else:
+#                         output_file = output_dir / file_path.stem
+#                     output_file.write_bytes(content)
+#                 uncompressed_files.append(output_file)
+#             else:
+#                 # Handle tar archives (including .tar.gz, .tgz, .tar.bz2, .tbz)
+#                 with tarfile.open(file_path, 'r:*') as tar_ref:
+#                     tar_ref.extractall(output_dir)
+#                     uncompressed_files = [output_dir / name for name in tar_ref.getnames()]
+
+#         elif file_path.suffix == '.bz2':
+#             with bz2.open(file_path, 'rb') as bz2_file:
+#                 content = bz2_file.read()
+#                 output_file = output_dir / file_path.stem
+#                 output_file.write_bytes(content)
+#             uncompressed_files.append(output_file)
+
+#         elif file_path.suffix == '.xz':
+#             with lzma.open(file_path, 'rb') as xz_file:
+#                 content = xz_file.read()
+#                 output_file = output_dir / file_path.stem
+#                 output_file.write_bytes(content)
+#             uncompressed_files.append(output_file)
+
+#         else:
+#             if verbose:
+#                 print(f"Unsupported file format: {file_path.suffix}")
+
+#         if verbose:
+#             print(f"Uncompressed {file_path} into {output_dir}")
+
+#     except Exception as e:
+#         if verbose:
+#             print(f"An error occurred while uncompressing {file_path}: {e}")
+
+#     return uncompressed_files
+
+
+# %% ../../nbs/46_helper.files_and_folders.ipynb 44
+def get_download_path() -> str:
+    """
+    Return the user's download folder
+    """
+    if os.name == 'nt':  # For Windows
+        sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+        downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
+            location = winreg.QueryValueEx(key, downloads_guid)[0]
+        return location
+    else:  # For Unix-based systems (Linux, macOS)
+        return os.path.join(os.path.expanduser('~'), 'Downloads')
+
+# %% ../../nbs/46_helper.files_and_folders.ipynb 46
+def get_huggingface_cache_dir():
+    # Determine the cache directory
+    cache_dir = os.environ.get("HF_HOME") or os.environ.get("XDG_CACHE_HOME")
+    if not cache_dir:
+        home = Path.home()
+        cache_dir = home / ".cache" / "huggingface" / "hub"
+    else:
+        cache_dir = Path(cache_dir) / "huggingface" / "hub"
+    return cache_dir

@@ -4,16 +4,19 @@
 
 # %% auto 0
 __all__ = ['arxiv_id', 'arxiv_search', 'extract_metadata', 'ArxivMetadataEncoder', 'extract_last_names', 'folder_name_for_source',
-           'create_acronym', 'file_name_for_pdf', 'download_from_results']
+           'create_acronym', 'file_name_for_pdf', 'analyze_arxiv_tarfile', 'read_gz_file', 'get_tex_filename_from_gz',
+           'extract_tex_from_gz', 'download_from_results']
 
 # %% ../../nbs/49_helper.arxiv.ipynb 1
 import datetime
+import gzip
 import json
-from typing import Callable, Optional, Union
+from typing import Callable, Literal, Optional, Union
 import os
 from os import PathLike
 from pathlib import Path
 import re
+import tarfile
 
 import arxiv
 from arxiv import Client, Search, Result
@@ -23,9 +26,7 @@ from .files_and_folders import file_is_compressed, uncompress_file
 
 
 # %% ../../nbs/49_helper.arxiv.ipynb 5
-def arxiv_id(
-        arxiv_id_or_url: str,
-        ) -> str:
+def arxiv_id(arxiv_id_or_url: str) -> str:
     """
     Return the arxiv id from a str which is either of the arxiv id itself or the url
     to the arxiv article.
@@ -34,22 +35,25 @@ def arxiv_id(
     - `ValueError`
         - If the input does not contain a valid arXiv ID.
     """
-    id_pattern = r'(\d{4}\.\d{4,5}(?:v\d+)?)'
+    new_id_pattern = r'(\d{4}\.\d{4,5}(?:v\d+)?)'
+    old_id_pattern = r'([a-z-]+(?:\.[A-Z]{2})?/\d{7}(?:v\d+)?)'
+    combined_pattern = f'({new_id_pattern}|{old_id_pattern})'
     
     # Check if input is a URL and extract the ID
     if 'arxiv.org' in arxiv_id_or_url:
-        match = re.search(id_pattern, arxiv_id_or_url)
+        match = re.search(combined_pattern, arxiv_id_or_url)
         if match:
             return match.group(1)
         else:
             raise ValueError("Invalid arXiv URL provided.")
     
     # If it's not a URL, assume it's an ID and validate it
-    elif re.match(id_pattern, arxiv_id_or_url):
+    elif re.match(combined_pattern, arxiv_id_or_url):
         return arxiv_id_or_url
     
     else:
         raise ValueError("Invalid input. Please provide a valid arXiv ID or URL.")
+
 
 # %% ../../nbs/49_helper.arxiv.ipynb 8
 def arxiv_search(
@@ -109,7 +113,7 @@ class ArxivMetadataEncoder(json.JSONEncoder):
 # %% ../../nbs/49_helper.arxiv.ipynb 19
 def extract_last_names(
         authors: list[str]
-        ):
+        ) -> list[str]:
     last_names = []
     for author in authors:
         # Split the name into parts
@@ -183,8 +187,88 @@ def file_name_for_pdf(
 
 
 # %% ../../nbs/49_helper.arxiv.ipynb 29
+def analyze_arxiv_tarfile(
+        filepath: PathLike # The path to the tar file.
+        ) -> Literal["nested_archive", "direct_tex", "unknown_tar_structure", "plain_gz", "invalid_file"]:
+    """
+    Analyzes the contents of an arXiv download file, which can be either a tar.gz
+    archive or a plain .gz file.
+
+    This function attempts to determine the structure of the file downloaded from arXiv.
+    It can identify several different types of content structures commonly found in arXiv
+    downloads.
+
+    Parameters:
+    filepath (Union[str, Path]): The path to the file to be analyzed. Can be a string or a Path object.
+
+    Returns:
+    Literal["nested_archive", "direct_tex", "unknown_tar_structure", "plain_gz", "invalid_file"]: 
+        - "nested_archive": If the tar.gz contains another compressed file
+        - "direct_tex": If the tar.gz contains .tex files directly
+        - "unknown_tar_structure": If the tar.gz structure doesn't match known patterns
+        - "plain_gz": If the file is a plain .gz file (not a tar.gz)
+        - "invalid_file": If the file is neither a valid tar.gz nor a valid .gz file
+
+    Raises:
+    No exceptions are raised; all errors are handled internally and returned as "invalid_file".
+    Determine what kind of contents the 
+    """
+    try:
+        with tarfile.open(filepath, "r:gz") as tar:
+            members = tar.getmembers()
+            
+            if len(members) == 1 and members[0].name.endswith('.tar.gz'):
+                return "nested_archive"
+            
+            tex_files = [m for m in members if m.name.endswith('.tex')]
+            if tex_files:
+                return "direct_tex"
+            
+            return "unknown_tar_structure"
+    except tarfile.ReadError:
+        # Check if it's a plain .gz file
+        try:
+            with gzip.open(filepath, 'rb') as gz_file:
+                # Read a small portion to check if it's a valid gzip file
+                gz_file.read(1024)
+            return "plain_gz"
+        except gzip.BadGzipFile:
+            return "invalid_file"
+
+
+def read_gz_file(filepath):
+    with gzip.open(filepath, 'rt') as f:
+        content = f.read()
+    return content
+
+
+def get_tex_filename_from_gz(filepath):
+    with gzip.open(filepath, 'rt', encoding='utf-8') as f:
+        content = f.read()
+        
+    # Look for a .tex filename in the content
+    match = re.search(r'\b[\w-]+\.tex\b', content)
+    if match:
+        return match.group(0)
+    else:
+        return None
+
+
+def extract_tex_from_gz(filepath):
+    base_name = os.path.splitext(os.path.basename(filepath))[0]
+    tex_filename = f"{base_name}.tex"
+    
+    with gzip.open(filepath, 'rb') as gz_file:
+        content = gz_file.read()
+    
+    with open(tex_filename, 'wb') as tex_file:
+        tex_file.write(content)
+    
+    return tex_filename
+
+# %% ../../nbs/49_helper.arxiv.ipynb 31
 def download_from_results(
-        results: Result|list[Result],
+        results: Result | list[Result],
         dir: PathLike, # The directory into which to download the files
         source: bool = True, # If `True`, download the source file. Otherweise, download a pdf file.
         # filename: Optional[str] = None, # The file name to save the file as. If `None`, then the filename is set to the arXiv id of the article.
@@ -294,14 +378,22 @@ def _download_source(
     source_file_path = Path(new_source_folder) / source_file_path
     if verbose:
         print(source_file_path)
+    compression_type = analyze_arxiv_tarfile(source_file_path)
     if decompress_compressed_file and file_is_compressed(source_file_path):
+        if compression_type in ['plain_gz', 'direct_tex']:
+            new_path = Path(f'{str(source_file_path)[:-7]}.gz')
+            os.rename(source_file_path, new_path)
+            source_file_path = new_path
         uncompressed = uncompress_file(source_file_path)
         if delete_compressed_file:
             os.remove(source_file_path)
-        if len(uncompressed) == 1 and file_is_compressed(uncompressed[0]):
-            uncompressed_again = uncompress_file(uncompressed[0])
-            if delete_compressed_file:
-                os.remove(uncompressed[0])
+        if len(uncompressed) == 1:
+            if file_is_compressed(uncompressed[0]) and compression_type == 'nested_archive':
+                uncompressed_again = uncompress_file(uncompressed[0])
+                if delete_compressed_file:
+                    os.remove(uncompressed[0])
+            elif compression_type in ['plain_gz', 'direct_tex']:
+                os.rename(uncompressed[0], f'{str(uncompressed[0])}.tex')
     if not download_metadata:
         return new_source_folder
     metadata_file_name = _unique_metadata_file_name(new_source_folder)

@@ -6,83 +6,545 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>579</width>
-    <height>435</height>
+    <width>593</width>
+    <height>618</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>30</y>
-      <width>461</width>
-      <height>149</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>**Step 1: download the arXiv source**</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::MarkdownText</enum>
-       </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Step 1</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QFrame" name="frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <property name="midLineWidth">
+           <number>1</number>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>**Step 1: download the arXiv source**</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::MarkdownText</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Enter arXiv URL or ID:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="url_input">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="placeholderText">
+                <string>https://arxiv.org/abs/xxxx.xxxx</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="download_folder_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Selected Folder: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="folder_button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Choose Folder</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="download_button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Download</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QProgressBar" name="download_progress_bar">
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="open_downloaded_folder_button">
+                 <property name="text">
+                  <string>Open Downloaded Source Folder</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="download_progress_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Enter arXiv URL</string>
-       </property>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Step 2</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QFrame" name="frame_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <property name="midLineWidth">
+           <number>1</number>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>**Step 2: setup an Obsidian.md (sub)vault from the arXiv source**</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::MarkdownText</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="selected_main_source_code_file_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Selected Main Source Code File: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="choose_source_code_button">
+               <property name="text">
+                <string>Choose Main Source Code File</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="choose_obsidian_subvault_folder_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Selected Folder to Create Obsidian.md (sub)vault in: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="choose_obsidian_subvault_folder_button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Choose Folder to Create Obsidian.md (sub)vault in</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Name for Obsidian.md (sub)vault:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="name_for_obsidian_sub_vault"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Author Names (perferably comma and space separated and ordered by alphabetized family names):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="author_names_line_edit">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="placeholderText">
+                <string>Dedekind, Euler, Gauss, Riemann</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="create_obsidian_subvault_button">
+               <property name="text">
+                <string>Create Obsidian.md (sub)vault</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QProgressBar" name="create_obsidian_vault_progress_bar">
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="open_obsidian_subvault_button">
+                 <property name="text">
+                  <string>Open Created Obsidian.md (sub)vault</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="create_obsidian_vault_progress_message_label">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="url_input">
-       <property name="text">
-        <string>https://arxiv.org/abs/0912.0325</string>
-       </property>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Step 3</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QFrame" name="frame_3">
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>**Step 3: Predict note types and mark definitions and notations using ML models**</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::MarkdownText</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="prediction_folder_label">
+             <property name="text">
+              <string>Selected folder in which to make predictions: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="choose_prediction_folder_button">
+             <property name="text">
+              <string>Choose folder to make predictions in</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="predict_on_notes_button">
+             <property name="text">
+              <string>Predict</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QProgressBar" name="prediction_progress_bar">
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="open_prediction_folder_button">
+               <property name="text">
+                <string>Open Folder</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="prediction_progress_label">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="folder_label">
-       <property name="text">
-        <string>Selected Folder: C:\Users\hyunj\Downloads</string>
-       </property>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Step 4</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <item>
+         <widget class="QFrame" name="frame_4">
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>**Step 4: Compile the labeled notes from the Obsidian.md vault back into a single LaTeX file**</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::MarkdownText</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="obsidian_subvault_to_compile_label">
+             <property name="text">
+              <string>Selected Obsidian.md (sub)vault from which to compile notes: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="obsidian_subvault_to_compile_button">
+             <property name="text">
+              <string>Choose Obsidian.md (sub)vault from which to compile notes</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="original_tex_file_select_label">
+             <property name="text">
+              <string>Selected original .tex file (from which to get the preamble from): </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="original_tex_file_select_button">
+             <property name="text">
+              <string>Choose .tex file from which to get the preamble</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="compiled_tex_output_folder_label">
+             <property name="text">
+              <string>Folder in which to output compiled .tex file: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="compiled_tex_output_folder_button">
+             <property name="text">
+              <string>Choose folder in which to output the compiled .tex file</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="compile_tex_from_obsidian_subvault_button">
+             <property name="text">
+              <string>Compile</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QProgressBar" name="compile_tex_from_obsidian_subvault_progress_bar">
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="compile_tex_from_obsidian_subvault_progress_message_label">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="folder_button">
-       <property name="text">
-        <string>Choose Folder</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="download_button">
-       <property name="text">
-        <string>Download</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>579</width>
+     <width>593</width>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_instruction"/>
+    <addaction name="separator"/>
+    <addaction name="action_about_trouver"/>
+    <addaction name="action_disclaimer"/>
+   </widget>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_instruction">
+   <property name="text">
+    <string>Instruction</string>
+   </property>
+  </action>
+  <action name="action_about_trouver">
+   <property name="text">
+    <string>About `trouver` GUI</string>
+   </property>
+  </action>
+  <action name="action_disclaimer">
+   <property name="text">
+    <string>Disclaimer</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
