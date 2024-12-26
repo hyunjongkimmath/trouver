@@ -149,3 +149,6 @@ checklink/cookies.txt
 
 # Quarto
 .quarto
+
+# Building the GUI with pyinstaller
+gui_building

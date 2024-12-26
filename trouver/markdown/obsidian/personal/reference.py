@@ -45,7 +45,7 @@ from trouver.markdown.obsidian.personal.note_type import (
 )
 from trouver.markdown.obsidian.vault import(
     VaultNote, all_note_paths_by_name, note_path_by_name,
-    NoteDoesNotExistError, NoteNotUniqueError
+    NoteDoesNotExistError, NoteNotUniqueError, NotePathIsNotIdentifiedError
 )
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 5
@@ -409,26 +409,33 @@ def _make_single_chapter_index(
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 28
 def _make_reference_file(
-        reference_name, references_folder,
-        vault,
-        authors, author_files) -> None:
+        reference_name: str,
+        references_folder: PathLike,
+        vault: PathLike,
+        reference_directory: PathLike, # Relative to `vault`. 
+        create_reference_file_in_references_folder: bool,
+        authors,
+        author_files) -> None:
     """
     The references folder has subfolders 'A-E', 'F-J', etc. each of which contains
     subfolders for each letter in the English alphabet, each of which in turn contains
     reference notes
     """
-    if not os.path.exists(vault / references_folder):
-        raise FileNotFoundError(
-            f"References folder does not exist: {vault / references_folder}")
+    if create_reference_file_in_references_folder:
+        if not os.path.exists(vault / references_folder):
+            raise FileNotFoundError(
+                f"References folder does not exist: {vault / references_folder}")
 
-    if reference_name[0].isalpha():
-        alphabet_group = alphabet_to_alphabet_group(reference_name[0])
-        folder_to_make_reference_file = Path(references_folder)\
-            / alphabet_group / reference_name[0].upper()
+        if reference_name[0].isalpha():
+            alphabet_group = alphabet_to_alphabet_group(reference_name[0])
+            folder_to_make_reference_file = Path(references_folder)\
+                / alphabet_group / reference_name[0].upper()
+        else:
+            folder_to_make_reference_file = Path(references_folder)
+        reference_file_path = folder_to_make_reference_file\
+            / f'_reference_{reference_name}.md'
     else:
-        folder_to_make_reference_file = Path(references_folder)
-    reference_file_path = folder_to_make_reference_file\
-        / f'_reference_{reference_name}.md'
+        reference_file_path = reference_directory / f'_reference_{reference_name}.md'
     VaultNote(vault, rel_path=reference_file_path).create()
     # TODO author stuff
 
@@ -468,33 +475,40 @@ def _manifest_template_file(
     # template_file_path = note_path_by_name(template_file_name, vault)
     # template_file = MarkdownFile.from_file(
     #     Path(vault) / template_file_path)
-    template_file = MarkdownFile.from_vault_note(
-        VaultNote(vault, name=template_file_name))
+    try:
+        template_file = MarkdownFile.from_vault_note(
+            VaultNote(vault, name=template_file_name))
+    except NotePathIsNotIdentifiedError:
+        # TODO: test this possibility.
+        template_file = MarkdownFile.from_string(
+r'''---
+cssclass: clean-embeds
+aliases: []
+tags: [_meta/literature_note]
+---
+# Topic[^1]
+
+# See Also
+
+# Meta
+## References
+
+## Citations and Footnotes
+[^1]: Citation
+'''
+        )
     embedding_link = ObsidianLink(is_embedded=True,
         file_name=f'_reference_{reference_name}',
         anchor=0, custom_text=0, link_type = LinkType.WIKILINK)
     template_file.add_line_in_section(
         title="References",
         line_dict={'type': MarkdownLineEnum.DEFAULT,
-                   'line': f'{embedding_link.to_string()}\n'})
+                'line': f'{embedding_link.to_string()}\n'})
 
     last_line = template_file.pop_line()
     last_line['line'] = f'[^1]: {", ".join(authors)}, '
     template_file.add_line_to_end(last_line)
 
-    # TODO: delete the below
-    # ref_line_index = template_file.get_line_number_of_heading(
-    #     title="References")
-    # embedding_link = ObsidianLink(is_embedded=True,
-    #     file_name=f'_reference_{reference_name}',
-    #     anchor=0, custom_text=0, link_type = LinkType.WIKILINK)
-    # template_file.insert_line(
-    #     ref_line_index+1, {'type': MarkdownLineEnum.DEFAULT,
-    #                        'line': f'{embedding_link.to_string()}\n'})
-
-    # TODO: make sure the above line works and delete the below line
-    # template_file.parts.insert(ref_line_index+1, {'type': MarkdownLineEnum.DEFAULT,
-    #                        'line': f'{embedding_link.to_string()}\n'})
     template_file.add_tags([f'#_reference/{reference_name}'])
     return template_file
 
@@ -503,6 +517,7 @@ def _make_template_file(
         template_file_name,
         reference_name,
         vault,
+        create_template_file_in_templates_folder: bool, 
         templates_folder,
         authors: Union[str, list[str]],
         make_second_template_file_in_reference_directory: bool,
@@ -511,17 +526,19 @@ def _make_template_file(
     template_file = _manifest_template_file(
         template_file_name, reference_name, vault, authors)
 
-    # TODO factor out; this repeats with code in _make_reference_file above.
-    if not os.path.exists(vault / templates_folder):
-        raise FileNotFoundError(
-            f"References folder does not exist: {vault / templates_folder}")
-    if reference_name[0].isalpha():
-        alphabet_group = alphabet_to_alphabet_group(reference_name[0])
-        folder_to_make_template_file = Path(templates_folder)\
-            / alphabet_group / reference_name[0].upper()
+    if create_template_file_in_templates_folder:
+        # TODO factor out; this repeats with code in _make_reference_file above.
+        if not os.path.exists(vault / templates_folder):
+            raise FileNotFoundError(
+                f"Templates folder does not exist: {vault / templates_folder}")
+        if reference_name[0].isalpha():
+            alphabet_group = alphabet_to_alphabet_group(reference_name[0])
+            folder_to_make_template_file = Path(templates_folder)\
+                / alphabet_group / reference_name[0].upper()
+        else:
+            folder_to_make_template_file = Path(templates_folder)
     else:
-        folder_to_make_template_file = Path(templates_folder)
-
+        folder_to_make_template_file = reference_directory
     template_file_path = folder_to_make_template_file\
         / f'_template_{reference_name}.md'
     _create_template_note_at(vault, template_file_path, template_file)
@@ -595,12 +612,15 @@ def _make_glossary_file(
         glossary file.
     
     """
-    template_note = VaultNote(vault, name=glossary_template_file_name)
-    template_file = MarkdownFile.from_vault_note(template_note)
-    glossary_file_path = reference_directory / f'_glossary_{reference_name}.md'
-    glossary_note = VaultNote(vault, rel_path=glossary_file_path)
-    glossary_note.create()
-    template_file.write(glossary_note)
+    try:
+        template_note = VaultNote(vault, name=glossary_template_file_name)
+        template_file = MarkdownFile.from_vault_note(template_note)
+        glossary_file_path = reference_directory / f'_glossary_{reference_name}.md'
+        glossary_note = VaultNote(vault, rel_path=glossary_file_path)
+        glossary_note.create()
+        template_file.write(glossary_note)
+    except NotePathIsNotIdentifiedError:
+        return
 
 # %% ../../../../nbs/10_markdown.obsidian.personal.reference.ipynb 38
 def _make_temp_folder(
@@ -776,7 +796,9 @@ def setup_folder_for_new_reference(
         authors: Union[str, list[str]], # Each str is the family name of each author.
         vault: PathLike, # The path to the Obsidian vault in which to make the reference folder.
         author_folder: PathLike = '_mathematicians', # The directory where the author files are stored in.  Relative to `vault`. 
+        create_reference_file_in_references_folder: bool = True, # If `True`, then the reference file creation is attempted within `references_folder`. Otherwise, the reference file creation is attempted at the base of the newly setup folder for the reference..
         references_folder: PathLike = '_references', # The directory where the references files are stored in.  Relative to `vault`.
+        create_template_file_in_templates_folder: bool = True, # If `True`, then the template file creation is attempted within `templates_folder`. Otherwise, the template file creation is attempted at the base of the newly setup folder for the reference.
         templates_folder: PathLike = '_templates', # The directory where the template files are stored in.  Relative to `vault`.
         template_file_name: str = '_template_common', # The template file from which to base the template file of the new reference.
         notation_index_template_file_name: str = '_template_notation_index', # The template file from which to base the notation index file of the new reference.
@@ -852,9 +874,11 @@ def setup_folder_for_new_reference(
 
     _make_reference_file(
         reference_name, references_folder, vault,
+        reference_directory, create_reference_file_in_references_folder,
         authors, author_files)
     _make_template_file(
         template_file_name, reference_name, vault,
+        create_template_file_in_templates_folder,
         templates_folder, authors, make_second_template_file_in_reference_directory,
         reference_directory)
     _make_notation_index_file(

@@ -899,7 +899,7 @@ def divide_latex_text(
         document: str, 
         # environments_to_divide_along: list[str], # A list of the names of environments that warrant a new note
         # numbered_environments: list[str], # A list of the names of environments which are numbered in the latex code. 
-        dir: Optional[PathLike], # The directory where the included files and style files are not be found.
+        dir: Optional[PathLike], # The directory where the included files and style files are to be found.
         environments_to_not_divide_along: list[str] = DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG, # A list of the names of the environemts along which to not make a new note, unless the environment starts a section (or the entire document).
         replace_commands_in_document_first: bool = True,  # If `True`, invoke `replace_commands_in_latex_document` on `document` to first replace custom commands (in the document minus the preamble) before starting to divide the document.
         repeat_replacing_commands: int = -1,  # If `replace_commands_in_document_first` is `True`, then this is passed as the `repeat` argument into the invocation of `replace_commands_in_latex_document`.

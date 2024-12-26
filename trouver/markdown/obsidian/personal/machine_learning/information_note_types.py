@@ -15,7 +15,7 @@ LABEL_TAGS = [
     '#_meta/narrative', '#_meta/notation', '#_meta/proof', '#_meta/remark',
     '#_meta/TODO/split', '#_meta/TODO/merge', '#_meta/TODO/delete', '#_meta/hint',
     '#_meta/how_to', '#_meta/conjecture', '#_meta/convention',
-    '#_meta/context', '#_meta/permanent_note'
+    '#_meta/context', '#_meta/permanent_note', '#_meta/question', '#_meta/problem'
 ]
 
 # %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 6
@@ -41,7 +41,8 @@ from ...vault import VaultNote
 # %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 9
 def note_is_labeled_with_tag(
         note: VaultNote,
-        label_tag: str # A tag which labels a type that `note` is. Includes the beginning hashtag `#`, e.g. `#_meta/definition`, `#_meta/TODO/split`
+        label_tag: str, # A tag which labels a type that `note` is. Includes the beginning hashtag `#`, e.g. `#_meta/definition`, `#_meta/TODO/split`
+        count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection.  
         ) -> bool: # `True` if `note` is labeled as type `label_type`.
     """
     Return `True` if the standard information note is labeled as
@@ -57,29 +58,35 @@ def note_is_labeled_with_tag(
         raise ValueError(f"`label_tag` does not start with a hashtag `#`: {label_tag}")
     label_tag = label_tag[1:]
     mf = MarkdownFile.from_vault_note(note)
-    return label_tag in mf.metadata()['tags']
+    tags = mf.metadata()['tags']
+    if count_auto_tags:
+        return label_tag in tags or f'_auto/{label_tag}' in tags
+    else:
+        return label_tag in tags 
 
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 11
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 14
 def note_labels(
-        note: VaultNote
+        note: VaultNote,
+        count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection.  
         ) -> dict[str, str]:
         # Each key is a string, which is a tag, including the starting hashtag `#`. Each value is a string, either `'IS {tag}'` or `'NOT {tag}'`.
     """Return a dict indicating what labels a note has.
 
     The labels come from the `LABEL_TAGS` dict.
     """
-    label_dict = {label_tag: note_is_labeled_with_tag(note, label_tag)
+    label_dict = {label_tag: note_is_labeled_with_tag(note, label_tag, count_auto_tags)
                   for label_tag in LABEL_TAGS}
     return {tag: (f'IS {tag}' if flag else f'NOT {tag}')
             for tag, flag in label_dict.items()}
     
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 15
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 18
 def labels_and_identifying_info_from_notes(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
+        count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection. 
         raise_error_that_arises: bool = True, # If `True`, raise errors that arise as data is gathered from individual notes. Otherwise, print the would-be error message for individual notes, but do not include the data from the note.
         ) -> list[dict]: # Each `dict` has keys `Time added`, `Time modified`, `Note name`, `Full note content`, `Processed note content` as well as columns for each tag label. 
     """
@@ -99,7 +106,7 @@ def labels_and_identifying_info_from_notes(
     All timestamps are in UTC time and specify time to minutes
     (i.e. no seconds/microseconds).
     """
-    labels_of_notes = [note_labels(note) for note in notes]
+    labels_of_notes = [note_labels(note, count_auto_tags) for note in notes]
     rows = []
     current_time = current_time_formatted_to_minutes()
     for _, (note, labels_of_note) in enumerate(zip(notes, labels_of_notes)):
@@ -122,22 +129,23 @@ def labels_and_identifying_info_from_notes(
                 raise(e)
     return rows
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 16
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 19
 def information_note_types_as_dataset(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
+        count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection. 
         raise_error_that_arises: bool = True, # If `True`, raise errors that arise as data is gathered from individual notes. Otherwise, print the would-be error message for individual notes, but do not include the data from the note.
         ) -> Dataset:
-    data = labels_and_identifying_info_from_notes(vault, notes, raise_error_that_arises)
+    data = labels_and_identifying_info_from_notes(vault, notes, count_auto_tags, raise_error_that_arises)
     dataset = Dataset.from_dict({k: [dic[k] for dic in data] for k in data[0]})
     return dataset
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 21
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 24
 #| export
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 23
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 26
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def gather_information_note_types(
         vault: PathLike,
@@ -150,7 +158,7 @@ def gather_information_note_types(
     return pd.DataFrame(labels_and_identifying_info_from_notes(vault, notes, raise_error_that_arises))
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 25
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 28
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def append_to_information_note_type_database(
         vault: PathLike, # The vault freom which the data is drawn
@@ -202,7 +210,7 @@ def append_to_information_note_type_database(
         file, new_df, cols, 'Processed note content', cols_to_update, backup)
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 29
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 32
 def possible_text_type_labels(
         learn: TextLearner
         ) -> list[str]:
@@ -210,7 +218,7 @@ def possible_text_type_labels(
     """
     return learn.dls.vocab.items[1]
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 30
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 33
 def predict_text_types_with_one_learner(
         learner: TextLearner, # The ML models predicting note types.
         texts: list[str],
@@ -241,7 +249,7 @@ def _make_probability_dict(
     return {label: prob.item() for label, prob in zip(possible_labels, probabilities)}
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 35
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 38
 def consolidate_single_text_predictions_by_sum_of_confidence(
         predictions_for_single_text: list[tuple[list[str], dict[str, float]]] # Each tuple corresponds to the predictions made by each model.
         ) -> list[str]: # The labels
@@ -266,7 +274,7 @@ def consolidate_single_text_predictions_by_sum_of_confidence(
                 tally[key] += probs[key] - (1- probs[key])
     return [key for key in tally if tally[key] > 0]
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 36
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 39
 def predict_note_types(
         learners: TextLearner|list[TextLearner], # The ML models predicting note types.
         vault: PathLike, # The vault with the notes.
@@ -314,7 +322,7 @@ def _transpose_list(original_list: list[list]):
 
 
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 39
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 42
 def automatically_add_note_type_tags(
         learners: TextLearner|list[TextLearner], # The ML model(s) predicting note types.
         vault: PathLike, # The vault with the notes
@@ -426,7 +434,7 @@ def _has_any_label_tags(
             return False
     return True
 
-# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 53
+# %% ../../../../../nbs/23_markdown.obsidian.personal.machine_learning.information_note_types.ipynb 56
 def convert_auto_tags_to_regular_tags_in_notes(
         notes: list[VaultNote], 
         exclude: list[str] = ['links_added', 'notations_added'] # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.

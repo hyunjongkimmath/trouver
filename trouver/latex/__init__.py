@@ -13,7 +13,8 @@ from typing import Union
 # %% ../../nbs/15_latex.__init__.ipynb 6
 def find_main_latex_file(
         directory: PathLike
-        ) -> Path:
+        ) -> Path: # The full path to the main LaTeX file if found; otherwise, raises an error.
+
     """
     Identify the main LaTeX file in a given directory.
 
@@ -25,7 +26,7 @@ def find_main_latex_file(
     - directory: The path to the directory containing LaTeX files.
 
     Returns:
-    - The path to the main LaTeX file if found; otherwise, raises an error.
+    - The full path to the main LaTeX file if found; otherwise, raises an error.
     
     Raises:
     - FileNotFoundError: If no suitable main LaTeX file is found.
