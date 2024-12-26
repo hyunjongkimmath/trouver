@@ -20,6 +20,11 @@ jobs:
         with:
           python-version: '3.10'
           architecture: 'x64'
+      # The following installation is for some packages needed by PyQt6
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-glx libegl1-mesa libxkbcommon-x11-0 libdbus-1-3
       - name: nbdev test step
         run: |
           ls
