@@ -13,9 +13,9 @@ import os
 from os import PathLike
 from pathlib import Path
 import platform
+import sys
 import tarfile
 from typing import Optional
-import winreg
 import zipfile
 
 from deprecated import deprecated
@@ -23,7 +23,13 @@ import glob
 from natsort import natsorted
 
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 5
+# %% ../../nbs/46_helper.files_and_folders.ipynb 2
+if sys.platform.startswith('win'):
+    import winreg
+else:
+    winreg = None
+
+# %% ../../nbs/46_helper.files_and_folders.ipynb 6
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -105,7 +111,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 18
+# %% ../../nbs/46_helper.files_and_folders.ipynb 19
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -117,7 +123,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 25
+# %% ../../nbs/46_helper.files_and_folders.ipynb 26
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -127,7 +133,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 29
+# %% ../../nbs/46_helper.files_and_folders.ipynb 30
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -141,7 +147,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 33
+# %% ../../nbs/46_helper.files_and_folders.ipynb 34
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -151,7 +157,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 37
+# %% ../../nbs/46_helper.files_and_folders.ipynb 38
 def file_is_compressed(
         filename: str
         ):
@@ -175,7 +181,7 @@ def file_is_compressed(
     # Check if the file extension is in the set of compressed extensions
     return file_extension.lower() in compressed_extensions
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 39
+# %% ../../nbs/46_helper.files_and_folders.ipynb 40
 def uncompress_file(
         file_path: PathLike,
         verbose: bool = False
@@ -306,7 +312,7 @@ def uncompress_file(
 #     return uncompressed_files
 
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 44
+# %% ../../nbs/46_helper.files_and_folders.ipynb 45
 def get_download_path() -> str:
     """
     Return the user's download folder
@@ -320,7 +326,7 @@ def get_download_path() -> str:
     else:  # For Unix-based systems (Linux, macOS)
         return os.path.join(os.path.expanduser('~'), 'Downloads')
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 46
+# %% ../../nbs/46_helper.files_and_folders.ipynb 47
 def get_huggingface_cache_dir():
     # Determine the cache directory
     cache_dir = os.environ.get("HF_HOME") or os.environ.get("XDG_CACHE_HOME")
