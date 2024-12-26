@@ -65,4 +65,5 @@ website:
       - star.ipynb
       - tutorial.concise_code.ipynb
       - tutorial.walkthrough.ipynb
+      - unused.ipynb
       - using_regex.ipynb
