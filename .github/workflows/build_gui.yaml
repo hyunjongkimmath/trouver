@@ -2,10 +2,10 @@ name: Build GUI
 
 on:
   push:
-    branches: [ "develop"]
+    branches: [ "build"]
     # paths: ['.github/workflows/**', 'build_gui.yaml']
   pull_request:
-    branches: [ "develop"]
+    branches: [ "build"]
 
 jobs:
   build:
