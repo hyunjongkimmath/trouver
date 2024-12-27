@@ -2,7 +2,7 @@ name: Build GUI
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "develop"]
     paths: ['.github/workflows/**', 'build_gui.yaml']
   pull_request:
     branches: [ "main", "master" ]
@@ -32,9 +32,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install nbdev
     - name: Check Python Path
-        run: |
-          echo "Python Path:"
-          python -c "import sys; print(sys.path)"
+      run: |
+        echo "Python Path:"
+        python -c "import sys; print(sys.path)"
     - name: Build nbdev library and generate requirements
       run: |
         python -m nbdev.cli.build_lib
