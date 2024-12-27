@@ -29,13 +29,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install nbdev
       run: |
-        python -m pip install --user --upgrade pip
-        python -m pip install --user nbdev
+        python -m pip install --upgrade pip
+        python -m pip install nbdev
         echo "$HOME/.local/bin" >> $GITHUB_PATH
-    # - name: Build nbdev library and generate requirements
-    #   run: |
-    #     python -m nbdev.cli.build_lib
-    #     python -m nbdev.cli.requirements
+    - name: Build nbdev library and generate requirements
+      run: |
+        python -m nbdev.cli.build_lib
+        python -m nbdev.cli.requirements
     - name: Build nbdev library and generate requirements
       run: |
         nbdev_build_lib

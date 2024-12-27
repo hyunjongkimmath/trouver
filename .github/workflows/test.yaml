@@ -25,9 +25,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgl1-mesa-glx libegl1-mesa libxkbcommon-x11-0 libdbus-1-3
-      - name: nbdev test step
-        run: |
-          ls
       - uses: fastai/workflows/nbdev-ci@master
         with:
             version: '3.10'
+      - name: nbdev test step
+        run: |
+          ls
