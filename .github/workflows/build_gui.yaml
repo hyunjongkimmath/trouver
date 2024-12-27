@@ -47,7 +47,6 @@ jobs:
         pip install pyinstaller
     - name: Copy __init__.py to root as trouver_gui.py
       run: |
-        # Copy the file in a cross-platform way
         if [[ "$RUNNER_OS" == "Windows" ]]; then
           copy .\trouver\app\__init__.py .\trouver_gui.py
         else
