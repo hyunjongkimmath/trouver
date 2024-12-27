@@ -37,10 +37,10 @@ jobs:
       run: |
         echo "Python Path:"
         python -c "import sys; print(sys.path)"
-    - name: Build nbdev library and generate requirements
-      run: |
-        python -m nbdev.cli.build_lib
-        python -m nbdev.cli.requirements
+    # - name: Build nbdev library and generate requirements
+    #   run: |
+    #     python -m nbdev.cli.build_lib
+    #     python -m nbdev.cli.requirements
     - name: Build nbdev library and generate requirements
       run: |
         nbdev_build_lib
