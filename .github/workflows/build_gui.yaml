@@ -23,7 +23,7 @@ jobs:
           -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
         # Windows-specific commands here
     - uses: fastai/workflows/nbdev-ci@master
-        with:
+      with:
           version: '3.10'
           skip_test: 'true'
     - name: test
