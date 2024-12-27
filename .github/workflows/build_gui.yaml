@@ -44,33 +44,33 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
     - name: Copy __init__.py to root as trouver_gui.py
-        run: |
-          # Copy the file in a cross-platform way
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            copy .\trouver\app\__init__.py .\trouver_gui.py
-          else
-            cp ./trouver/app/__init__.py ./trouver_gui.py
-          fi
+      run: |
+        # Copy the file in a cross-platform way
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          copy .\trouver\app\__init__.py .\trouver_gui.py
+        else
+          cp ./trouver/app/__init__.py ./trouver_gui.py
+        fi
 
-      - name: Replace relative imports in trouver_gui.py
-        run: |
-          python -c "
+    - name: Replace relative imports in trouver_gui.py
+      run: |
+        python -c "
 import re
 
 # Read the content of the copied file
 with open('trouver_gui.py', 'r') as file:
-    content = file.read()
+  content = file.read()
 
 # Replace relative imports with absolute imports
-content = re.sub(r'^from \\..*', lambda m: m.group(0).replace('from ..', 'from trouver'), content, flags=re.MULTILINE)
+content = re.sub(r'^from \.\.', 'from trouver', content, flags=re.MULTILINE)
 
 # Write the modified content back to the file
 with open('trouver_gui.py', 'w') as file:
-    file.write(content)
-          "
+  file.write(content)
+        "
 
-      - name: Build with PyInstaller
-        run: pyinstaller --onefile trouver_gui.py
+    - name: Build with PyInstaller
+      run: pyinstaller --onefile trouver_gui.py
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
