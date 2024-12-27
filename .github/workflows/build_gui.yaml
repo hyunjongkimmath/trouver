@@ -3,7 +3,7 @@ name: Build GUI
 on:
   push:
     branches: [ "main", "master", "develop"]
-    paths: ['.github/workflows/**', 'build_gui.yaml']
+    # paths: ['.github/workflows/**', 'build_gui.yaml']
   pull_request:
     branches: [ "main", "master" ]
 
