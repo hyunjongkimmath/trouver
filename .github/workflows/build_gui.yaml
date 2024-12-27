@@ -1,0 +1,61 @@
+name: Build GUI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: [3.10, 3.11]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install nbdev
+      run: pip install nbdev
+    - name: Build nbdev library and generate requirements
+      run: |
+        nbdev_build_lib
+        nbdev_requirements
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    - name: Create PyInstaller spec file
+      run: |
+        echo "# -*- mode: python ; coding: utf-8 -*-" > trouver.spec
+        echo "a = Analysis(['trouver/app/__init__.py']," >> trouver.spec
+        echo "             pathex=['./']," >> trouver.spec
+        echo "             hiddenimports=[]," >> trouver.spec
+        echo "             hookspath=[]," >> trouver.spec
+        echo "             runtime_hooks=[]," >> trouver.spec
+        echo "             excludes=[]," >> trouver.spec
+        echo "             noarchive=False)" >> trouver.spec
+        echo "pyz = PYZ(a.pure, a.zipped_data)" >> trouver.spec
+        echo "exe = EXE(pyz," >> trouver.spec
+        echo "          a.scripts," >> trouver.spec
+        echo "          a.binaries," >> trouver.spec
+        echo "          a.zipfiles," >> trouver.spec
+        echo "          a.datas," >> trouver.spec
+        echo "          name='trouver'," >> trouver.spec
+        echo "          debug=False," >> trouver.spec
+        echo "          strip=False," >> trouver.spec
+        echo "          upx=True," >> trouver.spec
+        echo "          console=True )" >> trouver.spec
+    - name: Build with PyInstaller
+      run: pyinstaller trouver.spec
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: trouver-${{ matrix.os }}
+        path: dist/trouver*
