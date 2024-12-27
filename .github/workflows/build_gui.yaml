@@ -55,19 +55,19 @@ jobs:
     - name: Replace relative imports in trouver_gui.py
       run: |
         python -c "
-import re
+    import re
 
-# Read the content of the copied file
-with open('trouver_gui.py', 'r') as file:
-  content = file.read()
+    # Read the content of the copied file
+    with open('trouver_gui.py', 'r') as file:
+      content = file.read()
 
-# Replace relative imports with absolute imports
-content = re.sub(r'^from \.\.', 'from trouver', content, flags=re.MULTILINE)
+    # Replace relative imports with absolute imports
+    content = re.sub(r'^from \.\.', 'from trouver', content, flags=re.MULTILINE)
 
-# Write the modified content back to the file
-with open('trouver_gui.py', 'w') as file:
-  file.write(content)
-        "
+    # Write the modified content back to the file
+    with open('trouver_gui.py', 'w') as file:
+      file.write(content)
+      "
 
     - name: Build with PyInstaller
       run: pyinstaller --onefile trouver_gui.py
