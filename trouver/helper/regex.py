@@ -114,7 +114,7 @@ def _str_parts(string, replace_ranges, replace_with):
 def latex_indices(
         text: str,
         ) -> list[tuple[int, int]]:
-    """Returns the indices in the text containing LaTeX str.
+    r"""Returns the indices in the text containing LaTeX str.
     
     This may not work correctly if the text has a LaTeX
     formatting issue.
@@ -141,7 +141,7 @@ def latex_indices(
 def inline_latex_indices(
         text: str,
         ) -> list[tuple[int, int]]:
-    """Returns the indices in the text containing inline LaTeX str surrounded by
+    r"""Returns the indices in the text containing inline LaTeX str surrounded by
     `$$`.
     
     This may not work correctly if the text has a LaTeX
@@ -174,5 +174,5 @@ def inline_latex_indices(
 #     pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$|(?<!\\)\$.*?(?<!\\)\$", re.DOTALL)
 #     return find_regex_in_text(text, pattern)
 
-# %% ../../nbs/37_helper.regex.ipynb 29
+# %% ../../nbs/37_helper.regex.ipynb 30
 #| export

@@ -126,7 +126,7 @@ def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
         ) -> str:
-    """Return the latex document (with the preamble) with invocations
+    r"""Return the latex document (with the preamble) with invocations
     of custom commands/operators replaced with their display text.
 
     Assumes that all custom commands and operators are defined in the
@@ -372,7 +372,7 @@ def adjust_common_syntax_to_markdown(
             REMOVE_ENSUREMATH
             ],  # Each `str` specifies what formatting should be done.
         ) -> str:
-    """
+    r"""
     Adjust some common syntax, such as math mode delimiters and equation/align
     environments, for Markdown.
 

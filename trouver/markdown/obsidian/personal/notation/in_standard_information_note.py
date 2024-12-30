@@ -46,7 +46,7 @@ def notat_str_from_doub_asts_in_std_info_note(
 def notat_str_from_html_tags(
         info_note: VaultNote
         ) -> list[tuple[str, str]]: # Each str is a LaTeX str, the first of which is the text of and surrounded by the HTML tag and the second of which is a string (without surrounding dollar signs) specifying the actual notation introduced in the first text.
-    """
+    r"""
     Return the LaTeX str's with notations in a standard information note.
 
     For this function, HTML tags with the `notation` attr are deemed to

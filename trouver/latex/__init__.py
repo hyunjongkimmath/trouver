@@ -15,7 +15,7 @@ def find_main_latex_file(
         directory: PathLike
         ) -> Path: # The full path to the main LaTeX file if found; otherwise, raises an error.
 
-    """
+    r"""
     Identify the main LaTeX file in a given directory.
 
     The main LaTeX file is determined based on the presence of:

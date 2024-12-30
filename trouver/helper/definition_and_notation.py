@@ -22,7 +22,7 @@ def double_asterisk_indices(
     - `notation_asterisk_indices`
     - `definition_asterisk_indices`
     """
-    return find_regex_in_text(text, pattern='\*\*[^*]+\*\*')
+    return find_regex_in_text(text, pattern=r'\*\*[^*]+\*\*')
 
 
 
@@ -39,17 +39,17 @@ def notation_asterisk_indices(
     within it.
     """
     return find_regex_in_text(
-        text, pattern='\*\*\$\$[^$]+\$\$\*\*|\*\*\$[^$]+\$\*\*')
+        text, pattern=r'\*\*\$\$[^$]+\$\$\*\*|\*\*\$[^$]+\$\*\*')
     # I previous used this, but it was not picking up notation LaTeX str
     # containing asterisks, e.g. `**$\pi^*$**``, `**$\pi_*$**`.`
-    return find_regex_in_text(
-        text, pattern='\*\*\$\$[^*$]+\$\$\*\*|\*\*\$[^*$]+\$\*\*')
+    # return find_regex_in_text(
+    #     text, pattern='\*\*\$\$[^*$]+\$\$\*\*|\*\*\$[^*$]+\$\*\*')
 
 
 def definition_asterisk_indices(
         text: str # The str in which to find the indices of the definitions surrounded by double asterisks.
         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a substring in `text` surrounded by double asterisks, including the double asterisks.
-    """Return the indices of definition text surrounded by double asterisks.
+    r"""Return the indices of definition text surrounded by double asterisks.
     
     A double-asterisk-surrounded-text is a definition almost always
     when it is not purely LaTeX math mode text.

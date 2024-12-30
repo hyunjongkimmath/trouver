@@ -64,7 +64,7 @@ class LinkFormatError(Exception):
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 12
 class LinkType(Enum):
-    """An Enumeration indicating whether an `ObsidianLink` object is a
+    r"""An Enumeration indicating whether an `ObsidianLink` object is a
     Wikilink or a Markdown-style link.
 
     Enumerates `LinkType.WIKILINK` and `LinkType.MARKDOWN`.

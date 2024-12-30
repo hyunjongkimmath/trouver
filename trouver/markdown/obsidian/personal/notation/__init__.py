@@ -136,7 +136,7 @@ def _full_notation_string(
         notation: str,
         description: str,
         latex_in_original: str) -> str:
-    """The full "statement" of a notation.
+    r"""The full "statement" of a notation.
     
     Says something like "<notation> denotes <description of notation>", e.g.
     "$\dim V$ denotes the dimension of the vector space $V$".
@@ -652,7 +652,7 @@ REPLACEABLES = _build_replacables_from_groups(replaceable_groups)
 def regex_from_latex(
         latex: str, replaceables: dict[str, set[str]] = REPLACEABLES,
         special_characters: list[str] = SPECIAL_CHARACTERS) -> str:
-    """Returns regex to match latex math mode string which is essentially
+    r"""Returns regex to match latex math mode string which is essentially
     equivalent to a specified latex math mode string.
     
     The outputs of this function may not work correctly.
@@ -736,7 +736,7 @@ def _macro_is_actually_placeholder(macro: str) -> bool:
 
 # %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 69
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
-    """Returns a regex str to detect the notation of the notation note.
+    r"""Returns a regex str to detect the notation of the notation note.
     
     The regex detection strings should be in a list labeled `detect_regex` in
     the yaml frontmatter. If multiple strings are in the list, then the regex
@@ -745,7 +745,7 @@ def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     "by priority", with the higher priority regexes coming first. It is good
     to have these string in quotes `""` to make sure that yaml can load them
     safely. When doing so, make sure to escape characters, e.g. backslash
-    should be typed as `\\`, etc.
+    should be typed as `\`, etc.
     
     The strings in `detect_regex` can include placeholders, cf.
     ``regex_from_latex``.

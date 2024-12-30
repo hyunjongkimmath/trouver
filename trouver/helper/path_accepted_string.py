@@ -19,7 +19,7 @@ CHARACTER_ORDERING_LIST =\
      'P', 'p', r'\Pi', r'\pi', r'\Phi', r'\phi', r'\Psi', r'\psi', 'Q', 'q', 'R', 'r', 
      r'\Rho', r'\rho', 'S', 's', r'\Sigma', r'\sigma', 'T', 't', r'\Theta', r'\theta',
      r'\Tau', r'\tau', 'U', 'u', r'\Upsilon', r'\upsilon', 'V', 'v', 'W', 'w', r'\Omega', r'\omega',
-     'X', 'x', '\Chi', '\chi', 'Y', 'y', 'Z', 'z', '\Zeta', '\zeta', '*', r'\bullet']
+     'X', 'x', r'\Chi', r'\chi', 'Y', 'y', 'Z', 'z', r'\Zeta', r'\zeta', '*', r'\bullet']
 DECORATING_CHARACTERS =\
     [r'\tilde', r'\hat', r'\overline', r'\bar', r'\mathscr', r'\mathcal',
      r'\mathfrak', r'\\operatorname', r'\\text', r'\\bf']
