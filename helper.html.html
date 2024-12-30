@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Helper functors dealing with HTML tags">
+
+<title>helper.html – trouver</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ebc57992554dae5230fa85c1bd5a55fa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="helper.html – trouver">
+<meta property="og:description" content="Helper functors dealing with HTML tags">
+<meta property="og:site_name" content="trouver">
+<meta name="twitter:title" content="helper.html – trouver">
+<meta name="twitter:description" content="Helper functors dealing with HTML tags">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./helper.html.html">helper.html</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.divide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.divide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.formatting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.formatting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.comments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.comments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.machine_learning.notation_linking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_linking</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_and_notation_naming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_and_notation_naming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.tests</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.regex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">helper.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.definition_and_notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.definition_and_notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.numbers</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./41_helper.accented_characters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">41_helper.accented_characters.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.date_and_time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.date_and_time</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./43_helper.topological_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Topological sort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./44_helper.alphabet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alphabet</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.path_accepted_string.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.path_accepted_string</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./46_helper.files_and_folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Files and folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.macros_and_commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.macros_and_commands</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.arxiv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.arxiv</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault_and_links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault_and_links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.parse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.parse</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.in_standard_information_note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.in_standard_information_note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.note_division.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.note_division</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./app.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><code>app.__init__</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./star.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.concise_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.concise_code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unused.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How to use</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#html_tag_str" id="toc-html_tag_str" class="nav-link active" data-scroll-target="#html_tag_str">html_tag_str</a></li>
+  <li><a href="#find_lt_symbols_without_space_in_math_mode" id="toc-find_lt_symbols_without_space_in_math_mode" class="nav-link" data-scroll-target="#find_lt_symbols_without_space_in_math_mode">find_lt_symbols_without_space_in_math_mode</a></li>
+  <li><a href="#add_space_to_lt_symbols_without_space" id="toc-add_space_to_lt_symbols_without_space" class="nav-link" data-scroll-target="#add_space_to_lt_symbols_without_space">add_space_to_lt_symbols_without_space</a></li>
+  <li><a href="#remove_html_tags_in_text" id="toc-remove_html_tags_in_text" class="nav-link" data-scroll-target="#remove_html_tags_in_text">remove_html_tags_in_text</a></li>
+  <li><a href="#add_html_tag_data_to_raw_text" id="toc-add_html_tag_data_to_raw_text" class="nav-link" data-scroll-target="#add_html_tag_data_to_raw_text">add_HTML_tag_data_to_raw_text</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">helper.html</h1>
+</div>
+
+<div>
+  <div class="description">
+    Helper functors dealing with HTML tags
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="cell-2" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="consolidating-special-characters-that-are-changed-with-the-__str__-function-of-bs4.element.tags-objects" class="level4">
+<h4 class="anchored" data-anchor-id="consolidating-special-characters-that-are-changed-with-the-__str__-function-of-bs4.element.tags-objects">Consolidating special characters that are changed with the <code>__str__</code> function of <code>bs4.element.Tags</code> objects</h4>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/helper/html.py#L21" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="html_tag_str" class="level3">
+<h3 class="anchored" data-anchor-id="html_tag_str">html_tag_str</h3>
+<blockquote class="blockquote">
+<pre><code> html_tag_str (html_tag:bs4.element.Tag)</code></pre>
+</blockquote>
+<p><em>Return the full string of <code>html_tag</code>, accounting for special characters that <code>bs4</code> changes</em></p>
+<p>When using the <code>__str__</code> function of <code>bs4.element.Tag</code> objects, special characters such as <code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code> change into <code>&amp;lt;</code>, <code>&amp;gt;</code> and <code>&amp;amp;</code>, etc. The <a href="https://hyunjongkimmath.github.io/trouver/helper.html.html#html_tag_str"><code>html_tag_str</code></a> function makes it so that these characters are changed back.</p>
+<div id="cell-6" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(<span class="st">''</span>, <span class="st">'html.parser'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tag <span class="op">=</span> soup.new_tag(<span class="st">'span'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>tag.string <span class="op">=</span> <span class="st">'&amp;hi&lt;'</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>test_eq(html_tag_str(tag), <span class="st">'&lt;span&gt;&amp;hi&lt;&lt;/span&gt;'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="handling-less-than-symbols-in-latex-math-mode-strings" class="level4">
+<h4 class="anchored" data-anchor-id="handling-less-than-symbols-in-latex-math-mode-strings">Handling less than <code>&lt;</code> symbols in latex math mode strings</h4>
+<p><code>BeautifulSoup</code>’s <code>html.parser</code> parses less than <code>&lt;</code> symbols without a following space as the beginning of an HTML tag, even when the symbol <code>&lt;</code> is used within a LaTeX math mode string. To get around this, we detect when this happens and add a space after these symbols.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/helper/html.py#L35" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="find_lt_symbols_without_space_in_math_mode" class="level3">
+<h3 class="anchored" data-anchor-id="find_lt_symbols_without_space_in_math_mode">find_lt_symbols_without_space_in_math_mode</h3>
+<blockquote class="blockquote">
+<pre><code> find_lt_symbols_without_space_in_math_mode (text:str)</code></pre>
+</blockquote>
+<p><em>Return the indices in <code>text</code> with math mode less than <code>&lt;</code> symbols without a space that follows.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>text</td>
+<td>str</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>list</strong></td>
+<td><strong>The index of</strong></td>
+</tr>
+</tbody>
+</table>
+<p>In the following example, there are a few math mode strings with less than <code>&lt;</code> symbols. Some of these symbols are followed by spaces and others are not.</p>
+<div id="cell-11" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r"""</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="vs">here is a math mode $a&lt;b$. Here is another $a&lt; b$.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="vs">Here is an in-line one:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="vs">$$ asdf &lt;cbba$$</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="vs">Here is another:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="vs">$$</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="vs">asdf &lt; basdf</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="vs">$$</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="vs">"""</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> find_lt_symbols_without_space_in_math_mode(text)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">len</span>(output), <span class="dv">2</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>test_eq(text[output[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>], <span class="st">'b'</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>test_eq(text[output[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>], <span class="st">'c'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[23, 85]</code></pre>
+</div>
+</div>
+<div id="cell-12" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>text_2 <span class="op">=</span> <span class="vs">r"""</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;b&gt;Now there is an HTML tag&lt;/b&gt;. But it shouldn't be detected</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="vs">because the tag is not within math mode text.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="vs">But this inequality is: $a &lt;d$</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="vs">"""</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> find_lt_symbols_without_space_in_math_mode(text_2)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">len</span>(output), <span class="dv">1</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>test_eq(text_2[output[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>], <span class="st">'d'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[136]</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/helper/html.py#L55" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="add_space_to_lt_symbols_without_space" class="level3">
+<h3 class="anchored" data-anchor-id="add_space_to_lt_symbols_without_space">add_space_to_lt_symbols_without_space</h3>
+<blockquote class="blockquote">
+<pre><code> add_space_to_lt_symbols_without_space (text:str)</code></pre>
+</blockquote>
+<p><em>Add space after less than <code>&lt;</code> symbols if the symbol is not followed by a space.</em></p>
+<p>Let us again use <code>text</code> from the example for the <a href="https://hyunjongkimmath.github.io/trouver/helper.html.html#find_lt_symbols_without_space_in_math_mode"><code>find_lt_symbols_without_space_in_math_mode</code></a> function:</p>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(add_space_to_lt_symbols_without_space(text))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> find_lt_symbols_without_space_in_math_mode(add_space_to_lt_symbols_without_space(text))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+here is a math mode $a&lt; b$. Here is another $a&lt; b$.
+Here is an in-line one:
+
+$$ asdf &lt; cbba$$
+
+Here is another:
+
+$$
+asdf &lt; basdf
+$$
+</code></pre>
+</div>
+</div>
+<section id="removing-html-tags-in-a-text-and-obtaining-the-data-of-the-tags." class="level4">
+<h4 class="anchored" data-anchor-id="removing-html-tags-in-a-text-and-obtaining-the-data-of-the-tags.">Removing HTML tags in a text and obtaining the data of the tags.</h4>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>markup <span class="op">=</span> <span class="st">'&lt;b&gt;Hello&lt;/b&gt;'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(markup, <span class="st">'html.parser'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>tag <span class="op">=</span> soup.b</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>new_str <span class="op">=</span> soup.new_string(<span class="st">' World'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>tag.append(new_str)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-18" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>new_str</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>' World'</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/helper/html.py#L69" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="remove_html_tags_in_text" class="level3">
+<h3 class="anchored" data-anchor-id="remove_html_tags_in_text">remove_html_tags_in_text</h3>
+<blockquote class="blockquote">
+<pre><code> remove_html_tags_in_text (text:str,
+                           replace_with_attributes:Union[str,list[str],Non
+                           eType]=None, definitely_replace:bool=False,
+                           seed:int=None)</code></pre>
+</blockquote>
+<p>*Remove the HTML tags in <code>text</code>.</p>
+<p>HTML tags are assumed to be not nested.*</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>text</td>
+<td>str</td>
+<td></td>
+<td>The text in which to remove the HTML tags.</td>
+</tr>
+<tr class="even">
+<td>replace_with_attributes</td>
+<td>Union</td>
+<td>None</td>
+<td>Attribute(s) within the HTML tags which should be used to replace the text of the tags. If <code>None</code>, then the texts are not replaced with the attributes. If multiple attributes are specified, then only one attribute is used to replace the text for each HTML tag (independently at random of other replacements). Each attribute’s text has an equal chance of being selected for replacement. Repeats are ignored.</td>
+</tr>
+<tr class="odd">
+<td>definitely_replace</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>True</code> and if a given HTML tag has an attribute specified in <code>replace_with_attributes</code>, then the text for that tag will definitely be replaced by the text of one of the attributes. Otherwise, the original text and each attribute’s text have an equal chance of being selected.</td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>int</td>
+<td>None</td>
+<td>Random seed</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>tuple</strong></td>
+<td></td>
+<td><strong>The text <code>removed</code> without HTML tags and a list whose elements consist of the removed HTML tags and the starting and ending indices of the text corresponding to the removed tags within <code>removed</code>.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/helper.html.html#remove_html_tags_in_text"><code>remove_html_tags_in_text</code></a> function removes HTML tags, preserving the underlying text by default.</p>
+<div id="cell-21" class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> <span class="st">'Let $K$ be a field. An &lt;b definition="Abelian variety over a field"&gt;Abelian variety over $K$&lt;/b&gt; is a variety that'</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>text_without_html_tags, removed_tags <span class="op">=</span> remove_html_tags_in_text(html)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_without_html_tags)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>test_eq(text_without_html_tags, <span class="st">'Let $K$ be a field. An Abelian variety over $K$ is a variety that'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Let $K$ be a field. An Abelian variety over $K$ is a variety that</code></pre>
+</div>
+</div>
+<div id="cell-22" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>removed_tags[<span class="dv">0</span>][<span class="dv">0</span>].attrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'definition': 'Abelian variety over a field'}</code></pre>
+</div>
+</div>
+<p>In the following example, there is a less than <code>&lt;</code> symbol, which is definitely not the opening of an HTML tag. The following verifies that the placeholder <code>&amp;lt;</code> is not used to replace the less than symbol, which is what <code>bs4.BeautifulSoup</code>’s <code>html.parser</code> does.</p>
+<div id="cell-24" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Hello, this has a less than symbol: $a&lt; b$'</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>text, html_tags <span class="op">=</span> remove_html_tags_in_text(text)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> html_tags</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'&lt; '</span> <span class="kw">in</span> text</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'lt'</span> <span class="kw">not</span> <span class="kw">in</span> html_tags</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The same applies to the greater than <code>&gt;</code> symbol, and <code>&amp;</code> symbols</p>
+<div id="cell-26" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Hello, this has a greater than symbol: $a&gt;b$'</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>text, html_tags <span class="op">=</span> remove_html_tags_in_text(text)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> html_tags</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'&gt;'</span> <span class="kw">in</span> text</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'gt'</span> <span class="kw">not</span> <span class="kw">in</span> html_tags</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="vs">r'Hello $$ f &amp;= 3 \\ g &amp;= 5'</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>text, html_tags <span class="op">=</span> remove_html_tags_in_text(text)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> html_tags</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'&amp;'</span> <span class="kw">in</span> text</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'&amp;amp;'</span> <span class="kw">not</span> <span class="kw">in</span> html_tags</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>c:\Users\hyunj\Documents\Development\Python\trouver_py310_venv\lib\site-packages\bs4\__init__.py:435: MarkupResemblesLocatorWarning: The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/helper.html.html#remove_html_tags_in_text"><code>remove_html_tags_in_text</code></a> function additionally returns a list with information about the tags that are removed. Each item in this list is a tuple <code>(tag, start, end)</code>, where <code>tag</code> is the tag that has been removed, and <code>start</code> and <code>end</code> are the indices within the string output <code>text_without_html_tags</code> of the function at which the text replacing the tag can be found.</p>
+<p>In the example above (continued below), there is excactly one tag that is removed.</p>
+<div id="cell-28" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(removed_tags)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>removed_tag, start, end <span class="op">=</span> removed_tags[<span class="dv">0</span>]</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_without_html_tags[start:end])</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>test_eq(text_without_html_tags[start:end], <span class="st">'Abelian variety over $K$'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[(&lt;b definition="Abelian variety over a field"&gt;Abelian variety over $K$&lt;/b&gt;, 23, 47)]
+Abelian variety over $K$</code></pre>
+</div>
+</div>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/helper.html.html#remove_html_tags_in_text"><code>remove_html_tags_in_text</code></a> function can be used to replace the underlying text of HTML tags with specified attribute values.</p>
+<p>In the below example, the text has a tag which contains a <code>typo</code> attribute. Passing <code>'typo'</code> to the <code>replace_with_attributes</code> parameter and passing <code>True</code> to the <code>definitely_replace</code> parameter guarantees that the value of the <code>typo</code> attribute is used instead of the text of the tag.</p>
+<div id="cell-30" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> <span class="vs">r'The following tag fixes a typo and simultaneously keeps around the data of that typo: &lt;span typo="$\operatorname</span><span class="sc">{Gul}</span><span class="vs">(K)$"&gt;$\operatorname</span><span class="sc">{Gal}</span><span class="vs">(K)$&lt;/span&gt;'</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>text_without_html_tags, removed_tags <span class="op">=</span> remove_html_tags_in_text(html, replace_with_attributes<span class="op">=</span><span class="st">'typo'</span>, definitely_replace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_without_html_tags)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>test_eq(text_without_html_tags, <span class="st">'The following tag fixes a typo and simultaneously keeps around the data of that typo: $</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Gul}</span><span class="st">(K)$'</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>removed_tag, start, end <span class="op">=</span> removed_tags[<span class="dv">0</span>]</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>test_eq(text_without_html_tags[start:end], <span class="st">'$</span><span class="ch">\\</span><span class="st">operatorname</span><span class="sc">{Gul}</span><span class="st">(K)$'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following tag fixes a typo and simultaneously keeps around the data of that typo: $\operatorname{Gul}(K)$</code></pre>
+</div>
+</div>
+<p>If the <code>definitely_replace</code> parameter is <code>False</code> (which it is by default), then the original text might be preserved or it might be replaced.</p>
+<div id="cell-32" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> <span class="vs">r'&lt;span typo="$\operatorname</span><span class="sc">{Gul}</span><span class="vs">(K)$"&gt;$\operatorname</span><span class="sc">{Gal}</span><span class="vs">(K)$&lt;/span&gt;'</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>possible_outputs <span class="op">=</span> [</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r'$\operatorname</span><span class="sc">{Gal}</span><span class="vs">(K)$'</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r'$\operatorname</span><span class="sc">{Gul}</span><span class="vs">(K)$'</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>output, _ <span class="op">=</span> remove_html_tags_in_text(html, replace_with_attributes<span class="op">=</span><span class="st">'typo'</span>, definitely_replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> output <span class="kw">in</span> possible_outputs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="adding-html-tag-data" class="level4">
+<h4 class="anchored" data-anchor-id="adding-html-tag-data">Adding HTML tag data</h4>
+<p>On the other hand, we may also need to add HTML tag data to a text.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/helper/html.py#L148" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="add_html_tag_data_to_raw_text" class="level3">
+<h3 class="anchored" data-anchor-id="add_html_tag_data_to_raw_text">add_HTML_tag_data_to_raw_text</h3>
+<blockquote class="blockquote">
+<pre><code> add_HTML_tag_data_to_raw_text (text:str,
+                                tags_and_locations:list[tuple[bs4.element.
+                                Tag,int,int]])</code></pre>
+</blockquote>
+<p>*Add specified HTML tags to the specified locations/ranges in <code>text</code>.</p>
+<p>See the <code>add_HTML_tag_data_to_text</code> function for adding HTML tag data to text that may or may not already have HTML tags.*</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>text</td>
+<td>str</td>
+<td>The text onto which to add HTML tags. This is assumed to contain no HTML tags.</td>
+</tr>
+<tr class="even">
+<td>tags_and_locations</td>
+<td>list</td>
+<td>Each tuple consists of the tag object to add as well as the indices within <code>text</code> to. The ranges specified by the tuples are assumed to not overlap with one another.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>str</strong></td>
+<td><strong>The modification of <code>text</code> in which the tags are added at the specified locations; the ranges in <code>text</code> are replaced..</strong></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-36" class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Now this will have an HTML tag. This will also have an HTML tag too!"</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>tags_and_locations <span class="op">=</span> [</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    (BeautifulSoup(<span class="st">'&lt;span some_attr="hi"&gt;this&lt;/span&gt;'</span>, <span class="st">'html.parser'</span>), <span class="dv">4</span>,<span class="dv">8</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    (BeautifulSoup(<span class="st">'&lt;div some_attr="hi"&gt;This&lt;/div&gt;'</span>, <span class="st">'html.parser'</span>), <span class="dv">32</span>,<span class="dv">36</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> add_HTML_tag_data_to_raw_text(text, tags_and_locations)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>test_eq(output, <span class="st">'Now &lt;span some_attr="hi"&gt;this&lt;/span&gt; will have an HTML tag. &lt;div some_attr="hi"&gt;This&lt;/div&gt; will also have an HTML tag too!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Now &lt;span some_attr="hi"&gt;this&lt;/span&gt; will have an HTML tag. &lt;div some_attr="hi"&gt;This&lt;/div&gt; will also have an HTML tag too!</code></pre>
+</div>
+</div>
+<p>Now let us look at the same example, with the order in <code>tags_and_locations</code> reversed.</p>
+<div id="cell-38" class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Now this will have an HTML tag. This will also have an HTML tag too!"</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>tags_and_locations <span class="op">=</span> [</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    (BeautifulSoup(<span class="st">'&lt;div some_attr="hi"&gt;This&lt;/div&gt;'</span>, <span class="st">'html.parser'</span>), <span class="dv">32</span>,<span class="dv">36</span>),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    (BeautifulSoup(<span class="st">'&lt;span some_attr="hi"&gt;this&lt;/span&gt;'</span>, <span class="st">'html.parser'</span>), <span class="dv">4</span>,<span class="dv">8</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> add_HTML_tag_data_to_raw_text(text, tags_and_locations)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>test_eq(output, <span class="st">'Now &lt;span some_attr="hi"&gt;this&lt;/span&gt; will have an HTML tag. &lt;div some_attr="hi"&gt;This&lt;/div&gt; will also have an HTML tag too!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Now &lt;span some_attr="hi"&gt;this&lt;/span&gt; will have an HTML tag. &lt;div some_attr="hi"&gt;This&lt;/div&gt; will also have an HTML tag too!</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/hyunjongkimmath\.github\.io\/trouver");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

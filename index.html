@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+
+<title>trouver</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ebc57992554dae5230fa85c1bd5a55fa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="trouver">
+<meta property="og:description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+<meta property="og:image" content="https://hyunjongkimmath.github.io/trouver/images/index_gui_image.png">
+<meta property="og:site_name" content="trouver">
+<meta property="og:image:alt" content="The trouver GUI">
+<meta property="og:image:height" content="972">
+<meta property="og:image:width" content="893">
+<meta name="twitter:title" content="trouver">
+<meta name="twitter:description" content="Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models">
+<meta name="twitter:image" content="https://hyunjongkimmath.github.io/trouver/images/index_gui_image.png">
+<meta name="twitter:image:alt" content="The trouver GUI">
+<meta name="twitter:image-height" content="972">
+<meta name="twitter:image-width" content="893">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">trouver</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.divide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.divide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.formatting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.formatting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.comments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.comments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.machine_learning.notation_linking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_linking</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_and_notation_naming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_and_notation_naming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.tests</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.regex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.definition_and_notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.definition_and_notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.numbers</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./41_helper.accented_characters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">41_helper.accented_characters.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.date_and_time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.date_and_time</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./43_helper.topological_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Topological sort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./44_helper.alphabet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alphabet</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.path_accepted_string.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.path_accepted_string</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./46_helper.files_and_folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Files and folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.macros_and_commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.macros_and_commands</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.arxiv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.arxiv</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault_and_links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault_and_links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.parse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.parse</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.in_standard_information_note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.in_standard_information_note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.note_division.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.note_division</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./app.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><code>app.__init__</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./star.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.concise_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.concise_code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unused.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How to use</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#disclaimer" id="toc-disclaimer" class="nav-link active" data-scroll-target="#disclaimer">Disclaimer</a></li>
+  <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install">Install</a></li>
+  <li><a href="#descriptions-of-functionalities" id="toc-descriptions-of-functionalities" class="nav-link" data-scroll-target="#descriptions-of-functionalities">Descriptions of functionalities</a></li>
+  <li><a href="#rationale-for-the-functionalities-and-intended-use" id="toc-rationale-for-the-functionalities-and-intended-use" class="nav-link" data-scroll-target="#rationale-for-the-functionalities-and-intended-use">Rationale for the functionalities and intended use</a></li>
+  <li><a href="#gui" id="toc-gui" class="nav-link" data-scroll-target="#gui">GUI</a></li>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to use</a></li>
+  <li><a href="#how-the-examplestests-are-structured" id="toc-how-the-examplestests-are-structured" class="nav-link" data-scroll-target="#how-the-examplestests-are-structured">How the examples/tests are structured</a>
+  <ul class="collapse">
+  <li><a href="#miscellaneous" id="toc-miscellaneous" class="nav-link" data-scroll-target="#miscellaneous">Miscellaneous</a></li>
+  </ul></li>
+  <li><a href="#for-developers" id="toc-for-developers" class="nav-link" data-scroll-target="#for-developers">For developers</a>
+  <ul class="collapse">
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  </ul></li>
+  <li><a href="#copyright" id="toc-copyright" class="nav-link" data-scroll-target="#copyright">Copyright</a></li>
+  <li><a href="#special-thanks" id="toc-special-thanks" class="nav-link" data-scroll-target="#special-thanks">Special Thanks</a></li>
+  <li><a href="#release-notes" id="toc-release-notes" class="nav-link" data-scroll-target="#release-notes">Release notes</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">trouver</h1>
+</div>
+
+<div>
+  <div class="description">
+    Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<ul>
+<li><a href="https://sites.google.com/view/hyunjongkimmath/">Author’s academic website</a></li>
+<li><a href="https://github.com/hyunjongkimmath/trouver#readme">GitHub repository</a></li>
+<li><a href="https://hyunjongkimmath.github.io/trouver/">Documentation website</a></li>
+<li><a href="https://pypi.org/project/trouver/">pypi page</a></li>
+<li><a href="https://docs.google.com/forms/d/e/1FAIpQLScA7XJthYUgt1lK9RbNXvwWKe7Xo1G23Tgivq2o0K3YRFagxw/viewform">Survey</a></li>
+</ul>
+<p>Mathematicians constantly need to learn and read about concepts with which they are unfamiliar. Keeping mathematical notes in an <a href="https://obsidian.md/"><code>Obsidian.md</code></a> vault can help with this learning process as <code>Obsidian.md</code> makes it easy to edit notes, link notes to one another, organize notes, read notes, and access notes.</p>
+<p>This library currently includes functionalities (see also the <a href="#descriptions-of-functionalities">below</a>) to</p>
+<ol type="1">
+<li>Parse LaTeX documents (e.g.&nbsp;those available on <a href="https://arxiv.org/"><code>arxiv.org</code></a>) and divide them into reasonably lengthed parts/notes/excerpts as <code>.md</code> files, especially for viewing and editing on <code>Obsidian.md</code>.</li>
+<li>Use a machine learning model to categorize the type of text each excerpt is (e.g.&nbsp;introducing definitions/notations, presenting a concept, presenting a proof).</li>
+<li>Use a machine learning model to identify definitions and notations introduced in each excerpt.</li>
+<li>Use machine learning models to “name” definitions and notations introducd in each excerpt.</li>
+<li>Create accompanying notes for each notation as more <code>.md</code> files.</li>
+<li>Use a machine learning model to summarize what these notations denote in the created accompanying notes.</li>
+</ol>
+<p>As some of these functionalities use machine learning models, they ultimately cannot run perfectly. Nevertheless, some of these models, particularly those described in 2 and 3, perform well enough that these functionalities are quite useful as tools to help reading mathematical papers (when used in conjunction with <code>Obsidian.md</code>).</p>
+<p>Moreover, the results of the machine learning models are recorded in the notes/<code>.md</code> files. One can very well correct these recorded results by manually editing the affected <code>.md</code> files with any file editor.</p>
+<p>As of <a href="release_notes.html##ver-101">Version 1.0.1</a>, <code>trouver</code> has a <a href="#gui">graphical user interface</a> wrapping some (but not all) of its functionalities.</p>
+<p style="text-align:center;">
+<img src="./images/index_gui_image.png" alt="The trouver GUI" width="400" class="center">
+</p>
+<section id="disclaimer" class="level2">
+<h2 class="anchored" data-anchor-id="disclaimer">Disclaimer</h2>
+<p>At the time of this writing (12/23/2024), there is only one author/contributor of this library. Nevertheless, the author often refers to himself as <em>the author</em>, <em>the authors</em>, or <em>the author/authors</em> in writing this library. Moreover, the author often uses the <a href="https://en.wikipedia.org/wiki/We#Editorial_we"><em>editorial we</em></a> in writing this library.</p>
+<p>Use this library at your own risk as using this library can write or modify files in your computer and as the documentation of components of this library may be inaccurate, outdated, or not-well-maintained. Moreover, future components of this library may use external API’s (including but possibly not limited to OpenAI’s API) that may not be free to use. By using this library, you agree that the author/authors of this library is/are not responsible for any damages or losses, including but not limited to data or monetary losses, from this library and related components.</p>
+<p>This library is still somewhere in-between prototype and alpha. Moreover, the library itself may be unstable and subject to abrupt changes.</p>
+<p>The author/authors of this library is/are also not affiliated with <code>Obsidian.md</code>, <code>fast.ai</code>, <code>Hugging Face</code>, and <code>arXiv</code>.</p>
+</section>
+<section id="install" class="level2">
+<h2 class="anchored" data-anchor-id="install">Install</h2>
+<p>See also <a href="how_to.install_trouver.html">how_to.install_trouver</a></p>
+<p>We recommend having at least 5GB of free disk space to install <code>trouver</code> and related components (mostly the ML models).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install trouver</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You may also have to manually install other libraries which are required by the <code>fast.ai</code> and/or <code>Hugging Face</code> libraries.</p>
+<p>We recommend installing <a href="https://obsidian.md/">Obsidian.md</a> to view, edit, and modify mathematical notes created by or which interact with <code>trouver</code>.</p>
+<p>See <code>how_to.install_trouver</code> for more details on installation.</p>
+<blockquote class="blockquote">
+<p><strong>Warning</strong> At the time of this writing, <code>trouver</code> has not been tested on MacOS extensively. We have also found that running the latest Python versions in Jupyter notebooks on modern MacOS machines (e.g.&nbsp;those using the M1 processor and in particular the arm64 architecture) lead to some issues. cf.&nbsp;stackexchange discussions such as</p>
+<ul>
+<li><a href="https://apple.stackexchange.com/questions/436801/m1-mac-mach-o-file-but-is-an-incompatible-architecture-have-x86-64-need-a">https://apple.stackexchange.com/questions/436801/m1-mac-mach-o-file-but-is-an-incompatible-architecture-have-x86-64-need-a</a></li>
+<li><a href="https://stackoverflow.com/questions/71502583/jupiter-wont-launch-from-terminal-on-m1-macbook">https://stackoverflow.com/questions/71502583/jupiter-wont-launch-from-terminal-on-m1-macbook</a>.</li>
+</ul>
+<!--- > One can also try running `trouver` on an older version of Python (e.g. version 3.7) to avoid these Jupyter problems. In this case, one may need to install some additional Python packages, such as [`graphlib-backport`](https://pypi.org/project/graphlib-backport/). -->
+</blockquote>
+</section>
+<section id="descriptions-of-functionalities" class="level2">
+<h2 class="anchored" data-anchor-id="descriptions-of-functionalities">Descriptions of functionalities</h2>
+<p>We describe some of <code>trouver</code>’s ML functionalities. Sample code is available in <a href="tutorial.walkthrough.html"><code>tutorial.walkthrough</code></a>. See <a href="#rationale-for-the-functionalities-and-intended-use">below</a> for some rationale for these functionalities.</p>
+<p>The predictions in the examples below are just for illustration; actual predictions by the ML models may differ — what constitutes as “ideal predictions” is ultimately subjective and users’ opinions on how the ML models should actually predict will vary. All of the ML models are hosted on the page for the user <a href="https://huggingface.co/hyunjongkimmath"><code>hyunjongkimmath</code></a> on <a href="https://huggingface.co/"><code>huggingface</code></a>.</p>
+<p>TODO: mention the functions for each of the functionalities</p>
+<section id="predict-types-of-excerpts-of-mathematical-text." class="level4">
+<h4 class="anchored" data-anchor-id="predict-types-of-excerpts-of-mathematical-text.">1. Predict types of excerpts of mathematical text.</h4>
+<p>The model <a href="https://huggingface.co/hyunjongkimmath/information_note_type"><code>hyunjongkimmath/information_note_type</code></a> predicts what type a given excerpt of text is (using <code>Markdown</code> tags). See <a href="markdown.obsidian.personal.machine_learning.information_note_types.html"><code>markdown.obsidian.personal.machine_learning.information_note_types</code></a> for more details.</p>
+<p>For example, the model should predict that the following excerpt is a <code>#_meta/definition</code> and a <code>#_meta/notation</code>.</p>
+<blockquote class="blockquote">
+<p>Let <span class="math inline">\((X, d)\)</span> be a metric space and <span class="math inline">\(x \in X\)</span>.</p>
+<p><strong>Definition 1.3.1:</strong> The open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r &gt; 0\)</span> is defined as:</p>
+<p><span class="math display">\[B(x, r) = \{y \in X : d(x, y) &lt; r\}\]</span></p>
+<p><strong>Definition 1.3.2:</strong> The closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r \geq 0\)</span> is defined as:</p>
+<p><span class="math display">\[\overline{B}(x, r) = \{y \in X : d(x, y) \leq r\}\]</span></p>
+</blockquote>
+<p>For another example, the model should predict that the following excerpt is a <code>#_meta/concept</code> and a <code>#_meta/proof</code>.</p>
+<blockquote class="blockquote">
+<p><strong>Theorem 3.2.1:</strong> Let <span class="math inline">\(A\)</span> be an <span class="math inline">\(n \times n\)</span> matrix. If <span class="math inline">\(A\)</span> is invertible, then its columns are linearly independent.</p>
+<p><strong>Proof:</strong> Let <span class="math inline">\(c_1, c_2, ..., c_n\)</span> be the columns of <span class="math inline">\(A\)</span>. Suppose</p>
+<p><span class="math display">\[a_1c_1 + a_2c_2 + ... + a_nc_n = 0\]</span></p>
+<p>for some scalars <span class="math inline">\(a_1, a_2, ..., a_n\)</span>. This is equivalent to</p>
+<p><span class="math display">\[A\mathbf{x} = \mathbf{0}\]</span></p>
+<p>where <span class="math inline">\(\mathbf{x} = (a_1, a_2, ..., a_n)^T\)</span>. Since <span class="math inline">\(A\)</span> is invertible,</p>
+<p><span class="math display">\[\mathbf{x} = A^{-1}\mathbf{0} = \mathbf{0}\]</span></p>
+<p>Thus, <span class="math inline">\(a_1 = a_2 = ... = a_n = 0\)</span>, proving that the columns are linearly independent.</p>
+</blockquote>
+<p>For yet another example, the model should predict that the following excerpt is a <code>#_meta/narrative</code>.</p>
+<blockquote class="blockquote">
+<p>In this section, we explore the fundamental concepts of eigenvalues and eigenvectors. These powerful tools allow us to:</p>
+<ol type="1">
+<li>Understand the action of a linear transformation on specific vectors</li>
+<li>Diagonalize matrices, simplifying many computations</li>
+<li>Analyze dynamical systems and their long-term behavior</li>
+</ol>
+<p>We begin by defining eigenvalues and eigenvectors, then proceed to develop methods for finding them. The characteristic equation will play a crucial role in our analysis. Finally, we’ll examine some applications, including the diagonalization of matrices and solving systems of differential equations.</p>
+</blockquote>
+<p>The following are some tags that the model is adept at predicting:</p>
+<ul>
+<li><code>#_meta/definition</code> labels a note that introduces a definition.</li>
+<li><code>#_meta/notation</code> labels a note that introduces a notation.</li>
+<li><code>#_meta/concept</code> labels a note that contains a general concept, e.g.&nbsp;by virtue of stating a theorem/proposiiton/lemma/corollary.</li>
+<li><code>#_meta/proof</code> labels a note that contains a proof.</li>
+<li><code>#_meta/narrative</code> labels a note that contains narrative - explainations of the material that is presented. Narratives most usually occur at the start/end of a chapter/section of a book/text/paper and in-between definitions/theorems/etc.</li>
+<li><code>#_meta/exercise</code> labels a note that contains an exercise problem.</li>
+<li><code>#_meta/remark</code> labels a note that contains a remark.</li>
+<li><code>#_meta/example</code> labels a note that contains an example.</li>
+<li><code>#_meta/context</code> labels a note that contains “contextual information”, i.e.&nbsp;information that other notes might depend on (e.g.&nbsp;“in this section, <span class="math inline">\(k\)</span> is an algebraically closed field”, “For the rest of this section, we assume that <span class="math inline">\(X\)</span> is a pointed topological space”).</li>
+</ul>
+</section>
+<section id="mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text." class="level4">
+<h4 class="anchored" data-anchor-id="mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text.">2. Mark definitions and notations introduced in an excerpt of mathematical text.</h4>
+<p>The model <a href="https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model"><code>hyunjongkimmath/def_and_notat_token_classification_model</code></a> attempts to find where exactly definitions and notations are introduced in a given excerpt of text. See <a href="markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html"><code>markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</code></a></p>
+<p>For example, take the following excerpt.</p>
+<blockquote class="blockquote">
+<p>Let <span class="math inline">\((X, d)\)</span> be a metric space and <span class="math inline">\(x \in X\)</span>.</p>
+<p><strong>Definition 1.3.1:</strong> The open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r &gt; 0\)</span> is defined as:</p>
+<p><span class="math display">\[B(x, r) = \{y \in X : d(x, y) &lt; r\}\]</span></p>
+<p>We denote this open ball as <span class="math inline">\(B(x, r)\)</span>.</p>
+<p><strong>Definition 1.3.2:</strong> The closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r \geq 0\)</span> is defined as:</p>
+<p><span class="math display">\[\overline{B}(x, r) = \{y \in X : d(x, y) \leq r\}\]</span></p>
+<p>We use the notation <span class="math inline">\(\overline{B}(x, r)\)</span> for closed balls.</p>
+</blockquote>
+<p>The model should predict (and functions in the module <a href="markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html"><code>markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</code></a> should mark) the following definitions and notations as introduced in the text:</p>
+<blockquote class="blockquote">
+<p>Let <span class="math inline">\((X, d)\)</span> be a metric space and <span class="math inline">\(x \in X\)</span>.</p>
+<p><strong>Definition 1.3.1:</strong> The <b style="border-width:1px;border-style:solid;padding:3px" definition="">open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r &gt; 0\)</span></b> is defined as:</p>
+<p><span style="border-width:1px;border-style:solid;padding:3px" notation=""></span></p>
+<p><span class="math display">\[B(x, r) = \{y \in X : d(x, y) &lt; r\}.\]</span></p>
+<p></p>
+<p><strong>Definition 1.3.2:</strong> The <b style="border-width:1px;border-style:solid;padding:3px" definition="">closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r \geq 0\)</span></b> is defined as:</p>
+<p><span style="border-width:1px;border-style:solid;padding:3px" notation=""></span></p>
+<p><span class="math display">\[\overline{B}(x, r) = \{y \in X : d(x, y) \leq r\}.\]</span></p>
+<p></p>
+</blockquote>
+</section>
+<section id="name-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text." class="level4">
+<h4 class="anchored" data-anchor-id="name-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text.">3. Name definitions and notations introduced in an excerpt of mathematical text.</h4>
+<p>The models <a href="https://huggingface.co/hyunjongkimmath/definition_naming_model">hyunjongkimmath/definition_naming_model</a> and <a href="https://huggingface.co/hyunjongkimmath/notation_naming_model">hyunjongkimmath/notation_naming_model</a> attempt to “name” definitions and notations (marked either manually or with the <a href="https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model"><code>hyunjongkimmath/def_and_notat_token_classification_model</code></a> discussed <a href="#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">above</a>).</p>
+<p>In the example <a href="#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">above</a>, the <a href="https://huggingface.co/hyunjongkimmath/definition_naming_model">hyunjongkimmath/definition_naming_model</a> model ideally would name the definition encapsulated by the marked phrases</p>
+<ul>
+<li><strong>open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r &gt; 0\)</span></strong> and</li>
+<li><strong>closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r \geq 0\)</span></strong></li>
+</ul>
+<p>as (something along the lines of)</p>
+<ul>
+<li>“Open ball centered at a point of a metric space with radius <span class="math inline">\(r\)</span>” and</li>
+<li>“Closed ball centered at a point of a metric space with radius <span class="math inline">\(r\)</span>”</li>
+</ul>
+<p>respectively.</p>
+<p>Moreover, the <a href="https://huggingface.co/hyunjongkimmath/notation_naming_model">hyunjongkimmath/notation_naming_model</a> ideally would name the notation encapsulated by the marked LaTeX math mode texts</p>
+<ul>
+<li><span class="math display">\[B(x, r) = \{y \in X : d(x, y) &lt; r\}\]</span></li>
+<li><span class="math display">\[\overline{B}(x, r) = \{y \in X : d(x, y) \leq r\}\]</span></li>
+</ul>
+<p>as</p>
+<ul>
+<li><span class="math inline">\(B(x, r)\)</span> and</li>
+<li><span class="math inline">\(\overline{B}(x, r)\)</span></li>
+</ul>
+<p>respectively — the aim of the notation-naming process is to only extract the actual notation itself, not other parts of the LaTeX math mode texts that are not part of the notation.</p>
+<p>There may sometimes be more than one “good” way to name a definition/notation and a given marked phrase may actually encapsulate more than one definition/notation. In the above example, one might argue that the marked phrases</p>
+<ul>
+<li><strong>open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r &gt; 0\)</span></strong> and</li>
+<li><strong>closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r \geq 0\)</span></strong></li>
+</ul>
+<p>encapsulate not only the notions of “open ball” and “closed ball” (centered at a point and with radius <span class="math inline">\(r\)</span>), but also the notions of “the center of an open/closed ball” or “the radius of an open/closed ball”.</p>
+</section>
+<section id="summarize-what-a-notation-denotes-as-introduced-in-an-excerpt-of-mathematical-text." class="level4">
+<h4 class="anchored" data-anchor-id="summarize-what-a-notation-denotes-as-introduced-in-an-excerpt-of-mathematical-text.">4. Summarize what a notation denotes as introduced in an excerpt of mathematical text.</h4>
+<p>The model <a href="https://huggingface.co/hyunjongkimmath/notation_summarizations_model">hyunjongkimmath/notation_summarizations_model</a> attempts to summarize what a notation introduced in a excerpt (marked either manually or with the <a href="https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model"><code>hyunjongkimmath/def_and_notat_token_classification_model</code></a> discussed <a href="#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">above</a> and named with the <a href="https://huggingface.co/hyunjongkimmath/notation_naming_model">hyunjongkimmath/notation_naming_model</a> discussed <a href="#3-name-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">above</a>) is supposed to denote.</p>
+<p>In the <a href="#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">above</a> <a href="#3-name-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text">examples</a>, the marked (and named) notations of <span class="math inline">\(B(x,r)\)</span> and <span class="math inline">\(\overline{B}(x,r)\)</span> may be ideally summarized as follows:</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(B(x,r)\)</span> denotes the open ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r\)</span> where <span class="math inline">\(x\)</span> is a point of a metric space <span class="math inline">\(X\)</span> and <span class="math inline">\(r &gt; 0\)</span>. It is defined as <span class="math display">\[B(x, r) = \{y \in X : d(x, y) &lt; r\}\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math inline">\(\overline{B}(x,r)\)</span> denotes the closed ball centered at <span class="math inline">\(x\)</span> with radius <span class="math inline">\(r\)</span> where <span class="math inline">\(x\)</span> is a point of a metric space <span class="math inline">\(X\)</span> and <span class="math inline">\(r &gt; 0\)</span>. It is defined as <span class="math display">\[\overline{B}(x, r) = \{y \in X : d(x, y) \leq r\}\]</span></p>
+</blockquote>
+<p>Ideally, such a generated notation should contain the following information (as available):</p>
+<ol type="1">
+<li>The name/intuitive description of the notion denoted by the notation (in the above examples, “open ball” and “closed ball”).</li>
+<li>The way the notion is defined/constructed (in the above examples, <span class="math inline">\(B(x, r) = \{y \in X : d(x, y) &lt; r\}\)</span>, etc.)</li>
+<li>Other helpful information about the notation as introduced in the text.</li>
+</ol>
+</section>
+</section>
+<section id="rationale-for-the-functionalities-and-intended-use" class="level2">
+<h2 class="anchored" data-anchor-id="rationale-for-the-functionalities-and-intended-use">Rationale for the functionalities and intended use</h2>
+<p>The sheer amount and interconnectedness of definitions and notations that one has to understand (or at least be aware of) make it difficult to learn mathemamatics, especially at the graduate or research levels (and beyond). The <a href="#descriptions-of-functionalities">above functionalities</a> aim to make learning mathematics more tractable by making it easier to locate (and remind oneself of) definitions and notations introduced in mathematical text.</p>
+<section id="difficulties-in-reading-mathematical-papers" class="level4">
+<h4 class="anchored" data-anchor-id="difficulties-in-reading-mathematical-papers">Difficulties in reading mathematical papers</h4>
+<p>For example, take the following (very much fake) mathematical theorem <a href="https://drive.google.com/file/d/1OXQzMAoMiVWUz_cCWRJJ00NYwt_Yq2TK/view">from Hyun Jong Kim’s talk</a> at the <a href="https://wiki.math.wisc.edu/index.php/AMS_Student_Chapter_Seminar">AMS Student Chapter Seminar</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> at the University of Wisconsin-Madison during the Spring 2024 semester:</p>
+<blockquote class="blockquote">
+<p>Theorem.</p>
+<p>Given a smooth, flavorful, gastroidal toroid <span class="math inline">\(\mathscr{T}_\mathscr{G}\)</span> of rank <span class="math inline">\(n\)</span>, we have a natural isomorphism <span class="math display">\[H_{\text{suc}}^i(\mathscr{T}_\mathscr{G}) \cong H_{\text{Betti}} ( |\mathscr{T}_\mathscr{G}|(\mathbb{C}), \mathbb{Q}(\mathscr{T}_\mathscr{G}))^{3n-i}.\]</span></p>
+</blockquote>
+<p>Even in this short (fake) theorem, a first time reader may not understand a multitude of defintions/notations:</p>
+<ul>
+<li>Gastroidal toroid</li>
+<li>Smooth gastroidal toroid</li>
+<li>flavorful gastroidal toroid</li>
+<li>rank of a gastroidal toroid</li>
+<li><span class="math inline">\(H_{\text{suc}}^i\)</span></li>
+<li><span class="math inline">\(|\mathscr{T}_\mathscr{G}|\)</span></li>
+<li><span class="math inline">\(|\mathscr{T}_\mathscr{G}|(\mathbb{C})\)</span></li>
+<li><span class="math inline">\(\mathbb{Q}(\mathscr{T}_\mathscr{G})\)</span>.</li>
+</ul>
+<p>Hypothetically, say that the reader finds some definitions/notations (which may very well take several minutes):</p>
+<blockquote class="blockquote">
+<p>A gastroidal toroid is a toroid constructed as a fried dough and equipped with a sucrose structure. The space <span class="math inline">\(|\mathscr{T}_\mathscr{G}|\)</span> of a gastroidal toroid <span class="math inline">\(\mathscr{T}_\mathscr{G}\)</span> is the underlying topological space structure of the friend dough. We say that a gastroidal toroid is flavorful is <span class="math inline">\(\lim_{n \to \infty} \operatorname{swt}_n(\mathscr{T}_\mathscr{G}) \geq 1\)</span></p>
+</blockquote>
+<p>However, this excerpt requires the reader to understand more definitions and notations:</p>
+<ul>
+<li>a fried dough</li>
+<li>a sucrose structure</li>
+<li><span class="math inline">\(\operatorname{swt}_n\)</span></li>
+</ul>
+<p>In practice, as one sets out to learn about numerous definitions and notations, say in a given mathematical paper, one can often forget details and thus need to spend much time to re-find such definitions and notations.</p>
+</section>
+<section id="a-workaround-using-obsidian.md" class="level4">
+<h4 class="anchored" data-anchor-id="a-workaround-using-obsidian.md">A workaround using <code>Obsidian.md</code></h4>
+<p>The functionalities of <code>trouver</code>, used in conjunction with <code>Obsidian.md</code>, can help work around these difficulties to reduce the amount of time and effort needed to re-find and re-learn these definitions and notations. <code>trouver</code> can divide a LaTeX document into not-too-long notes (see the <a href="https://hyunjongkimmath.github.io/trouver/latex.divide.html#divide_latex_text"><code>divide_latex_text</code></a> function in <a href="latex.divide.html#divide_latex_text">latex.divide</a> and the <a href="https://hyunjongkimmath.github.io/trouver/latex.convert.html#setup_reference_from_latex_parts"><code>setup_reference_from_latex_parts</code></a> function in <a href="latex.convert.html">latex.convert</a>) for an <code>Obsidian.md</code> vault.</p>
+<p>Some of <code>Obsidian.md</code> strengths include the ease with which links/embeddings between notes can be made and the ease with which notes can be searched and opened. In essence, one can use the <a href="#descriptions-of-functionalities">aforementioned functionalities</a> to automatically identify definitions and notations introduced throughout the mathematical text, create new notes dedicated to each notation (see the <code>make_notation_notes_from_HTML_tags</code> function in <a href="markdown.obsidian.personal.notation.html">markdown.obsidian.personal.notation</a>), and write summaries of what the notations denote.</p>
+<p>These notation notes can then be linked/embedded into other notes as needed, thereby making it much easier to view what a notation denotes.</p>
+<p>TODO: include example image</p>
+</section>
+</section>
+<section id="gui" class="level2">
+<h2 class="anchored" data-anchor-id="gui">GUI</h2>
+<p><code>trouver</code> now has a prototype GUI for some of the <a href="#descriptions-of-functionalities">aforementioned funcionalities</a>.</p>
+<p>TODO: include link to GUI download</p>
+</section>
+<section id="how-to-use" class="level1">
+<h1>How to use</h1>
+<p>See <a href="tutorial.walkthrough.html">tutorial.walkthrough</a> and <a href="tutorial.concise_code.html">tutorial.concise_code</a></p>
+</section>
+<section id="how-the-examplestests-are-structured" class="level1">
+<h1>How the examples/tests are structured</h1>
+<p>Many of the functions and methods in this library are accompanied by examples demonstrating how one might use them.</p>
+<p>These examples are usually also tests of the functions/methods; the developer of this library can use <code>nbdev</code>’s <a href="https://nbdev.fast.ai/api/test.html#nbdev_test"><code>nbdev_test</code></a> command-line command to automatically run these tests<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Moreover, there is a GitHub workflow in the repository for this library (see the <code>.github/workflows/test.yaml</code>) which automatically runs these examples/tests on GitHub Actions when changes to are <a href="https://github.com/git-guides/git-commit">committed to the GitHub repository</a><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>These examples may use a combination of the following:</p>
+<ul>
+<li>Mock patching via Python’s <a href="https://docs.python.org/3/library/unittest.mock.html"><code>unittest.mock</code></a> library.</li>
+<li>The <a href="https://fastcore.fast.ai/test.html"><code>fastcore.test</code></a> module as assertion statements.</li>
+<li>example/test files in the <code>nbs/_tests</code> folder in the repository<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.
+<ul>
+<li>The <code>_test_directory()</code> function in the <code>helper</code> module obtains this folder.</li>
+<li>Many of these examples also use the <a href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory"><code>tempfile.TemporaryDirectory</code></a> class along with the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree"><code>shutil.copytree</code></a> to create a Python context manager of a temporary directory with contents copied from the <code>nbs/_tests</code> folder. The temporary directory is automatically deleted once the context manager ends. We do this to run tests/examples which modify files/folders without modifying the files/folders in the <code>nbs/_tests</code> directory themselves.
+<ul>
+<li>For example, the code</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_1'</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_1'</span>, temp_vault)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># run the rest of the example here</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Uncomment the below lines of code to view the end-results of the example; </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(os.getcwd())</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.input()  # this line pauses the process until the user makes an input so the deletion of the temporary directory is delayed.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+first creates a temporary directory starting <code>temp_dir</code> in the current working directory and copies into this temporary directory the contents of <code>test_vault_1</code> in the <code>nbs/_tests</code> folder. One the example/test has finished running, the temporary directory is removed whether or not the test succeeds.</li>
+</ul></li>
+</ul>
+<section id="miscellaneous" class="level2">
+<h2 class="anchored" data-anchor-id="miscellaneous">Miscellaneous</h2>
+<p>This repository is still in its preliminary stages and much of the code and documentation may be faulty or not well formatted. The author greatly appreciates reports of these issues, notifications of typos, and suggestions on edits; please feel free to report them on the <code>Issues</code> section of the GitHub repository for this library. The <a href="https://sites.google.com/wisc.edu/hyunjongkim">author</a> of this repository, who is primarily a mathematician (a postdoctoral associate at the time of this writing), does not guarantee quick responses or resolutions to such issues, but will do his best to address them.</p>
+</section>
+</section>
+<section id="for-developers" class="level1">
+<h1>For developers</h1>
+<p>This repository is based on the <a href="https://nbdev.fast.ai/"><code>nbdev</code></a> template. As such, code for the packages as well as the documentation for the repository are written in jupyter notebooks (the <code>.ipynb</code> files in the <code>nbs</code> folder) and the Python modules are auto-generated via the command-line command <a href="https://nbdev.fast.ai/api/doclinks.html#nbdev_export"><code>nbdev_export</code></a> (or <a href="https://nbdev.fast.ai/tutorials/tutorial.html#prepare-your-changes"><code>nbdev_prepare</code></a>, which among other things runs <code>nbdev_export</code>.).</p>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>In the <code>nbs/_tests</code> folder, make sure that the folders that you want to test are not empty; since git does not track empty folders, empty folders will not be pushed in GitHub and the tests in GitHub Actions may yield different results than in a local computer.</li>
+</ul>
+</section>
+</section>
+<section id="copyright" class="level1">
+<h1>Copyright</h1>
+<p>Copyright © 2023 onward Hyun Jong Kim. Licensed under the Apache License, Version 2.0 (the “License”); you may not use this project’s files except in compliance with the License. A copy of the License is provided in the LICENSE file in this repository.</p>
+</section>
+<section id="special-thanks" class="level1">
+<h1>Special Thanks</h1>
+<p>The author of <code>trouver</code> thanks <a href="https://sites.google.com/wisc.edu/spark483">Sun Woo Park</a> for agreeing to allow their coauthored paper, <a href="https://arxiv.org/abs/2106.10586"><em>Global <span class="math inline">\(\mathbb{A}^1\)</span>-degrees covering maps between modular curves</em></a>, along with some of Park’s expository writings, to be used in examples in this library. The author of <code>trouver</code> further thanks Sun Woo Park for his help in testing <code>trouver</code> on a MacOS computer and for reviewing the <code>tutorial.walkthrough</code> page.</p>
+<p>Components of <code>trouver</code> use <a href="https://info.arxiv.org/help/api/index.html">arXiv.org’s API</a>. As such, we include the following thanks:</p>
+<blockquote class="blockquote">
+<p>Thank you to arXiv for use of its open access interoperability.</p>
+</blockquote>
+<p><code>trouver</code> was built using <a href="https://nbdev.fast.ai/"><code>nbdev</code></a> as a template.</p>
+</section>
+<section id="release-notes" class="level1">
+<h1>Release notes</h1>
+<p>See <a href="release_notes.html"><code>release_notes</code></a>.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Colloquially referred to as the “Donut seminar”, as the organizers purchase donuts with the funds provided by the AMS for the speakers and the audience to eat. The fake theorem/definition below are jokes about donuts.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>cf.&nbsp;<a href="https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-examples-tests-and-docs">nbdev’s End-To-End Walkthrough</a> to see how to use <code>nbdev_test</code><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>There are also tests which are hidden from the documentation website; one can find these tests in the jupyter notebook files in the <code>nbs</code> folder in the repository for this library as notebook cells marked with the <code>#| hide</code> flag, cf.&nbsp;<a href="https://nbdev.fast.ai/tutorials/tutorial.html#add-your-own-frontmatter">nbdev’s End-to-End Walkthrough</a> to see what the <code>#| hide</code> flag does.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>The <code>.github/workflows/test.yaml</code> GitHub workflow file is set up in such a way that that allows GitHub Actions to access/use the contents of the <code>nbs/_tests</code> directory upon running the tests/examples.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>The <code>.github/workflows/test.yaml</code> GitHub workflow file is set up in such a way that that allows GitHub Actions to access/use the contents of the <code>nbs/_tests</code> directory upon running the tests/examples.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/hyunjongkimmath\.github\.io\/trouver");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Functions for managing references in an Obsidian.md math vault">
+
+<title>markdown.obisidian.personal.reference – trouver</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ebc57992554dae5230fa85c1bd5a55fa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="markdown.obisidian.personal.reference – trouver">
+<meta property="og:description" content="Functions for managing references in an Obsidian.md math vault">
+<meta property="og:site_name" content="trouver">
+<meta name="twitter:title" content="markdown.obisidian.personal.reference – trouver">
+<meta name="twitter:description" content="Functions for managing references in an Obsidian.md math vault">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.obsidian.personal.reference.html">markdown.obisidian.personal.reference</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.divide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.divide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.formatting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.formatting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.comments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.comments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.machine_learning.notation_linking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_linking</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_and_notation_naming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_and_notation_naming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.tests</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.regex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.definition_and_notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.definition_and_notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.numbers</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./41_helper.accented_characters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">41_helper.accented_characters.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.date_and_time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.date_and_time</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./43_helper.topological_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Topological sort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./44_helper.alphabet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alphabet</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.path_accepted_string.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.path_accepted_string</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./46_helper.files_and_folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Files and folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.macros_and_commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.macros_and_commands</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.arxiv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.arxiv</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault_and_links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault_and_links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.parse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.parse</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.in_standard_information_note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.in_standard_information_note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.note_division.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.note_division</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./app.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><code>app.__init__</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./star.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.concise_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.concise_code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unused.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How to use</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#getting-a-reference-folder" id="toc-getting-a-reference-folder" class="nav-link active" data-scroll-target="#getting-a-reference-folder">Getting a reference folder</a>
+  <ul class="collapse">
+  <li><a href="#index_note_for_reference" id="toc-index_note_for_reference" class="nav-link" data-scroll-target="#index_note_for_reference">index_note_for_reference</a></li>
+  <li><a href="#reference_directory" id="toc-reference_directory" class="nav-link" data-scroll-target="#reference_directory">reference_directory</a></li>
+  <li><a href="#deleting-a-reference-folder" id="toc-deleting-a-reference-folder" class="nav-link" data-scroll-target="#deleting-a-reference-folder">Deleting a reference folder</a>
+  <ul class="collapse">
+  <li><a href="#delete_reference_folder" id="toc-delete_reference_folder" class="nav-link" data-scroll-target="#delete_reference_folder">delete_reference_folder</a></li>
+  </ul></li>
+  <li><a href="#helper-methods-for-setting-up-new-reference-folders" id="toc-helper-methods-for-setting-up-new-reference-folders" class="nav-link" data-scroll-target="#helper-methods-for-setting-up-new-reference-folders">Helper methods for setting up new reference folders</a></li>
+  <li><a href="#copy-obsidian-vault-plugin-configs" id="toc-copy-obsidian-vault-plugin-configs" class="nav-link" data-scroll-target="#copy-obsidian-vault-plugin-configs">Copy obsidian vault plugin configs</a>
+  <ul class="collapse">
+  <li><a href="#copy_obsidian_vault_configs" id="toc-copy_obsidian_vault_configs" class="nav-link" data-scroll-target="#copy_obsidian_vault_configs">copy_obsidian_vault_configs</a></li>
+  <li><a href="#get_obsidian_vault_plugin_configs" id="toc-get_obsidian_vault_plugin_configs" class="nav-link" data-scroll-target="#get_obsidian_vault_plugin_configs">get_obsidian_vault_plugin_configs</a></li>
+  <li><a href="#modify_obsidian_vault_plugin_configs" id="toc-modify_obsidian_vault_plugin_configs" class="nav-link" data-scroll-target="#modify_obsidian_vault_plugin_configs">modify_obsidian_vault_plugin_configs</a></li>
+  <li><a href="#copy_obsidian_vault_configs_with_nice_modifications" id="toc-copy_obsidian_vault_configs_with_nice_modifications" class="nav-link" data-scroll-target="#copy_obsidian_vault_configs_with_nice_modifications">copy_obsidian_vault_configs_with_nice_modifications</a></li>
+  </ul></li>
+  <li><a href="#setting-up-a-folder-for-a-new-reference" id="toc-setting-up-a-folder-for-a-new-reference" class="nav-link" data-scroll-target="#setting-up-a-folder-for-a-new-reference">Setting up a folder for a new reference</a>
+  <ul class="collapse">
+  <li><a href="#setup_folder_for_new_reference" id="toc-setup_folder_for_new_reference" class="nav-link" data-scroll-target="#setup_folder_for_new_reference">setup_folder_for_new_reference</a></li>
+  </ul></li>
+  <li><a href="#getting-the-chapterssections-from-a-file" id="toc-getting-the-chapterssections-from-a-file" class="nav-link" data-scroll-target="#getting-the-chapterssections-from-a-file">Getting the chapters/sections from a file</a></li>
+  <li><a href="#getting-subfolders-and-index-files-of-a-reference" id="toc-getting-subfolders-and-index-files-of-a-reference" class="nav-link" data-scroll-target="#getting-subfolders-and-index-files-of-a-reference">Getting subfolders and index files of a reference</a>
+  <ul class="collapse">
+  <li><a href="#get_index_notes_from_subdirectory" id="toc-get_index_notes_from_subdirectory" class="nav-link" data-scroll-target="#get_index_notes_from_subdirectory">get_index_notes_from_subdirectory</a></li>
+  <li><a href="#get_index_notes_from_index_note" id="toc-get_index_notes_from_index_note" class="nav-link" data-scroll-target="#get_index_notes_from_index_note">get_index_notes_from_index_note</a></li>
+  </ul></li>
+  <li><a href="#finding-all-reference-folders-in-a-vault" id="toc-finding-all-reference-folders-in-a-vault" class="nav-link" data-scroll-target="#finding-all-reference-folders-in-a-vault">Finding all reference folders in a vault</a>
+  <ul class="collapse">
+  <li><a href="#reference_folders_in_vault" id="toc-reference_folders_in_vault" class="nav-link" data-scroll-target="#reference_folders_in_vault">reference_folders_in_vault</a></li>
+  </ul></li>
+  <li><a href="#getting-files-in-a-reference-folder" id="toc-getting-files-in-a-reference-folder" class="nav-link" data-scroll-target="#getting-files-in-a-reference-folder">Getting files in a reference folder</a>
+  <ul class="collapse">
+  <li><a href="#files_in_reference_folder" id="toc-files_in_reference_folder" class="nav-link" data-scroll-target="#files_in_reference_folder">files_in_reference_folder</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">markdown.obisidian.personal.reference</h1>
+</div>
+
+<div>
+  <div class="description">
+    Functions for managing references in an Obsidian.md math vault
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="cell-2" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unittest <span class="im">import</span> mock</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.helper.tests <span class="im">import</span> _test_directory</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="getting-a-reference-folder" class="level1">
+<h1>Getting a reference folder</h1>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L52" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="index_note_for_reference" class="level3">
+<h3 class="anchored" data-anchor-id="index_note_for_reference">index_note_for_reference</h3>
+<blockquote class="blockquote">
+<pre><code> index_note_for_reference (vault:os.PathLike,
+                           reference:Union[str,pathlib.Path])</code></pre>
+</blockquote>
+<p>*Returns the index note of the specified reference in the vault.</p>
+<p>Assumes that the reference folder has an index note named <code>_index_{reference_name}.md</code> and this note is the unique note in the vault with this filename.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>TypeError
+<ul>
+<li>If <code>reference</code> is not a str or PathLike.</li>
+</ul></li>
+<li>NoteDoesNotExistError
+<ul>
+<li>If a note of the name <code>_index_{reference_name}.md</code> does not exist in the vault.*</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td>The vault in which the reference folder resides.</td>
+</tr>
+<tr class="even">
+<td>reference</td>
+<td>Union</td>
+<td>- The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name <code>_index_{reference}.md</code>, - or a <code>Path</code> object (not just a pathlike!) relative to <code>vault</code>, in which case the path will be the path to the reference folder.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>VaultNote</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#index_note_for_reference"><code>index_note_for_reference</code></a> method obtains the index note of the specified reference in the vault.</p>
+<div id="cell-6" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>index_note_1 <span class="op">=</span> index_note_for_reference(vault, reference<span class="op">=</span><span class="st">'number_theory_reference_1'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> index_note_1.name <span class="op">==</span> <span class="st">'_index_number_theory_reference_1'</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>index_note_2 <span class="op">=</span> index_note_for_reference(vault, reference<span class="op">=</span>Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> index_note_2.name <span class="op">==</span> <span class="st">'_index_number_theory_reference_1'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L90" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="reference_directory" class="level3">
+<h3 class="anchored" data-anchor-id="reference_directory">reference_directory</h3>
+<blockquote class="blockquote">
+<pre><code> reference_directory (vault:os.PathLike,
+                      reference:Union[str,pathlib.Path])</code></pre>
+</blockquote>
+<p>*Returns the path to the reference directory in a vault.</p>
+<p>Assumes that the reference folder has an index note named <code>_index_{reference_name}.md</code>, this note is the unique note in the vault with this filename, and the cache in the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a> class for <code>vault</code> is updated.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>TypeError
+<ul>
+<li>If <code>reference</code> is not a str or PathLike. -*</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td>The vault in which the reference folder resides.</td>
+</tr>
+<tr class="even">
+<td>reference</td>
+<td>Union</td>
+<td>- The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name <code>_index_{reference}.md</code>, - or a <code>Path</code> object (not just a pathlike!) relative to <code>vault</code>, in which case the path will be the path to the reference folder.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Path</strong></td>
+<td><strong>Relative to <code>vault</code>.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#reference_directory"><code>reference_directory</code></a> method obtains the root directory for the reference:</p>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">dir</span> <span class="op">=</span> reference_directory(vault, reference<span class="op">=</span><span class="st">'number_theory_reference_1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the vault does not have an index note for the specified reference, then a <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#notedoesnotexisterror"><code>NoteDoesNotExistError</code></a> is raised:</p>
+<div id="cell-11" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> ExceptionExpected(NoteDoesNotExistError):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    thing <span class="op">=</span> reference_directory(vault, reference<span class="op">=</span><span class="st">'bad_number_theory_reference_without_an_index_note'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(thing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="deleting-a-reference-folder" class="level2">
+<h2 class="anchored" data-anchor-id="deleting-a-reference-folder">Deleting a reference folder</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L117" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="delete_reference_folder" class="level3">
+<h3 class="anchored" data-anchor-id="delete_reference_folder">delete_reference_folder</h3>
+<blockquote class="blockquote">
+<pre><code> delete_reference_folder (vault:os.PathLike,
+                          reference:Union[str,os.PathLike],
+                          verbose:bool=True, confirm:bool=True)</code></pre>
+</blockquote>
+<p>*Deletes a reference folder along with the associated template note and the reference note, both of which are outside the reference folder.</p>
+<p>Assumes that - the reference folder, if it exists, has an index note named <code>_index_{reference_name}.md</code> and this note is the unique note in the vault with this filename. - the template note, if it exists, is named <code>_template_{reference_name}.md</code> and is the unique note in the vault with this filename. - the reference note, if it exists, is named <code>_reference_{reference_name}.md</code> and is the unique note in the vault with this filename.</p>
+<p>If the template/reference note for the reference is not unique, then the deletion does not proceed. On the other hand, even if a template/reference note does not exist, then the deletion proceeds.</p>
+<p>Note that links to notes in the reference folder are preserved.</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li>FileNotFoundError
+<ul>
+<li>If the specified reference folder does not exist.</li>
+</ul></li>
+<li>NoteDoesNotExistError
+<ul>
+<li>If the index note for the reference folder does not exist in the vault.</li>
+</ul></li>
+<li>NoteNotUniqueError
+<ul>
+<li>If the index note, template note, or reference note for the reference folder is not unique in the vault.*</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>The vault in which the reference folder resides.</td>
+</tr>
+<tr class="even">
+<td>reference</td>
+<td>Union</td>
+<td></td>
+<td>The reference to delete. Is either a str, in which case the folder to delete will be the folder containing the (unique) note of the name <code>_index_{reference}.md</code>, or a path relative to <code>vault</code>.</td>
+</tr>
+<tr class="odd">
+<td>verbose</td>
+<td>bool</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>confirm</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, prompts the user to confirm the deletion of the folder.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#delete_reference_folder"><code>delete_reference_folder</code></a> method deletes the reference folder itself as well as the peripheral files for the reference (the template file and reference file) which are outside of the reference folder itself.</p>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.input'</span>, return_value<span class="op">=</span><span class="st">'Y'</span>) <span class="im">as</span> mock_input):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    delete_reference_folder(temp_vault, reference<span class="op">=</span><span class="st">'number_theory_reference_1'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="st">'number_theory_reference_1'</span> <span class="kw">not</span> <span class="kw">in</span> os.listdir(temp_vault <span class="op">/</span> <span class="st">'number_theory'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'_template_number_theory_reference_1'</span>).exists()</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> VaultNote(temp_vault, name<span class="op">=</span><span class="st">'_reference_number_theory_reference_1'</span>).exists()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Identified reference 'number_theory_reference_1' in the vault 'c:\Users\hyunj\Documents\Development\Python\trouver\nbs\temp_dirwpe9ozwq\test_vault_5' as the folder 'c:\Users\hyunj\Documents\Development\Python\trouver\nbs\temp_dirwpe9ozwq\test_vault_5\number_theory\number_theory_reference_1'...
+Deleting...
+Deleted reference.
+</code></pre>
+</div>
+</div>
+<p>In the following example, we test the deletion of a non-existent reference folder for which the template and reference files are deleted.</p>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.input'</span>, return_value<span class="op">=</span><span class="st">'Y'</span>) <span class="im">as</span> mock_input):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    nonexistent_reference_name <span class="op">=</span> <span class="st">'nonexistent_reference'</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_index_</span><span class="sc">{</span>nonexistent_reference_name<span class="sc">}</span><span class="ss">'</span>).exists()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_template_</span><span class="sc">{</span>nonexistent_reference_name<span class="sc">}</span><span class="ss">'</span>).exists()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_reference_</span><span class="sc">{</span>nonexistent_reference_name<span class="sc">}</span><span class="ss">'</span>).exists()</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    delete_reference_folder(temp_vault, reference<span class="op">=</span><span class="st">'nonexistent_reference'</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_template_</span><span class="sc">{</span>nonexistent_reference_name<span class="sc">}</span><span class="ss">'</span>).exists()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> VaultNote(temp_vault, name<span class="op">=</span><span class="ss">f'_reference</span><span class="sc">{</span>nonexistent_reference_name<span class="sc">}</span><span class="ss">'</span>).exists()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Deleting...
+Deleted reference.
+</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="helper-methods-for-setting-up-new-reference-folders" class="level2">
+<h2 class="anchored" data-anchor-id="helper-methods-for-setting-up-new-reference-folders">Helper methods for setting up new reference folders</h2>
+<p>Making a new reference folder takes some annoying amount of work.</p>
+<div id="cell-19" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>test_vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>template_vault_note <span class="op">=</span> VaultNote(test_vault, name<span class="op">=</span><span class="st">'_template_glossary'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> template_vault_note.exists()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_VaultNote,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.MarkdownFile.from_vault_note'</span>) <span class="im">as</span> mock_markdownfile_from_vault_note):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    _make_glossary_file(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        Path(<span class="st">'mock_path_1'</span>) <span class="op">/</span> <span class="st">'test_reference_1'</span>, <span class="st">'test_reference_1'</span>, test_vault, <span class="st">'_glossary_notation_index'</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    test_eq(mock_VaultNote.call_count, <span class="dv">2</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    mock_VaultNote.assert_called_with(test_vault, rel_path<span class="op">=</span>Path(<span class="st">'mock_path_1'</span>) <span class="op">/</span> <span class="st">'test_reference_1'</span> <span class="op">/</span> <span class="st">'_glossary_test_reference_1.md'</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    mock_VaultNote.return_value.create.assert_called_once()</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    mock_markdownfile_from_vault_note.return_value.write.assert_called_once()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-20" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>test_vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_VaultNote,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.os.mkdir'</span>) <span class="im">as</span> mock_os_mkdir):</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    _make_temp_folder(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        Path(<span class="st">'mock_path_1'</span>) <span class="op">/</span> <span class="st">'test_reference_1'</span>, <span class="st">'test_reference_1'</span>, test_vault)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    mock_os_mkdir.assert_called_once_with(test_vault <span class="op">/</span> <span class="st">'mock_path_1'</span> <span class="op">/</span> <span class="st">'test_reference_1'</span> <span class="op">/</span> <span class="st">'_temp'</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    mock_VaultNote.assert_called_once_with(test_vault, rel_path<span class="op">=</span>Path(<span class="st">'mock_path_1'</span>) <span class="op">/</span> <span class="st">'test_reference_1'</span> <span class="op">/</span> <span class="st">'_temp'</span> <span class="op">/</span> <span class="st">'_index_temp_test_reference_1.md'</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    mock_VaultNote.return_value.create.assert_called_once()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="copy-obsidian-vault-plugin-configs" class="level2">
+<h2 class="anchored" data-anchor-id="copy-obsidian-vault-plugin-configs">Copy obsidian vault plugin configs</h2>
+<p>When an Obsidian vault has a lot of notes (on the order of 10000+ notes), Obsidian tends to experience significant lag. As such, it can be useful to open a reference folder as a “subvault”, i.e.&nbsp;a vault in itself, and in turn it is convenient to automatically copy settings from the “main” vault.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L647" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="copy_obsidian_vault_configs" class="level3">
+<h3 class="anchored" data-anchor-id="copy_obsidian_vault_configs">copy_obsidian_vault_configs</h3>
+<blockquote class="blockquote">
+<pre><code> copy_obsidian_vault_configs (vault:os.PathLike,
+                              reference_directory:os.PathLike,
+                              configs_folder:os.PathLike,
+                              dirs_exist_ok:bool=False, ignore=None)</code></pre>
+</blockquote>
+<p>*Copy the vault’s Obsidian config files into the reference directory.</p>
+<p><code>configs_folder</code> is copied into the destination <code>vault / reference_directory / '.obsidian'</code>.</p>
+<p><a href="https://docs.python.org/3/library/shutil.html#shutil.copytree"><code>shutil.copytree</code></a> is used to copy the Obsidian configurations.</p>
+<p><strong>Raises</strong> - <code>FileExistsError</code> - If <code>dirs_exist_ok</code> is <code>False</code> and the destination <code>vault / reference_directory / '.obsidian'</code> already exists.</p>
+<p>**See Also - <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#copy_obsidian_vault_configs_with_nice_modifications"><code>copy_obsidian_vault_configs_with_nice_modifications</code></a>*</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>reference_directory</td>
+<td>PathLike</td>
+<td></td>
+<td>The folder into which to copy the Obsidian configs. Relative to <code>vault</code>.</td>
+</tr>
+<tr class="odd">
+<td>configs_folder</td>
+<td>PathLike</td>
+<td></td>
+<td>The folder containing the Obsidian configs. This is either an absolute path or relative to the current working directory.</td>
+</tr>
+<tr class="even">
+<td>dirs_exist_ok</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>dirs_exist_ok</code> is <code>False</code> and the destination folder already exists, then a FileExistsError is raised. If <code>dirs_exist_ok</code> is true, the copying operation will continue if it encounters existing directories, and files within the destination tree will be overwritten by corresponding files from the source tree. See also the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree"><code>shutil.copytree</code></a> function.</td>
+</tr>
+<tr class="odd">
+<td>ignore</td>
+<td>NoneType</td>
+<td>None</td>
+<td>See documentation of the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree">shutil.copytree</a> function.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-24" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>test_vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (mock.patch(<span class="st">'__main__.VaultNote'</span>) <span class="im">as</span> mock_VaultNote,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>      mock.patch(<span class="st">'__main__.shutil.copytree'</span>) <span class="im">as</span> mock_shutil_copytree):</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        test_vault, Path(<span class="st">'mock_path_1'</span>) <span class="op">/</span> <span class="st">'test_reference_1'</span>, test_vault <span class="op">/</span> <span class="st">'.obsidian'</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    mock_shutil_copytree.assert_called_once_with(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        test_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        test_vault <span class="op">/</span> <span class="st">'mock_path_1'</span> <span class="op">/</span> <span class="st">'test_reference_1'</span> <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok<span class="op">=</span><span class="va">False</span>, ignore<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If <code>dirs_exist_okay = False</code> but then the <code>.obsidian</code> folder of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#reference_directory"><code>reference_directory</code></a> already exists, then a <code>FileExistsError</code> is raised, cf.&nbsp;the description of the <code>dirs_exist_ok</code> parameter of the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree">shutil.copytree</a> function.</p>
+<div id="cell-26" class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First copy over a testing vault</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Copy the obsidian vault configs once</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        temp_vault,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Then, try copying the configs again in the same way</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># into the same destination.</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ExceptionExpected(ex<span class="op">=</span><span class="pp">FileExistsError</span>):</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        copy_obsidian_vault_configs(</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>            temp_vault,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>            Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>            temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>            dirs_exist_ok <span class="op">=</span> <span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If <code>dirs_exist_okay = True</code>, and if the destination <code>vault / reference_directory / '.obsidian'</code> already exists, then the copying operation will continue if it encounters existing directories, and existing files will be overwritten</p>
+<div id="cell-28" class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First copy over a testing vault</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Copy the obsidian vault configs once</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    reference_directory <span class="op">=</span> Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        temp_vault,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        reference_directory,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Try modifying one of the files in the newly copied configs folder:</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'templates.json'</span>, <span class="st">'w'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span>.write(<span class="st">''</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault / reference_directory)</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Then, try copying the configs again in the same way</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># into the same destination.</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>        temp_vault,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        reference_directory,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>        temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The configs folder is copied over once again.</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'templates.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        test_ne(<span class="bu">file</span>.read(), <span class="st">''</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use the <code>ignore</code> parameter to ignore copying over certain files (say satisfying specified patterns). See the <code>ignore</code> parameter of the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree">`shutil.copytree</a> function.</p>
+<div id="cell-30" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First copy over a testing vault</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Copy the obsidian vault configs once</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    reference_directory <span class="op">=</span> Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        temp_vault,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        reference_directory,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Try modifying two of the files in the newly copied configs folder:</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'templates.json'</span>, <span class="st">'w'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span>.write(<span class="st">''</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'app.json'</span>, <span class="st">'w'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span>.write(<span class="st">''</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault / reference_directory)</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Then, try copying the configs again in the same way</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># into the same destination, except for files named 'templates.json'.</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs(</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        temp_vault,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        reference_directory,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>,</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        dirs_exist_ok <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        ignore <span class="op">=</span> shutil.ignore_patterns(<span class="st">'templates.json'</span>))</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The configs folder is copied over once again, except for the 'templates.json' file.</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'templates.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>        test_eq(<span class="bu">file</span>.read(), <span class="st">''</span>)</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(temp_vault <span class="op">/</span> reference_directory <span class="op">/</span> <span class="st">'.obsidian'</span> <span class="op">/</span> <span class="st">'app.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>        test_ne(<span class="bu">file</span>.read(), <span class="st">''</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The author of <code>trouver</code> makes two configuration modifications for each reference/subvault</p>
+<ol type="1">
+<li>In the author’s own <code>fast-link-edit</code> plugin, the author sets the <code>referenceName</code> field to whatever the name of the reference is in the vault</li>
+<li>In the <code>template</code> core plugin, the author sets the <code>folder</code> field to <code>.</code>.</li>
+</ol>
+<p>Moreover, sometimes one might want to make modifications to the configurations in one’s obsidian vaults; applying these modifications to all the configurations in the various subvaults would be tedious to do manually.</p>
+<p>The below functions give ways to modify Obsidian plugin configurations and to copy and modify certain plugin configurations.</p>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L686" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="get_obsidian_vault_plugin_configs" class="level3">
+<h3 class="anchored" data-anchor-id="get_obsidian_vault_plugin_configs">get_obsidian_vault_plugin_configs</h3>
+<blockquote class="blockquote">
+<pre><code> get_obsidian_vault_plugin_configs (vault:os.PathLike, plugin_name:str,
+                                    plugin_is_core:bool)</code></pre>
+</blockquote>
+<p>*Obtain the JSON object representing the <code>data.json</code> file of an Obsidian plugin.</p>
+<p>This function assumes that the the Obsidian plugin exists in <code>vault</code> in that the plugin has a <code>data.json</code> file.*</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>plugin_name</td>
+<td>str</td>
+<td>The folder name of the Obsidian plugin. This can be found in the <code>.obsidian</code> directory in the vault.</td>
+</tr>
+<tr class="odd">
+<td>plugin_is_core</td>
+<td>bool</td>
+<td><code>True</code> if the plugin is a core Obsidian.md plugin. <code>False</code> if the plugin is a community plugin.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>dict</strong></td>
+<td><strong>A json dict.</strong></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-33" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>test_vault <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>sample_output_1 <span class="op">=</span> get_obsidian_vault_plugin_configs(test_vault, <span class="st">'fast-link-edit'</span>, <span class="va">False</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>test_eq(sample_output_1, {<span class="st">'referenceName'</span>: <span class="st">'some_reference'</span>})</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>sample_output_2 <span class="op">=</span> get_obsidian_vault_plugin_configs(test_vault, <span class="st">'templates'</span>, <span class="va">True</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>test_eq(sample_output_2, {<span class="st">'folder'</span>: <span class="st">'_templates'</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L702" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="modify_obsidian_vault_plugin_configs" class="level3">
+<h3 class="anchored" data-anchor-id="modify_obsidian_vault_plugin_configs">modify_obsidian_vault_plugin_configs</h3>
+<blockquote class="blockquote">
+<pre><code> modify_obsidian_vault_plugin_configs (vault:os.PathLike, plugin_name:str,
+                                       plugin_is_core:bool, field:str, val
+                                       ue:Union[str,int,float,bool,NoneTyp
+                                       e,list,dict])</code></pre>
+</blockquote>
+<p>*Modify/set a top level field in an Obsidian vault plugin configs file.</p>
+<p>Assumes that the Obsidian vault plugins configs are indented by 2 spaces.</p>
+<p>Note that only top level values can be directly set by this function.*</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>plugin_name</td>
+<td>str</td>
+<td>The folder name of the Obsidian plugin. This can be found in the <code>.obsidian</code> directory in the vault.</td>
+</tr>
+<tr class="odd">
+<td>plugin_is_core</td>
+<td>bool</td>
+<td><code>True</code> if the plugin is a core Obsidian.md plugin. <code>False</code> if the plugin is a community plugin.</td>
+</tr>
+<tr class="even">
+<td>field</td>
+<td>str</td>
+<td>The field to modify</td>
+</tr>
+<tr class="odd">
+<td>value</td>
+<td>Union</td>
+<td>The JSON value to set the field as</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-35" class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    modify_obsidian_vault_plugin_configs(temp_vault, <span class="st">'fast-link-edit'</span>, <span class="va">False</span>, <span class="st">'referenceName'</span>, <span class="st">'some_other_reference'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    sample_output_1 <span class="op">=</span> get_obsidian_vault_plugin_configs(temp_vault, <span class="st">'fast-link-edit'</span>, <span class="va">False</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    test_eq(sample_output_1, {<span class="st">'referenceName'</span>: <span class="st">'some_other_reference'</span>})</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    modify_obsidian_vault_plugin_configs(temp_vault, <span class="st">'templates'</span>, <span class="va">True</span>, <span class="st">'folder'</span>, <span class="st">'/'</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    sample_output_2 <span class="op">=</span> get_obsidian_vault_plugin_configs(temp_vault, <span class="st">'templates'</span>, <span class="va">True</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    test_eq(sample_output_2, {<span class="st">'folder'</span>: <span class="st">'/'</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L748" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="copy_obsidian_vault_configs_with_nice_modifications" class="level3">
+<h3 class="anchored" data-anchor-id="copy_obsidian_vault_configs_with_nice_modifications">copy_obsidian_vault_configs_with_nice_modifications</h3>
+<blockquote class="blockquote">
+<pre><code> copy_obsidian_vault_configs_with_nice_modifications (vault:os.PathLike,
+                                                      reference_directory:
+                                                      os.PathLike, configs
+                                                      _folder:os.PathLike,
+                                                      reference_name:str=N
+                                                      one, template_locati
+                                                      on:str='/', dirs_exi
+                                                      st_ok:bool=False,
+                                                      ignore=None)</code></pre>
+</blockquote>
+<p>*Copy the vault’s Obsidian config files into the reference directory and make some nice moodifications</p>
+<p>As with <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#copy_obsidian_vault_configs"><code>copy_obsidian_vault_configs</code></a>, <code>configs_folder</code> is copied into the destination <code>vault / reference_directory / '.obsidian'</code>.</p>
+<p><strong>Raises</strong> - FileExistsError - If <code>dirs_exist_ok</code> is <code>False</code> and the destination <code>vault / reference_directory / '.obsidian'</code> already exists.*</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>reference_directory</td>
+<td>PathLike</td>
+<td></td>
+<td>The folder into which to copy the Obsidian configs. Relative to <code>vault</code>.</td>
+</tr>
+<tr class="odd">
+<td>configs_folder</td>
+<td>PathLike</td>
+<td></td>
+<td>The folder containing the Obsidian configs to copy. This is either an absolute path or relative to the current working directory.</td>
+</tr>
+<tr class="even">
+<td>reference_name</td>
+<td>str</td>
+<td>None</td>
+<td>The name of the reference and the value to change the <code>referenceName</code> field in the <code>fast-link-edit</code> plugin into. If <code>None</code>, then the reference name should be obtained as the name of <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#reference_directory"><code>reference_directory</code></a></td>
+</tr>
+<tr class="odd">
+<td>template_location</td>
+<td>str</td>
+<td>/</td>
+<td>The location of the template file(s) and the value to change the <code>folder</code> field in the <code>templates</code> plugin into.</td>
+</tr>
+<tr class="even">
+<td>dirs_exist_ok</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>dirs_exist_ok</code> is <code>False</code> and the destination folder already exists, then a FileExistsError is raised. If <code>dirs_exist_ok</code> is true, the copying operation will continue if it encounters existing directories, and files within the destination tree will be overwritten by corresponding files from the source tree. See also the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree"><code>shutil.copytree</code></a> function.</td>
+</tr>
+<tr class="odd">
+<td>ignore</td>
+<td>NoneType</td>
+<td>None</td>
+<td>See documentation of the <a href="https://docs.python.org/3/library/shutil.html#shutil.copytree">shutil.copytree</a> function.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-37" class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: test</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Copy the configs in the folder `.obsidian` at the root of temp_vault into the `number_theory_reference_1` folder</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    copy_obsidian_vault_configs_with_nice_modifications(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        temp_vault, Path(<span class="st">'number_theory'</span>) <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>, temp_vault <span class="op">/</span> <span class="st">'.obsidian'</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    configs_1 <span class="op">=</span> get_obsidian_vault_plugin_configs(temp_vault <span class="op">/</span> <span class="st">'number_theory'</span> <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>, <span class="st">'fast-link-edit'</span>, <span class="va">False</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    configs_2 <span class="op">=</span> get_obsidian_vault_plugin_configs(temp_vault <span class="op">/</span> <span class="st">'number_theory'</span> <span class="op">/</span> <span class="st">'number_theory_reference_1'</span>, <span class="st">'templates'</span>, <span class="va">True</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    test_eq(configs_1[<span class="st">'referenceName'</span>], <span class="st">'number_theory_reference_1'</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    test_eq(configs_2[<span class="st">'folder'</span>], <span class="st">'/'</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: test `dirs_exist_ok` being tested.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="setting-up-a-folder-for-a-new-reference" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-a-folder-for-a-new-reference">Setting up a folder for a new reference</h2>
+<p>It takes a lot of time to setup a new reference in my Obsidian Math vault. I need to</p>
+<ol type="1">
+<li>Make index notes</li>
+<li>Make notation notes</li>
+<li>Make mathematician notes for authors</li>
+<li>Make template notes</li>
+<li>Make subfolders</li>
+<li>Type in titles/subsections in index notes</li>
+<li>Make reference notes</li>
+</ol>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L793" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="setup_folder_for_new_reference" class="level3">
+<h3 class="anchored" data-anchor-id="setup_folder_for_new_reference">setup_folder_for_new_reference</h3>
+<blockquote class="blockquote">
+<pre><code> setup_folder_for_new_reference (reference_name:str, location:os.PathLike,
+                                 authors:Union[str,list[str]],
+                                 vault:os.PathLike, author_folder:os.PathL
+                                 ike='_mathematicians', create_reference_f
+                                 ile_in_references_folder:bool=True, refer
+                                 ences_folder:os.PathLike='_references', c
+                                 reate_template_file_in_templates_folder:b
+                                 ool=True, templates_folder:os.PathLike='_
+                                 templates', template_file_name:str='_temp
+                                 late_common', notation_index_template_fil
+                                 e_name:str='_template_notation_index', gl
+                                 ossary_template_file_name:str='_template_
+                                 glossary', chapters:Optional[list[Union[s
+                                 tr,list[str]]]]=None,
+                                 setup_temp_folder:bool=True, make_second_
+                                 template_file_in_reference_directory:bool
+                                 =True, copy_obsidian_configs:Optional[os.
+                                 PathLike]='.obsidian',
+                                 overwrite:Optional[str]=None,
+                                 confirm_overwrite:bool=True,
+                                 verbose:bool=False)</code></pre>
+</blockquote>
+<p>*Creates and sets up a new folder for a new reference.</p>
+<p>More specifically, the following are set up:</p>
+<ol type="1">
+<li>The folder</li>
+<li>An index file</li>
+<li>Chapter folders and indices; the folder names are given by <code>convert_title_to_folder_name(&lt;title_with_numbering&gt;)</code> where <code>title_with_numbering</code> is the title of the chapter with its numbering if available, e.g.&nbsp;<code>1. Introduction</code>.</li>
+<li>Files in the <code>Mathematicians</code> folder, if applicable.</li>
+<li>A reference file
+<ul>
+<li>For embedding in the standard information notes for the reference</li>
+</ul></li>
+<li>A template file</li>
+<li>A glossary file</li>
+<li>A <code>#_meta/reference</code> tag for the new reference</li>
+<li>A notation index file</li>
+<li>Optionally, a <code>_temp</code> directory</li>
+<li>Optionally, the <code>./obsidian</code> config folder from the vault is copied.</li>
+</ol>
+<p>After they are setup, the user should 1. Add content in the reference file. 2. Modify the last line of the template file.</p>
+<p><strong>Raises</strong> - FileExistsError - If <code>overwrite</code> is <code>None</code> and a folder of the name <code>reference_name</code> exists at <code>Path(vault) / location</code>.*</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>reference_name</td>
+<td>str</td>
+<td></td>
+<td>The name of the reference to be created; the folder’s name will be this string.</td>
+</tr>
+<tr class="even">
+<td>location</td>
+<td>PathLike</td>
+<td></td>
+<td>The directory of the parent of the new folder to be made, relative to <code>vault</code>.</td>
+</tr>
+<tr class="odd">
+<td>authors</td>
+<td>Union</td>
+<td></td>
+<td>Each str is the family name of each author.</td>
+</tr>
+<tr class="even">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>The path to the Obsidian vault in which to make the reference folder.</td>
+</tr>
+<tr class="odd">
+<td>author_folder</td>
+<td>PathLike</td>
+<td>_mathematicians</td>
+<td>The directory where the author files are stored in. Relative to <code>vault</code>.</td>
+</tr>
+<tr class="even">
+<td>create_reference_file_in_references_folder</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, then the reference file creation is attempted within <code>references_folder</code>. Otherwise, the reference file creation is attempted at the base of the newly setup folder for the reference..</td>
+</tr>
+<tr class="odd">
+<td>references_folder</td>
+<td>PathLike</td>
+<td>_references</td>
+<td>The directory where the references files are stored in. Relative to <code>vault</code>.</td>
+</tr>
+<tr class="even">
+<td>create_template_file_in_templates_folder</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, then the template file creation is attempted within <code>templates_folder</code>. Otherwise, the template file creation is attempted at the base of the newly setup folder for the reference.</td>
+</tr>
+<tr class="odd">
+<td>templates_folder</td>
+<td>PathLike</td>
+<td>_templates</td>
+<td>The directory where the template files are stored in. Relative to <code>vault</code>.</td>
+</tr>
+<tr class="even">
+<td>template_file_name</td>
+<td>str</td>
+<td>_template_common</td>
+<td>The template file from which to base the template file of the new reference.</td>
+</tr>
+<tr class="odd">
+<td>notation_index_template_file_name</td>
+<td>str</td>
+<td>_template_notation_index</td>
+<td>The template file from which to base the notation index file of the new reference.</td>
+</tr>
+<tr class="even">
+<td>glossary_template_file_name</td>
+<td>str</td>
+<td>_template_glossary</td>
+<td>The template file from which to base the glossary file of the new reference. Defaults to <code>'_template_glossary'</code>.</td>
+</tr>
+<tr class="odd">
+<td>chapters</td>
+<td>Optional</td>
+<td>None</td>
+<td>A list where each item is either a str or a list of str. If the item is a str, then it should be the title of a chapter named in the format <code>"1. {title}"</code>, <code>"2. {title}"</code>, or <code>"I. {title}"</code>, <code>"II. {title}"</code> etc. If the item is a list of str, then the 0th item should be the title of the chapter, formatted as in the previous sentence, and the other items should be titles of subchapters/subsections, also formatted in the same manner (e.g.&nbsp;if the subchapter is 7.2 of a book, then it should be <code>"2. {title}"</code>). Defaults to <code>None</code>, in which case no chapters are specified and hence no chapter folders and indices are created.</td>
+</tr>
+<tr class="even">
+<td>setup_temp_folder</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, creates a <code>_temp</code> folder with an index file. This folder serves to house notes auto-created from LaTeX text files before moving them to their correct directories. Defaults to <code>True</code>.</td>
+</tr>
+<tr class="odd">
+<td>make_second_template_file_in_reference_directory</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, creates a copy of the template note within the directory for the reference.</td>
+</tr>
+<tr class="even">
+<td>copy_obsidian_configs</td>
+<td>Optional</td>
+<td>.obsidian</td>
+<td>The folder relative to <code>vault</code> from which to copy obsidian configs. If <code>None</code>, then no obsidian configs are copied to the reference folder. Defaults to <code>.obsidian</code>.</td>
+</tr>
+<tr class="odd">
+<td>overwrite</td>
+<td>Optional</td>
+<td>None</td>
+<td>Specifies if and how to overwrite the reference folder if it already exists. - If <code>'w'</code>, then deletes the contents of the existing reference folder, as well as the template and reference file before setting up the reference folder before creating the new reference folder. - If <code>'a'</code>, then overwrites the contents of the reference folder, but does not remove existing files/folders. - If <code>None</code>, then does not modify the existing reference folder and raises a <code>FileExistsError</code>.</td>
+</tr>
+<tr class="even">
+<td>confirm_overwrite</td>
+<td>bool</td>
+<td>True</td>
+<td>Specifies whether or not to confirm the deletion of the reference folder if it already exists and if <code>overwrite</code> is <code>'w'</code>. Defaults to <code>True</code>.</td>
+</tr>
+<tr class="odd">
+<td>verbose</td>
+<td>bool</td>
+<td>False</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>We can set up a nicely formatted reference folder (without content) with the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#setup_folder_for_new_reference"><code>setup_folder_for_new_reference</code></a> method. Try uncommenting the <code>os.startfile</code> and <code>os.input</code> lines to see what the vault looks like once the reference is setup.</p>
+<div id="cell-42" class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    chapters<span class="op">=</span> [  <span class="co"># Chapters/sections and sections/subsections of the reference can be set up</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'0. Having a chapter 0 is fine'</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'1. Introduction'</span>, <span class="st">'1.1. A subsection'</span>],</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'2. Basic ring theory'</span>, <span class="st">'2.1. Rings'</span>, <span class="st">'2.2. Integral domains'</span>, <span class="st">'2.3. Fields'</span>, <span class="st">'2.4 Fermat</span><span class="ch">\'</span><span class="st">s Little Theorem'</span>],</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'3. Chapter without subsection'</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'A. Appendix: Set theory'</span>, <span class="st">'A.1 Set Axioms'</span>, <span class="st">'A.2 Constructions'</span>]</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    setup_folder_for_new_reference(</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        reference_name<span class="op">=</span><span class="st">'kim_intro_num_theory'</span>, location<span class="op">=</span><span class="st">'number_theory'</span>,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>        authors<span class="op">=</span><span class="st">'Kim'</span>, vault<span class="op">=</span>temp_vault, chapters<span class="op">=</span>chapters</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: test that files that need to be created have been created.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg ansi-bold">TypeError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg ansi-bold">In [48], line 12</span>
+<span class="ansi-green-fg">      3</span> shutil<span style="color:rgb(98,98,98)">.</span>copytree(_test_directory() <span style="color:rgb(98,98,98)">/</span> <span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">test_vault_5</span><span style="color:rgb(175,0,0)">'</span>, temp_vault)
+<span class="ansi-green-fg">      5</span> chapters<span style="color:rgb(98,98,98)">=</span> [  <span style="font-style:italic;color:rgb(95,135,135)"># Chapters/sections and sections/subsections of the reference can be set up</span>
+<span class="ansi-green-fg">      6</span>     <span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">0. Having a chapter 0 is fine</span><span style="color:rgb(175,0,0)">'</span>,
+<span class="ansi-green-fg">      7</span>     [<span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">1. Introduction</span><span style="color:rgb(175,0,0)">'</span>, <span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">1.1. A subsection</span><span style="color:rgb(175,0,0)">'</span>],
+<span class="ansi-green-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">     10</span>     [<span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">A. Appendix: Set theory</span><span style="color:rgb(175,0,0)">'</span>, <span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">A.1 Set Axioms</span><span style="color:rgb(175,0,0)">'</span>, <span style="color:rgb(175,0,0)">'</span><span style="color:rgb(175,0,0)">A.2 Constructions</span><span style="color:rgb(175,0,0)">'</span>]
+<span class="ansi-green-fg">     11</span> ]
+<span class="ansi-green-fg ansi-bold">---&gt; 12</span> <span class="ansi-yellow-bg">setup_folder_for_new_reference</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-fg">     13</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">reference_name</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">kim_intro_num_theory</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">location</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">number_theory</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">     14</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">authors</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">Kim</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">'</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">vault</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">temp_vault</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">chapters</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">chapters</span>
+<span class="ansi-green-fg">     15</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">     17</span> <span style="font-style:italic;color:rgb(95,135,135)"># os.startfile(temp_vault)</span>
+<span class="ansi-green-fg">     18</span> <span style="font-style:italic;color:rgb(95,135,135)"># input()</span>
+<span class="ansi-green-fg">     19</span> <span style="font-style:italic;color:rgb(95,135,135)"># TODO: test that files that need to be created have been created.</span>
+
+Cell <span class="ansi-green-fg ansi-bold">In [47], line 103</span>, in <span class="ansi-cyan-fg">setup_folder_for_new_reference</span><span class="ansi-blue-fg ansi-bold">(reference_name, location, authors, vault, author_folder, create_reference_file_in_references_folder, references_folder, create_template_file_in_references_folder, templates_folder, template_file_name, notation_index_template_file_name, glossary_template_file_name, chapters, setup_temp_folder, make_second_template_file_in_reference_directory, copy_obsidian_configs, overwrite, confirm_overwrite, verbose)</span>
+<span class="ansi-green-fg">     93</span> <span style="font-style:italic;color:rgb(95,135,135)"># for author in authors:</span>
+<span class="ansi-green-fg">     94</span> <span style="font-style:italic;color:rgb(95,135,135)">#     author_file = find_author_file(vault, author, author_folder)</span>
+<span class="ansi-green-fg">     95</span> <span style="font-style:italic;color:rgb(95,135,135)">#     if author_file is None:</span>
+<span class="ansi-green-fg">     96</span> <span style="font-style:italic;color:rgb(95,135,135)">#         print('')  # TODO</span>
+<span class="ansi-green-fg">     97</span> <span style="font-style:italic;color:rgb(95,135,135)">#     author_files.append(author_file)</span>
+<span class="ansi-green-fg">     99</span> _make_reference_file(
+<span class="ansi-green-fg">    100</span>     reference_name, references_folder, vault,
+<span class="ansi-green-fg">    101</span>     reference_directory, create_reference_file_in_references_folder,
+<span class="ansi-green-fg">    102</span>     authors, author_files)
+<span class="ansi-green-fg ansi-bold">--&gt; 103</span> <span class="ansi-yellow-bg">_make_template_file</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-fg">    104</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">template_file_name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">reference_name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">vault</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    105</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">reference_directory</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">create_template_file_in_references_folder</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    106</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">templates_folder</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">authors</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">make_second_template_file_in_reference_directory</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    107</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">reference_directory</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    108</span> _make_notation_index_file(
+<span class="ansi-green-fg">    109</span>     reference_directory, reference_name, vault,
+<span class="ansi-green-fg">    110</span>     notation_index_template_file_name, authors)
+<span class="ansi-green-fg">    111</span> _make_glossary_file(
+<span class="ansi-green-fg">    112</span>     reference_directory, reference_name, vault,
+<span class="ansi-green-fg">    113</span>     glossary_template_file_name)
+
+<span class="ansi-red-fg ansi-bold">TypeError</span>: _make_template_file() takes 7 positional arguments but 9 were given</pre>
+</div>
+</div>
+</div>
+<div id="cell-43" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: test overwrite and confirm_overwrite parameters</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: give an example of verbose</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="getting-the-chapterssections-from-a-file" class="level2">
+<h2 class="anchored" data-anchor-id="getting-the-chapterssections-from-a-file">Getting the chapters/sections from a file</h2>
+</section>
+<section id="getting-subfolders-and-index-files-of-a-reference" class="level2">
+<h2 class="anchored" data-anchor-id="getting-subfolders-and-index-files-of-a-reference">Getting subfolders and index files of a reference</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L904" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_index_notes_from_subdirectory" class="level3">
+<h3 class="anchored" data-anchor-id="get_index_notes_from_subdirectory">get_index_notes_from_subdirectory</h3>
+<blockquote class="blockquote">
+<pre><code> get_index_notes_from_subdirectory (vault:os.PathLike,
+                                    subdirectory:os.PathLike,
+                                    main_index_note:bool=False,
+                                    as_vault_notes:bool=True)</code></pre>
+</blockquote>
+<p><em>Returns list of index note files for reference</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vault</td>
+<td>PathLike</td>
+<td></td>
+<td>The path to the Obsidian vault directory.</td>
+</tr>
+<tr class="even">
+<td>subdirectory</td>
+<td>PathLike</td>
+<td></td>
+<td>The path, relative to <code>vault</code> of the subdirectory of of the vault for the reference.</td>
+</tr>
+<tr class="odd">
+<td>main_index_note</td>
+<td>bool</td>
+<td>False</td>
+<td>If <code>True</code>, include the main index note for the reference. This index note should be in the directory specified by <code>subdirectory</code>.</td>
+</tr>
+<tr class="even">
+<td>as_vault_notes</td>
+<td>bool</td>
+<td>True</td>
+<td>If <code>True</code>, returns the <code>[</code>VaultNote<code>](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote)</code> objects for the index notes. Otherwise, returns the paths to the index notes as paths, represented by str.</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>list</strong></td>
+<td></td>
+<td><strong>Either of the names of the index notes in the vault or of the index notes as VaultNote objects, depending on <code>as_vault_notes</code>.</strong></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-47" class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L927" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="get_index_notes_from_index_note" class="level3">
+<h3 class="anchored" data-anchor-id="get_index_notes_from_index_note">get_index_notes_from_index_note</h3>
+<blockquote class="blockquote">
+<pre><code> get_index_notes_from_index_note (vault:os.PathLike, reference_name:str,
+                                  as_vault_notes:bool=True)</code></pre>
+</blockquote>
+<p>*Returns the list of index notes for the reference in the order that they are listed in the reference’s main index note.</p>
+<p>Does so by searching the “main” index note in the reference folder. Returns the index notes in order that they are listed in the main index note.</p>
+<p>Assumes that the reference folder is “formatted correctly”. This includes the assumption that the main index note for the reference is the unique note named <code>'_index_{reference_name}'</code> in the vault.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>vault</code> - PathLike
+<ul>
+<li>The path to the Obsidian vault directory</li>
+</ul></li>
+<li><code>reference_name</code> - str
+<ul>
+<li>The name of the reference folder in the vault.</li>
+</ul></li>
+<li><code>as_vault_notes</code> - bool
+<ul>
+<li>If <code>True</code>, returns the <code>[</code>VaultNote<code>](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote)</code> objects for the index notes. Otherwise, returns the paths to the index notes as paths, represented by str. Defaults to <code>True</code>.</li>
+</ul></li>
+</ul>
+<p><strong>Returns</strong> - list[Union[str, VaultNote]] - Either of the names of the index notes in the vault or of the index notes as VaultNote objects, depending on <code>as_vault_notes</code>.</p>
+<p><strong>See Also</strong> - <code>[</code>get_notes_from_index_note<code>](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.index_notes.html#get_notes_from_index_note)</code> in <code>markdown.obsidian.personal.index_notes</code>.*</p>
+<div id="cell-49" class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="finding-all-reference-folders-in-a-vault" class="level2">
+<h2 class="anchored" data-anchor-id="finding-all-reference-folders-in-a-vault">Finding all reference folders in a vault</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L973" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="reference_folders_in_vault" class="level3">
+<h3 class="anchored" data-anchor-id="reference_folders_in_vault">reference_folders_in_vault</h3>
+<blockquote class="blockquote">
+<pre><code> reference_folders_in_vault (vault:os.PathLike)</code></pre>
+</blockquote>
+<p>*Returns a dict of reference folders in vault.</p>
+<p><strong>Parameters</strong> - vault - PathLike - The path to the Obsidian vault directory.</p>
+<p><strong>Returns</strong> - dict - The keys are str, each of which is the name of a reference. The values are path strings to the reference folder, relative to <code>vault</code>.*</p>
+<div id="cell-52" class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="getting-files-in-a-reference-folder" class="level2">
+<h2 class="anchored" data-anchor-id="getting-files-in-a-reference-folder">Getting files in a reference folder</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/markdown/obsidian/personal/reference.py#L1013" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="files_in_reference_folder" class="level3">
+<h3 class="anchored" data-anchor-id="files_in_reference_folder">files_in_reference_folder</h3>
+<blockquote class="blockquote">
+<pre><code> files_in_reference_folder (vault:os.PathLike, reference:str,
+                            as_list:bool=False,
+                            search_index_notes:bool=False, exclude_notes_o
+                            f_type:list[trouver.markdown.obsidian.personal
+                            .note_type.PersonalNoteTypeEnum]=None)</code></pre>
+</blockquote>
+<p>*Returns a dict or list of files in a reference folder of a vault.</p>
+<p>TODO: also implement a method to get the files as listed in index notes.</p>
+<p><strong>Parameters</strong> - vault - PathLike - reference - str - Name of the reference folder in the vault. The folder must have the index note file <code>'_index_{reference}.md'</code>, and there must not be two index note files of the same name in the vault. - as_list - bool - If <code>True</code>, then returns a list. Returns a dict otherwise. Defaults to <code>False</code>. - search_index_notes - bool - If <code>True</code>, then gets the notes by looking at the reference’s index notes and returns the notes as ordered by the index notes. - exclude_notes_of_type - list of <code>markdown.obsidian.personal.note_type.PersonalNoteTypeEnum</code>. - The notes of the types specified here will be excluded in the dict or list returned. Defaults to <code>None</code>, in which case</p>
+<p><strong>Returns</strong> - list[str] or dict[str, str] - Either a list of path strings or a dict whose keys are str and values are path strings. The keys are the names of the files. The Paths are relative to <code>vault</code>.*</p>
+<div id="cell-55" class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: examples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/hyunjongkimmath\.github\.io\/trouver");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

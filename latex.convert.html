@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Convert LaTeX files into Obsidian.md notes (or vice versa)">
+
+<title>latex.convert – trouver</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ebc57992554dae5230fa85c1bd5a55fa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="latex.convert – trouver">
+<meta property="og:description" content="Convert LaTeX files into Obsidian.md notes (or vice versa)">
+<meta property="og:site_name" content="trouver">
+<meta name="twitter:title" content="latex.convert – trouver">
+<meta name="twitter:description" content="Convert LaTeX files into Obsidian.md notes (or vice versa)">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">trouver</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./latex.convert.html">latex.convert</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.file.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.file</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.markdown.heading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.markdown.heading</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.tags.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.tags</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.footnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.footnotes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obisidian.personal.authors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.index_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.index_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.note_type</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.convert.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">latex.convert</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.note_processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.note_processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.information_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.information_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learninig.database_update.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.database_update</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.information_note_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.information_note_types</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obisidian.personal.machine_learning.notation_identification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.notation_summarization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_summarization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.vault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.vault</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.divide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.divide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.formatting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.formatting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./latex.preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">latex.preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.comments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.comments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.machine_learning.notation_linking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.notation_linking</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.definition_and_notation_naming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.definition_and_notation_naming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.tests</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.regex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.html.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.definition_and_notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.definition_and_notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.numbers</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./41_helper.accented_characters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">41_helper.accented_characters.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.date_and_time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.date_and_time</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./43_helper.topological_sort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Topological sort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./44_helper.alphabet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alphabet</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.path_accepted_string.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.path_accepted_string</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./46_helper.files_and_folders.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Files and folders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.latex.macros_and_commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.latex.macros_and_commands</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.arxiv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.arxiv</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.vault_and_links.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.vault_and_links</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.parse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.parse</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.notation.in_standard_information_note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.notation.in_standard_information_note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.obsidian.personal.machine_learning.note_division.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">markdown.obsidian.personal.machine_learning.note_division</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./app.__init__.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><code>app.__init__</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./helper.packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./todo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TODO list</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.install_trouver.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.install_trouver</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how_to.train_ml_model.fastai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">how_to.train_ml_model.fastai</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">release_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./star.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">helper.packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.concise_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.concise_code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial.walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tutorial.walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unused.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How to use</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Regex</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#potential-problems" id="toc-potential-problems" class="nav-link active" data-scroll-target="#potential-problems">Potential problems</a></li>
+  <li><a href="#setup-an-obsidian-vault-reference" id="toc-setup-an-obsidian-vault-reference" class="nav-link" data-scroll-target="#setup-an-obsidian-vault-reference">Setup an Obsidian vault reference</a>
+  <ul class="collapse">
+  <li><a href="#setup_reference_from_latex_parts" id="toc-setup_reference_from_latex_parts" class="nav-link" data-scroll-target="#setup_reference_from_latex_parts">setup_reference_from_latex_parts</a></li>
+  </ul></li>
+  <li><a href="#compile-obsidian.md-vault-notes-into-latex-code" id="toc-compile-obsidian.md-vault-notes-into-latex-code" class="nav-link" data-scroll-target="#compile-obsidian.md-vault-notes-into-latex-code">Compile <code>Obsidian.md</code> vault notes into LaTeX code</a>
+  <ul class="collapse">
+  <li><a href="#convert_notes_to_latex_code" id="toc-convert_notes_to_latex_code" class="nav-link" data-scroll-target="#convert_notes_to_latex_code">convert_notes_to_latex_code</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">latex.convert</h1>
+</div>
+
+<div>
+  <div class="description">
+    Convert LaTeX files into Obsidian.md notes (or vice versa)
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>This module contains functions and methods to automatically make Obsidian notes from LaTeX files of mathematical papers, most notably those on arXiv.</p>
+<p>See the <a href="#potential-problems">Potential Problems</a> section below for some common errors that arise from this module and how to circumvent them.</p>
+<div id="cell-3" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> ExceptionExpected, test_eq</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathvalidate <span class="im">import</span> validate_filename</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.helper.tests <span class="im">import</span> _test_directory<span class="co"># , non_utf8_chars_in_file</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> trouver.markdown.obsidian.personal.reference <span class="im">import</span> (</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    delete_reference_folder</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="potential-problems" class="level2">
+<h2 class="anchored" data-anchor-id="potential-problems">Potential problems</h2>
+<p>The following are some frequently problems that arise when using this module:</p>
+<section id="unicodedecodeerrors-arise-when-reading-latex-files" class="level4">
+<h4 class="anchored" data-anchor-id="unicodedecodeerrors-arise-when-reading-latex-files">UnicodeDecodeErrors arise when reading LaTeX files</h4>
+<p>By default, the <a href="https://hyunjongkimmath.github.io/trouver/helper.files_and_folders.html#text_from_file"><code>text_from_file</code></a> method in <code>trouver.helper</code> reads files and attempts to decode them in <code>utf-8</code>. If a LaTeX file has characters that cannot be decoded into <code>utf-8</code>, then a <code>UnicodeDecodeError</code> may be raised. In this case, one can find identify these characters using the <code>trouver.helper.non_utf8_chars_in_file</code> method and modify the LaTeX file manually. It may be useful to use a text editor to jump to the positions that the characters are at and to change the encoding of the LaTeX file into <code>utf-8</code>; for example, the author of <code>trouver</code> has opened some <code>ANSI</code>-encoded LaTeX documents in <code>Notepad++</code> and converted their encoding into <code>UTF-8</code>.</p>
+</section>
+<section id="nodocumentnodeerrors-arise-even-though-the-latex-file-has-a-document-environemt-i.e.-begindocument...enddocument" class="level4">
+<h4 class="anchored" data-anchor-id="nodocumentnodeerrors-arise-even-though-the-latex-file-has-a-document-environemt-i.e.-begindocument...enddocument"><code>NoDocumentNodeErrors</code> arise even though the LaTeX file has a document environemt (i.e.&nbsp;<code>\begin{document}...\end{document}</code>)</h4>
+<p>The <a href="https://hyunjongkimmath.github.io/trouver/latex.divide.html#find_document_node"><code>find_document_node</code></a> method in this module sometimes is not able to detect the docment environment of a LaTeX file. This error is known to arise when - there are macros (which include commands) defined that represents/expands to characters including <code>\begin{...}... \end{...}</code>. For example</p>
+<div id="cell-10" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> in the above explanation, include an example.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="setup-an-obsidian-vault-reference" class="level2">
+<h2 class="anchored" data-anchor-id="setup-an-obsidian-vault-reference">Setup an Obsidian vault reference</h2>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/latex/convert.py#L282" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="setup_reference_from_latex_parts" class="level3">
+<h3 class="anchored" data-anchor-id="setup_reference_from_latex_parts">setup_reference_from_latex_parts</h3>
+<blockquote class="blockquote">
+<pre><code> setup_reference_from_latex_parts (parts:list[tuple[str,str]],
+                                   custom_commands:list[tuple[str,int,typi
+                                   ng.Optional[str],str]],
+                                   vault:os.PathLike,
+                                   location:os.PathLike,
+                                   reference_name:os.PathLike,
+                                   authors:Union[str,list[str]], author_fo
+                                   lder:os.PathLike='_mathematicians', cre
+                                   ate_reference_file_in_references_folder
+                                   :bool=True, references_folder:os.PathLi
+                                   ke='_references', create_template_file_
+                                   in_templates_folder:bool=True, template
+                                   s_folder:os.PathLike='_templates', temp
+                                   late_file_name:str='_template_common', 
+                                   notation_index_template_file_name:str='
+                                   _template_notation_index', glossary_tem
+                                   plate_file_name:str='_template_glossary
+                                   ', setup_temp_folder:bool=True, make_se
+                                   cond_template_file_in_reference_directo
+                                   ry:bool=True, copy_obsidian_configs:Opt
+                                   ional[os.PathLike]='.obsidian',
+                                   overwrite:Optional[str]=None,
+                                   confirm_overwrite:bool=True,
+                                   verbose:bool=False,
+                                   replace_custom_commands:bool=True, adju
+                                   st_common_latex_syntax_to_markdown:bool
+                                   =True,
+                                   repeat_replacing_custom_commands:int=1)</code></pre>
+</blockquote>
+<p>*Set up a reference folder in <code>vault</code> using an output of <a href="https://hyunjongkimmath.github.io/trouver/latex.divide.html#divide_latex_text"><code>divide_latex_text</code></a>, create notes from <code>parts</code>, and link notes in index files in the reference folder.</p>
+<p>Assumes that</p>
+<ul>
+<li><code>parts</code> is derived from a LaTeX document in which
+<ul>
+<li>all of the text belongs to sections.</li>
+<li>all of the sections/subsections are uniquely named</li>
+</ul></li>
+<li>The template file is has a section <code># Topic</code></li>
+<li>The last line of the template file is a footnote indicating where the note comes from.</li>
+<li>There is at most one reference folder in the vault whose name is given by <code>reference_name</code>.</li>
+</ul>
+<p><code>parts</code> itself is not modified, even if <code>replace_custom_commands</code> and/or <code>adjust_common_latex_syntax_to_markdown</code> are set to <code>True</code>.</p>
+<p>cf.&nbsp;<a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.reference.html#setup_folder_for_new_reference"><code>setup_folder_for_new_reference</code></a> for how the reference folder is set up..</p>
+<p>The names for the subfolders of the reference folder are the section titles, except for sections with common titles such as <code>Introduction</code>, <code>Notations</code>, <code>Conventions</code>, <code>Preliminaries</code>, and <code>Notations and Conventions</code>. This ensures that the index file names for sections in different reference folders do not have the same name.</p>
+<p>Text/parts that precede explicitly given sections are included in the first section’s folder and are linked in the first section’s index file.*</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>parts</td>
+<td>list</td>
+<td></td>
+<td>Output of <a href="https://hyunjongkimmath.github.io/trouver/latex.divide.html#divide_latex_text"><code>divide_latex_text</code></a></td>
+</tr>
+<tr class="even">
+<td>custom_commands</td>
+<td>list</td>
+<td></td>
+<td>Output of <a href="https://hyunjongkimmath.github.io/trouver/helper.latex.macros_and_commands.html#custom_commands"><code>custom_commands</code></a> applied to the preamble of the LaTeX ddocument.<code>| | vault | PathLike |  | An Obsidian.md vault, | | location | PathLike |  | The path to make the new reference folder. Relative to</code>vault<code>. | | reference_name | PathLike |  | The name of the new reference. | | authors | Union |  | Each str is the family name of each author. | | author_folder | PathLike | _mathematicians | The directory where the author files are stored in. Relative to</code>vault<code>. | | create_reference_file_in_references_folder | bool | True | If</code>True<code>, then the reference file creation is attempted within</code>references_folder<code>. Otherwise, the reference file creation is attempted at the base of the newly setup folder for the reference.. | | references_folder | PathLike | _references | The directory where the references files are stored in. Relative to</code>vault<code>. | | create_template_file_in_templates_folder | bool | True | If</code>True<code>, then the template file creation is attempted within</code>templates_folder<code>. Otherwise, the template file creation is attempted at the base of the newly setup folder for the reference. | | templates_folder | PathLike | _templates | The directory where the template files are stored in. Relative to</code>vault<code>. | | template_file_name | str | _template_common | The template file from which to base the template file of the new reference. | | notation_index_template_file_name | str | _template_notation_index | The template file from which to base the notation index file of the new reference. | | glossary_template_file_name | str | _template_glossary | The template file from which to base the glossary file of the new reference. | | setup_temp_folder | bool | True | If</code>True<code>, creates a</code>_temp<code>folder with an index file. This folder serves to house notes auto-created from LaTeX text files before moving them to their correct directories. Defaults to</code>True<code>. | | make_second_template_file_in_reference_directory | bool | True | If</code>True<code>, creates a copy of the template note within the directory for the reference. | | copy_obsidian_configs | Optional | .obsidian | The folder relative to</code>vault<code>from which to copy obsidian configs.  If</code>None<code>, then no obsidian configs are copied to the reference folder. Defaults to</code>.obsidian<code>. | | overwrite | Optional | None | Specifies if and how to overwrite the reference folder if it already exists.  - If</code>‘w’<code>, then deletes the contents of the existing reference folder, as well as the template and reference file before setting up the reference folder before creating the new reference folder.  - If</code>‘a’<code>, then overwrites the contents of the reference folder, but does not remove existing files/folders.  - If</code>None<code>, then does not modify the existing reference folder and raises a</code>FileExistsError<code>. | | confirm_overwrite | bool | True | Specifies whether or not to confirm the deletion of the reference folder if it already exists and if</code>overwrite<code>is</code>‘w’<code>. Defaults to</code>True<code>. | | verbose | bool | False |  | | replace_custom_commands | bool | True | If</code>True<code>, replace the custom commands in the text of</code>parts<code>when making the notes. | | adjust_common_latex_syntax_to_markdown | bool | True | If</code>True<code>, apply [</code>adjust_common_syntax_to_markdown<code>](https://hyunjongkimmath.github.io/trouver/latex.formatting.html#adjust_common_syntax_to_markdown) to the text in</code>parts<code>when making the notes.</code></td>
+</tr>
+<tr class="odd">
+<td>repeat_replacing_custom_commands</td>
+<td>int</td>
+<td>1</td>
+<td>The number of times to repeat replacing the custom commands throughout the text; note that some custom commands could be “nested”, i.e.&nbsp;the custom commands are defined in terms of other custom commands. Defaults to <code>1</code>, in which custom commands are replaced throughout the entire document once. If set to any negative number (e.g.&nbsp;`-1``), then this function attempts to replace custom commands until no commands to replace are found.</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>None</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-14" class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">dir</span> <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'latex_examples'</span> <span class="op">/</span> <span class="st">'latex_example_with_untitled_subsections_setup_to_a_vault'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    sample_latex_file <span class="op">=</span> <span class="bu">dir</span> <span class="op">/</span> <span class="st">'main.tex'</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    sample_latex_text <span class="op">=</span> text_from_file(sample_latex_file)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    preamble, _ <span class="op">=</span> divide_preamble(sample_latex_text)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> divide_latex_text(sample_latex_text, <span class="bu">dir</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    cust_comms <span class="op">=</span> custom_commands(preamble)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    setup_reference_from_latex_parts(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        parts, cust_comms, temp_vault, Path(<span class="st">''</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'test_ref'</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'Kim'</span>, <span class="st">'Kim'</span>, <span class="st">'Kim'</span>])</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: give an example for a LaTeX document with a multiline section</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: give an example for a LaTeX document with a section that must be sanitized first, e.g.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># in banwait_et_al_cnpgrg2c, there is a section of the string</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># `\section{Exceptional maximal subgroups of </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># \texorpdfstring{\(\GSp_4(\ff_\ell)\)}{GSp4Fell}}`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following example demonstrates setting up a reference folder from a latex document with significant content before any explicitly specified sections. In particular, the reference folder contains a subfolder dedicated to the content that comes before the explicitly specified sections.</p>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> (tempfile.TemporaryDirectory(prefix<span class="op">=</span><span class="st">'temp_dir'</span>, <span class="bu">dir</span><span class="op">=</span>os.getcwd()) <span class="im">as</span> temp_dir):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    temp_vault <span class="op">=</span> Path(temp_dir) <span class="op">/</span> <span class="st">'test_vault_5'</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    shutil.copytree(_test_directory() <span class="op">/</span> <span class="st">'test_vault_5'</span>, temp_vault)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">dir</span> <span class="op">=</span> _test_directory() <span class="op">/</span> <span class="st">'latex_examples'</span> <span class="op">/</span> <span class="st">'latex_example_with_content_before_sections'</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    sample_latex_file <span class="op">=</span> <span class="bu">dir</span> <span class="op">/</span> <span class="st">'main.tex'</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    sample_latex_text <span class="op">=</span> text_from_file(sample_latex_file)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    preamble, _ <span class="op">=</span> divide_preamble(sample_latex_text)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> divide_latex_text(sample_latex_text, <span class="bu">dir</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    cust_comms <span class="op">=</span> custom_commands(preamble)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    setup_reference_from_latex_parts(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        parts, cust_comms, temp_vault, Path(<span class="st">''</span>),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'test_ref'</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'Kim'</span>, <span class="st">'Kim'</span>, <span class="st">'Kim'</span>])</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    reference_folder <span class="op">=</span> temp_vault <span class="op">/</span> <span class="st">'test_ref'</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    subdirectories <span class="op">=</span> <span class="bu">list</span>(reference_folder.glob(<span class="st">'**'</span>))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    relative_subdirectories <span class="op">=</span> [</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        os.path.relpath(subdirectory, reference_folder)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> subdirectory <span class="kw">in</span> subdirectories]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"The following are the subdirectories of `reference_folder` (relative to `temp_vault`):"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(relative_subdirectories)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> convert_title_to_folder_name(<span class="ss">f'test_ref </span><span class="sc">{</span>UNTITLED_SECTION_TITLE<span class="sc">}</span><span class="ss">'</span>) <span class="kw">in</span> relative_subdirectories</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os.startfile(temp_vault)</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># input()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following are the subdirectories of `reference_folder` (relative to `temp_vault`):
+['.', '.obsidian', '1_proof_of_theorem~refthmain', 'test_ref_untitled_section', '_temp', '.obsidian\\plugins', '.obsidian\\plugins\\fast-link-edit', '.obsidian\\plugins\\obsidian-vimrc-support', '1_proof_of_theorem~refthmain\\11_this_is_a_subsection', '1_proof_of_theorem~refthmain\\12_this_is_another_subsection']</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="compile-obsidian.md-vault-notes-into-latex-code" class="level2">
+<h2 class="anchored" data-anchor-id="compile-obsidian.md-vault-notes-into-latex-code">Compile <code>Obsidian.md</code> vault notes into LaTeX code</h2>
+<p>As a side note, the <a href="https://hyunjongkimmath.github.io/trouver/latex.formatting.html#remove_dollar_signs_around_equationlike_envs"><code>remove_dollar_signs_around_equationlike_envs</code></a> function is one function used to revert some markdown-formatted code into code better suited for LaTeX.</p>
+<div id="cell-21" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> remove_dollar_signs_around_equationlike_envs(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="vs">r'''$$\begin{align*}asdf\end{align*}$$'''</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'$'</span> <span class="kw">not</span> <span class="kw">in</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>\begin{align*}asdf\end{align*}</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/hyunjongkimmath/trouver/blob/main/trouver/latex/convert.py#L396" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="convert_notes_to_latex_code" class="level3">
+<h3 class="anchored" data-anchor-id="convert_notes_to_latex_code">convert_notes_to_latex_code</h3>
+<blockquote class="blockquote">
+<pre><code> convert_notes_to_latex_code
+                              (notes:list[trouver.markdown.obsidian.vault.
+                              VaultNote], vault:os.PathLike, preamble:str)</code></pre>
+</blockquote>
+<p><em>Compile the contents of the <a href="https://hyunjongkimmath.github.io/trouver/markdown.obsidian.vault.html#vaultnote"><code>VaultNote</code></a>’s into code for a LaTeX file.</em></p>
+<div id="cell-23" class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> <span class="vs">r"""</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="vs">Let us explain why this point of view is useful for proving homological stability for Hurwitz spaces.  In most situations where homological stability is understood, one has a sequence of (usually connected) spaces $X_n$ and stabilization maps $f_n: X_n \to X_{n+1}$; the goal is to show that each $f_n$ induces homology isomorphisms in a range of dimensions.  Let $X= \sqcup_n X_n$, and consider the homology</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;span notation="" style="border-width:1px;border-style:solid;padding:3px"&gt;$$M_p = H_p(X) =\oplus_n H_p(X_n)$$&lt;/span&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="vs">Give $M_p$ the structure of a $k[x]$-module by making the indeterminate $x$ act via the stabilization map.  $M_p$ admits a grading by the number $n$, and $x$ acts as a degree 1 operator.  Homological stability is rephrased as the statement that $x$ is an isomorphism in sufficiently high degree.  Equivalently, we need the quotient and $x$-torsion</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="vs">$$\begin</span><span class="sc">{array}{ccc}</span><span class="vs"> Tor_0^</span><span class="sc">{k[x]}</span><span class="vs">(k, M_p) = M_p/xM_p &amp; {\rm and} &amp; Tor_1^</span><span class="sc">{k[x]}</span><span class="vs">(k, M_p) = M_p[x] \end</span><span class="sc">{array}</span><span class="vs">$$</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="vs">to be concentrated in low degrees.</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="vs">"""</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(_replace_html_with_latex_command_markings(body))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Let us explain why this point of view is useful for proving homological stability for Hurwitz spaces.  In most situations where homological stability is understood, one has a sequence of (usually connected) spaces $X_n$ and stabilization maps $f_n: X_n \to X_{n+1}$; the goal is to show that each $f_n$ induces homology isomorphisms in a range of dimensions.  Let $X= \sqcup_n X_n$, and consider the homology
+
+$$\mathcolorbox{lightgray}{M_p = H_p(X) =\oplus_n H_p(X_n)}$$
+
+Give $M_p$ the structure of a $k[x]$-module by making the indeterminate $x$ act via the stabilization map.  $M_p$ admits a grading by the number $n$, and $x$ acts as a degree 1 operator.  Homological stability is rephrased as the statement that $x$ is an isomorphism in sufficiently high degree.  Equivalently, we need the quotient and $x$-torsion
+
+$$\begin{array}{ccc} Tor_0^{k[x]}(k, M_p) = M_p/xM_p &amp; {\rm and} &amp; Tor_1^{k[x]}(k, M_p) = M_p[x] \end{array}$$
+
+to be concentrated in low degrees.
+</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/hyunjongkimmath\.github\.io\/trouver");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/hyunjongkimmath/trouver/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
