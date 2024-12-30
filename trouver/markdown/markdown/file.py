@@ -373,7 +373,7 @@ class MarkdownFile:
         # enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
         check_validity: bool = True # If `True`, then check whether a MarkdownFile object could be instantiated from `self.__str__()` before writing to the file. If not, then a `ValueError` is raised.
         ) -> None:
-        """
+        r"""
         Write to the file specified by a `VaultNote` object.
 
         If the file that the `VaultNote` object represents does not exist,
@@ -400,7 +400,7 @@ class MarkdownFile:
                 new_mf = MarkdownFile.from_string(str(self))
                 new_mf.metadata()
             except Exception as e:
-                raise ValueError(f"""Tried to write the MarkdownFile object to {vn.path()}, 
+                raise ValueError(fr"""Tried to write the MarkdownFile object to {vn.path()}, 
 but the output of `.__str__()` on the MarkdownFile object is not parseable as as MarkdownFile object. 
 Most likely, the YAML frontmatter cannot be parsed, and metadata field elements need to
 be enquoted and/or escaped (say via using double slashes `\\` instead of single slashes `\`

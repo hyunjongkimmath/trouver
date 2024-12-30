@@ -816,12 +816,12 @@ def _title_for_environment_node(
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
-    """Returns `True` if `\swapnumbers` is in the preamble.
+    r"""Returns `True` if `\swapnumbers` is in the preamble.
 
     Assume that a mention of `\swapnumbers` is an actual invocation.
     """
     preamble = remove_comments(preamble)
-    return '\swapnumbers' in preamble
+    return r'\swapnumbers' in preamble
 
 # %% ../../nbs/29_latex.divide.ipynb 89
 def _node_warrants_own_part(

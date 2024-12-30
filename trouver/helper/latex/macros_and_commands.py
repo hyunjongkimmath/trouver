@@ -15,12 +15,12 @@ from .comments import remove_comments
 
 # %% ../../../nbs/48_helper.latex.macros_and_commands.ipynb 6
 def _argument_detection(group_num: int) -> str:
-    """
+    r"""
     Helper function to `regex_pattern_detecting_command`, and `_commands_from_def`
 
     This basically helps detect balanced curly braces for invocations of commands.
     """
-    return "\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
+    return r"\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
 
 # %% ../../../nbs/48_helper.latex.macros_and_commands.ipynb 7
 def custom_commands(
@@ -119,7 +119,7 @@ def regex_pattern_detecting_command(
     else:
         # Match the command name exactly without letters immediately following
         # (but underscores following are okay).
-        pattern = f"{backslash_name}(?![^\W_])"
+        pattern = rf"{backslash_name}(?![^\W_])"
     return regex.compile(pattern)
 
     

@@ -260,7 +260,7 @@ def convert_heading_to_folder_name(
     - heading: str
         
     """
-    regex_match = re.match('\# (\w+?)\. (.*)', heading)
+    regex_match = re.match(r'\# (\w+?)\. (.*)', heading)
     try:
         alphanumeric = regex_match.group(1)
         title = regex_match.group(2)
@@ -275,7 +275,7 @@ def convert_heading_to_folder_name(
 def make_folders_from_index_note_headers(
         index_note: VaultNote
         ) -> None:
-    """
+    r"""
     Make folders in the same directory as index note whose names
     are the titles of the headers of the index note.
 
@@ -283,7 +283,7 @@ def make_folders_from_index_note_headers(
     """
     mfile = MarkdownFile.from_vault_note(index_note)
     headings = mfile.get_headings_by_line_number(levels=1)
-    pattern = re.compile('\# (\w+?)\. (.*?)')
+    pattern = re.compile(r'\# (\w+?)\. (.*?)')
     folder_names = [convert_heading_to_folder_name(heading)
                     for _, heading in headings.items() if heading]
     directory = Path(os.path.dirname(index_note.path()))
