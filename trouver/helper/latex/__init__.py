@@ -93,7 +93,7 @@ def _last_curly_bracket(s):
 def _detect_backslash_space_curly(
         text: str
         ) -> bool:
-    """
+    r"""
     Return `True` if there is some backslash `\` followed
     by spaces and then followed by curly brackets `{`
 
@@ -110,7 +110,7 @@ def _detect_backslash_space_curly(
 def _is_left_right_balanced(
         latex_string: str
         ) -> bool:
-    """
+    r"""
     Return `True` if occurrences of `\left` and `\right` are balanced. 
 
     This is a helper function of `math_mode_string_is_syntactically_valid`
@@ -147,7 +147,7 @@ def _is_left_right_balanced(
 def _is_semantically_left_right_balanced(
         latex_string: str
         ) -> bool:
-    """
+    r"""
     Return `True` if occurrences of `\left` and `\right` macros
     preceding various braces are balanced.
 
@@ -198,7 +198,7 @@ def _is_semantically_left_right_balanced(
 def _has_invalid_left_right_bracket(
         latex_string: str
         ) -> bool:
-    """
+    r"""
     Return `True` is there is at least one invalid use of
     a `\left` or `\right` command.
 
@@ -373,7 +373,7 @@ def extract_commands_from_nodes(
 def _detect_begin_and_end_environments(
         latex_string: str
         ) -> list[str]:
-    """
+    r"""
     Return a list of at most two items containing 'begin' if there is a \begin and containing 'end' if there is an \end
 
     This is a helper function to `extract_latex_commands`.

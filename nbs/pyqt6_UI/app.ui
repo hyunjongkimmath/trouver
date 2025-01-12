@@ -487,11 +487,22 @@
             </widget>
            </item>
            <item>
-            <widget class="QProgressBar" name="compile_tex_from_obsidian_subvault_progress_bar">
-             <property name="value">
-              <number>0</number>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QProgressBar" name="compile_tex_from_obsidian_subvault_progress_bar">
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="open_folder_with_tex_output_button">
+               <property name="text">
+                <string>Open Folder with Output</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <widget class="QLabel" name="compile_tex_from_obsidian_subvault_progress_message_label">
