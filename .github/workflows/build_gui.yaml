@@ -34,7 +34,7 @@ jobs:
     - name: Install system dependencies
       uses: ConorMacBride/install-package@v1
       with:
-        apt: libgl1-mesa-glx libegl1-mesa libxkbcommon-x11-0 libdbus-1-3  # For Ubuntu
+        apt: libgl1 libglx-mesa0 libegl1 libxkbcommon-x11-0 libdbus-1-3  # For Ubuntu
         brew: qt  # Example for macOS, replace with actual dependencies if needed
         choco: vcredist140  # Example for Windows, replace with actual dependencies if needed
     - name: test
