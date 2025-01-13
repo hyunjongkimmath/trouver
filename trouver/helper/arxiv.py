@@ -16,6 +16,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import re
+import shutil
 import tarfile
 
 import arxiv
@@ -267,6 +268,76 @@ def extract_tex_from_gz(filepath):
     return tex_filename
 
 # %% ../../nbs/49_helper.arxiv.ipynb 30
+def _uncompress_file(
+        file_path: PathLike,
+        verbose: bool
+        ):
+    """Uncompress a .gz or .tar.gz file.
+    
+    arXiv source files seem to be downloaded in two ways:
+
+    1. as a `tar.gz` file
+        - This happens when there are multiple components of the arXiv source
+        code, e.g. the source code has the main `.tex` file along with a
+        bibliography file.
+    2. as a `.gz` file
+        - This happens when the source code is contained in a single file.
+
+    When using the `Result.download_source` function of the arXiv Python API,
+    however, the source files are downloaded with the `tar.gz` extension in both
+    cases, even when the underlying file is actually a `.gz` file. (In contrast,
+    manually downloading from arXiv.org downloads the file with the correct
+    extension).
+
+    This function takes the two possibilities into account to 
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File does not exist: {file_path}")
+
+    file_size = os.path.getsize(file_path)
+    if verbose:
+        print(f"File size: {file_size} bytes")
+
+    if file_size == 0:
+        raise ValueError(f"File is empty: {file_path}")
+
+    # Check file type
+    with open(file_path, 'rb') as f:
+        file_start = f.read(4)
+    
+    if file_start.startswith(b'\x1f\x8b'):  # gzip magic number
+        if verbose:
+            print("File appears to be gzip compressed")
+        if file_path.endswith('.tar.gz'):
+            try:
+                with tarfile.open(file_path, 'r:gz') as tar:
+                    tar.extractall(path=os.path.dirname(file_path))
+                    return [os.path.join(os.path.dirname(file_path), member.name) for member in tar.getmembers()]
+            except tarfile.ReadError:
+                if verbose:
+                    print("Failed to read as tar.gz, attempting to decompress as .gz")
+                # Fall through to .gz handling
+        
+        # Handle as .gz file
+        # Preserve the original filename but change the extension to .tex
+        output_file = os.path.splitext(os.path.splitext(file_path)[0])[0] + '.tex'
+        
+        with gzip.open(file_path, 'rb') as f_in:
+            with open(output_file, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+        return [output_file]
+    else:
+        raise ValueError(f"Unsupported file format. File starts with bytes: {file_start.hex()}")
+
+# Usage
+# try:
+#     uncompressed_files = uncompress_file(source_file_path)
+#     print(f"Uncompressed files: {uncompressed_files}")
+# except Exception as e:
+#     print(f"Error uncompressing file: {e}")
+
+
+# %% ../../nbs/49_helper.arxiv.ipynb 31
 def download_from_results(
         results: Result | list[Result],
         dir: PathLike, # The directory into which to download the files
@@ -350,7 +421,9 @@ def _create_folder_for_source_download(
         if file_or_folder_name == result.entry_id:
             file_or_folder_name = f'{file_or_folder_name}_dupl'    
         else:
-            file_or_folder_name = f'{file_or_folder_name}_{result.get_short_id()}'
+            id_text = result.get_short_id()
+            id_text = id_text.replace('/', '_').replace('\\', '_')
+            file_or_folder_name = f'{file_or_folder_name}_{id_text}'
         new_folder = Path(dir) / file_or_folder_name
     while os.path.isdir(new_folder): #If folder still exists
         file_or_folder_name = f'{file_or_folder_name}_dupl'
@@ -374,26 +447,49 @@ def _download_source(
     Helper function to `download_from_results`
     """
     new_source_folder = _create_folder_for_source_download(result, dir, file_or_folder_name)
-    source_file_path = result.download_source(new_source_folder)
-    source_file_path = Path(new_source_folder) / source_file_path
+    # source_file_path = os.path.join(new_source_folder, f'downloaded_source_file.tar.gz')
+    source_file_path = result.download_source(dirpath=new_source_folder)
     if verbose:
         print(source_file_path)
-    compression_type = analyze_arxiv_tarfile(source_file_path)
-    if decompress_compressed_file and file_is_compressed(source_file_path):
-        if compression_type in ['plain_gz', 'direct_tex']:
-            new_path = Path(f'{str(source_file_path)[:-7]}.gz')
-            os.rename(source_file_path, new_path)
-            source_file_path = new_path
-        uncompressed = uncompress_file(source_file_path)
+
+    
+    if decompress_compressed_file:
+        uncompressed = _uncompress_file(source_file_path, verbose)
+        # if len(uncompressed) == 1:
+        #     if file_is_compressed(uncompressed[0]):
+        #         uncompressed_again = uncompress_file(uncompressed[0])
+        #         if delete_compressed_file:
+        #             os.remove(uncompressed[0])
+            # elif compression_type in ['plain_gz', 'direct_tex']:
+            #     os.rename(uncompressed[0], f'{str(uncompressed[0])}.tex')
+
+        # with tarfile.open(source_file_path, 'r:gz') as tar:
+        #     tar.extractall(path=new_source_folder)
         if delete_compressed_file:
             os.remove(source_file_path)
-        if len(uncompressed) == 1:
-            if file_is_compressed(uncompressed[0]) and compression_type == 'nested_archive':
-                uncompressed_again = uncompress_file(uncompressed[0])
-                if delete_compressed_file:
-                    os.remove(uncompressed[0])
-            elif compression_type in ['plain_gz', 'direct_tex']:
-                os.rename(uncompressed[0], f'{str(uncompressed[0])}.tex')
+
+    # source_file_path = result.download_source(new_source_folder)
+    # source_file_path = Path(new_source_folder) / source_file_path
+    # if verbose:
+    #     print(source_file_path)
+    # compression_type = analyze_arxiv_tarfile(source_file_path)
+    # if decompress_compressed_file and file_is_compressed(source_file_path):
+    #     if compression_type in ['plain_gz', 'direct_tex']:
+    #         new_path = Path(f'{str(source_file_path)[:-7]}.gz')
+    #         os.rename(source_file_path, new_path)
+    #         source_file_path = new_path
+    #     uncompressed = uncompress_file(source_file_path)
+    #     if delete_compressed_file:
+    #         os.remove(source_file_path)
+    #     if len(uncompressed) == 1:
+    #         if file_is_compressed(uncompressed[0]) and compression_type == 'nested_archive':
+    #             uncompressed_again = uncompress_file(uncompressed[0])
+    #             if delete_compressed_file:
+    #                 os.remove(uncompressed[0])
+    #         elif compression_type in ['plain_gz', 'direct_tex']:
+    #             os.rename(uncompressed[0], f'{str(uncompressed[0])}.tex')
+
+
     if not download_metadata:
         return new_source_folder
     metadata_file_name = _unique_metadata_file_name(new_source_folder)

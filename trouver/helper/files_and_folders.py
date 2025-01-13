@@ -182,10 +182,14 @@ def file_is_compressed(
     return file_extension.lower() in compressed_extensions
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 40
+@deprecated("This function was originally implemented to be used in the `_download_source` function in `49_helper.arxiv.ipynb`, but it seems to be unable to properly handle `tar.gz` files that are actually `.gz` files.")
 def uncompress_file(
         file_path: PathLike,
         verbose: bool = False
         ):
+    """
+    
+    """
     # Check the file extension
     file_path = str(file_path)
     _, file_extension = os.path.splitext(file_path)
@@ -312,7 +316,20 @@ def uncompress_file(
 #     return uncompressed_files
 
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 45
+# %% ../../nbs/46_helper.files_and_folders.ipynb 43
+# def is_gzipped(file_path):
+#     with open(file_path, 'rb') as f:
+#         magic_number = f.read(2)
+#         return magic_number == b'\x1f\x8b'
+
+# def is_tarfile(file_path):
+#     try:
+#         with tarfile.open(file_path, 'r'):
+#             return True
+#     except (tarfile.TarError, OSError):
+#         return False
+
+# %% ../../nbs/46_helper.files_and_folders.ipynb 46
 def get_download_path() -> str:
     """
     Return the user's download folder
@@ -326,7 +343,7 @@ def get_download_path() -> str:
     else:  # For Unix-based systems (Linux, macOS)
         return os.path.join(os.path.expanduser('~'), 'Downloads')
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 47
+# %% ../../nbs/46_helper.files_and_folders.ipynb 48
 def get_huggingface_cache_dir():
     # Determine the cache directory
     cache_dir = os.environ.get("HF_HOME") or os.environ.get("XDG_CACHE_HOME")
