@@ -23,7 +23,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import shutil
-from typing import Callable, Optional
+from typing import Callable, Literal, Optional
 import warnings
 
 from deprecated import deprecated
@@ -328,7 +328,7 @@ def automatically_add_note_type_tags(
         vault: PathLike, # The vault with the notes
         notes: list[VaultNote],
         add_auto_label: bool = True, # If `True`, adds `"_auto"` to the front of the note type tag to indicate that the tags were added via this automated script.
-        overwrite: Optional[str] = None # Either `'w'`, `'ws'`, `'ww'`, `'a'`, or `None`. If `'w'` or `'ws'`, then overwrite any already-existing note type tags (from LABEL_TAGS), whether or not these tags are `_auto` tags, with the predicted tags. IF `'ww'`, then overwrite only the `_auto` tags among the already-existing note type tags with the predicted tags. If `'a'`, then preserve already-existing note type tags and just append the newly predicted ones; in the case that `learn` predicts the note type whose tag is already in the note, a new tag of that type is not added, even if `add_auto_label=True`. If `None`, then do not make modifications to each note if any note type tags already exist in the note; if the predicted note types are different from the already existing note types, then raise a warning.
+        overwrite: Optional[Literal['w', 'ws', 'ww', 'a', None]] = None # Either `'w'`, `'ws'`, `'ww'`, `'a'`, or `None`. If `'w'` or `'ws'`, then overwrite any already-existing note type tags (from LABEL_TAGS), whether or not these tags are `_auto` tags, with the predicted tags. IF `'ww'`, then overwrite only the `_auto` tags among the already-existing note type tags with the predicted tags. If `'a'`, then preserve already-existing note type tags and just append the newly predicted ones; in the case that `learn` predicts the note type whose tag is already in the note, a new tag of that type is not added, even if `add_auto_label=True`. If `None`, then do not make modifications to each note if any note type tags already exist in the note; if the predicted note types are different from the already existing note types, then raise a warning.
         ) -> None:
     """
     Predict note types and add the predicted types as
