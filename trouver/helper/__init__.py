@@ -4,11 +4,12 @@
 
 # %% ../../nbs/00_helper.ipynb 2
 from __future__ import annotations
+import string
 
 
 
 # %% auto 0
-__all__ = ['substring_generator', 'sublist_generator']
+__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc']
 
 # %% ../../nbs/00_helper.ipynb 4
 def substring_generator(input_string: str):
@@ -23,3 +24,14 @@ def sublist_generator(input_list: list):
     for i in range(length):
         for j in range(i + 1, length + 1):
             yield input_list[i:j]
+
+# %% ../../nbs/00_helper.ipynb 5
+def is_punctuation(
+        char: str # A str of length 1
+        ):
+    return char in '.!?,:;'
+
+def is_not_space_and_not_punc(
+        char: str # A str of length 1
+        ):
+    return not is_punctuation(char) and not char.isspace()

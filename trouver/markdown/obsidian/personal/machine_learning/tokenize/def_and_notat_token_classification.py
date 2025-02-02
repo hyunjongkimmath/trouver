@@ -18,6 +18,7 @@ import warnings
 import bs4
 from transformers import BatchEncoding, pipelines, PreTrainedTokenizer, PreTrainedTokenizerFast
 
+from ......helper import is_not_space_and_not_punc
 from ......helper.definition_and_notation import double_asterisk_indices, notation_asterisk_indices
 from ......helper.html import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, remove_html_tags_in_text
 from ......helper.latex import _is_balanced_braces, _first_curly_bracket, _last_curly_bracket
@@ -514,7 +515,8 @@ def _extend_tag_data_ranges(
     """
     Extend tag data so that
     1. the tag data does not start or end within any latex math mode string.
-    2. the tag data is immediately preceded and followed by whitespace (or the start/end of line) 
+    2. the tag data is immediately preceded by whitespace (or the start/end of line)
+       and followed by whitespace or punctuation
     3. the tag data does not start/end in the middle of the arguments of a latex command.
 
     Helper function to `_consolidate_token_preds`.
@@ -526,7 +528,7 @@ def _extend_tag_data_ranges(
         while True:
             tag_tuple_after_extension = _extend_tag_data_range_for_math_mode(
                 tag_tuple_before_extension, main_text, latex_inds)
-            tag_tuple_after_extension = _extend_tag_data_range_to_border_spaces(
+            tag_tuple_after_extension = _extend_tag_data_range_to_border_space_or_punc(
                 tag_tuple_after_extension, main_text)
             tag_tuple_after_extension = _extend_tag_data_ranges_to_balance_curly_braces(
                 tag_tuple_after_extension, main_text)
@@ -565,19 +567,20 @@ def _extend_tag_data_range_for_math_mode(
     return _update_tag_data(tag_tuple, main_text, extended_range[0], extended_range[1])
 
 
-def _extend_tag_data_range_to_border_spaces(
+def _extend_tag_data_range_to_border_space_or_punc(
         tag_tuple: tuple[bs4.element.Tag, int, int],
         main_text: str,
         ) -> tuple[bs4.element.Tag, int, int]:
     """
-    Extend tag data so that the tag data borders spaces.
+    Extend tag data so that the tag data borders spaces or punctuations.
 
     Helper function to `_consolidate_token_preds`.
     """
     combined_range = [tag_tuple[1], tag_tuple[2]]
     while combined_range[0] != 0 and not main_text[combined_range[0]-1].isspace():
         combined_range[0] -= 1
-    while combined_range[1] != len(main_text) and not main_text[combined_range[1]].isspace():
+    # while combined_range[1] != len(main_text) and not main_text[combined_range[1]].isspace():
+    while combined_range[1] != len(main_text) and is_not_space_and_not_punc(main_text[combined_range[1]]):
         combined_range[1] += 1
     return _update_tag_data(tag_tuple, main_text, combined_range[0], combined_range[1])
 
