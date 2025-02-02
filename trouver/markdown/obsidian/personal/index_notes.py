@@ -15,7 +15,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import re
-from typing import Union
+from typing import Literal, Union
 
 from natsort import natsorted
 from pathvalidate import sanitize_filename
@@ -54,7 +54,7 @@ def subsections_listed_in_index_note(
 def subsection_folders(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike,
-        output_type: str, # `'absolute_path'`, `'relative_path'`, or `'name'`
+        output_type: Literal['absolute_path', 'relative_path', 'name'], 
         ) -> list[str]: # List of immediate subdirectories in the directory containing the index note.
     """
     Return subdirectories corresponding to subsections/subchapters, i.e.
@@ -78,7 +78,7 @@ def subsection_folders(
 # %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 12
 def get_alphanumeric(
         title: str, # The title of either a folder or a heading. Must start with an alphanumeric.
-        title_type: str # Either `folder` or `heading`.
+        title_type: Literal['folder', 'heading'], 
         ) -> str: # An alphabet or a numeric (arabic or roman)
     """
     Get the alphanumeric of a title of either a folder or a heading
