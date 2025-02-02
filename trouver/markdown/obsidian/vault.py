@@ -11,11 +11,14 @@ __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NoteNotFoundInCacheEr
 from pathlib import Path
 import os
 from os import PathLike
+from typing import Optional, Union
+
+from fastcore.basics import patch
+
 from trouver.helper.files_and_folders import (
     path_no_ext, path_name_no_ext
 )
 from .links import ObsidianLink, LinkType, replace_links_in_text
-from typing import Optional, Union
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 7
 class NoteNotUniqueError(FileNotFoundError):
@@ -294,307 +297,6 @@ class VaultNote:
     
     cache = {}
     
-    def __init__(
-            self,
-            vault: PathLike, # The (relative or absolute) path of the Obsidian vault that the note is located in.
-            rel_path: PathLike = None, # The note's path relative to the vault. If `None`, then the `name` parameter is used to determine the note instead. Defaults to `None`.
-            name: str = None, # The name of the note. If `None`, then the `rel_path` parameter is used to determine the note instead. Defaults to `None` 
-            subdirectory: Union[PathLike, None] = '', # The relative path to a subdirectory in the Obsidian vault. If `None`, then denotes the root of the vault. Defaults to the empty str. 
-            hints: list[PathLike] = [], # Paths, relative to `subdirectory`, to directories where the note file may be found. This is for speedup. Defaults to the empty list, in which case the vault note is searched in all of `subdirectory`.
-            update_cache: Optional[bool] = True # If `True` and if `rel_path` is not specified (and hence `name` is specified), update the cache
-            ):
-        # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
-        self.vault = Path(vault)
-        if rel_path is None and name is None:
-            raise ValueError(
-                "In constructing a `VaultNote` object, the parameters `rel_path`"
-                " and `name` parameters were expected to be given arguments, but"
-                " both parameters are given `None` as arguments.")
-        if rel_path is not None:
-            self.rel_path = str(rel_path)
-            self.name = note_name_from_path(self.rel_path)
-        else:
-            self.name = name
-            self.rel_path = None
-            self.identify_rel_path(update_cache=update_cache)
-
-    def obsidian_identifier(self) -> str:
-        r"""Return the Obsidian identifier of the `VaultNote` object.
-        
-        This is the note's unqiue Obsidian id in the vault. This is like a
-        path str with forward slashes `/` (as opposed to backwards `\` slashes)
-        and without a file extension (`.md`).
-        """
-        return path_to_obs_id(self.rel_path)
-
-    def rel_path_identified(self) -> bool:
-        r"""Return `True` if `self.rel_path` is identified, i.e. is a path
-        that is not `None`."""
-        return self.rel_path is not None
-
-    def _identify_rel_path(self) -> Union[Path, None]:
-        r"""Returns the Path to the note that this object represents.
-
-        More precisely, if `rel_path` is specified at construction or
-        if `self.rel_path` is already identified, then this method
-        returns that path. Otherwise, this method looks into the cache to
-        check if a note of the `name` specified at construction is in the
-        vault and returns the first note in the list of the `name` in the
-        cache. If no such note exists, then this method reutrns `None`.
-        """
-        if self.rel_path is not None:
-            return self.rel_path
-        cache_search = self.__class__._get_from_cache(self.vault, self.name)
-        if cache_search:  # `cache_search` could be `None` or an empty list.
-            return cache_search[0]
-        return None
-
-    def identify_rel_path(
-            self,
-            update_cache=False # If `True`, if the cache is searched, and if a note of the specified name is not found in the cache, then the cache is updated and searched again. Defaults to `False`.
-            ) -> None:
-        r"""Sets `self.rel_path` to a path, if not already done so.
-
-        If `self.rel_path` is not already set as a path, then the cache
-        is searched to find a note whose name is `self.name` (which is
-        necessarily specified).
-        """
-        rel_path = self._identify_rel_path()
-        if rel_path is not None:
-            self.rel_path = rel_path
-        elif update_cache:
-            self.__class__.update_cache(self.vault)
-            self.identify_rel_path(update_cache=False)
-
-    @classmethod
-    def _get_from_cache(
-            cls,
-            vault: PathLike,
-            name: str,
-            ) -> Union[list[str], None]:
-        r"""Return the cache's list of notes of the specified name in the
-        specified vault.
-
-        If no such list exists in the cache, then return `None`.
-        """
-        vault = str(vault)
-        if vault not in cls.cache:
-            return None
-        vault_dict = cls.cache[vault]
-        if not name in vault_dict:
-            return None
-        return vault_dict[name]
-                        
-    def exists(
-            self,
-            update_cache=False # If `True`, then update the cache and try to identify `self.rel_path` before verifying whether the note exists in the vault.
-            ) -> bool:
-        r"""Returns `True` if `self.rel_path` is identified and
-        if the note exists in the vault.
-        
-        Setting `update_cache` to `True` updates the cache before verifying
-        whether the `VaultNote` object exists if the `VaultNote` object is
-        specified by `name` and not `rel_path`. Doing so guarantees that the
-        output is correct at the possible cost of runtime.
-        """
-        if self.rel_path is None:
-            if update_cache:
-                self.identify_rel_path(update_cache=True)
-            else:
-                return False
-        try:
-            abs_path = self.path()        
-        except NotePathIsNotIdentifiedError as e:
-            return False
-        return os.path.exists(abs_path)
-            
-    def path(self,
-             relative=False # If `True`, then return the path relative to the vault. Otherwise, return the absolute path.
-             ) -> Union[Path, None]: # Path to the note if self.rel_path is deterined. `None` otherwise.
-        r"""Returns the path to the note.
-
-        **Raises**
-        - NotePathIsNotIdentifiedError
-            - If the relative path of `self` is not identified.
-        """
-        if not self.rel_path_identified():
-            raise NotePathIsNotIdentifiedError.from_note(self)
-        return Path(self.rel_path) if relative\
-            else self.vault / self.rel_path
-    
-    def directory(self,
-                  relative=False # If `True`, then return the path of the directory relative to the vault.
-                  ) -> Path: # The path of the directory that the note is in.
-        r"""Return the directory that the note is in.
-        """
-        rel_dir = Path(os.path.dirname(self.rel_path))
-        return rel_dir if relative else self.vault / rel_dir
-    
-    def create(self):
-        # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
-        r"""Create the note if it does not exist.
-        
-        The directory of the file needs to be created separately
-        beforehand.
-
-        If the file exists, then a FileExistsError is raised and
-        the file modification time is not changed.
-        
-        **Raises**
-
-        - FileExistsError
-            - If the file already exists.
-        - FileNotFoundError
-            - If the directory of the file does not already exist.
-        """
-        Path(self.path()).touch(exist_ok=False)
-        self.__class__._add_single_entry_to_cache(
-            self.vault, self.rel_path)
-
-    def delete(self):
-        r"""Delete the note if it exists.
-        
-        This updates the cache if necessary
-        """
-        if self.exists(update_cache=True):
-            os.remove(self.path())
-            self.__class__._remove_single_entry_from_cache(self.vault, self.rel_path)
-        
-    def move_to(self,
-                rel_path: PathLike # The path in which to rename the path to `self` as, relative to `self.vault`.
-                ) -> None:
-        r"""Move/rename the note to the specified location in the vault,
-        assuming that it exists.
-
-        Nothing is done if the note does not exist.
-        """
-        if not self.exists():
-            return
-        os.rename(self.path(), Path(self.vault) / rel_path)
-        self.__class__._remove_single_entry_from_cache(
-            self.vault, Path(self.rel_path))
-        self.__class__._add_single_entry_to_cache(
-            self.vault, Path(rel_path))
-        self.rel_path = str(rel_path)
-        self.name = note_name_from_path(self.rel_path)
-        
-    def move_to_folder(self,
-                       rel_dir: PathLike # The path of the directory in which to move `self` to, relative to `self.vault`.
-                       ) -> None:
-        # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
-        r"""Move the note to the specified folder in the vault, assuming that
-        it exists.
-        """
-        self.move_to(Path(rel_dir) / f'{self.name}.md')
-
-    def rename(
-            self,
-            new_name: str,  # The new name to give the note('s file). Should not include the `.md` extension.`
-            replace_links_in_vault: bool = True  # If `True`, then replace the links in the vault pointing to `note` to reflect the new name.
-            ):
-
-        # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
-        r"""
-        Rename the file underlying `self` to `new_name`. The directory that the file is in remains unchanged.
-
-        Assumes that
-        
-        1. the name of `self` is unique among note names in `self.vault`s
-        2. No pre-existing note in `vault` has `new_name` as its name. Use the `note_name_unique`
-           function to check whether or not this is the case.
-        3. the class' `.cache` accurately reflects the files in `vault`
-
-        """
-        parent_dir = Path(os.path.dirname(self.rel_path))
-        old_wikilink_pattern_by_name = ObsidianLink(
-            is_embedded=False, file_name=self.name, anchor=-1, custom_text=-1)
-        old_markdownlink_pattern_by_name_1 = ObsidianLink(
-            is_embedded=False, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
-        old_markdownlink_pattern_by_name_2 = ObsidianLink(
-            is_embedded=False, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
-        self.move_to(parent_dir / f'{new_name}.md')
-        if not replace_links_in_vault:
-            return
-        for name, paths in self.__class__.cache[str(self.vault)].items():
-            for path in paths:
-                other_note = VaultNote(vault=self.vault, rel_path=path)
-                if not other_note.exists():
-                    continue
-                original_text = other_note.text()
-                text = original_text
-                text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
-                text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, new_link_name=f'{new_name}.md')
-                text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, new_link_name=f'{new_name}')
-                if text != original_text:
-                    with open(other_note.path(), 'w', encoding='utf-8') as file:
-                        file.write(text)
-                        file.close()
-        
-    def text(self
-            ) -> str: # Text contained in the note, assuming that the note exists.
-        r"""Returns the text contained in the note.
-        
-        **Raises**
-
-        - NoteDoesNotExistError
-            - If `self` does not point to an existing note.
-        """
-        if not self.exists():
-            raise NoteDoesNotExistError.from_note_name(self.name)
-        with open(self.vault / self.rel_path, 
-                  'r', encoding='utf-8') as reader:
-            text = reader.read()
-            reader.close()
-        return text
-
-    @classmethod
-    def update_cache(cls,
-                     vault: PathLike # The vault.
-                     ) -> None:
-        r"""Class method to update cache for `vault` by inspecting all files
-        in subdirectories of `vault`."""
-        VaultNote.cache[str(vault)] = all_paths_to_notes_in_vault(
-            vault, as_dict=True)
-        
-    @classmethod
-    def clear_cache(cls):
-        r"""Class method to clear out the entire cache for all vaults."""
-        VaultNote.cache = {}
-        
-    @classmethod
-    def _check_name_exists_and_unique_in_vault_cache(
-            cls,
-            vault: PathLike, # The vault
-            name: str # The name
-            ) -> None:
-        r"""
-        Raise `NoteNotUniqueError` or `NoteNotFoundInCacheError` if the note of
-        the specified name is not unique or is not found in the cache.
-
-        Note that a note may exist but not be found in the cache if it was
-        created without using the `VaultNote.create` method. For example,
-        this could happen if a note is created by the user using the
-        file explorer.
-        
-        **Parameters**
-        - vault - PathLike
-        - name - str
-
-        **Raises**
-        - `NoteNotUniqueError`
-        - `NoteNotFoundInCacheError`.
-        """
-        vault_dict = cls.cache[str(vault)]
-        if not name in vault_dict or len(vault_dict[name]) == 0:
-            raise NoteNotFoundInCacheError.from_note_name(name)
-        elif len(vault_dict[name]) > 1:
-            raise NoteNotUniqueError.from_note_names(
-                name, vault_dict[name])
-        else: #name in vault_dict and len(vault_dict[name]) == 1
-            note_path = vault_dict[name][0]
-            if not os.path.exists(Path(vault) / note_path):
-                raise NoteDoesNotExistError.from_note_name(name)
-
 
     @classmethod
     def _check_if_cache_needs_to_update(
@@ -604,64 +306,414 @@ class VaultNote:
         """
         return not bool(cls._get_from_cache(vault, name))
 
-    @classmethod
-    def _add_single_entry_to_cache(
-            cls, vault: PathLike, rel_path: PathLike) -> None:
-        r"""Adds a single entry for a note to the cache.
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 52
+@patch(cls_method=True)
+def _get_from_cache(
+        cls: VaultNote,
+        vault: PathLike,
+        name: str,
+        ) -> Union[list[str], None]:
+    r"""Return the cache's list of notes of the specified name in the
+    specified vault.
+
+    If no such list exists in the cache, then return `None`.
+    """
+    vault = str(vault)
+    if vault not in cls.cache:
+        return None
+    vault_dict = cls.cache[vault]
+    if not name in vault_dict:
+        return None
+    return vault_dict[name]
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 53
+@patch
+def _identify_rel_path(
+        self: VaultNote
+        ) -> Union[Path, None]:
+    r"""Returns the Path to the note that this object represents.
+
+    More precisely, if `rel_path` is specified at construction or
+    if `self.rel_path` is already identified, then this method
+    returns that path. Otherwise, this method looks into the cache to
+    check if a note of the `name` specified at construction is in the
+    vault and returns the first note in the list of the `name` in the
+    cache. If no such note exists, then this method reutrns `None`.
+    """
+    if self.rel_path is not None:
+        return self.rel_path
+    cache_search = self.__class__._get_from_cache(self.vault, self.name)
+    if cache_search:  # `cache_search` could be `None` or an empty list.
+        return cache_search[0]
+    return None
+
+@patch
+def identify_rel_path(
+        self: VaultNote,
+        update_cache=False # If `True`, if the cache is searched, and if a note of the specified name is not found in the cache, then the cache is updated and searched again. Defaults to `False`.
+        ) -> None:
+    r"""Sets `self.rel_path` to a path, if not already done so.
+
+    If `self.rel_path` is not already set as a path, then the cache
+    is searched to find a note whose name is `self.name` (which is
+    necessarily specified).
+    """
+    rel_path = self._identify_rel_path()
+    if rel_path is not None:
+        self.rel_path = rel_path
+    elif update_cache:
+        self.__class__.update_cache(self.vault)
+        self.identify_rel_path(update_cache=False)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 54
+@patch(cls_method=True)
+def update_cache(
+        cls: VaultNote,
+        vault: PathLike # The vault.
+    ) -> None:
+    r"""Class method to update cache for `vault` by inspecting all files
+    in subdirectories of `vault`."""
+    cls.cache[str(vault)] = all_paths_to_notes_in_vault(
+        vault, as_dict=True)
+
         
-        Does nothing if the entry already exists.
 
-        **Parameters**
-        - vault - PathLike
-        - rel_path - PathLike
-            - The path to the note, relative to `vault`.
-        """
-        vault_str = str(vault)
-        if vault_str not in cls.cache:
-            cls.cache[vault_str] = {}
-        name = note_name_from_path(rel_path)
-        if name not in cls.cache[vault_str]:
-            cls.cache[vault_str][name] = []
-        if rel_path not in cls.cache[vault_str][name]:
-            cls.cache[vault_str][name].append(str(rel_path))
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 55
+@patch(cls_method=True)
+def clear_cache(cls: VaultNote):
+    r"""Class method to clear out the entire cache for all vaults."""
+    cls.cache = {}
+        
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 56
+@patch
+def rel_path_identified(self: VaultNote) -> bool:
+    r"""Return `True` if `self.rel_path` is identified, i.e. is a path
+    that is not `None`."""
+    return self.rel_path is not None
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 57
+@patch(cls_method=True)
+def _add_single_entry_to_cache(
+        cls: VaultNote,
+        vault: PathLike,
+        rel_path: PathLike) -> None:
+    r"""Adds a single entry for a note to the cache.
     
-    @classmethod
-    def _remove_single_entry_from_cache(
-            cls, vault: PathLike, rel_path: PathLike) -> None:
-        r"""Removes a single entry for a note from the cache.
+    Does nothing if the entry already exists.
 
-        Does nothing if the entry is not already there.
+    **Parameters**
+    - vault - PathLike
+    - rel_path - PathLike
+        - The path to the note, relative to `vault`.
+    """
+    vault_str = str(vault)
+    if vault_str not in cls.cache:
+        cls.cache[vault_str] = {}
+    name = note_name_from_path(rel_path)
+    if name not in cls.cache[vault_str]:
+        cls.cache[vault_str][name] = []
+    if rel_path not in cls.cache[vault_str][name]:
+        cls.cache[vault_str][name].append(str(rel_path))
 
-        **Parameters**
-        - vault - PathLike
-        - rel_path - PathLike
-            - The path to the note, relative to `vault`.
-        """
-        vault_str = str(vault)
-        if vault_str not in cls.cache:
-            return
-        name = note_name_from_path(rel_path)
-        if name not in cls.cache[vault_str]:
-            return
-        rel_path = Path(rel_path)
-        cls.cache[vault_str][name] = [
-            cache_path for cache_path in cls.cache[vault_str][name]
-            if Path(cache_path) != rel_path]
+@patch(cls_method=True)
+def _remove_single_entry_from_cache(
+        cls: VaultNote,
+        vault: PathLike,
+        rel_path: PathLike) -> None:
+    r"""Removes a single entry for a note from the cache.
 
-    @classmethod
-    def unique_name(
-            cls,
-            name: str, # The base name for the note.
-            vault: PathLike # The vault
-            ) -> str: # A str obtained by appending `_{some number}` to the end of `name`.
-        r"""A class method to return a name for a note that is unique in
-        the vault based on a specified name.
-        """
-        if not str(vault) in VaultNote.cache:
-            cls.update_cache(vault)
-        if not name in VaultNote.cache[str(vault)]:
-            return name
-        i = 1
-        while f'{name}_{i}' in VaultNote.cache[str(vault)]:
-            i += 1
-        return f'{name}_{i}'
+    Does nothing if the entry is not already there.
+
+    **Parameters**
+    - vault - PathLike
+    - rel_path - PathLike
+        - The path to the note, relative to `vault`.
+    """
+    vault_str = str(vault)
+    if vault_str not in cls.cache:
+        return
+    name = note_name_from_path(rel_path)
+    if name not in cls.cache[vault_str]:
+        return
+    rel_path = Path(rel_path)
+    cls.cache[vault_str][name] = [
+        cache_path for cache_path in cls.cache[vault_str][name]
+        if Path(cache_path) != rel_path]
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 59
+# TODO: test/document
+@patch
+def path(self: VaultNote,
+        relative=False # If `True`, then return the path relative to the vault. Otherwise, return the absolute path.
+        ) -> Union[Path, None]: # Path to the note if self.rel_path is deterined. `None` otherwise.
+    r"""Returns the path to the note.
+
+    **Raises**
+    - NotePathIsNotIdentifiedError
+        - If the relative path of `self` is not identified.
+    """
+    if not self.rel_path_identified():
+        raise NotePathIsNotIdentifiedError.from_note(self)
+    return Path(self.rel_path) if relative\
+        else self.vault / self.rel_path
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 61
+@patch
+# TODO: test/document
+def directory(self: VaultNote,
+              relative=False # If `True`, then return the path of the directory relative to the vault.
+              ) -> Path: # The path of the directory that the note is in.
+    r"""Return the directory that the note is in.
+    """
+    rel_dir = Path(os.path.dirname(self.rel_path))
+    return rel_dir if relative else self.vault / rel_dir
+
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 64
+@patch
+def __init__(
+        self: VaultNote,
+        vault: PathLike, # The (relative or absolute) path of the Obsidian vault that the note is located in.
+        rel_path: PathLike = None, # The note's path relative to the vault. If `None`, then the `name` parameter is used to determine the note instead. Defaults to `None`.
+        name: str = None, # The name of the note. If `None`, then the `rel_path` parameter is used to determine the note instead. Defaults to `None` 
+        subdirectory: Union[PathLike, None] = '', # The relative path to a subdirectory in the Obsidian vault. If `None`, then denotes the root of the vault. Defaults to the empty str. 
+        hints: list[PathLike] = [], # Paths, relative to `subdirectory`, to directories where the note file may be found. This is for speedup. Defaults to the empty list, in which case the vault note is searched in all of `subdirectory`.
+        update_cache: Optional[bool] = True # If `True` and if `rel_path` is not specified (and hence `name` is specified), update the cache
+        ):
+    # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
+    self.vault = Path(vault)
+    if rel_path is None and name is None:
+        raise ValueError(
+            "In constructing a `VaultNote` object, the parameters `rel_path`"
+            " and `name` parameters were expected to be given arguments, but"
+            " both parameters are given `None` as arguments.")
+    if rel_path is not None:
+        self.rel_path = str(rel_path)
+        self.name = note_name_from_path(self.rel_path)
+    else:
+        self.name = name
+        self.rel_path = None
+        self.identify_rel_path(update_cache=update_cache)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 67
+@patch
+def exists(
+        self: VaultNote,
+        update_cache=False # If `True`, then update the cache and try to identify `self.rel_path` before verifying whether the note exists in the vault.
+        ) -> bool:
+    r"""Returns `True` if `self.rel_path` is identified and
+    if the note exists in the vault.
+    
+    Setting `update_cache` to `True` updates the cache before verifying
+    whether the `VaultNote` object exists if the `VaultNote` object is
+    specified by `name` and not `rel_path`. Doing so guarantees that the
+    output is correct at the possible cost of runtime.
+    """
+    if self.rel_path is None:
+        if update_cache:
+            self.identify_rel_path(update_cache=True)
+        else:
+            return False
+    try:
+        abs_path = self.path()        
+    except NotePathIsNotIdentifiedError as e:
+        return False
+    return os.path.exists(abs_path)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 81
+@patch(cls_method=True)
+def _check_name_exists_and_unique_in_vault_cache(
+        cls: VaultNote,
+        vault: PathLike, # The vault
+        name: str # The name
+        ) -> None:
+    r"""
+    Raise `NoteNotUniqueError` or `NoteNotFoundInCacheError` if the note of
+    the specified name is not unique or is not found in the cache.
+
+    Note that a note may exist but not be found in the cache if it was
+    created without using the `VaultNote.create` method. For example,
+    this could happen if a note is created by the user using the
+    file explorer.
+    
+    **Parameters**
+    - vault - PathLike
+    - name - str
+
+    **Raises**
+    - `NoteNotUniqueError`
+    - `NoteNotFoundInCacheError`.
+    """
+    vault_dict = cls.cache[str(vault)]
+    if not name in vault_dict or len(vault_dict[name]) == 0:
+        raise NoteNotFoundInCacheError.from_note_name(name)
+    elif len(vault_dict[name]) > 1:
+        raise NoteNotUniqueError.from_note_names(
+            name, vault_dict[name])
+    else: #name in vault_dict and len(vault_dict[name]) == 1
+        note_path = vault_dict[name][0]
+        if not os.path.exists(Path(vault) / note_path):
+            raise NoteDoesNotExistError.from_note_name(name)
+
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 90
+@patch
+def obsidian_identifier(self: VaultNote) -> str:
+    r"""Return the Obsidian identifier of the `VaultNote` object.
+    
+    This is the note's unqiue Obsidian id in the vault. This is like a
+    path str with forward slashes `/` (as opposed to backwards `\` slashes)
+    and without a file extension (`.md`).
+    """
+    return path_to_obs_id(self.rel_path)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 98
+@patch
+def text(
+        self: VaultNote
+        ) -> str: # Text contained in the note, assuming that the note exists.
+    r"""Returns the text contained in the note.
+    
+    **Raises**
+
+    - NoteDoesNotExistError
+        - If `self` does not point to an existing note.
+    """
+    if not self.exists():
+        raise NoteDoesNotExistError.from_note_name(self.name)
+    with open(self.vault / self.rel_path, 
+                'r', encoding='utf-8') as reader:
+        text = reader.read()
+        reader.close()
+    return text
+
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 103
+@patch
+def create(self: VaultNote):
+    # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
+    r"""Create the note if it does not exist.
+    
+    The directory of the file needs to be created separately
+    beforehand.
+
+    If the file exists, then a FileExistsError is raised and
+    the file modification time is not changed.
+    
+    **Raises**
+
+    - FileExistsError
+        - If the file already exists.
+    - FileNotFoundError
+        - If the directory of the file does not already exist.
+    """
+    Path(self.path()).touch(exist_ok=False)
+    self.__class__._add_single_entry_to_cache(
+        self.vault, self.rel_path)
+
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 105
+@patch
+def delete(self: VaultNote):
+    r"""Delete the note if it exists.
+    
+    This updates the cache if necessary
+    """
+    if self.exists(update_cache=True):
+        os.remove(self.path())
+        self.__class__._remove_single_entry_from_cache(self.vault, self.rel_path)
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 107
+@patch
+def move_to(self: VaultNote,
+            rel_path: PathLike # The path in which to rename the path to `self` as, relative to `self.vault`.
+            ) -> None:
+    r"""Move/rename the note to the specified location in the vault,
+    assuming that it exists.
+
+    Nothing is done if the note does not exist.
+    """
+    if not self.exists():
+        return
+    os.rename(self.path(), Path(self.vault) / rel_path)
+    self.__class__._remove_single_entry_from_cache(
+        self.vault, Path(self.rel_path))
+    self.__class__._add_single_entry_to_cache(
+        self.vault, Path(rel_path))
+    self.rel_path = str(rel_path)
+    self.name = note_name_from_path(self.rel_path)
+    
+@patch
+def move_to_folder(self: VaultNote,
+                    rel_dir: PathLike # The path of the directory in which to move `self` to, relative to `self.vault`.
+                    ) -> None:
+    # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
+    r"""Move the note to the specified folder in the vault, assuming that
+    it exists.
+    """
+    self.move_to(Path(rel_dir) / f'{self.name}.md')
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 110
+@patch
+def rename(
+        self: VaultNote,
+        new_name: str,  # The new name to give the note('s file). Should not include the `.md` extension.`
+        replace_links_in_vault: bool = True  # If `True`, then replace the links in the vault pointing to `note` to reflect the new name.
+        ):
+
+    # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
+    r"""
+    Rename the file underlying `self` to `new_name`. The directory that the file is in remains unchanged.
+
+    Assumes that
+    
+    1. the name of `self` is unique among note names in `self.vault`s
+    2. No pre-existing note in `vault` has `new_name` as its name. Use the `note_name_unique`
+        function to check whether or not this is the case.
+    3. the class' `.cache` accurately reflects the files in `vault`
+
+    """
+    parent_dir = Path(os.path.dirname(self.rel_path))
+    old_wikilink_pattern_by_name = ObsidianLink(
+        is_embedded=False, file_name=self.name, anchor=-1, custom_text=-1)
+    old_markdownlink_pattern_by_name_1 = ObsidianLink(
+        is_embedded=False, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+    old_markdownlink_pattern_by_name_2 = ObsidianLink(
+        is_embedded=False, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+    self.move_to(parent_dir / f'{new_name}.md')
+    if not replace_links_in_vault:
+        return
+    for name, paths in self.__class__.cache[str(self.vault)].items():
+        for path in paths:
+            other_note = VaultNote(vault=self.vault, rel_path=path)
+            if not other_note.exists():
+                continue
+            original_text = other_note.text()
+            text = original_text
+            text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
+            text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, new_link_name=f'{new_name}.md')
+            text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, new_link_name=f'{new_name}')
+            if text != original_text:
+                with open(other_note.path(), 'w', encoding='utf-8') as file:
+                    file.write(text)
+                    file.close()
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 122
+@patch(cls_method=True)
+def unique_name(
+        cls: VaultNote,
+        name: str, # The base name for the note.
+        vault: PathLike # The vault
+        ) -> str: # A str obtained by appending `_{some number}` to the end of `name`.
+    r"""A class method to return a name for a note that is unique in
+    the vault based on a specified name.
+    """
+    if not str(vault) in VaultNote.cache:
+        cls.update_cache(vault)
+    if not name in VaultNote.cache[str(vault)]:
+        return name
+    i = 1
+    while f'{name}_{i}' in VaultNote.cache[str(vault)]:
+        i += 1
+    return f'{name}_{i}'
