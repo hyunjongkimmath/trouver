@@ -4,14 +4,16 @@
 
 # %% auto 0
 __all__ = ['html_tag_str', 'find_lt_symbols_without_space_in_math_mode', 'add_space_to_lt_symbols_without_space',
-           'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text']
+           'HTMLTagWithIndices', 'StrAndHTMLTagsWithIndices', 'remove_html_tags_in_text',
+           'add_HTML_tag_data_to_raw_text']
 
 # %% ../../nbs/38_helper.html.ipynb 2
 import bs4
 from bs4 import BeautifulSoup
 import random
 import re
-from typing import Optional, Union
+from typing import NamedTuple, Optional, Union
+
 
 
 from .regex import latex_indices, find_regex_in_text, replace_string_by_indices
@@ -66,13 +68,34 @@ def add_space_to_lt_symbols_without_space(
     
 
 # %% ../../nbs/38_helper.html.ipynb 20
+class HTMLTagWithIndices(NamedTuple):
+    r"""
+    A NamedTuple for encapsulating a single `bs4.element.Tag` object along
+    with the range within a text that the tag encapsulates.
+    """
+    tag: bs4.element.Tag    
+    start: int
+    end: int
+
+class StrAndHTMLTagsWithIndices(NamedTuple):
+    """
+    A NamedTuple for encapsulating a text (without HTML tags) along with 
+    HTML tag data that is supposed to be in the text.
+    """
+    raw_text: str # The text without HTML tags
+    tags: list[HTMLTagWithIndices]
+
+
+
+# %% ../../nbs/38_helper.html.ipynb 21
 def remove_html_tags_in_text(
         text: str, # The text in which to remove the HTML tags.
         replace_with_attributes: Optional[Union[str, list[str]]] = None, # Attribute(s) within the HTML tags which should be used to replace the text of the tags. If `None`, then the texts are not replaced with the attributes. If multiple attributes are specified, then only one attribute is used to replace the text for each HTML tag (independently at random of other replacements). Each attribute's text has an equal chance of being selected for replacement. Repeats are ignored.
         definitely_replace: bool = False, # If `True` and if a given HTML tag has an attribute specified in `replace_with_attributes`, then the text for that tag will definitely be replaced by the text of one of the attributes. Otherwise, the original text and each attribute's text have an equal chance of being selected.
         seed: int = None # Random seed 
-        ) -> tuple[str, list[tuple[bs4.element.Tag, int, int]]]: # The text `removed` without HTML tags and a list whose elements consist of the removed HTML tags and the starting and ending indices of the text corresponding to the removed tags within `removed`.
-    """Remove the HTML tags in `text`.
+        # ) -> tuple[str, list[tuple[bs4.element.Tag, int, int]]]: # The text `removed` without HTML tags and a list whose elements consist of the removed HTML tags and the starting and ending indices of the text corresponding to the removed tags within `removed`.
+        ) -> StrAndHTMLTagsWithIndices: # The text `removed` without HTML tags and a list whose elements consist of the removed HTML tags and the starting and ending indices of the text corresponding to the removed tags within `removed`.
+    r"""Remove the HTML tags in `text`.
 
     HTML tags are assumed to be not nested.
 
@@ -83,13 +106,13 @@ def remove_html_tags_in_text(
         replace_with_attributes)
 
     position = 0
-    replaced_contents = []
+    replaced_contents: list[HTMLTagWithIndices] = []
     for content in parsed_soup.contents:
         position = _process_content(
             parsed_soup, replace_with_attributes, definitely_replace, content,
             position, replaced_contents)
-    text_to_return = html_tag_str(parsed_soup)
-    return text_to_return, replaced_contents
+    text_to_return: str = html_tag_str(parsed_soup)
+    return StrAndHTMLTagsWithIndices(text_to_return, replaced_contents)
 
 
 def _init_replace_with_attributes(
@@ -124,7 +147,8 @@ def _process_content(
         definitely_replace: bool,
         content,
         position: int,
-        replaced_contents: list) -> int:
+        replaced_contents: list[HTMLTagWithIndices]
+        ) -> int:
     
     if not isinstance(content, bs4.element.Tag):
         return position + len(content)
@@ -137,14 +161,16 @@ def _process_content(
     except TypeError as e:
         raise e
 
-    replaced_contents.append((
-        replaced_content,
-        position,
-        position + len(replacement_text)))
+    replaced_contents.append(HTMLTagWithIndices(
+        replaced_content, position, position + len(replacement_text)))
+        # (
+        # replaced_content,
+        # position,
+        # position + len(replacement_text)))
     return position + len(replacement_text)
     
 
-# %% ../../nbs/38_helper.html.ipynb 37
+# %% ../../nbs/38_helper.html.ipynb 38
 def add_HTML_tag_data_to_raw_text(
         text: str, # The text onto which to add HTML tags. This is assumed to contain no HTML tags.
         tags_and_locations: list[tuple[bs4.element.Tag, int, int]] # Each tuple consists of the tag object to add as well as the indices within `text` to. The ranges specified by the tuples are assumed to not overlap with one another.

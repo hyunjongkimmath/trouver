@@ -9,7 +9,7 @@ import string
 
 
 # %% auto 0
-__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc']
+__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc', 'split_string_at_indices']
 
 # %% ../../nbs/00_helper.ipynb 4
 def substring_generator(input_string: str):
@@ -35,3 +35,7 @@ def is_not_space_and_not_punc(
         char: str # A str of length 1
         ):
     return not is_punctuation(char) and not char.isspace()
+
+# %% ../../nbs/00_helper.ipynb 7
+def split_string_at_indices(s: str, indices: list[int]) -> list[str]:
+    return [s[i:j] for i, j in zip([0] + indices, indices + [None])]

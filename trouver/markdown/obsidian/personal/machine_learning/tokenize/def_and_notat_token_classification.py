@@ -4,28 +4,41 @@
 
 # %% auto 0
 __all__ = ['latex_commands_to_avoid', 'convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile',
-           'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'def_and_notat_preds_by_model',
-           'auto_mark_def_and_notats']
+           'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'augment_html_data',
+           'def_and_notat_preds_by_model', 'auto_mark_def_and_notats']
 
 # %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 4
+from collections.abc import Callable
+import copy
 from itertools import pairwise
 import os 
 from os import PathLike
 from pathlib import Path
-from typing import Optional, Union
+import random
+from typing import Literal, Optional, TypedDict, Union
 import warnings
 
 import bs4
 from transformers import BatchEncoding, pipelines, PreTrainedTokenizer, PreTrainedTokenizerFast
 
-from ......helper import is_not_space_and_not_punc
+from ......helper import is_not_space_and_not_punc, split_string_at_indices
 from ......helper.definition_and_notation import double_asterisk_indices, notation_asterisk_indices
-from ......helper.html import add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, remove_html_tags_in_text
-from ......helper.latex import _is_balanced_braces, _first_curly_bracket, _last_curly_bracket
+from trouver.helper.html import (
+    add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, remove_html_tags_in_text, StrAndHTMLTagsWithIndices,
+    HTMLTagWithIndices)
+from trouver.helper.latex import (
+    _is_balanced_braces, _first_curly_bracket, _last_curly_bracket, random_char_modification,
+    dollar_sign_manipulation, remove_math_keywords, random_word_removal, random_latex_command_removal,
+    push_dollar_signs, augment_text,
+    change_font_styles_at_random, change_greek_letters_at_random, remove_font_styles_at_random
+    ) 
 from ......helper.regex import latex_indices, replace_string_by_indices
 from .....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...note_processing import process_standard_information_note
 from ....vault import VaultNote
+
+
+
 
 # %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 8
 def convert_double_asterisks_to_html_tags(
@@ -76,11 +89,19 @@ def raw_text_with_html_tags_from_markdownfile(
 
 
 # %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 18
+class HTMLData(TypedDict):
+    note_name: str
+    raw_text: str
+    tags: list[HTMLTagWithIndices]
+    # list[bs4.element.Tag]
+
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 19
 def html_data_from_note(
         note_or_mf: Union[VaultNote, MarkdownFile], # Either a `VaultNote`` object to a note or a `MarkdownFile` object from which to extra html data.
         vault: Optional[PathLike] = None, # If vault to use when processing the `MarkdownFile` objects (if `note_of_mf` is a `VaultNote`, then this `MarkdownFile` object is created from the text of the note), cf. the `process_standard_information_note` function.
         note_name: Optional[str] = None, # If `note_or_mf` is a `MarkdownFile`, `note_name` should be the name of the note from which the `MarkdownFile` comes from if applicable. If `note_or_mf` is a `VaultNote` object, then `note_name` is ignored and `note_or_mf.name` is used instead.
-        ) -> Union[dict, None]: # The keys to the dict are "Note name", "Raw text", "Tag data". However, `None` is returned if `note` does not exist or the note is marked with auto-generated, unverified data.
+        ) -> Union[HTMLData, None]: # The keys to the dict are "note_name", "raw_text", "tags". However, `None` is returned if `note` does not exist or the note is marked with auto-generated, unverified data.
     # TODO: implement obtaining multiple datapoints from a single note
     # Via typos for example.
     # TODO: implement various data augmentation techniques
@@ -96,9 +117,9 @@ def html_data_from_note(
     **Returns**
     - Union[dict, None]
         - The keys-value pairs are 
-            - `"Note name"` - The name of the note
-            - `"Raw text"` - The raw text to include in the data.
-            - `"Tag data"` - The list with HTML tags carrying definition/notation
+            - `"note_name"` - The name of the note
+            - `"raw_text"` - The raw text to include in the data.
+            - `"tags"` - The list with HTML tags carrying definition/notation
               data and their locations in the Raw text. See the second output to
               the function `remove_html_tags_in_text`.
                 - Each element of the list is a tuple consisting of a ``bs4.element.Tag``
@@ -109,24 +130,24 @@ def html_data_from_note(
     if isinstance(note_or_mf, VaultNote):
         mf = MarkdownFile.from_vault_note(note_or_mf)
         note_name = note_or_mf.name
+        if vault is None:
+            vault = note_or_mf.vault
     else: # isinstance(note_or_mf, MarkdownFile):
         mf = note_or_mf.copy(deep=False)
     if mf.has_tag('_auto/def_and_notat_identified'):
         return None
     raw_text_with_tags = raw_text_with_html_tags_from_markdownfile(mf, vault)
     raw_text, tags_and_locations = remove_html_tags_in_text(raw_text_with_tags)
-    return {
-        "Note name": note_name,
-        "Raw text": raw_text,
-        "Tag data": tags_and_locations}
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 29
+    return HTMLData(note_name=note_name, raw_text=raw_text, tags=tags_and_locations)
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 30
 def tokenize_html_data(
-        html_locus: dict, # An output of `html_data_from_note`
+        html_locus: HTMLData, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
         max_length: int, # Max length for each sequence of tokens
-        ner_tag_from_html_tag: callable, # takes in a bs4.element.Tag and outputs the ner_tag (as a string or `None`)
-        label2id: dict[str, int], # The keys ner_tag's of the form f"I-{output}" or f"B-{output}" where `output` is an output of `ner_tag_from_html_tag`.
+        ner_tag_from_html_tag: Callable[[bs4.element.Tag], Union[str, 'None']], # takes in a bs4.element.Tag and outputs the ner_tag (as a string or `None`)
+        label2id: dict[str, int], # The keys are ner_tag's of the form f"I-{output}" or f"B-{output}" where `output` is an output of `ner_tag_from_html_tag`.
         default_label: str = "O", # The default label for the NER tagging.
         ) -> tuple[list[list[str]], list[list[int]]]: # The first list consists of the tokens and the second list consists of the named entity recognition tags.
     """Actually tokenize the html data outputted by `html_data_from_note`.
@@ -136,13 +157,13 @@ def tokenize_html_data(
     to tokenize the text into sequences. 
     """
     tokenized = tokenizer.batch_encode_plus(
-        [html_locus["Raw text"]], max_length=max_length, return_overflowing_tokens=True,
+        [html_locus["raw_text"]], max_length=max_length, return_overflowing_tokens=True,
         return_offsets_mapping=True, truncation=True)
 
     default_id = label2id[default_label]        
     ner_ids = [[default_id for _ in seq_input_ids]
                for seq_input_ids in tokenized['input_ids']]
-    for tag, start, end in html_locus["Tag data"]:
+    for tag, start, end in html_locus['tags']:
         ner_tag = ner_tag_from_html_tag(tag)
         if ner_tag is None:
             continue  # `ner_tag` is not of relevant data.
@@ -284,7 +305,98 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 55
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 47
+def _split_text_by_html_data_parts(
+        # text_tags_and_locations = StrAndHTMLTagsWithIndices
+        datapoint: HTMLData
+        ) -> list[tuple[str, Union[bs4.element.Tag, None]]]:
+    r"""
+    Helper function to `augment_html_data`.
+    """
+    to_return: list[tuple[str, Union[bs4.element.Tag, None]]] = []
+    split_points: list[int] = []
+    for tag_ind in datapoint['tags']:
+        split_points.append(tag_ind.start)
+        split_points.append(tag_ind.end)
+    pieces: list[str] = split_string_at_indices(datapoint['raw_text'], split_points)
+    for i, piece in enumerate(pieces):
+        if i % 2 == 0:
+            to_return.append((piece, None))
+        else:
+            to_return.append((piece, datapoint['tags'][int(i/2)].tag))
+    return to_return
+
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 51
+def augment_html_data(
+        datapoint: HTMLData,
+        num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
+        seed: Optional[int] = None
+        ) -> list[HTMLData]:
+    r"""Augment a given datapoint for HTML tagging.
+
+    """
+    augmented_datapoints: list[HTMLData] = []
+    pieces: list[tuple[str, Union[bs4.element.Tag, None]]] = _split_text_by_html_data_parts(
+        datapoint)
+    if seed is not None:
+        random.seed(seed)
+    for _ in range(num_augmentation_sets):
+        augmented_datapoints.append(
+            _augment_html_data_once(pieces, 'low', datapoint['note_name']))
+        augmented_datapoints.append(
+            _augment_html_data_once(pieces, 'mid', datapoint['note_name']))
+        augmented_datapoints.append(
+            _augment_html_data_once(pieces, 'hi', datapoint['note_name']))
+        # augmented_datapoints.append(_augment_html_data_once(pieces, 'high'))
+    return augmented_datapoints
+
+
+def _augment_html_data_once(
+        pieces: list[tuple[str, Union[bs4.element.Tag, None]]],
+        modification: Literal['low', 'mid', 'high'],
+        note_name: str,
+        ) -> HTMLData:
+    methods = [
+        # (push_dollar_signs,0.2),
+        (remove_font_styles_at_random, 0.1), (change_font_styles_at_random, 0.2), (change_greek_letters_at_random, 0.1), 
+        (remove_math_keywords,0.1), (random_latex_command_removal,0.2),
+        (random_word_removal,0.1), (dollar_sign_manipulation,0.05),
+        (random_char_modification,0.001)]
+    if modification == 'low':
+        method_inclusion_chance = 0.3
+        scale = 0.5
+    elif modification == 'mid':
+        method_inclusion_chance = 0.5
+        scale = 1.0
+    else:
+        method_inclusion_chance = 0.8
+        scale = 1.5
+    
+    random_methods = []
+    def create_method(method, p, scale):
+        return lambda x: method(x, p=p*scale)
+    for method, p in methods:
+        if random.random() < method_inclusion_chance:
+            random_methods.append(create_method(method, p, scale))
+    # random_methods = [
+    #     lambda x: method(x, p=p*scale) for method, p in methods if random.random() < method_inclusion_chance]
+    augmented_pieces = [
+        (augment_text(text, random_methods), copy.copy(tag))
+        for text, tag in pieces]
+    accumulated_len: int = 0
+    accumulated_text: str = ""
+    tags_with_indices: list[HTMLTagWithIndices] = []
+    for text, tag in augmented_pieces:
+        accumulated_text = f'{accumulated_text}{text}'
+        if tag:
+            tag.string = text
+            tags_with_indices.append(HTMLTagWithIndices(
+                tag, accumulated_len, accumulated_len + len(text)))
+        accumulated_len += len(text)
+    return HTMLData(note_name=note_name, raw_text=accumulated_text, tags=tags_with_indices)
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 65
 def _make_tag(
         text: str,
         entity_type: str # 'definition' or 'notation'
@@ -324,7 +436,7 @@ def _html_tag_data_from_part(
     return (_make_tag(html_text, entity_type), start_char, end_char)
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 57
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 67
 def _current_token_continues_the_previous_token(
         current_token: dict, previous_token: dict, note: Optional[VaultNote]
         ) -> bool:
@@ -349,7 +461,7 @@ def _current_token_continues_the_previous_token(
         return False
         
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 59
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 69
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
         note: VaultNote,
@@ -384,7 +496,7 @@ def _divide_token_preds_into_parts(
     return token_preds_parts
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 61
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 71
 def _ranges_overlap(
         current_1: tuple[bs4.element.Tag, int, int],
         current_2: tuple[bs4.element.Tag, int, int]
@@ -397,7 +509,7 @@ def _ranges_overlap(
     return max(current_1[1], current_2[1]) < min(current_1[2], current_2[2])
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 63
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 73
 # If the ML model predicts 
 # predictions made around 
 latex_commands_to_avoid = [
@@ -470,7 +582,7 @@ latex_commands_to_avoid = [
 ]
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 64
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 74
 def _str_contains_latex_command_to_avoid(text):
     """
     Helper function to `_consolidate_token_preds`
@@ -481,7 +593,7 @@ def _str_contains_latex_command_to_avoid(text):
             return True
     return False
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 66
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 76
 def _consolidate_token_preds(
         main_text: str,
         tag_data: list[tuple[bs4.element.Tag, int, int]]
@@ -652,7 +764,7 @@ def _no_overlap_with_previous_tag_data(
     return True
     
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 68
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 78
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]],
@@ -669,7 +781,7 @@ def _html_tags_from_token_preds(
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 69
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 79
 def _collate_html_tags(
         tag_data_1: list[tuple[bs4.element.Tag, int, int]],
         tag_data_2: list[tuple[bs4.element.Tag, int, int]],
@@ -710,7 +822,7 @@ def _collate_html_tags(
 
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 71
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 81
 def _add_nice_boxing_attrs_to_def_and_notat_tags(
         html_tag_data: list[tuple[bs4.element.Tag, int, int]]
         ) -> list[tuple[bs4.element.Tag, int, int]]:
@@ -728,7 +840,7 @@ def _add_nice_boxing_attrs_to_def_and_notat_tags(
 
 
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 73
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 83
 def def_and_notat_preds_by_model(
         text: str,  
         pipeline # The pipeline object created using the token classification model and its tokenizer
@@ -743,7 +855,7 @@ def def_and_notat_preds_by_model(
     tag_data = _html_tags_from_token_preds(text, pipeline(text), None, 2)
     return tag_data
 
-# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 75
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 85
 def auto_mark_def_and_notats(
         note: VaultNote,  # The standard information note in which to find the definitions and notations.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
