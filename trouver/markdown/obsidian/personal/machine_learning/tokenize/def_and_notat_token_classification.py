@@ -1044,7 +1044,8 @@ def _find_places_to_divide_from_chunks(
     Moreover, a piece will stop building as soon as its token-length exceeds
     the max length of the tokenizer.
 
-    For instance, maybe the max length for the tokenizer is 512, and the chunks
+    For instance, maybe the max length (`tokenizer.model_max_length`)
+    for the tokenizer is 512, and the chunks
     are of the following length:
 
         A   B    C  D   E    F     ...

@@ -141,7 +141,11 @@ def parse_notation_note(
     assert_note_is_of_type(notation_note, PersonalNoteTypeEnum.NOTATION_NOTE)
 
     mf = MarkdownFile.from_vault_note(notation_note)
-    metadata = mf.metadata()
+    try:
+        metadata = mf.metadata()
+    except ValueError as e:
+        print(f'The following notation note has some kind of formatting error in its YAML frontmatter metadata: {notation_note.name}')
+        raise(e)
     mf_without_metadata = MarkdownFile(
         [part for part in mf.parts if part['type'] != MarkdownLineEnum.META])
 

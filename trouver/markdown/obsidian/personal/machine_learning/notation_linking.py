@@ -276,10 +276,6 @@ def data_points_for_reference(
         except TypeError as e:
             print(f"An error occurred while trying to process the following note: {note.name}")
             info_notes_and_processed_content[note.name] = note.text()
-    # info_notes_and_processed_content = {
-    #     note.name: str(process_standard_information_note(
-    #         MarkdownFile.from_vault_note(note), vault))
-    #     for note in info_notes}
     notation_notes_and_parsed = {
         notat_note.name: parse_notation_note(notat_note) for notat_note in notat_notes}
 
