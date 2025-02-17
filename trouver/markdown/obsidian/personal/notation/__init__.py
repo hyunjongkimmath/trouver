@@ -19,7 +19,7 @@ from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, Latex
 
 from .....helper.html import remove_html_tags_in_text
 from .....helper.path_accepted_string import latex_to_path_accepted_string
-from ....markdown.file import MarkdownFile, MarkdownLineEnum
+from ....markdown.file import MarkdownFile, MarkdownLineEnum, _sanitize_characters_for_str_metadata_entry 
 from trouver.markdown.obsidian.links import (
     LinkType, LinkFormatError, ObsidianLink
 )
@@ -88,7 +88,7 @@ def index_notation_note_formatted_entry(
     """
     return f'### {notation_str}\n- {link.to_string()}'
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 12
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 13
 def make_a_notation_note(
         main_note: VaultNote, # The note from which the notation originates.
         vault: PathLike,
@@ -122,7 +122,7 @@ def make_a_notation_note(
     if not latex_in_original:
         latex_in_original = notation
     to_print = _full_notation_string(
-        main_note, notation, description, latex_in_original)
+        main_note.name, notation, description, latex_in_original)
     # TODO: change this to use VaultNote method
     with open(notation_note.path(), 'w+', encoding='utf8') as notation_file:
         notation_file.write(to_print)
@@ -132,7 +132,8 @@ def make_a_notation_note(
     
 
 def _full_notation_string(
-        main_note: VaultNote,
+        # main_note: VaultNote,
+        main_note_name: str,
         notation: str,
         description: str,
         latex_in_original: str) -> str:
@@ -151,9 +152,8 @@ def _full_notation_string(
     - str
     """
     raw_notation = _raw_notation(notation)
-    denote_link = ObsidianLink(False, main_note.name, 0, 'denotes')
-    meta_latex_in_original = _raw_notation(
-        latex_in_original).replace('\\', '\\\\')
+    denote_link = ObsidianLink(False, main_note_name, 0, 'denotes')
+    meta_latex_in_original = _sanitize_raw_notation(_raw_notation(latex_in_original))
     before_meta = _notation_string_no_metadata(
         raw_notation, denote_link, description)
     return (f'---\ndetect_regex: []\n'
@@ -172,6 +172,13 @@ def _raw_notation(notation: str):
     return notation
 
 
+def _sanitize_raw_notation(raw_notation: str):
+    return _sanitize_characters_for_str_metadata_entry(raw_notation)
+    # raw_notation = raw_notation.replace('\\', '\\\\')
+    # raw_notation = raw_notation.replace('"', '\\"')
+    # return raw_notation
+
+
 def _notation_string_no_metadata(
         raw_notation: str,
         denote_link: ObsidianLink,
@@ -183,7 +190,7 @@ def _notation_string_no_metadata(
 
 
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 27
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 28
 MAX_NOTE_NAME_LENGTH = 80
 def _make_notat_notes_from_sifted_notats(
         main_note: VaultNote, vault: PathLike, reference_name: str,
@@ -216,7 +223,7 @@ def _make_notat_notes_from_sifted_notats(
     return new_notes
     
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 30
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 31
 def make_notation_notes_from_double_asts(
         main_note: VaultNote, # The standard information note from which the notations are marked with double asterisks
         vault: PathLike, # The name of the reference; the notation note's name will start with `{reference_name}_notation_`.
@@ -324,7 +331,7 @@ def _latex_in_original_from_notat_notes_to_main_note(
 
 
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 46
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 47
 def make_notation_notes_from_HTML_tags(
         main_note: VaultNote, # The standard information note in which the notations are marked with HTML tags.
         vault: PathLike, 
@@ -397,7 +404,7 @@ def make_notation_notes_from_HTML_tags(
         main_note, vault, reference_name, notations_to_create,
         destination, overwrite, add_to_main)
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 50
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 51
 def notation_note_has_no_verified_content(
     notation_note: VaultNote,
     ) -> bool:
@@ -422,7 +429,7 @@ def notation_note_has_no_verified_content(
         return False
     return True
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 52
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 53
 def remove_bad_notation_notes(
         main_note: VaultNote, # The standard information note in which the notations are marked with HTML tags and which notation notes are to be removed as appropriate.
         vault: PathLike, 
@@ -522,7 +529,7 @@ def _notation_note_is_bad(
     return True
 
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 55
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 56
 def _latex_in_original_of_html_tags(text: str) -> list[str]:
     r"""
     Each string represents the latex string
@@ -533,7 +540,7 @@ def _latex_in_original_of_html_tags(text: str) -> list[str]:
     return [tag.getText().strip('$') for tag, _, _ in html_tags
             if 'notation' in tag.attrs.keys()]
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 56
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 57
 def reorder_notation_note_links_in_see_also_section(
     main_note: VaultNote,
     vault: PathLike
@@ -628,7 +635,7 @@ def _order_of_notat_notes(
     notat_note_names_and_inds = sorted(notat_note_names_and_inds, key=lambda x: x[1])
     return [name for name, _ in notat_note_names_and_inds]
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 65
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 66
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -734,7 +741,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 69
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 70
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     r"""Returns a regex str to detect the notation of the notation note.
     

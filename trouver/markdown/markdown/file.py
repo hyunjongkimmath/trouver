@@ -53,8 +53,14 @@ def find_front_matter_meta_in_markdown_text(
 
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 12
-def _enquote(str):
-    return f'"{str}"'
+def _enquote(text):
+    return f'"{text}"'
+
+def _sanitize_characters_for_str_metadata_entry(text):
+    text = text.replace('\\', '\\\\')
+    text = text.replace('"', '\\"')
+    return text
+
 
 # %% ../../../nbs/04_markdown.markdown.file.ipynb 14
 def dict_to_metadata_lines(
@@ -80,7 +86,7 @@ def _line_str(
     """This is a helper function for `dict_to_metadata_lines`."""
     list_value = value if isinstance(value, list) else [value]
     escaped_strings_in_list_value = [
-        _enquote(str(single_value).replace('\\', '\\\\'))
+        _enquote(_sanitize_characters_for_str_metadata_entry(str(single_value)))
         if key in enquote_entries_in_fields else str(single_value)
         for single_value in list_value
         ]
