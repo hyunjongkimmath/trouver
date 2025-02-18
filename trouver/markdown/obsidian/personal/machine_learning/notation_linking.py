@@ -409,15 +409,26 @@ def text_from_data_point(
     r"""
     Format a data point to present it as a str.
     """
-    text = (f"latex_in_original for origin_notation_note: {data_point[9]}\n"
-            f"latex_in_original for relied_notation_note: {data_point[10]}\n"
-            f"Notation for origin_notation_note: {data_point[11]}\n"
-            f"Notation for relied_notation_note: {data_point[12]}\n"
-            f"Summary for origin_notation_note: {data_point[7]}\n"
-            f"Summary for relied_notation_note: {data_point[8]}\n\n\n\n")
+
+    text = (f"latex_in_original for origin_notation_note: {data_point[9]}\n\n[SEP]\n\n"
+            f"latex_in_original for relied_notation_note: {data_point[10]}\n\n[SEP]\n\n"
+            f"Notation for origin_notation_note: {data_point[11]}\n\n[SEP]\n\n"
+            f"Notation for relied_notation_note: {data_point[12]}\n\n[SEP]\n\n"
+            f"Summary for origin_notation_note: {data_point[7]}\n\n[SEP]\n\n"
+            f"Summary for relied_notation_note: {data_point[8]}\n\n[SEP]\n\n")
     content_origin = f"Content for main note of origin_notation_note: {data_point[5]}"
     content_relied = _content_relied(data_point[5], data_point[6])
-    return f"{text}{content_origin}\n\n\n\n{content_relied}"
+    return f"{text}{content_origin}\n\n[SEP]\n\n{content_relied}"
+
+    # text = (f"latex_in_original for origin_notation_note: {data_point[9]}\n"
+    #         f"latex_in_original for relied_notation_note: {data_point[10]}\n"
+    #         f"Notation for origin_notation_note: {data_point[11]}\n"
+    #         f"Notation for relied_notation_note: {data_point[12]}\n"
+    #         f"Summary for origin_notation_note: {data_point[7]}\n"
+    #         f"Summary for relied_notation_note: {data_point[8]}\n\n\n\n")
+    # content_origin = f"Content for main note of origin_notation_note: {data_point[5]}"
+    # content_relied = _content_relied(data_point[5], data_point[6])
+    # return f"{text}{content_origin}\n\n\n\n{content_relied}"
 
 
 def _content_relied(
