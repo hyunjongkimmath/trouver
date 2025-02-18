@@ -11,7 +11,7 @@ __all__ = ['data_from_notation_notes', 'data_points_for_reference', 'text_from_d
 from os import PathLike
 import random
 import re
-from typing import Optional, Union
+from typing import NamedTuple, Optional, Union
 
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...links import MARKDOWNLINK_CAPTURE_PATTERN
@@ -25,6 +25,12 @@ from .notation_summarization import _notation_note_has_auto_summary_tag
 from ...vault import VaultNote
 
 # %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 9
+# class NotationNoteInitData(NamedTuple):
+#     notation_note: VaultNote
+#     parsed: tuple
+# notation_note_
+
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 10
 # TODO: test
 def _init_args_for_data_from_notation_notes(
         origin_notation_note: VaultNote, # The notation note which potentially uses the notation introduced by `relied_notation_note`. In particular, there potentially ought to be a link to `relied_notation_note` in `origin_notation_note`.`
@@ -32,8 +38,8 @@ def _init_args_for_data_from_notation_notes(
         origin_parsed: Optional[tuple] = None, # The output of `parse_notation_note` applied to `origin_notation_note`
         relied_parsed: Optional[tuple] = None, # The output of `parse_notation_note` applied to `relied_notation_note`
         reference_name: Optional[str] = None, # The name of the reference folder in the vault from which the two notation notes comes from. If `None`, this is computed "on-the-fly" based on the reference of the main note of main_of_origin, see `reference_of_information_note`
-        main_of_origin_content: Optional[str] = None, # The content of `main_of_origin`, i.e. the output of `process_standard_information_note(MarkdownFile.from_vault_note(main_of_origin))`. If None, this is computed "one-the-fly".
-        main_of_relied_content: Optional[str] = None, # The content of `main_of_relied`, i.e. the output of `process_standard_information_note(MarkdownFile.from_vault_note(main_of_relied))`. If None, this is computed "one-the-fly".
+        main_of_origin_content: Optional[str] = None, # The content of `main_of_origin`, i.e. the output of `process_standard_information_note(MarkdownFile.from_vault_note(main_of_origin))`. If None, this is computed "on-the-fly".
+        main_of_relied_content: Optional[str] = None, # The content of `main_of_relied`, i.e. the output of `process_standard_information_note(MarkdownFile.from_vault_note(main_of_relied))`. If None, this is computed "on-the-fly".
         information_notes_of_reference: Optional[list[VaultNote]] = None, # The standard information notes for the reference folder in order (as arranged in the index notes of the reference folder)
     ) -> tuple[str, str, Union[list[VaultNote], None], VaultNote, VaultNote, str, str, list[VaultNote]]  :
 
@@ -62,7 +68,7 @@ def _init_args_for_data_from_notation_notes(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 10
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 11
 # TODO: test
 def _notat_str(
         meta: Union[dict, None],
@@ -149,7 +155,7 @@ def _linked_notat_note_names_from_content(content: str, vault: PathLike):
             linked_notation_note_names.append(note.name)
     return linked_notation_note_names
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 11
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 12
 # TODO: test
 def data_from_notation_notes(
         origin_notation_note: VaultNote, # The notation note which potentially uses the notation introduced by `relied_notation_note`. In particular, there potentially ought to be a link to `relied_notation_note` in `origin_notation_note`.`
@@ -239,7 +245,7 @@ def data_from_notation_notes(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 12
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 13
 def data_points_for_reference(
         reference_index_note: VaultNote, # The index note for the reference from which to draw the data.
         return_notation_note_parsings: bool = False, # If `True`, return the outputs of `parse_notation_note` applied to the notation notes in the reference folder 
@@ -402,7 +408,7 @@ def _sample_data_points(
                 ))
     return data_points
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 13
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 14
 def text_from_data_point(
         data_point: tuple  # An output of `data_from_notation_notes`.
         ) -> str:
@@ -440,7 +446,7 @@ def _content_relied(
     else:
         return f"Content for main note of relied_notation_note: {main_of_relied_content}"
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 15
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 16
 def prediction_by_model(
         origin_notation_note: VaultNote, # 
         relied_notation_note: VaultNote, #
@@ -484,7 +490,7 @@ def prediction_by_model_via_datapoint(
     pred, loss, _ = learn.predict(input)
     return pred == 'True'
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 16
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 17
 # TODO: mark the note with an _auto tag and make it so that data collection doesn't pick
 # up auto-generated links.
 def auto_add_link_to_notation_note(
@@ -570,7 +576,7 @@ def _add_notation_link(
          'type': MarkdownLineEnum.UNORDERED_LIST})
     mf.write(origin_notation_note)
 
-# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 17
+# %% ../../../../../nbs/34_markdown.obsidian.machine_learning.notation_linking.ipynb 18
 def auto_add_link_to_notation_note_via_data_point(
         learn, # The fastai textlearner which makes the prediction. 
         vault: PathLike, 
