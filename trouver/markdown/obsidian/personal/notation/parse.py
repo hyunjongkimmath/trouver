@@ -13,7 +13,10 @@ from typing import NamedTuple, Optional, Union
 from ....markdown.file import MarkdownFile, MarkdownLineEnum 
 from ...links import link_ranges_in_text, ObsidianLink, MARKDOWNLINK_PATTERN, MARKDOWNLINK_CAPTURE_PATTERN, WIKILINK_PATTERN
 from ...vault import VaultNote
+from ..note_processing import process_standard_information_note
 from ..note_type import assert_note_is_of_type, PersonalNoteTypeEnum
+
+
 
 # %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 6
 def _main_of_notation_from_text(
@@ -125,10 +128,9 @@ class NotationNoteParsed(NamedTuple):
 # %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 15
 def parse_notation_note(
         notation_note: Union[str, VaultNote],
-        vault: Optional[PathLike] = None # The vault If `None`, then uses `notation_note.vault`
+        vault: Optional[PathLike] = None, # The vault If `None`, then uses `notation_note.vault`
+        process_notation_note_content: bool = False # If `True` run `process_standard_information_note` on the content of the notation note.
         ) -> tuple[NotationNoteParsed]:
-        # ) -> tuple[Union[dict, None], Union[str, None], str, MarkdownFile,
-        #            list[tuple[str, str]]]:
     """Parse information from the notation note.
 
     **Returns**
@@ -167,6 +169,10 @@ def parse_notation_note(
 
     main_mf, linked_notations_list = _divide_bulleted_list_mf_at_end(mf_without_metadata)
     _remove_the_notation_str_and_denotes_in_main_mf(main_mf, notation_note)
+
+    # TODO: test process_notation_note_content=True
+    if process_notation_note_content:
+        main_mf = process_standard_information_note(main_mf, vault)
 
     return NotationNoteParsed(metadata, _get_notation_string(file_text, notation_note),
             _main_of_notation_from_text(file_text), main_mf,

@@ -4,12 +4,15 @@
 
 # %% ../../nbs/00_helper.ipynb 2
 from __future__ import annotations
+import random
+
 import string
 
 
 
 # %% auto 0
-__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc', 'split_string_at_indices']
+__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc', 'split_string_at_indices',
+           'split_list_into_chunks']
 
 # %% ../../nbs/00_helper.ipynb 4
 def substring_generator(input_string: str):
@@ -39,3 +42,31 @@ def is_not_space_and_not_punc(
 # %% ../../nbs/00_helper.ipynb 7
 def split_string_at_indices(s: str, indices: list[int]) -> list[str]:
     return [s[i:j] for i, j in zip([0] + indices, indices + [None])]
+
+# %% ../../nbs/00_helper.ipynb 11
+def split_list_into_chunks(original_list, split_ratio=0.75):
+    total_length = len(original_list)
+    target_length = int(total_length * split_ratio)
+    
+    chunks = []
+    current_index = 0
+    
+    while current_index < total_length:
+        chunk_size = random.randint(1, min(5, total_length - current_index))
+        chunks.append(original_list[current_index:current_index + chunk_size])
+        current_index += chunk_size
+    
+    random.shuffle(chunks)
+    
+    list1, list2 = [], []
+    current_length = 0
+    
+    for chunk in chunks:
+        if current_length + len(chunk) <= target_length:
+            list1.extend(chunk)
+            current_length += len(chunk)
+        else:
+            list2.extend(chunk)
+    
+    return list1, list2
+
