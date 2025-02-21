@@ -511,7 +511,7 @@ def data_points_for_reference(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 20
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 19
 def text_from_note_data(
         note_data: NotationNoteData,
         separation_token: str = '[SEP]',
@@ -545,7 +545,7 @@ def _content_relied(
     else:
         return f"Content for main note of relied_notation_note: {main_of_relied_content}"
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 22
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 21
 def augment_notation_linking_data(
         datapoint: NotationLinkingDataPoint,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -601,7 +601,7 @@ def _augment_notation_linking_data_once(
     return augmented_datapoint
     
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 24
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 23
 def prediction_by_model(
         origin_notation_note: VaultNote, # 
         relied_notation_note: VaultNote, #
@@ -645,7 +645,7 @@ def prediction_by_model_via_datapoint(
     pred, loss, _ = learn.predict(input)
     return pred == 'True'
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 25
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 24
 # TODO: mark the note with an _auto tag and make it so that data collection doesn't pick
 # up auto-generated links.
 def auto_add_link_to_notation_note(
@@ -731,7 +731,7 @@ def _add_notation_link(
          'type': MarkdownLineEnum.UNORDERED_LIST})
     mf.write(origin_notation_note)
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 26
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 25
 def auto_add_link_to_notation_note_via_data_point(
         learn, # The fastai textlearner which makes the prediction. 
         vault: PathLike, 
