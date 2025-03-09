@@ -11,7 +11,7 @@ __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NoteNotFoundInCacheEr
 from pathlib import Path
 import os
 from os import PathLike
-from typing import Optional, Union
+from typing import Optional, Sequence, Union
 
 from fastcore.basics import patch
 
@@ -704,16 +704,23 @@ def rename(
 def unique_name(
         cls: VaultNote,
         name: str, # The base name for the note.
-        vault: PathLike # The vault
+        vault: PathLike, # The vault
+        other_unavailable_names: Optional[Sequence[str]] = None # Other names that should be excluded when generating the unique name
         ) -> str: # A str obtained by appending `_{some number}` to the end of `name`.
     r"""A class method to return a name for a note that is unique in
     the vault based on a specified name.
     """
     if not str(vault) in VaultNote.cache:
         cls.update_cache(vault)
-    if not name in VaultNote.cache[str(vault)]:
+    unavailable_names = set(VaultNote.cache[str(vault)])
+    if other_unavailable_names is None:
+        other_unavailable_names = []
+    unavailable_names.update(other_unavailable_names)
+    if not name in unavailable_names:
+    # if not name in VaultNote.cache[str(vault)]:
         return name
     i = 1
-    while f'{name}_{i}' in VaultNote.cache[str(vault)]:
+    # while f'{name}_{i}' in VaultNote.cache[str(vault)]:
+    while f'{name}_{i}' in unavailable_names:
         i += 1
     return f'{name}_{i}'

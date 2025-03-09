@@ -50,7 +50,8 @@ def _main_of_notation_from_text(
 
 # %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 11
 def _divide_bulleted_list_mf_at_end(
-        mf: MarkdownFile
+        mf: MarkdownFile, 
+        remove_file_extension_from_note_names: bool,
         ) -> tuple[MarkdownFile, list[tuple[str, str]]]: # The first MarkdownFile contains the main content. The second MarkdonwFile contains the bulleted list at the end; if no such bulleted list exists, then this is None.
     """Return a `MarkdownFile` consisting of just the main content
     of a notation note along with the list of tuples capturing the
@@ -74,7 +75,8 @@ def _divide_bulleted_list_mf_at_end(
         trailing_parts.insert(0, last_part)
     
     bulleted_list = [
-        _notat_str_and_linked_notat_note_name_from_bullet_point_part(part)
+        _notat_str_and_linked_notat_note_name_from_bullet_point_part(
+            part, remove_file_extension_from_note_names)
         for part in trailing_parts]
     return MarkdownFile(main_parts), bulleted_list
     
@@ -96,10 +98,15 @@ def _part_is_unordered_list_and_is_of_markdownstyle_link(
     
 
 def _notat_str_and_linked_notat_note_name_from_bullet_point_part(
-        part: dict[str, Union[str, MarkdownLineEnum]]
+        part: dict[str, Union[str, MarkdownLineEnum]],
+        remove_file_extension_from_note_names: bool
         ) -> tuple[str, str]:
     match = re.match(MARKDOWNLINK_CAPTURE_PATTERN, part['line'][2:])
-    return match[1], match[2]
+    notat_str = match[1]
+    linked_notat_note_name = match[2]
+    if remove_file_extension_from_note_names and linked_notat_note_name.endswith('.md'):
+        linked_notat_note_name = linked_notat_note_name[:-3]
+    return notat_str, linked_notat_note_name
 
 # %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 14
 class NotationNoteParsed(NamedTuple):
@@ -126,10 +133,34 @@ class NotationNoteParsed(NamedTuple):
     linked_notation_notes: list[tuple[str, str]]
 
 # %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 15
+def _notat_str(
+        meta: Union[dict, None],
+        notat_str: str
+    ) -> str:
+    r"""Get the closest thing to the original latex string from which a notation note
+    is derived from based on the note's YAML frotmatter metadata.
+
+    If the metadata has a `latex_in_original` field, then return its first entry.
+    Otherwise, return `notat_str`, which is the string such that the notation note
+    starts with the formatting `$<notat_str>$ [[<link_to_main_note>|denotes]]...`.
+
+    This is a helper function to `data_from_notation_notes` in .
+    """
+    if meta and 'latex_in_original' in meta and len(meta['latex_in_original']) > 0:
+        return meta['latex_in_original'][0]
+    else:
+        return notat_str
+
+
+# %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 16
+from os import remove
+
+
 def parse_notation_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None, # The vault If `None`, then uses `notation_note.vault`
-        process_notation_note_content: bool = False # If `True` run `process_standard_information_note` on the content of the notation note.
+        process_notation_note_content: bool = False, # If `True` run `process_standard_information_note` on the content of the notation note.
+        remove_file_extension_from_linked_note_names: bool = True # `If `True`, remove file extensions of `.md` from the links to notation notes within `notation_note`.
         ) -> tuple[NotationNoteParsed]:
     """Parse information from the notation note.
 
@@ -167,7 +198,8 @@ def parse_notation_note(
 
     file_text = str(mf_without_metadata)
 
-    main_mf, linked_notations_list = _divide_bulleted_list_mf_at_end(mf_without_metadata)
+    main_mf, linked_notations_list = _divide_bulleted_list_mf_at_end(
+        mf_without_metadata, remove_file_extension_from_linked_note_names)
     _remove_the_notation_str_and_denotes_in_main_mf(main_mf, notation_note)
 
     # TODO: test process_notation_note_content=True
@@ -221,7 +253,7 @@ def _remove_the_notation_str_and_denotes_in_main_mf(
             break
     
 
-# %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 22
+# %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 23
 def notation_in_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None 
@@ -257,7 +289,7 @@ def notation_in_note(
     _, notation_in_note, _, _, _ = parse_notation_note(notation_note, vault)
     return notation_in_note
 
-# %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 25
+# %% ../../../../../nbs/51_markdown.obsidian.personal.notation.parse.ipynb 26
 def main_of_notation(
         notation_note: VaultNote, # The VaultNote object representing the notation note.
         as_note: bool = False # If `False`, then returns the name of the note, and returns a VaultNote object with the same vault as `notation_note` otherwise. The vault used to get the `VaultNote` is the vault of `notation_note`.

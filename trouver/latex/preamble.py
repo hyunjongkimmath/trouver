@@ -27,17 +27,64 @@ def divide_preamble(
     
 
 # %% ../../nbs/32_latex.preamble.ipynb 10
+# def replace_inclusion_of_style_file_with_code(
+#         document: str,
+#         dir: PathLike # The directory containing the style file.
+#         ) -> str: # The modified document with style file inclusions replaced by their contents.
+#     r"""
+#     Replace style file inclusions in `document` with the code of the style files.
+
+#     This function searches for occurrences of `\usepackage{...}`, `\input{...}`, 
+#     `\import{...}{...}`, `\includefrom{...}{...}`, and `\subincludefrom{...}{...}`
+#     and replaces them with the actual contents of the corresponding `.sty` files, if available.
+
+#     """
+#     def replace_style_file(match):
+#         command = match.group(1)  # Command type
+#         if command in ['import', 'includefrom', 'subincludefrom']:
+#             path = match.group(2)
+#             filename = match.group(3)
+#             file_path = Path(dir) / path / filename
+#         else:
+#             filename = match.group(2)
+#             file_path = Path(dir) / filename
+#         # Ensure we are only processing .sty files
+#         if not file_path.suffix:
+#             file_path = file_path.with_suffix('.sty')
+        
+#         if file_path.suffix != '.sty':
+#             # If it's not a .sty file, return the original command
+#             return match.group(0)
+#         # # Add .sty extension if not already present
+#         # if not file_path.suffix:
+#         #     file_path = file_path.with_suffix('.sty')
+#         try:
+#             # Read and return the contents of the style file
+#             with open(file_path, 'r', encoding='utf-8') as file:
+#                 return f"% Start of included style file: {file_path.name}\n" + file.read() + f"\n% End of included style file: {file_path.name}"
+#         except FileNotFoundError:
+#             # If the file is not found, keep the original command and issue a warning
+#             # if file_path.suffix == '.sty':
+#             #     warnings.warn(f"Style file {file_path} not found. Keeping original command.", UserWarning)
+#             return match.group(0)
+
+#     # Regex pattern to match all relevant commands for style files
+#     pattern = r'\\(usepackage|input)\{([^}]+)\}|\\(import|includefrom|subincludefrom)\{([^}]+)\}\{([^}]+)\}'
+    
+#     # Replace all matches in the document
+#     return re.sub(pattern, replace_style_file, document)
+
+
 def replace_inclusion_of_style_file_with_code(
         document: str,
-        dir: PathLike # The directory containing the style file.
-        ) -> str: # The modified document with style file inclusions replaced by their contents.
+        dir: PathLike  # The directory containing the style file.
+        ) -> str:  # The modified document with style file inclusions replaced by their contents.
     r"""
     Replace style file inclusions in `document` with the code of the style files.
 
     This function searches for occurrences of `\usepackage{...}`, `\input{...}`, 
     `\import{...}{...}`, `\includefrom{...}{...}`, and `\subincludefrom{...}{...}`
-    and replaces them with the actual contents of the corresponding `.sty` files, if available.
-
+    and replaces them with the actual contents of the corresponding `.sty` or `.tex` files, if available.
     """
     def replace_style_file(match):
         command = match.group(1)  # Command type
@@ -48,24 +95,25 @@ def replace_inclusion_of_style_file_with_code(
         else:
             filename = match.group(2)
             file_path = Path(dir) / filename
-        # Ensure we are only processing .sty files
-        if not file_path.suffix:
-            file_path = file_path.with_suffix('.sty')
         
-        if file_path.suffix != '.sty':
-            # If it's not a .sty file, return the original command
+        # Try different extensions if no extension is provided
+        if not file_path.suffix:
+            for ext in ['.sty', '.tex']:
+                temp_path = file_path.with_suffix(ext)
+                if temp_path.exists():
+                    file_path = temp_path
+                    break
+        
+        # Only process .sty and .tex files
+        if file_path.suffix not in ['.sty', '.tex']:
             return match.group(0)
-        # # Add .sty extension if not already present
-        # if not file_path.suffix:
-        #     file_path = file_path.with_suffix('.sty')
+        
         try:
-            # Read and return the contents of the style file
+            # Read and return the contents of the file
             with open(file_path, 'r', encoding='utf-8') as file:
-                return f"% Start of included style file: {file_path.name}\n" + file.read() + f"\n% End of included style file: {file_path.name}"
+                return f"% Start of included file: {file_path.name}\n" + file.read() + f"\n% End of included file: {file_path.name}"
         except FileNotFoundError:
-            # If the file is not found, keep the original command and issue a warning
-            # if file_path.suffix == '.sty':
-            #     warnings.warn(f"Style file {file_path} not found. Keeping original command.", UserWarning)
+            warnings.warn(f"File {file_path} not found. Keeping original command.", UserWarning)
             return match.group(0)
 
     # Regex pattern to match all relevant commands for style files
@@ -73,3 +121,4 @@ def replace_inclusion_of_style_file_with_code(
     
     # Replace all matches in the document
     return re.sub(pattern, replace_style_file, document)
+

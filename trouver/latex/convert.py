@@ -28,7 +28,7 @@ from trouver.markdown.markdown.file import (
 )
 
 from trouver.latex.divide import (
-    divide_preamble, divide_latex_text, get_node_from_simple_text, _is_section_node, _section_title
+    divide_preamble, divide_latex_text, DividedLatexPart, get_node_from_simple_text, _is_section_node, _section_title, 
 )
 from trouver.latex.folders import(
     section_and_subsection_titles_from_latex_parts, UNTITLED_SECTION_TITLE, _part_starts_section, _part_starts_subsection
@@ -52,20 +52,27 @@ DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
 
 # %% ../../nbs/16_latex.convert.ipynb 14
 def _replace_custom_commands_in_parts(
-        parts: list[tuple[str, str]],
+        parts: list[DividedLatexPart],
         custom_commands: list[tuple[str, int, Union[str, None], str]],
         repeat_replacing_custom_commands: int
-        ) -> list[tuple[str, str]]:
+        ) -> list[DividedLatexPart]:
+        
     return [
-        (title, replace_commands_in_text(
-                text, custom_commands, repeat=repeat_replacing_custom_commands))
-        for title, text in parts]
+        DividedLatexPart(
+            note_title=part['note_title'],
+            text=replace_commands_in_text(
+                part['text'], custom_commands, repeat=repeat_replacing_custom_commands))
+        for part in parts]
+#     return [
+#         (part['note_title'], replace_commands_in_text(
+#                 part['text'], custom_commands, repeat=repeat_replacing_custom_commands))
+#         for part in parts]
 
 
 # %% ../../nbs/16_latex.convert.ipynb 16
 def _adjust_common_section_titles_in_parts(
-        parts: list[tuple[str, str]],
-        reference_name: str):
+        parts: list[DividedLatexPart],
+        reference_name: str) -> list[DividedLatexPart]:
     """Adjust common section titles in `parts`
 
     Common section titles include, but are not limited to,
@@ -75,8 +82,10 @@ def _adjust_common_section_titles_in_parts(
     This is a helper function for `setup_reference_from_latex_parts`.
 
     """
-    return [(_adjusted_title(title, text, reference_name), text)
-            for title, text in parts]
+    return [DividedLatexPart(note_title=_adjusted_title(part['note_title'], part['text'], reference_name), text=part['text'])
+            for part in parts]
+    # return [(_adjusted_title(part['note_title'], part['text'], reference_name), text)
+    #         for part in parts]
 
 
 # TODO: also adjust title if the title is of the form
@@ -103,39 +112,10 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/16_latex.convert.ipynb 19
-def _create_notes_from_parts(
-        parts: list[tuple[str, str]],
-        chapters: list[list[str]],
-        index_note: VaultNote, # The index note of the reference that was created.
-        vault: Path,
-        reference_folder: Path,
-        reference_name: str,
-        template_mf: MarkdownFile, # The template of the reference that was created.
-        ):
-    """Create notes for the vault from `parts`."""
-    title_numbering_folder_map = {
-        title: convert_title_to_folder_name(title)
-        for section in chapters
-        for title in section}
+# %% ../../nbs/16_latex.convert.ipynb 18
+# def _create_links_for_ref_commands(parts: list[tuple[str, str]])
 
-    current_section, current_subsection = chapters[0][0], '' # section/subsection titles
-    # Dict of dict of list of str. The top level keys
-    # are section titles and the corresponding values are dicts whose
-    # keys are subsection titles and values are lists of bulleted links texts
-    # of the form `- [[linke_to_note]], Title/identifying information` to add.
-    links_to_make = {current_section: {current_subsection: []}}  
-    for part in parts:
-        current_section, current_subsection = _create_part_or_update(
-            part, title_numbering_folder_map, vault, reference_folder,
-            reference_name, template_mf, current_section, current_subsection,
-            links_to_make)
-
-    _make_links_in_index_notes(
-        links_to_make, title_numbering_folder_map, vault,
-        reference_folder, reference_name)
-    
-
+# %% ../../nbs/16_latex.convert.ipynb 20
 def _make_links_in_index_notes(
         links_to_make: dict[str, dict[str, list[str]]],
         title_numbering_folder_map: dict[str, tuple[str, str]],
@@ -170,8 +150,28 @@ def _make_links_in_index_note_for_section(
     mf.write(section_index_note)
 
 
+# %% ../../nbs/16_latex.convert.ipynb 21
+def _note_names_from_part(
+        parts: list[DividedLatexPart],
+        vault: Path,
+        reference_name: str,
+        ) -> list[str]:
+    """
+    Tailors the name for `part`.
+
+    Assumes that all the `parts` should have distinct titles
+    """
+    note_names: list[str] = []
+    for part in parts:
+        note_title = sanitize_filename(part['note_title'])
+        unique_note_name = VaultNote.unique_name(
+            f"{reference_name}_{note_title}", vault, other_unavailable_names=note_names)
+        note_names.append(unique_note_name)
+    return note_names
+
+# %% ../../nbs/16_latex.convert.ipynb 22
 def _create_part_or_update(
-        part: tuple[str, str],
+        part: DividedLatexPart,
         title_numbering_folder_map: dict[str, tuple[str, str]],
         vault: Path,
         reference_folder: Path,
@@ -180,6 +180,7 @@ def _create_part_or_update(
         current_section: str,
         current_subsection: str,
         links_to_make: dict[str, dict[str, list[str]]],
+        note_name: str # The name of the note to newly create from `part`.
         ) -> tuple[str, str]:
     """
     Consider `part` for creating a new note or for updating
@@ -190,20 +191,21 @@ def _create_part_or_update(
     Helper function of `_create_notes_from_parts`
     """
     if _part_starts_section(part):
-        current_section = part[0]
+        current_section = part['note_title']
         current_subsection = ''
         links_to_make[current_section] = {'': []}
         folder = title_numbering_folder_map[current_section]
         # Uncomment these out to not create notes that just start a section/subsection.
         # return current_section, current_subsection
     elif _part_starts_subsection(part):
-        current_subsection = part[0]
+        current_subsection = part['note_title']
         links_to_make[current_section][current_subsection] = []
         # return current_section, current_subsection
 
     created_note = _create_note_for_part(
         part, title_numbering_folder_map, vault, reference_folder,
-        reference_name, template_mf, current_section, current_subsection)
+        reference_name, template_mf, current_section, current_subsection,
+        note_name)
 
     _update_links_to_make(
         part, current_section, current_subsection, links_to_make,
@@ -212,37 +214,42 @@ def _create_part_or_update(
 
 
 def _create_note_for_part(
-        part: tuple[str, str],
+        part: DividedLatexPart,
         title_numbering_folder_map: dict[str, tuple[str, str]],
         vault: Path,
         reference_folder: Path,
         reference_name: str,
         template_mf: MarkdownFile,
         current_section: str,
-        current_subsection: str
+        current_subsection: str,
+        note_name: str # The name of the note to newly create from `part`.
         ) -> VaultNote: # The created VaultNote.
     """Create a note for the part"""
-    note_title = sanitize_filename(part[0])
+
+    note_title = sanitize_filename(part['note_title'])
+    # unique_note_name = VaultNote.unique_name(
+    #     f"{reference_name}_{note_title}", vault)
+
     # TODO: test the removal of these characters.
     for char in r'[]|#^\~%':
         note_title = note_title.replace(char, '')
-    note_contents = part[1]
+    note_contents = part['text']
+    # TODO: Make it so that unique_note_name indicates an unnumbered
+    # note as unnumbered.
+
     mf = template_mf.copy(True)
     mf.add_line_in_section(
         'Topic[^1]', {'type': MarkdownLineEnum.DEFAULT, 'line': note_contents})
     mf.parts[-1]['line'] += note_title
     section_folder = title_numbering_folder_map[current_section]
-    # TODO: Make it so that unique_note_name indicates an unnumbered
-    # note as unnumbered.
-    unique_note_name = VaultNote.unique_name(
-        f"{reference_name}_{note_title}", vault)
+
     if current_subsection == '':
         rel_path = (
-            reference_folder / section_folder / f"{unique_note_name}.md")
+            reference_folder / section_folder / f"{note_name}.md")
     else:
         subsection_folder = title_numbering_folder_map[current_subsection]
         rel_path = (
-            reference_folder / section_folder / subsection_folder / f"{unique_note_name}.md")
+            reference_folder / section_folder / subsection_folder / f"{note_name}.md")
     vn = VaultNote(vault, rel_path=rel_path)
     vn.create()
     mf.write(vn)
@@ -251,7 +258,7 @@ def _create_note_for_part(
 
 
 def _update_links_to_make(
-        part: tuple[str, str],
+        part: DividedLatexPart,
         current_section: str,
         current_subsection: str,
         links_to_make: dict[str, dict[str, list[str]]],
@@ -261,26 +268,108 @@ def _update_links_to_make(
     
     Helper function of `_create_part_or_update`.
     """
-    # if current_subsection is not None:
-    #     current_subsection_key = current_subsection
-    # else:
-    #     current_subsection_key = ''
-    note_title = part[0]
+    note_title = part['note_title']
     links_to_make[current_section][current_subsection].append(
         f'- [[{created_note.name}]], {note_title}'
     )
     
 
 
+# %% ../../nbs/16_latex.convert.ipynb 23
+def _create_notes_from_parts(
+        parts: list[DividedLatexPart],
+        chapters: list[list[str]],
+        index_note: VaultNote, # The index note of the reference that was created.
+        vault: Path,
+        reference_folder: Path,
+        reference_name: str,
+        template_mf: MarkdownFile, # The template of the reference that was created.
+        note_names: list[str] # The names of the note to newly create from `parts`.
+        ):
+    """Create notes for the vault from `parts`."""
+    title_numbering_folder_map = {
+        title: convert_title_to_folder_name(title)
+        for section in chapters
+        for title in section}
+
+    current_section, current_subsection = chapters[0][0], '' # section/subsection titles
+    # Dict of dict of list of str. The top level keys
+    # are section titles and the corresponding values are dicts whose
+    # keys are subsection titles and values are lists of bulleted links texts
+    # of the form `- [[linke_to_note]], Title/identifying information` to add.
+    links_to_make = {current_section: {current_subsection: []}}  
+    for part, note_name in zip(parts, note_names):
+        current_section, current_subsection = _create_part_or_update(
+            part, title_numbering_folder_map, vault, reference_folder,
+            reference_name, template_mf, current_section, current_subsection,
+            links_to_make, note_name)
+
+    _make_links_in_index_notes(
+        links_to_make, title_numbering_folder_map, vault,
+        reference_folder, reference_name)
+
+# %% ../../nbs/16_latex.convert.ipynb 25
+def _extract_latex_labels(text):
+    """
+    Helper function to `_find_labels`.
+    """
+    # Remove LaTeX comments first
+    text_without_comments = re.sub(r'(?m)^%.*$|(?<!\\)%.*$', '', text)
+    
+    # Improved regex pattern to handle whitespace and trim the result
+    pattern = r'\\label\s*\{\s*([^}]*?)\s*\}'
+    labels = re.findall(pattern, text_without_comments)
+    return [label.strip() for label in labels]  # Strip any remaining whitespace
 
 
-# %% ../../nbs/16_latex.convert.ipynb 20
+# %% ../../nbs/16_latex.convert.ipynb 27
+def _find_labels(
+        parts: list[DividedLatexPart],
+        note_names: list[str],
+        ) -> dict[str, str]: # The keys are the labels and the values are the names of the corresponding notes in which those labels are introduced.
+    r"""
+    Finds instances of the `\label` command within the parts and identifies which notes name creates each label.
+
+    Helper function to `setup_reference_from_latex_parts`.
+    """
+    labels_and_note_names: dict[str, str] = {}
+    for part, note_name in zip(parts, note_names):
+        labels_in_part = _extract_latex_labels(part['text'])
+        for label in labels_in_part:
+            labels_and_note_names[label] = note_name
+    return labels_and_note_names
+
+
+# %% ../../nbs/16_latex.convert.ipynb 28
+def _add_links_to_refs(
+        parts: list[DividedLatexPart],
+        labels_and_note_names: dict[str, str]
+        ) -> list[DividedLatexPart]:
+    def replace_ref(match):
+        command = match.group(1)  # Can be 'ref', 'cref', 'Cref', 'autoref', 'pageref', etc.
+        label = match.group(2)
+        if label in labels_and_note_names:
+            return f"[[{labels_and_note_names[label]}|\\{command}{{{label}}}]]"
+        return match.group(0)  # Return original if label not found
+
+    modified_parts: list[DividedLatexPart] = []
+    for part in parts:
+        text = part['text']
+        # Replace various reference commands
+        modified_text = re.sub(r'\\((?:[Cc]ref|[Aa]utoref|ref|pageref|vref|nameref))\{([^}]+)\}', replace_ref, text)
+        modified_parts.append(DividedLatexPart(note_title=part['note_title'], text=modified_text))
+    
+    return modified_parts
+
+
+# %% ../../nbs/16_latex.convert.ipynb 30
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
+# TODO: test `link_refs=True`
 # Make section titles based on reference name.
 def setup_reference_from_latex_parts(
-        parts: list[tuple[str, str]], # Output of `divide_latex_text`
+        parts: list[DividedLatexPart], # Output of `divide_latex_text`
         custom_commands: list[tuple[str, int, Union[str, None], str]], # Output of `custom_commands` applied to the preamble of the LaTeX ddocument.`
         vault: PathLike, # An Obsidian.md vault,
         location: PathLike, # The path to make the new reference folder. Relative to `vault`.
@@ -303,6 +392,8 @@ def setup_reference_from_latex_parts(
         replace_custom_commands: bool = True, # If `True`, replace the custom commands in the text of `parts` when making the notes.
         adjust_common_latex_syntax_to_markdown: bool = True, # If `True`, apply `adjust_common_syntax_to_markdown` to the text in `parts` when making the notes.`
         repeat_replacing_custom_commands: int = 1, # The number of times to repeat replacing the custom commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to any negative number (e.g. `-1``), then this function attempts to replace custom commands until no commands to replace are found. 
+        link_refs: bool = True, # If `True`, try to link invocations of \ref or \cref with the corresponding notes that \label them. 
+        # replace_xy_matrices_with_cd: bool = True, # If `True`, then try to replace xymatrices with cd commands, which are renderable in Obsidian.md mathjax.
         ) -> None:
     """Set up a reference folder in `vault` using an output of `divide_latex_text`, create
     notes from `parts`, and link notes in index files in the reference folder.
@@ -351,9 +442,16 @@ def setup_reference_from_latex_parts(
         parts = _replace_custom_commands_in_parts(
             parts, custom_commands, repeat_replacing_custom_commands)
     if adjust_common_latex_syntax_to_markdown:
-        parts = [(title, adjust_common_syntax_to_markdown(text))
-                 for title, text in parts]
-    
+        parts = [
+            DividedLatexPart(note_title=part['note_title'], text=adjust_common_syntax_to_markdown(part['text']))
+            for part in parts]
+
+    # Assumes that all the `parts` have distinct titles.
+    note_names: list[str] = _note_names_from_part(parts, vault, reference_name)
+    if link_refs:
+        labels_and_note_names: dict[str, str] = _find_labels(parts, note_names)
+        parts = _add_links_to_refs(parts, labels_and_note_names)
+        
     reference_folder = Path(location) / reference_name
     _create_notes_from_parts(
         parts,
@@ -362,11 +460,13 @@ def setup_reference_from_latex_parts(
         vault,
         reference_folder,
         reference_name,
-        template_mf)
+        template_mf,
+        note_names
+        )
     
 
 
-# %% ../../nbs/16_latex.convert.ipynb 29
+# %% ../../nbs/16_latex.convert.ipynb 39
 def _highlight_latex_math(latex_str):
     # Case 2: Double dollar signs
     if latex_str.startswith('$$') and latex_str.endswith('$$'):
@@ -392,7 +492,7 @@ def _highlight_latex_math(latex_str):
     # If none of the above cases match, return the original string
     return latex_str
 
-# %% ../../nbs/16_latex.convert.ipynb 31
+# %% ../../nbs/16_latex.convert.ipynb 41
 def convert_notes_to_latex_code(
         notes: list[VaultNote],
         vault: PathLike,

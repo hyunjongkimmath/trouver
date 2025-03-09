@@ -296,21 +296,39 @@ class NoteTypeError(ValueError):
     **Attributes**
     - `note` - VaultNote
     - `expected_note_type` - PersonalNoteTypeEnum
+    - `exists` - Union[bool, None] 
+        - Is `True` if the note exists, is `False` if the note does not exist. If `None`, then the `NoteTypeError` message is agnostic to whether the note exists or not.
+    - `actual_note_type` - Union[PersonalNoteTypeEnum, None]
+        - If `None`, then either `exists` is `False` or the `NoteTypeError` message is agnostic to the actual note type.
     """
     def __init__(
             self,
             note: VaultNote,
-            expected_note_type: PersonalNoteTypeEnum):
+            expected_note_type: PersonalNoteTypeEnum,
+            exists: Optional[bool] = None,
+            actual_note_type: Optional[PersonalNoteTypeEnum] = None,
+            ):
         self.note = note
         self.expected_note_type = expected_note_type
-        super().__init__(
-            f"Expected a note of type {expected_note_type}, "
-            f"but got a note of a different type instead: {note.name}")
+        self.exists = exists
+        self.actual_note_type = actual_note_type
+
+        message = f"Expected a note of type {expected_note_type}, but got a note of a different type instead.\nThe name of the note is {note.name}.\nThe vault of the note is {note.vault}"
+        if exists is not None:
+            if exists:
+                message = f"{message}\nThe note exists at {note.path()}.\nThe actual note type is {actual_note_type}."
+            elif note.rel_path_identified():
+                message = f"{message}\nThe note does not exist, but it was expected to be at {note.rel_path}."
+            else:
+                message = f"{message}\nThe `rel_path` of the note was not identified."
+        super().__init__(message)
 
 
 def assert_note_is_of_type(
         note: VaultNote,
-        expected_type: PersonalNoteTypeEnum):
+        expected_type: PersonalNoteTypeEnum,
+        verbose: bool = True,
+        ):
     """Raises a `NoteTypeError` if the note is not of the
     expected type.
     
@@ -319,4 +337,12 @@ def assert_note_is_of_type(
         - If the type of `note` is not `expected_type`.
     """
     if not note_is_of_type(note, expected_type):
-        raise NoteTypeError(note, expected_type)
+        if verbose:
+            exists = note.exists()
+            if exists:
+                actual_note_type = type_of_note(note)
+            else:
+                actual_note_type = None
+            raise NoteTypeError(note, expected_type, exists, actual_note_type)
+        else:
+            raise NoteTypeError(note, expected_type)

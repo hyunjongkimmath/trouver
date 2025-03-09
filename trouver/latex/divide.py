@@ -7,14 +7,14 @@ __all__ = ['SECOND_PARAMETER_PATTERN', 'SECOND_PARAMETER_PATTERN_WITH_OPTIONAL_S
            'THIRD_PARAMETER_PATTERN_WITH_OPTIONAL_STAR', 'SECTION_LIKE_PATTERN', 'ENVIRONMENT_PATTERN',
            'DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG', 'NoDocumentNodeError', 'find_document_node',
            'environment_names_used', 'numbered_newtheorems_counters_in_preamble', 'numberwithins_in_preamble',
-           'display_names_of_environments', 'get_node_from_simple_text', 'text_from_node', 'swap_numbers_invoked',
-           'divide_latex_text']
+           'display_names_of_environments', 'DividedLatexPart', 'get_node_from_simple_text', 'text_from_node',
+           'swap_numbers_invoked', 'divide_latex_text']
 
 # %% ../../nbs/29_latex.divide.ipynb 2
 from itertools import product
 from os import PathLike
 import re
-from typing import Optional, Union
+from typing import Optional, TypedDict, Union
 
 from pylatexenc.latexwalker import (
     LatexWalker, LatexEnvironmentNode, LatexMacroNode, LatexNode
@@ -334,6 +334,14 @@ def _search_display_names_by_pattern(
     return display_names
 
 # %% ../../nbs/29_latex.divide.ipynb 64
+class DividedLatexPart(TypedDict):
+    """
+    Encapsulates a part divided from a latex document. Represents an entry within the list outputted by `divide_latex_text`.
+    """
+    note_title: str # often encapsulates the note type (i.e. section/subsection/display text of a theorem-like environment) along with the numbering. Sometimes `title` is just a number, which means that `text` is not of a `\section` or `\subsection` command and not of a theorem-like environment.
+    text: str  # `text` is the text of the part
+
+# %% ../../nbs/29_latex.divide.ipynb 65
 def _setup_counters(
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         ) -> dict[str, int]:
@@ -375,7 +383,7 @@ def _setup_counters(
     counters[''] = 0
     return counters
 
-# %% ../../nbs/29_latex.divide.ipynb 66
+# %% ../../nbs/29_latex.divide.ipynb 67
 def _setup_numberwithins(
         explicit_numberwithins: dict[str, str],
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`.
@@ -439,7 +447,7 @@ def _is_numberedwithin(
         numberwithins[counter_1], counter_2, numberwithins)
 
 
-# %% ../../nbs/29_latex.divide.ipynb 68
+# %% ../../nbs/29_latex.divide.ipynb 69
 def _unnumbered_environments(
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         display_names: dict[str, str]) -> set[str]:
@@ -453,7 +461,7 @@ def _unnumbered_environments(
 
     
 
-# %% ../../nbs/29_latex.divide.ipynb 70
+# %% ../../nbs/29_latex.divide.ipynb 71
 def _section_title(
         text: str
         ) -> tuple[bool, str]: # The bool is `True` if the section/subsection is numbered (i.e. is `section` or `subsection` as opposed to `section*` or `subsection*`). The `str` is the title of the section or subsection
@@ -474,7 +482,7 @@ def _section_title(
     return is_numbered, title
 
 
-# %% ../../nbs/29_latex.divide.ipynb 72
+# %% ../../nbs/29_latex.divide.ipynb 73
 def _is_section_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
@@ -524,7 +532,7 @@ def _environment_name_of_text(text: str):
     match = regex.match(ENVIRONMENT_PATTERN, text.lstrip())
     return match.group(1)
 
-# %% ../../nbs/29_latex.divide.ipynb 75
+# %% ../../nbs/29_latex.divide.ipynb 76
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, str]
@@ -537,7 +545,7 @@ def _is_numbered(
     else:
         return False
 
-# %% ../../nbs/29_latex.divide.ipynb 77
+# %% ../../nbs/29_latex.divide.ipynb 78
 def get_node_from_simple_text(
         text: str) -> LatexNode:
     """Return the (first) `LatexNode` object from a str."""
@@ -561,7 +569,7 @@ def text_from_node(
     # return LatexNodes2Text().node_to_text(node)
 
 
-# %% ../../nbs/29_latex.divide.ipynb 80
+# %% ../../nbs/29_latex.divide.ipynb 81
 def _change_counters(
         node,
         counters,
@@ -668,7 +676,7 @@ def _subsubnodes(
 
 
 
-# %% ../../nbs/29_latex.divide.ipynb 83
+# %% ../../nbs/29_latex.divide.ipynb 84
 def _node_numbering(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -712,7 +720,7 @@ def _numbering_helper(
         counters)
     
 
-# %% ../../nbs/29_latex.divide.ipynb 85
+# %% ../../nbs/29_latex.divide.ipynb 86
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -812,7 +820,7 @@ def _title_for_environment_node(
         return f'{display_name} {numbering}.'
         
 
-# %% ../../nbs/29_latex.divide.ipynb 87
+# %% ../../nbs/29_latex.divide.ipynb 88
 def swap_numbers_invoked(
         preamble: str
         ) -> bool: # 
@@ -823,7 +831,7 @@ def swap_numbers_invoked(
     preamble = remove_comments(preamble)
     return r'\swapnumbers' in preamble
 
-# %% ../../nbs/29_latex.divide.ipynb 89
+# %% ../../nbs/29_latex.divide.ipynb 90
 def _node_warrants_own_part(
         node, environments_to_not_divide_along: list[str],
         accumulation: str, parts: list[tuple[str, str]]) -> bool:
@@ -842,7 +850,7 @@ def _node_warrants_own_part(
         return True
     return node.environmentname not in environments_to_not_divide_along
 
-# %% ../../nbs/29_latex.divide.ipynb 91
+# %% ../../nbs/29_latex.divide.ipynb 92
 def _node_is_proof_immediately_following_a_theorem_like_environment(
         node, accumulation, parts, display_names) -> bool:
     """Return `True` if `node` is that of a proof environment that immediately
@@ -858,9 +866,9 @@ def _node_is_proof_immediately_following_a_theorem_like_environment(
         return False
     if accumulation.strip() != '':
         return False
-    if not _text_is_of_environment_node(parts[-1][1]):
+    if not _text_is_of_environment_node(parts[-1]['text']):
         return False
-    return _environment_name_of_text(parts[-1][1]) in display_names
+    return _environment_name_of_text(parts[-1]['text']) in display_names
     # previous_node = get_node_from_simple_text(parts[-1][1])
     # if not _is_environment_node(previous_node):
     #     return False
@@ -884,12 +892,11 @@ def _node_is_nonspecial_following_a_sectionlike_node(
         return False
     if accumulation.strip() != '':
         return False
-    # previous_node = get_node_from_simple_text(parts[-1][1])
-    # return _is_section_node(previous_node) or _is_subsection_node(previous_node) or _is_subsubsection_node(previous_node)
-    return _text_is_of_section_like_node(parts[-1][1])
+    return _text_is_of_section_like_node(parts[-1]['text'])
+    # return _text_is_of_section_like_node(parts[-1]["text"])
     
 
-# %% ../../nbs/29_latex.divide.ipynb 93
+# %% ../../nbs/29_latex.divide.ipynb 94
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
     'align', 'align*', 'diagram', 'displaymath', 'displaymath*', 'enumerate', 'eqnarray', 'eqnarray*',
     'equation', 'equation*', 'gather', 'gather*', 'itemize', 'label',
@@ -903,7 +910,7 @@ def divide_latex_text(
         environments_to_not_divide_along: list[str] = DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG, # A list of the names of the environemts along which to not make a new note, unless the environment starts a section (or the entire document).
         replace_commands_in_document_first: bool = True,  # If `True`, invoke `replace_commands_in_latex_document` on `document` to first replace custom commands (in the document minus the preamble) before starting to divide the document.
         repeat_replacing_commands: int = -1,  # If `replace_commands_in_document_first` is `True`, then this is passed as the `repeat` argument into the invocation of `replace_commands_in_latex_document`.
-        ) -> list[tuple[str, str]]: # Each tuple is of the form `(note_title, text)`, where `note_title` often encapsulates the note type (i.e. section/subsection/display text of a theorem-like environment) along with the numbering and `text` is the text of the part. Sometimes `title` is just a number, which means that `text` is not of a `\section` or `\subsection` command and not of a theorem-like environment.
+        ) -> list[DividedLatexPart]: # Each tuple is of the form `(note_title, text)`, where `note_title` often encapsulates the note type (i.e. section/subsection/display text of a theorem-like environment) along with the numbering and `text` is the text of the part. Sometimes `title` is just a number, which means that `text` is not of a `\section` or `\subsection` command and not of a theorem-like environment.
     r"""Divide LaTeX text to convert into Obsidian.md notes.
 
     Assumes that the counters in the LaTeX document are either the
@@ -915,12 +922,12 @@ def divide_latex_text(
     TODO: Implement counters specified by `\newcounter`, cf. 
     https://www.overleaf.com/learn/latex/Counters#LaTeX_commands_for_working_with_counters.
     """
-    numbertheorem_counters = numbered_newtheorems_counters_in_preamble(document)
+    numbertheorem_counters: dict[str, tuple[str, Union[str, None]]] = numbered_newtheorems_counters_in_preamble(document)
     explicit_numberwithins = numberwithins_in_preamble(document)
-    numberwithins = _setup_numberwithins(explicit_numberwithins, numbertheorem_counters)
-    all_numberwithins = _setup_all_numberwithins(explicit_numberwithins, numbertheorem_counters)
-    display_names = display_names_of_environments(document)
-    counters = _setup_counters(numbertheorem_counters)
+    numberwithins: dict[str, str] = _setup_numberwithins(explicit_numberwithins, numbertheorem_counters)
+    all_numberwithins: dict[str, list[str]] = _setup_all_numberwithins(explicit_numberwithins, numbertheorem_counters)
+    display_names: dict[str, str] = display_names_of_environments(document)
+    counters: dict[str, int] = _setup_counters(numbertheorem_counters)
     unnumbered_environments = _unnumbered_environments(
         numbertheorem_counters, display_names)
     # Eventually gets returned
@@ -933,10 +940,10 @@ def divide_latex_text(
             repeat_replacing_commands)
         # main_document = replace_commands_in_latex_document(document, repeat_replacing_commands)
     document_node = find_document_node(main_document)
-    swap_numbers = swap_numbers_invoked(preamble)
-    parts = []
+    swap_numbers: bool = swap_numbers_invoked(preamble)
+    parts: list[DividedLatexPart] = []
     # "Accumulates" a "part" until text that should comprise a new part is encountered
-    accumulation = '' 
+    accumulation: str = '' 
     for node in document_node.nodelist:
         accumulation = _process_node(
             node, environments_to_not_divide_along, accumulation,
@@ -949,10 +956,17 @@ def divide_latex_text(
 
 
 def _process_node(
-        node, environments_to_not_divide_along, accumulation,
-        numbertheorem_counters,
-        numberwithins, all_numberwithins, counters,
-        display_names, swap_numbers, parts) -> str:
+        node,
+        environments_to_not_divide_along: list[str],
+        accumulation: str,
+        numbertheorem_counters: dict[str, tuple[str, Union[str, None]]],
+        numberwithins: dict[str, str],
+        all_numberwithins: dict[str, list[str]],
+        counters: dict[str, int],
+        display_names: dict[str, str],
+        swap_numbers: bool,
+        parts: list[DividedLatexPart]
+        ) -> str:
     """
     Update `accumulation`, `counter`, and `parts` based on the contents of `node`.
 
@@ -969,7 +983,8 @@ def _process_node(
             node, accumulation, parts, display_names)
         or _node_is_nonspecial_following_a_sectionlike_node(
             node, environments_to_not_divide_along, accumulation, parts)):
-        parts[-1][1] += node.latex_verbatim()
+        # parts[-1][1] += node.latex_verbatim()
+        parts[-1]['text'] += node.latex_verbatim()
     elif _node_warrants_own_part(
             node, environments_to_not_divide_along, accumulation, parts):
         accumulation =  _append_non_environment_accumulation_to_parts_if_non_empty(
@@ -979,7 +994,7 @@ def _process_node(
             node, numbertheorem_counters, numberwithins, all_numberwithins,
             display_names, counters, swap_numbers).strip()
         title = title.replace('\n', '') 
-        parts.append([title, node.latex_verbatim()])
+        parts.append(DividedLatexPart(note_title=title, text=node.latex_verbatim()))
     else:
         accumulation += node.latex_verbatim()
         # In _change_counters`, the '' counter is incremented by default.
@@ -989,12 +1004,16 @@ def _process_node(
 
 
 def _append_non_environment_accumulation_to_parts_if_non_empty(
-        accumulation: str, counters, parts):
+        accumulation: str,
+        counters,
+        parts: list[DividedLatexPart]) -> str:
     """Append accumulation to `parts` if `accumulation` is nonempty
     and return the updated `accumulation` """
     if accumulation.strip() != '':
         counters[''] += 1
-        parts.append([str(counters['']).strip(), accumulation.strip()])
+        parts.append(
+            DividedLatexPart(note_title=str(counters['']).strip(), text=accumulation.strip()))
+            # [str(counters['']).strip(), accumulation.strip()])
         return ''
     else:
         return accumulation.strip()

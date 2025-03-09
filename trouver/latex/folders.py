@@ -5,32 +5,32 @@
 # %% auto 0
 __all__ = ['UNTITLED_SECTION_TITLE', 'section_and_subsection_titles_from_latex_parts']
 
-# %% ../../nbs/30_latex.folders.ipynb 4
-from .divide import divide_latex_text
+# %% ../../nbs/30_latex.folders.ipynb 3
+from .divide import divide_latex_text, DividedLatexPart
 
-# %% ../../nbs/30_latex.folders.ipynb 7
+# %% ../../nbs/30_latex.folders.ipynb 6
 def _part_starts_section(
-        part: tuple[str, str]):
+        part: DividedLatexPart):
     """
     Return `True` if `part` starts a section (explicitly),
     cf. `divide_latex_text`.
     """
-    return part[1].startswith(r'\section')
+    return part['text'].startswith(r'\section')
     # node = get_node_from_simple_text(part[1])
     # return _is_section_node(node)
 
 
 def _part_starts_subsection(
-        part: tuple[str, str]):
+        part: DividedLatexPart):
     """Return `True` if `part` starts a subsection, cf. `divide_latex_text`."""
-    return part[1].startswith(r'\subsection')
+    return part['text'].startswith(r'\subsection')
     # node = get_node_from_simple_text(part[1])
     # return _is_subsection_node(node)
 
-# %% ../../nbs/30_latex.folders.ipynb 9
+# %% ../../nbs/30_latex.folders.ipynb 8
 UNTITLED_SECTION_TITLE = 'Untitled Section'
 def section_and_subsection_titles_from_latex_parts(
-        parts: list[tuple[str, str]], # An output of `divide_latex_text`
+        parts: list[DividedLatexPart], # An output of `divide_latex_text`
         # verbose_sections: bool = False, # 
         # short_subsections: bool = False,
         # section_name: str = 'section',
@@ -49,11 +49,11 @@ def section_and_subsection_titles_from_latex_parts(
 
 
 def _consider_part_to_add(
-        part: list[tuple[str, str]],
+        part: list[DividedLatexPart],
         sections_and_subsections: list[list[str]]):
     """Add the title of `part` to `sections_and_subsections`
     if `part` starts a section or subsection."""
-    title = part[0].strip()
+    title = part['note_title'].strip()
     if _part_starts_section(part):
         sections_and_subsections.append([title])
     elif _part_starts_subsection(part):
