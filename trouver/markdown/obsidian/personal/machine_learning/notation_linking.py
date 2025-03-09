@@ -730,7 +730,7 @@ def _add_link_to_notation_note_in_mf(
         summary_is_auto_generated = 'tags' in meta and ['_auto/notation_summary'] in meta['tags']
         summary_is_empty = not bool(str(parsed.main_content_markdown_file).strip())
         if summary_is_auto_generated or summary_is_empty:
-            print(f'The notation linking pipeline predicts that the notation note named {origin_name} should link to {relied_data['notation_note_name']}, which either has an auto-generated summary or an empty summary. The link will not be added.')
+            print(f'The notation linking pipeline predicts that the notation note named {origin_name} should link to {relied_data["notation_note_name"]}, which either has an auto-generated summary or an empty summary. The link will not be added.')
             return
 
     bullet = f'- [{relied_data['summarized']}]({relied_data['notation_note_name']}.md)'
