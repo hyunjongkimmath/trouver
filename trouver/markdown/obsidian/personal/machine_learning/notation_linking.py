@@ -733,7 +733,7 @@ def _add_link_to_notation_note_in_mf(
             print(f'The notation linking pipeline predicts that the notation note named {origin_name} should link to {relied_data["notation_note_name"]}, which either has an auto-generated summary or an empty summary. The link will not be added.')
             return
 
-    bullet = f'- [{relied_data['summarized']}]({relied_data['notation_note_name']}.md)'
+    bullet = f'- [{relied_data["summarized"]}]({relied_data["notation_note_name"]}.md)'
     mf.add_line_to_end(
         {'line': bullet,
         'type': MarkdownLineEnum.UNORDERED_LIST})
