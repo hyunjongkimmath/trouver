@@ -38,7 +38,7 @@ from ..note_processing import process_standard_information_note
 from ...vault import VaultNote
 
 from trouver.markdown.obsidian.personal.machine_learning.notation_summarization import (
-    notation_summarization_data_from_note, single_input_for_notation_summarization
+    notation_summarization_data_from_note, single_input_for_notation_summarization, NotationSummaryData
 )
 
 
@@ -321,14 +321,14 @@ def _correct_syntax(
 # TODO: test
 def autogen_name_from_notation_note(
         notation_note: VaultNote, pipeline):
-    data_dict = notation_summarization_data_from_note(
+    data_dict: NotationSummaryData = notation_summarization_data_from_note(
         notation_note, notation_note.vault,
         check_for_actual_summarization=False)
     if data_dict is None:
         return None
+    # TODO: change classical_formatting to False after retraining the model for this formatting
     input = single_input_for_notation_summarization(
-        data_dict['Processed main note contents'],
-        data_dict['Latex in original'])
+        data_dict, classical_formatting=True)
     return pipeline(input)[0]['summary_text']
 
 def sanitize_autogen_name(autogen_name):
