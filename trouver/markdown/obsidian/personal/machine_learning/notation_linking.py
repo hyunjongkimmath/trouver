@@ -14,10 +14,14 @@ import random
 import re
 from typing import Literal, NamedTuple, Optional, TypedDict, Union
 
+from scipy.spatial.distance import cosine
+from sentence_transformers import SentenceTransformer
 import transformers
+from transformers.pipelines.text_classification import TextClassificationPipeline
+
 
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
-from ...links import MARKDOWNLINK_CAPTURE_PATTERN
+from ...links import MARKDOWNLINK_CAPTURE_PATTERN, LinkFormatError
 from ..information_notes import reference_of_information_note
 from ..notation.in_standard_information_note import notation_notes_linked_in_see_also_section
 from ..notation.parse import NotationNoteParsed, parse_notation_note, _notat_str
@@ -59,6 +63,8 @@ def _linked_note_names_from_content(
     return linked_note_names
         
 
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 12
 def _linked_notat_note_names_from_content(
         content: str, vault: PathLike) -> list[str]:
     linked_note_names = _linked_note_names_from_content(content)
@@ -70,12 +76,19 @@ def _linked_notat_note_names_from_content(
     return linked_notation_note_names
 
 
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 14
 def _linked_notat_note_names_from_parsed(
         notat_note_parsed: NotationNoteParsed,
         vault: PathLike
         ) -> set[str]:
     """
     Helper function to `_init_args_for_data_from_notation_notes`
+
+    Since some notation note links are within the content of a notation note
+    rather than at the end as an unordered list, we need to obtain them
+    separately.
+
     """
     # TODO: use this function for initializing notation note linking data in the `data_for_reference` function.
     linked_notat_note_names = []
@@ -85,12 +98,12 @@ def _linked_notat_note_names_from_parsed(
         linked_notat_note_names.append(notat_note)
     
     linked_notat_note_names = set(linked_notat_note_names)
-    # set([notat_note for _, notat_note in notat_note_parsed.linked_notation_notes])
-    linked_notat_note_names.update(_linked_notat_note_names_from_content(
+    linked_notat_note_names.update(
+        _linked_notat_note_names_from_content(
             str(notat_note_parsed.main_content_markdown_file), vault))
     return linked_notat_note_names
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 11
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 15
 # TODO: test
 def _init_args_for_data_from_notation_notes(
         vault: PathLike,
@@ -132,7 +145,7 @@ def _init_args_for_data_from_notation_notes(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 12
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 16
 # TODO: test
 def _origin_links_to_relied(
         linked_notat_notes: list[tuple], # One of the outputs of `parse_notation_note`
@@ -182,7 +195,7 @@ def _adjust_content(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 14
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 18
 # TODO: test
 
 def notat_linking_data_from_notation_notes(
@@ -214,8 +227,6 @@ def notat_linking_data_from_notation_notes(
     - `information_notes_of_reference` correctly lists the standard information
       notes from the reference in the vault of name `reference_name`.
     """
-    # origin_notation_note, origin_parsed, main_of_origin_content, linked_notat_notes_in_origin = origin_notation_note_data
-    # relied_notation_note, relied_parsed, main_of_relied_content, linked_notat_notes_in_relied = relied_notation_note_data
     if not vault:
         vault = origin_notation_note_data.notation_note.vault
 
@@ -233,11 +244,6 @@ def notat_linking_data_from_notation_notes(
      ) = origin_parsed
     (relied_meta, relied_notat_str, main_of_relied_name, relied_content, _
      ) = relied_parsed
-    # (origin_meta, origin_notat_str, main_of_origin_name,
-    #  origin_content, linked_notat_notes
-    #  ) = parse_notation_note(origin_notation_note)
-    # (relied_meta, relied_notat_str, main_of_relied_name, relied_content, _
-    #  ) = parse_notation_note(relied_notation_note)
 
     origin_content, relied_content = str(origin_content), str(relied_content)
     origin_content = _adjust_content(include_origin_content, origin_content, origin_meta)
@@ -270,7 +276,7 @@ def notat_linking_data_from_notation_notes(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 15
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 19
 def _positive_pairs_of_notation_notes(
         confirmed_summary_notat_note_names: list[str],
         notat_notes_and_linked_notat_notes: dict[str, set[str]],
@@ -295,7 +301,7 @@ def _positive_pairs_of_notation_notes(
     
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 16
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 20
 def _positive_data_points(
         reference_index_note: VaultNote,
         positive_linked_notat_note_pairs: list[tuple[str, str]],
@@ -355,7 +361,7 @@ def _positive_data_points(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 17
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 21
 def _sample_data_points(
         reference_index_note: VaultNote,
         num_samples: int, 
@@ -404,10 +410,7 @@ def _sample_data_points(
                 ))
     return data_points
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 18
-from ...links import LinkFormatError
-
-
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 22
 def data_points_for_reference(
         reference_index_note: VaultNote, # The index note for the reference from which to draw the data.
         return_notation_note_parsings: bool = False, # If `True`, return the outputs of `parse_notation_note` applied to the notation notes in the reference folder 
@@ -497,7 +500,7 @@ def _filter_notat_notes_with_auto_generated_notat_links(
 
 
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 19
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 23
 def text_from_note_data(
         note_data: NotationNoteData,
         separation_token: str = '[SEP]',
@@ -531,7 +534,7 @@ def _content_relied(
     else:
         return f"Content for main note of relied_notation_note: {main_of_relied_content}"
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 21
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 25
 def augment_notation_linking_data(
         datapoint: NotationLinkingDataPoint,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -587,13 +590,14 @@ def _augment_notation_linking_data_once(
     return augmented_datapoint
     
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 23
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 27
 def prediction_by_model(
         origin_data: NotationNoteData,
         relied_data: NotationNoteData,
-        pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
-        as_single_float: bool = True # If `True`, return a float score of how likely it is that origin should link to relied.
-        ) -> Union[float, dict[Literal['label', 'score'], Union[bool, float]]]: # A float score of how likely it is that origin should link to relied or a dict consisting of whether origin should link to relied as well as the score of how likely that boolean prediction holds.
+        pipeline: Union[TextClassificationPipeline, SentenceTransformer],
+        as_single_float: bool = True, # If `True`, return a float score of how likely it is that origin should link to relied.
+        threshold: float = 0.5, # The threshold for determining whether origin should link to relied; should be a value between 0.0 and 1.0. A prediction exceeding this threshold should correspond to origin linking to relied. Ideally, this argument should be specified if `pipeline` is a `SentenceTransformer`
+        ) -> Union[float, dict[Literal['label', 'score'], Union[bool, float]]]: # A float score between 0.0 and 1.0 of how likely it is that origin should link to relied (0.0 means unlikely, 1.0 means likely) or a dict consisting of whether origin should link to relied, given `threshold`, as well as the score of how likely the model thinks that origin should link to relied (0.0 means unlikely, 1.0 means likely).
     r"""
     Predict whether a notation note depends on the notation
     summarized by another notation note.
@@ -601,29 +605,43 @@ def prediction_by_model(
     See also `prediction_by_model_via_datapoint` for an alternative
     function for predictions.
     """
-    data_point: NotationLinkingDataPoint = notation_note_data_pair_to_data_point(
-        origin_data, relied_data)
+    if isinstance(pipeline, TextClassificationPipeline):
+        data_point: NotationLinkingDataPoint = notation_note_data_pair_to_data_point(
+            origin_data, relied_data)
 
-    input = text_from_data_point(data_point)
-    # Of the for {'label': 'LABEL_0' or 'LABEL_1', 'score': 0.5000}
-    pred = pipeline(input)[0] 
-
-    # LABEL_1 is for `True`, i.e. when the origin note ought to link to the relied note
-    # and LABEL_0 is for `False`, i.e. when the origin note should not link to the relied note
-    if as_single_float:
+        input = text_from_data_point(data_point)
+        # Of the form {'label': 'LABEL_0' or 'LABEL_1', 'score': 0.5000}
+        pred = pipeline(input)[0] 
+        # LABEL_1 is for `True`, i.e. when the origin note ought to link to the relied note
+        # and LABEL_0 is for `False`, i.e. when the origin note should not link to the relied note
         if pred['label'] == 'LABEL_1':
-            return pred['score']
+            pos_score = pred['score']
         else:
-            return 1.0 - pred['score']
-    else:
-        return (pred['label'] == 'LABEL_1', pred['score'])
+            pos_score = 1.0 - pred['score']
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 24
+        if as_single_float:
+            return pos_score
+        else:
+            # TODO: fix the following to account for threshold
+            return {'label': pos_score >= threshold, 'score': pos_score}
+    else:
+        origin_text = text_from_note_data(origin_data)
+        relied_text = text_from_note_data(relied_data)
+        origin_embedding = pipeline.encode(origin_text)
+        relied_embedding = pipeline.encode(relied_text)
+        similarity = 1 - cosine(origin_embedding, relied_embedding)
+        if as_single_float:
+            return similarity
+        else:
+            return {'label': similarity >= threshold, 'score': similarity}
+
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 29
 # TODO: test
 def rank_notat_notes_to_potentially_link_to(
         origin_data: NotationNoteData,
         relied_data_list: list[NotationNoteData],
-        pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
+        pipeline: Union[TextClassificationPipeline, SentenceTransformer],
         threshold: float = 0.5
         ) -> list[tuple[NotationNoteData, float]]:
     """
@@ -641,7 +659,7 @@ def rank_notat_notes_to_potentially_link_to(
             ranked_data_list.append((relied_data, relevance_score))
     return sorted(ranked_data_list, key=lambda x: x[1], reverse=True)
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 25
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 30
 def _origin_notation_note_already_has_link_to_relied(
         relied_notation_note: VaultNote,
         origin_parsed: Union[tuple, None],
@@ -681,46 +699,16 @@ def _add_notation_link(
          'type': MarkdownLineEnum.UNORDERED_LIST})
     mf.write(origin_notation_note)
 
-# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 26
-def add_links_to_notation_note_via_data_point(
-        origin_data: NotationNoteData,
-        relied_data_list: list[NotationNoteData],
-        pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
-        vault: Path, # The vault in which the notes are.
-        threshold: float = 0.5, # The threshold for `pipeline`'s prediction of how likely it is that a relied notation note should be linked in order for the linking to actually happen.
-        only_add_links_to_notation_notes_with_confirmed_summaries: bool = True # If `True`, and if `pipeline` determines that the origina note should link to a notation note with an autogenerated summary or no summary, then print a messaage about this, but do not add the link.
-    ) -> None:
-    """
-    Add links for the notation notes in `relied_data_list` into the notation note represented
-    by `origin_data` if `pipeline` predicts that thoes notation notes should be linked.
-    """
-    relied_data_to_be_linked: list[tuple[NotationNoteData, float]] = rank_notat_notes_to_potentially_link_to(
-        origin_data, relied_data_list, pipeline, threshold)
-    origin_notat_note = VaultNote(vault, name=origin_data['notation_note_name'])
-    if not relied_data_to_be_linked:
-        return
-    mf = MarkdownFile.from_vault_note(origin_notat_note)
-    mf.add_tags('_auto/notation_notes_linked',
-                enquote_entries_in_metadata_fields=['latex_in_original'])
-    for relied_data, _ in relied_data_to_be_linked:
-        if relied_data['notation_note_name'] == origin_data['notation_note_name']:
-            continue
-        _add_link_to_notation_note_in_mf(
-            mf, relied_data, vault,
-            only_add_links_to_notation_notes_with_confirmed_summaries,
-            origin_data['notation_note_name'])
-    mf.write(origin_notat_note)
-        
-
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 31
 def _add_link_to_notation_note_in_mf(
         mf: MarkdownFile,
         relied_data: NotationNoteData,
         vault: Path,
         only_add_links_to_notation_notes_with_confirmed_summaries: bool,
         origin_name: str,
-        ) -> None:
+        ) -> bool: # `True` if the link to the relied note is added; `False` otherwise.
     # relied_parsed = parse_notation_note(relied_note)
-
+    """Helper function to `add_links_to_notation_note_via_data_point`"""
     if only_add_links_to_notation_notes_with_confirmed_summaries: 
         relied_note = VaultNote(vault, name=relied_data['notation_note_name'])
         relied_mf = MarkdownFile.from_vault_note(relied_note)
@@ -730,10 +718,44 @@ def _add_link_to_notation_note_in_mf(
         summary_is_empty = not bool(str(parsed.main_content_markdown_file).strip())
         if summary_is_auto_generated or summary_is_empty:
             print(f'The notation linking pipeline predicts that the notation note named {origin_name} should link to {relied_data["notation_note_name"]}, which either has an auto-generated summary or an empty summary. The link will not be added.')
-            return
+            return False
 
     bullet = f'- [{relied_data["summarized"]}]({relied_data["notation_note_name"]}.md)'
     mf.add_line_to_end(
         {'line': bullet,
         'type': MarkdownLineEnum.UNORDERED_LIST})
+    return True
 
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 32
+def add_links_to_notation_note_via_data_point(
+        origin_data: NotationNoteData,
+        relied_data_list: list[NotationNoteData],
+        pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
+        vault: Path, # The vault in which the notes are.
+        threshold: float = 0.5, # The threshold for `pipeline`'s prediction of how likely it is that a relied notation note should be linked in order for the linking to actually happen.
+        only_add_links_to_notation_notes_with_confirmed_summaries: bool = True # If `True`, and if `pipeline` determines that the origina note should link to a notation note with an autogenerated summary or no summary, then print a messaage about this, but do not add the link.
+    ) -> list[str]: # The names of the notation notes added; the names of notation notes that are not added for one reason or another are not included in this list.
+    """
+    Add links for the notation notes in `relied_data_list` into the notation note represented
+    by `origin_data` if `pipeline` predicts that thoes notation notes should be linked.
+    """
+    relied_data_to_be_linked: list[tuple[NotationNoteData, float]] = rank_notat_notes_to_potentially_link_to(
+        origin_data, relied_data_list, pipeline, threshold)
+    origin_notat_note = VaultNote(vault, name=origin_data['notation_note_name'])
+    if not relied_data_to_be_linked:
+        return []
+    mf = MarkdownFile.from_vault_note(origin_notat_note)
+    mf.add_tags('_auto/notation_notes_linked',
+                enquote_entries_in_metadata_fields=['latex_in_original'])
+    names_of_notation_notes_added: list[str] = []
+    for relied_data, _ in relied_data_to_be_linked:
+        if relied_data['notation_note_name'] == origin_data['notation_note_name']:
+            continue
+        added = _add_link_to_notation_note_in_mf(
+            mf, relied_data, vault,
+            only_add_links_to_notation_notes_with_confirmed_summaries,
+            origin_data['notation_note_name'])
+        if added:
+            names_of_notation_notes_added.append(relied_data['notation_note_name'])
+    mf.write(origin_notat_note)
+    return names_of_notation_notes_added

@@ -11,6 +11,7 @@ import os
 from os import PathLike
 from pathlib import Path
 import re
+import shutil
 from typing import Optional, Union
 
 
@@ -54,15 +55,33 @@ DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
 def _replace_custom_commands_in_parts(
         parts: list[DividedLatexPart],
         custom_commands: list[tuple[str, int, Union[str, None], str]],
-        repeat_replacing_custom_commands: int
+        repeat_replacing_custom_commands: int,
+        verbose: bool,
+        replace_spaced_commands: bool # If `True`, attempt to replace command invocations that do not properly use brackets.
         ) -> list[DividedLatexPart]:
-        
-    return [
-        DividedLatexPart(
+
+    new_parts: list[DividedLatexPart] = []
+    for part in parts:
+        if verbose:
+            print(f"old part to be replaced:\n\n{part['note_title']}\n\n{part['text']}\n")
+        new_part = DividedLatexPart(
             note_title=part['note_title'],
             text=replace_commands_in_text(
-                part['text'], custom_commands, repeat=repeat_replacing_custom_commands))
-        for part in parts]
+                part['text'], custom_commands, repeat=repeat_replacing_custom_commands,
+                replace_spaced_commands=replace_spaced_commands))
+        new_parts.append(new_part)
+        if verbose:
+            print(f"new part to be added:\n\n{part['text']}")
+    return new_parts
+
+        
+    # return [
+    #     DividedLatexPart(
+    #         note_title=part['note_title'],
+    #         text=replace_commands_in_text(
+    #             part['text'], custom_commands, repeat=repeat_replacing_custom_commands,
+    #             replace_spaced_commands= True))
+    #     for part in parts]
 #     return [
 #         (part['note_title'], replace_commands_in_text(
 #                 part['text'], custom_commands, repeat=repeat_replacing_custom_commands))
@@ -363,6 +382,65 @@ def _add_links_to_refs(
 
 
 # %% ../../nbs/16_latex.convert.ipynb 30
+def _create_images_folder(
+        image_path: PathLike,
+        new_vault: PathLike,
+        ):
+    new_images_folder = Path(new_vault) / '_images'
+    new_images_folder.mkdir(exist_ok=True)
+    # Copy each file from the source to the destination
+    for item in Path(image_path).iterdir():
+        if item.is_file():
+            shutil.copy2(item, new_images_folder)
+        elif item.is_dir():
+            shutil.copytree(item, new_images_folder / item.name)
+
+# %% ../../nbs/16_latex.convert.ipynb 31
+def _replace_includegraphics_with_embedded_links_in_parts(
+        parts: list[DividedLatexPart],
+        image_path: PathLike,
+        ) -> list[DividedLatexPart]:
+    r"""
+    A helper function to `setup_reference_from_latex_parts`. 
+
+    Replaces invocations of `\includegraphics` with wikistyle embedded links to the
+    images. Searches for the image file's extension within `image_path` if needed.
+    Adds double newlines around the embedded link.
+    """
+    new_parts: list[DividedLatexPart] = []
+    pattern = re.compile(r'\\includegraphics(?:\[.*?\])?{(.*?)}')
+
+    def replacement_func(match):
+        filename = match.group(1)
+        base, ext = os.path.splitext(filename)
+        if not ext:
+            # Search for the file with any extension
+            for root, dirs, files in os.walk(image_path):
+                for file in files:
+                    if file.startswith(base + '.'):
+                        filename = file
+                        break
+                if filename != base:
+                    break
+        
+        embedded_link = f'![[{filename}]]'
+        
+        # Always add double newlines around the embedded link
+        return f'\n\n{embedded_link}\n\n'
+
+    for part in parts:
+        replaced_text = re.sub(pattern, replacement_func, part['text'])
+        # Trim leading and trailing whitespace
+        replaced_text = replaced_text.strip()
+        new_part = DividedLatexPart(
+            note_title=part['note_title'],
+            text = replaced_text)
+        new_parts.append(new_part)
+
+    return new_parts
+
+
+# %% ../../nbs/16_latex.convert.ipynb 33
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
@@ -394,6 +472,9 @@ def setup_reference_from_latex_parts(
         repeat_replacing_custom_commands: int = 1, # The number of times to repeat replacing the custom commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to any negative number (e.g. `-1``), then this function attempts to replace custom commands until no commands to replace are found. 
         link_refs: bool = True, # If `True`, try to link invocations of \ref or \cref with the corresponding notes that \label them. 
         # replace_xy_matrices_with_cd: bool = True, # If `True`, then try to replace xymatrices with cd commands, which are renderable in Obsidian.md mathjax.
+        copy_images_to_vault: bool = False, # If `True`, copy over image files to the newly created vault, under the folder '_images" in the root of the vault.
+        image_path: PathLike = None, # Must be specified if `copy_images_to_vault` is `True`. Specifies the directory where the images can be located.
+        replace_spaced_commands: bool = False # If `True`, attempt to replace command invocations that do not properly use brackets.
         ) -> None:
     """Set up a reference folder in `vault` using an output of `divide_latex_text`, create
     notes from `parts`, and link notes in index files in the reference folder.
@@ -421,6 +502,9 @@ def setup_reference_from_latex_parts(
     Text/parts that precede explicitly given sections are included in the 
     first section's folder and are linked in the first section's index file.
     """
+    if copy_images_to_vault and not image_path:
+        raise ValueError("`copy_images_to_vault` was set to `False` and `image_path` was not specified.")
+
     parts = _adjust_common_section_titles_in_parts(parts, reference_name)
     chapters = section_and_subsection_titles_from_latex_parts(parts)
     if chapters[0][0] == UNTITLED_SECTION_TITLE:
@@ -440,7 +524,7 @@ def setup_reference_from_latex_parts(
 
     if replace_custom_commands:
         parts = _replace_custom_commands_in_parts(
-            parts, custom_commands, repeat_replacing_custom_commands)
+            parts, custom_commands, repeat_replacing_custom_commands, verbose, replace_spaced_commands)
     if adjust_common_latex_syntax_to_markdown:
         parts = [
             DividedLatexPart(note_title=part['note_title'], text=adjust_common_syntax_to_markdown(part['text']))
@@ -451,6 +535,8 @@ def setup_reference_from_latex_parts(
     if link_refs:
         labels_and_note_names: dict[str, str] = _find_labels(parts, note_names)
         parts = _add_links_to_refs(parts, labels_and_note_names)
+    if copy_images_to_vault:
+        parts = _replace_includegraphics_with_embedded_links_in_parts(parts, image_path)
         
     reference_folder = Path(location) / reference_name
     _create_notes_from_parts(
@@ -463,10 +549,15 @@ def setup_reference_from_latex_parts(
         template_mf,
         note_names
         )
+
+    if copy_images_to_vault:
+        #  TODO: test this part
+        _create_images_folder(image_path, vault / reference_folder)
+
     
 
 
-# %% ../../nbs/16_latex.convert.ipynb 39
+# %% ../../nbs/16_latex.convert.ipynb 42
 def _highlight_latex_math(latex_str):
     # Case 2: Double dollar signs
     if latex_str.startswith('$$') and latex_str.endswith('$$'):
@@ -492,7 +583,7 @@ def _highlight_latex_math(latex_str):
     # If none of the above cases match, return the original string
     return latex_str
 
-# %% ../../nbs/16_latex.convert.ipynb 41
+# %% ../../nbs/16_latex.convert.ipynb 44
 def convert_notes_to_latex_code(
         notes: list[VaultNote],
         vault: PathLike,

@@ -898,7 +898,7 @@ def _node_is_nonspecial_following_a_sectionlike_node(
 
 # %% ../../nbs/29_latex.divide.ipynb 94
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
-    'align', 'align*', 'diagram', 'displaymath', 'displaymath*', 'enumerate', 'eqnarray', 'eqnarray*',
+    'align', 'align*', 'center', 'diagram', 'displaymath', 'displaymath*', 'enumerate', 'eqnarray', 'eqnarray*',
     'equation', 'equation*', 'gather', 'gather*', 'itemize', 'label',
     'multiline', 'multiline*', 'multline', 'multline*',
     'proof', 'quote', 'tabular', 'table', ]
@@ -937,7 +937,8 @@ def divide_latex_text(
     if replace_commands_in_document_first:
         main_document = replace_input_and_include(
             main_document, dir, preamble_commands,
-            repeat_replacing_commands)
+            repeat_replacing_commands,
+            replace_spaced_commands=False)
         # main_document = replace_commands_in_latex_document(document, repeat_replacing_commands)
     document_node = find_document_node(main_document)
     swap_numbers: bool = swap_numbers_invoked(preamble)

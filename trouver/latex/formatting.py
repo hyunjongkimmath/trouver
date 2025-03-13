@@ -24,7 +24,8 @@ from trouver.helper.files_and_folders import (
 )
 from ..helper.regex import inline_latex_indices, separate_indices_from_str
 from ..helper.latex.comments import remove_comments
-from ..helper.latex.macros_and_commands import custom_commands, regex_pattern_detecting_command
+from ..helper.latex.macros_and_commands import(
+    custom_commands, regex_pattern_detecting_command, regex_pattern_detecting_space_separated_command)
 from .preamble import divide_preamble 
 
 
@@ -52,29 +53,6 @@ DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'question']
 
 # %% ../../nbs/31_latex.formatting.ipynb 12
-def replace_command_in_text(
-        text: str,
-        command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-    ):
-    """
-    Replaces all invocations of the specified command in `text` with the display text
-    with the arguments used in the display text.
-
-    Assumes that '\1', '\2', '\3', etc. are not part of the display text. 
-    """
-    command_name, num_parameters, optional_arg, display_text = command_tuple
-    command_pattern = regex_pattern_detecting_command(command_tuple)
-    replace_pattern = display_text.replace('\\', r'\\')
-    # if optional_arg is not None:
-    #     replace_pattern = replace_pattern.replace('#1', optional_arg)
-    replace_pattern = re.sub(r'#(\d)\b', r'\\\1', replace_pattern)
-    text = regex.sub(
-        command_pattern,
-        lambda match: _replace_command(match, command_tuple, command_pattern, replace_pattern),
-        text)
-    return text
-
-
 def _replace_command(
         match: regex.match,
         command_tuple: tuple[str, int, Union[None, str], str],
@@ -95,11 +73,118 @@ def _replace_command(
     else:
         return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
 
+# %% ../../nbs/31_latex.formatting.ipynb 13
+# def _replace_spaced_command(
+#         match: regex.Match,
+#         command_tuple: tuple[str, int, Union[None, str], str],
+#         command_pattern_for_spaces: regex.Pattern,
+#         replace_pattern: str) -> str:
+#     _, num_args, default_arg, _ = command_tuple
+#     groups = match.groups()
+    
+#     # Initialize arguments list
+#     args = []
+    
+#     # Handle optional argument if present
+#     if default_arg is not None:
+#         optional_arg = groups[0] if groups[0] is not None else default_arg
+#         args.append(optional_arg)
+#         groups = groups[1:]  # Remove the optional argument from groups
+    
+#     # Process remaining groups
+#     for i in range(0, len(groups), 2):
+#         if groups[i] is not None:
+#             args.append(groups[i])  # Braced argument
+#         elif i+1 < len(groups) and groups[i+1] is not None:
+#             args.append(groups[i+1])  # Unbraced argument
+#         else:
+#             args.append('')  # No argument provided
+    
+#     # Ensure we have the correct number of arguments
+#     args = args[:num_args]
+#     while len(args) < num_args:
+#         args.append('')
+    
+#     # Replace \1, \2, etc. in the replace_pattern with actual arguments
+#     for i, arg in enumerate(args, start=1):
+#         replace_pattern = replace_pattern.replace(f'\\{i}', arg)
+#     replace_pattern = replace_pattern.replace(r'\\', "\\")
+    
+#     return replace_pattern
+
+def _replace_spaced_command(
+        match: regex.Match,
+        command_tuple: tuple[str, int, Union[None, str], str],
+        command_pattern_for_spaces: regex.Pattern,
+        replace_pattern: str) -> str:
+    _, num_args, default_arg, _ = command_tuple
+    groups = match.groups()
+    
+    # Initialize arguments list with the correct size
+    args = [''] * num_args
+    
+    # Handle optional argument if present
+    start_index = 0
+    if default_arg is not None:
+        args[0] = groups[0] or default_arg
+        start_index = 1
+    
+    # Process remaining groups
+    arg_index = start_index
+    for i in range(start_index, len(groups), 2):
+        if arg_index >= num_args:
+            break
+        args[arg_index] = groups[i] or groups[i+1] or ''
+        arg_index += 1
+    
+    # Use a single regex substitution instead of multiple string replacements
+    def repl(m):
+        index = int(m.group(1)) - 1
+        return args[index] if 0 <= index < num_args else m.group(0)
+    
+    return regex.sub(r'\\(\d)', repl, replace_pattern).replace(r'\\', '\\')
+
+
 # %% ../../nbs/31_latex.formatting.ipynb 14
+def replace_command_in_text(
+        text: str,
+        command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
+        replace_spaced_commands: bool = True # If `True`, attempt to replace command invocations that do not properly use brackets.
+    ):
+    """
+    Replaces all invocations of the specified command in `text` with the display text
+    with the arguments used in the display text.
+
+    Assumes that '\1', '\2', '\3', etc. are not part of the display text. 
+    """
+    command_name, num_parameters, optional_arg, display_text = command_tuple
+    original_text = text
+
+    command_pattern = regex_pattern_detecting_command(command_tuple)
+    replace_pattern = display_text.replace('\\', r'\\')
+    # if optional_arg is not None:
+    #     replace_pattern = replace_pattern.replace('#1', optional_arg)
+    replace_pattern = re.sub(r'#(\d)\b', r'\\\1', replace_pattern)
+    text = regex.sub(
+        command_pattern,
+        lambda match: _replace_command(match, command_tuple, command_pattern, replace_pattern),
+        text)
+    if original_text != text or num_parameters == 0 or not replace_spaced_commands:
+        return text
+
+    command_pattern_for_spaces = regex_pattern_detecting_space_separated_command(command_tuple)
+    text = regex.sub(
+        command_pattern_for_spaces,
+        lambda match: _replace_spaced_command(match, command_tuple, command_pattern_for_spaces, replace_pattern),
+        text)
+    return text
+
+# %% ../../nbs/31_latex.formatting.ipynb 19
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: list[tuple[str, int, Union[None, str], str]], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
-        repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
+        repeat: int = 1, # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found. 
+        replace_spaced_commands: bool = False # If `True`, attempt to replace command invocations that do not properly use brackets.
     ) -> str:
     """
     Replaces all invocations of the specified commands in `text` with the
@@ -115,16 +200,19 @@ def replace_commands_in_text(
     while repeat != 0:
         old_text = text
         for command_tuple in command_tuples:
-            text = replace_command_in_text(text, command_tuple)
+            text = replace_command_in_text(
+                text, command_tuple,
+                replace_spaced_commands)
         repeat -= 1
         if old_text == text:
             break
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 19
+# %% ../../nbs/31_latex.formatting.ipynb 24
 def replace_commands_in_latex_document(
         document: str,
-        repeat: int = 1 # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
+        repeat: int = 1, # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
+        replace_spaced_commands: bool = False # If `True`, attempt to replace command invocations that do not properly use brackets.
         ) -> str:
     r"""Return the latex document (with the preamble) with invocations
     of custom commands/operators replaced with their display text.
@@ -144,11 +232,13 @@ def replace_commands_in_latex_document(
     commands = custom_commands(preamble)
     # Note that `command_tuple[0]` is the name of the command.
     unique_commands = {command_tuple[0]: command_tuple for command_tuple in commands} 
-    document = replace_commands_in_text(document, list(unique_commands.values()), repeat)
+    document = replace_commands_in_text(
+        document, list(unique_commands.values()), repeat,
+        replace_spaced_commands)
     return document
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 23
+# %% ../../nbs/31_latex.formatting.ipynb 28
 def _replace_math_mode_delimiters(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     text = re.sub(r'\\\(|\\\)', '$', text)
@@ -170,7 +260,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 24
+# %% ../../nbs/31_latex.formatting.ipynb 29
 def _inline_mathmode_to_own_paragraph(text: str):
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
@@ -254,7 +344,7 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 27
+# %% ../../nbs/31_latex.formatting.ipynb 32
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -312,7 +402,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/31_latex.formatting.ipynb 29
+# %% ../../nbs/31_latex.formatting.ipynb 34
 def _remove_xspace(
         text: str) -> str:
     r"""
@@ -343,7 +433,7 @@ def _replace_ensuremath(match):
     content = match.group(1)
     return content
 
-# %% ../../nbs/31_latex.formatting.ipynb 31
+# %% ../../nbs/31_latex.formatting.ipynb 36
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -433,12 +523,13 @@ def adjust_common_syntax_to_markdown(
         text = _remove_ensuremath(text)
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 43
+# %% ../../nbs/31_latex.formatting.ipynb 48
 def replace_input_and_include(
         document: str,
         dir: PathLike, # The directory containing the `.tex` files which are to be included.
         commands: list[tuple[str, int, Union[str, None], str]],
-        repeat_replacing_commands: int = -1 # this is passed as the `repeat` argument into the invocation of `replace_commands_in_text`.
+        repeat_replacing_commands: int = -1, # this is passed as the `repeat` argument into the invocation of `replace_commands_in_text`.
+        replace_spaced_commands: bool = False # If `True`, attempt to replace command invocations that do not properly use brackets.
         ) -> str:
     r"""
     Sequentially replace invocations of `\input` or `\include` with the contents of the corresponding files,
@@ -450,7 +541,9 @@ def replace_input_and_include(
         if chunk.strip().startswith(r'\input') or chunk.strip().startswith(r'\include'):
             return process_input_or_include(chunk.strip())
         else:
-            return replace_commands_in_text(chunk, commands, repeat_replacing_commands)
+            return replace_commands_in_text(
+                chunk, commands, repeat_replacing_commands,
+                replace_spaced_commands)
 
     def process_input_or_include(command: str) -> str:
         nonlocal commands
@@ -495,7 +588,7 @@ def replace_input_and_include(
     processed_chunks = [process_chunk(chunk) for chunk in chunks]
     return ''.join(processed_chunks)
 
-# %% ../../nbs/31_latex.formatting.ipynb 49
+# %% ../../nbs/31_latex.formatting.ipynb 54
 def remove_dollar_signs_around_equationlike_envs(text: str):
     """
     Remove dollar signs preceding and following displaymath/equation-like environments.

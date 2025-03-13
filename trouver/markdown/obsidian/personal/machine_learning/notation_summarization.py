@@ -319,7 +319,7 @@ def single_input_for_notation_summarization(
         latex_in_original_comes_first: bool = True, # If `True`, the `latex_in_original` piece appears before the `main_note_content`
         only_include_latex_in_original: bool = True, # If `True`, then include `latex_in_original` in the original 
         separation_token: str = "</s>",
-        classical_formatting: bool = True, # If `True`, then format the text in the way that it used to be;
+        classical_formatting: bool = False, # If `True`, then format the text in the way that it used to be;
         ) -> str:
     """
     Format an input for a
@@ -450,7 +450,7 @@ def summarize_notation(
     """
 
     summarizer_output = summarizer(
-        single_input_for_notation_summarization(notation_summarization_data))
+        single_input_for_notation_summarization(notation_summarization_data, classical_formatting=False))
     main_content = notation_summarization_data['processed_main_note_content']
 
     summary = summarizer_output[0]['summary_text']
@@ -578,8 +578,6 @@ def _get_summary(
         processed_main_note_content=str(main_mf),
         summary=''
     )
-    # summary = summarize_notation(
-    #     main_mf, latex_in_original, summarizer, latex_in_original_comes_first)
     summary = summarize_notation(
         notation_summarization_data,
         summarizer,

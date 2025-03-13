@@ -19,28 +19,16 @@ __all__ = ['WIKILINK_PATTERN', 'EMBEDDED_WIKILINK_PATTERN', 'WIKILINK_CAPTURE_PA
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 5
 # TODO Make it so that these patterns don't capture latex code
-# WIKILINK_PATTERN = r'!?\[\[.*?\]\]' 
 WIKILINK_PATTERN = r'!?\[\[[^\]]+\]\]'
 EMBEDDED_WIKILINK_PATTERN = r'!\[\[[^\]]+\]\]'
 WIKILINK_CAPTURE_PATTERN = r'!?\[\[([^#\|]*?)(#(.*?))?(\|(.*?))?\]\]'
 
 # Note that MARKDOWNLINK_PATTERN captures whitespace characters in its link, even though Obsidian
 # does not. This is implmeneted to find if any misformats in the Obsidian Markdown files.
-# MARKDOWNLINK_PATTERN = r'!?\[[^\]]+\]\([^)]+\)'  # The previously used pattern; it failed to capture something like r'[$[B:I]_A$](18785_notation_module_index_for_dedekind_domain)'.
 MARKDOWNLINK_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)]+)\)'
-
-
 EMBEDDED_MARKDOWNLINK_PATERN = r'!\[[^\]]+\]\([^)]+\)'
-
-# MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[([^\]]*)\]\(([^)#]+)(#([^)]+))?\)' # The previously used pattern
-# MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[([^\]]*)\]\(([^)#]+)(#([^)]+))?\)'
 MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)#]+)(#([^)]+))?\)'
-
-
-
-
 EMBEDDED_PATTERN = f'{EMBEDDED_WIKILINK_PATTERN}|{EMBEDDED_MARKDOWNLINK_PATERN}'
-# MARKDOWNLINK_CAPTURE = r'!?\[([^\]]+)\]\(([^)#])+(#[^)]+)?\)'
 
 # %% ../../../nbs/06_markdown.obsidian.links.ipynb 9
 def link_ranges_in_text(
