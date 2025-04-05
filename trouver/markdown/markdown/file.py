@@ -14,6 +14,8 @@ from typing import Iterator, Union, Optional
 import warnings
 import yaml
 
+from fastcore.basics import patch
+
 from ...helper.html import remove_html_tags_in_text
 from ...helper.regex import find_regex_in_text
 from trouver.markdown.markdown.heading import (
@@ -179,7 +181,7 @@ class MarkdownLineEnum(Enum):
     DISPLAY_LATEX_END = 14  # End line of DISPLAY latex
     DISPLAY_LATEX = 15  # All other DISPLAY latex lines
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 38
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 39
 class MarkdownFile:
     r"""
     Parses and represents the contents of an Obsidian styled Markdown
@@ -216,329 +218,14 @@ class MarkdownFile:
         """Return the text representation of the `MarkdownFile` object"""
         return self.text_of_lines(0, len(self.parts))
 
-    def text_of_lines(
-            self,
-            start: int,
-            end: int
-            ) -> str:
-        """Return the text of `self.parts[start:end]`,
-        adding new line characters `'\n'` in between. """
-        return '\n'.join([
-            line_dict['line'] for line_dict in self.parts[start:end]])
-
-    def get_headings(
-            self,
-            levels: Union[int, Iterator[int], None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. Defaults to `None`, in which case all heading-levels are searched.
-            include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.
-            ) -> list[str]: # Each str is the heading, including leading sharps `'#'`.
-        """
-        Return a list of heading titles in the markdown file.
-        """
-        line_dict = self.get_headings_by_line_number(
-            levels, include_start=include_start)
-        return list(line_dict.values())
-
-    def get_headings_by_line_number(
-            self,
-            levels: Union[Iterator[int], int, None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None` then all heading-levels are searched.
-            include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.
-            ) -> dict[int, str]: # The keys are line numbers and each value is str is the heading string, including the leading sharps `'#'`, but without any leading or trailing whitespace characters.
-        """
-        Return a dict of heading titles in the markdown file.
-        """
-        if not levels:
-            levels = []
-        elif type(levels) is int:
-            levels = (levels,)
-        line_numbers = [i for i, line_dict in enumerate(self.parts)
-                        if line_dict['type'] is MarkdownLineEnum.HEADING]
-        extract = {line_number: self.parts[line_number] 
-                   for line_number in line_numbers}
-        headings = {line_number: line_dict['line'].strip()
-                    for line_number, line_dict in extract.items()
-                    if (not(levels) 
-                        or heading_level(line_dict['line']) in levels)}
-        if include_start and 0 not in headings:
-            headings[-1] = ''
-        return headings
-    
-    def get_headings_and_text(
-            self,
-            levels: Union[Iterator[int], int, None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
-            include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.        
-            ) -> dict[str, str]: # Each key is the entire str of the heading, including the leading sharps `'#'`, but not including leading or trailing whitespace characters Each value is the str under that heading until the next heading, including at trailing next line characters `\n`.  If `include_start` is `True`, then one of the keys is the empty str and the corresponding value is the start of the text that is not under any heading.
-        # TODO I think there is a bug, e.g. when all headers are level 1 and 
-        # level = 2, include_start = True, everything is treated like the start.
-        """
-        Return a list of headings and the text under each heading.
-        
-        The text under each heading does not include the text of
-        subheadings.
-
-        """
-        headings_by_lines = self.get_headings_by_line_number(levels, include_start)
-        line_numbers = [num for num in headings_by_lines]
-        line_numbers.append(len(self.parts))
-        line_numbers.sort()
-        heading_dict = {}
-        # previous_header_line_num = -1
-        previous_header_line_num = -1 if include_start else line_numbers[0]
-        for i, header_line_num in enumerate(line_numbers):
-            lines = self.parts[previous_header_line_num+1:header_line_num]
-            lines = [line_dict['line'] for line_dict in lines]
-            heading = headings_by_lines.get(previous_header_line_num, '')
-            previous_header_line_num = header_line_num
-            heading_dict[heading] = '\n'.join(lines)
-        return heading_dict
-    
-    def get_headings_tree(
-            self
-            ) -> dict[Union[str, int], Union[str, dict]]: # The keys are 1. line numbers or 2. the str `'title'`.  The values are dict or str (the blank str if root node) respectively. The dicts in themselves recursively represent trees and the str are headings, including the leading sharps.
-        """Return a dict representing the tree of headings in the markdown file.
-
-        **Returns**
-
-        - dict[Union[str, int], Union[str, dict]]
-            - The keys are 1. line numbers or 2. the str `'title'`.  The values
-            are dict or str (the blank str if root node) respectively. The
-            dicts in themselves recursively represent trees and the str are
-            headings, including the leading sharps. In particular, the root
-            level dict also has the blank string `''` associated to the key
-            `'title'`.
-        """
-        headings_dict = self.get_headings_by_line_number(include_start=False)
-        root_dict = {'title': ''}
-        dict_stack = [root_dict]
-        current_level = 0
-        # Go through each heading, and figure out where it should
-        # be added.
-        for line_number, heading in headings_dict.items():
-            new_dict = {'title': heading}
-            while (heading_level(dict_stack[-1]['title'])
-                   >= heading_level(heading)):
-                dict_stack.pop()
-            dict_stack[-1][line_number] = new_dict
-            dict_stack.append(new_dict)
-            current_level = heading_level(heading)
-        return root_dict
-                
-    
-    def get_line_number_of_heading(
-            self,
-            title: Union[str, None] = None, # Title of the heading. Does not include the leading sharps (`'#'`). If `None`, then return the line number of any heading after the specified line number.
-            from_line: int = 0, # The line number to start searching for the heading with `title` from.
-            levels: Union[Iterator[int], int, None] = None # The levels of the heading to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
-            ) -> int: # An index in `self.parts`. If no index/line number of the matching heading exists, then return -1.
-        """
-        Return the line number of the heading with the specified
-        title after the specified line number.
-        """
-        if type(levels) is int:
-            levels = (levels,)
-        heading_satisfies = lambda x: (
-            x['type'] is MarkdownLineEnum.HEADING
-            and (levels is None or heading_level(x['line']) in levels)
-            and (title is None or heading_title(x['line']) == title))
-        return next((i for i in range(from_line, len(self.parts))
-                     if heading_satisfies(self.parts[i])), -1)
-    
-    def get_line_numbers_under_heading(
-            self,
-            title: Union[str, None] = None, # Title of the heading. Does not include the leading sharps (`'#'`). If `None`, then return the line number of any heading after the specified line number.
-            from_line: int = 0, # The line number to start searching for the heading with `title` from.
-            levels: Union[Iterator[int], int, None] = None, # The levels of the heading to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
-            include_subheadings: bool = True # If `True`, then include the subheadings.
-            ) -> Union[tuple[int], int]: # `(start, end)` where `self.parts[start:end]` represents the parts under the heading, including the start of the heading.  If the heading of the specified title does not exist, then returns -1.
-        """
-        Return the line numbers belonging to the heading.
-        """
-        # TODO: implement from_line, levels and then test
-        start_line = self.get_line_number_of_heading(title)
-        if start_line == -1:
-            return -1
-        level = heading_level(self.parts[start_line]['line'])
-        if include_subheadings:
-            levels_to_search = range(1, level+1)
-        else:
-            levels_to_search = None
-        headings_and_lines = self.get_headings_by_line_number(
-            levels=levels_to_search)
-        lines_with_headings = list(headings_and_lines)
-        lines_with_headings.sort()
-        index_of_start = lines_with_headings.index(start_line)
-        if len(lines_with_headings) - 1 >= index_of_start + 1:
-            end_line = lines_with_headings[index_of_start + 1]
-        else:
-            end_line = len(self.parts)
-        return (start_line, end_line)
-
-    def write(
-        self,
-        vn: VaultNote, # Represents the file.
-        mode: str = 'w', # The specific mode to write the file with.
-        # enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
-        check_validity: bool = True # If `True`, then check whether a MarkdownFile object could be instantiated from `self.__str__()` before writing to the file. If not, then a `ValueError` is raised.
-        ) -> None:
-        r"""
-        Write to the file specified by a `VaultNote` object.
-
-        If the file that the `VaultNote` object represents does not exist,
-        then this method creates it.
-
-        **Raises**
-        - `ValueError`
-            - If `check_validity` is `True` and if `str(self)` cannot be parsed
-            as a `MarkdownFile` object. If this error is raised, then most likely the
-            issue is that the frontmatter metadata cannot be parsed by `pyyaml` and
-            the metadata field elements need to be escaped and/or enquoted.    
-            It is recommended to use `.replace_metadata` and passing arguments to the
-            `enquote_entries_in_fields` parameter or to use the `dict_to_metadata_lines`
-            function to ensure that metadata fields are
-            enquoted and escaped.
-        """
-        if not vn.exists():
-            vn.create()
-        # if enquote_entries_in_metadata_fields:
-        #     self.replace_metadata(
-        #         self.metadata(), enquote_entries_in_metadata_fields)
-        if check_validity:
-            try:
-                new_mf = MarkdownFile.from_string(str(self))
-                new_mf.metadata()
-            except Exception as e:
-                raise ValueError(fr"""Tried to write the MarkdownFile object to {vn.path()}, 
-but the output of `.__str__()` on the MarkdownFile object is not parseable as as MarkdownFile object. 
-Most likely, the YAML frontmatter cannot be parsed, and metadata field elements need to
-be enquoted and/or escaped (say via using double slashes `\\` instead of single slashes `\`
-and by using `\"` instead of just `"`). It is recommended to apply the `.replace_metadata` method of the
-`MarkdownFile` object, specifying arguments for the `enquote_entries_in_fields` parameter.
-The following is the MarkdownFile object's str representation:
-\n\n{str(self)}
-""")
-
-        with open(vn.path(), mode, encoding='utf-8') as file:
-            file.write(str(self))
-            file.close()
-            
-    def insert_line(
-            self,
-            index: int, # The index at which to add `line_dict` into `self.parts`.
-            line_dict: dict[str, Union[MarkdownLineEnum, str]] # See `self.parts`.
-            ) -> None:
-        """Add a line at the specified index/line number to `self.parts`."""
-        self.parts.insert(index, line_dict)
-        
-    def remove_line(
-            self,
-            index: int = -1 # The index of the line to remove from `self.parts`.
-            ) -> None:
-        """Remove a line from `self.parts`."""
-        del self.parts[index]
-        
-    def remove_lines(
-            self,
-            start: int, # The index of the first line to remove from `self.parts`.
-            end: int # The end index to remove; the line of index `end` is not removed, but the line of index `end - ` is.
-            ) -> None:
-        """Remove lines from `self.parts`."""
-        del self.parts[start:end]
-        
-    def pop_line(
-            self,
-            index: int = -1 # The index of the line to pop from `self.parts`.
-            ) -> dict[str, Union[MarkdownLineEnum, str]]: # The popped line
-        """Remove a line from `self.parts` and get its value."""
-        return self.parts.pop(index)
-        
-    def add_line_to_end(
-            self,
-            line_dict: dict[str, Union[MarkdownLineEnum, str]] # See `self.parts`.
-            ) -> None:
-        """Add a line to the end of `self.parts`."""
-        self.parts.append(line_dict)
-        
-    def add_blank_line_to_end(self) -> None:
-        """Add a blank line to the end of `self.parts`."""
-        # TODO: Should the blank line be '\n' or ''?
-        self.add_line_to_end(
-            {'type': MarkdownLineEnum.BLANK_LINE, 'line': '\n'})
-        
-    def add_line_in_section(
-            self,
-            title: str, # Title of the heading (without the leading sharps `'#'`)
-            line_dict: dict[str, Union[MarkdownLineEnum, str]], # The line to add
-            start: bool = True # If `True`, add to the start of the section. If `False`, add to the end of the section.
-            ) -> None:
-        # TODO start=False is not implemented. 
-        # TODO Be able to tell what the inserted line's type is.
-        # TODO This seems to work incorrectly if there are no lines
-        # after a header.
-        """Add a line in section specified by its title."""
-        line_number = self.get_line_number_of_heading(title=title)
-        self.insert_line(line_number + 1, line_dict)
-     
-    def remove_section(
-            self,
-            title: str # The title of the section to remove (without the starting `'#'`'s)
-            ) -> None:
-        """
-        Remove the section with the specified title, including subsections,
-        if the section exists.
-        """
-        section_line = self.get_line_number_of_heading(title=title)
-        if section_line == -1:
-            return
-        level = heading_level(self.parts[section_line]['line'])
-        big_level_lines = self.get_headings_by_line_number(range(1, level+1))
-        line_numbers = [line_num for line_num in big_level_lines]
-        line_numbers.sort()
-        i = line_numbers.index(section_line) + 1
-        next_section_line = (
-            line_numbers[i] if i < len(line_numbers) else len(self.parts))
-        self.remove_lines(section_line, next_section_line)
-        
-    
-    def clear_section(
-            self,
-            title: str, # Title of the section (Without the leading sharps `'#'`)
-            leave_blank_line: bool = True, # If `True`, leaves a blank line at the end of the section.
-            clear_subsections: Optional[str] = None # `'clear'`, `'delete'`, or `None`. If `'clear'`, then just clears the contents of subsections, but does not affect the headers. If `'delete'`, then clears the contents of the subsections and deletes the headers. If `None`, then does not affect either. 
-            ) -> None:
-        # TODO: implement clear_subsections
-        """
-        Clear the section with the specified title, if it exists.
-        
-        Does not clear subsections.
-        """
-        section_line = self.get_line_number_of_heading(title=title)
-        if section_line == -1:
-            return
-        next_section_line = self.get_line_number_of_heading(
-            from_line=section_line+1)
-        if next_section_line == -1:
-            next_section_line = len(self.parts)
-        self.parts = self.parts[:section_line+1] + self.parts[next_section_line:]
-        if leave_blank_line:
-            self.insert_line(
-                section_line + 1,
-                {'type': MarkdownLineEnum.BLANK_LINE, 'line': ''})
-
-    def clear_all_sections(
-            self,
-            leave_blank_lines: bool = True
-            # If True, leaves a blank line in each section
-            ) -> None:
-        """
-        Clear all sections.
-        
-        Does not clear frontmatter metadata. Leaves all headers intact.
-        """
-        part_indices_to_remove = [
-            i for (i, part) in enumerate(self.parts)
-            if (part['type'] not in [MarkdownLineEnum.META,
-                                     MarkdownLineEnum.HEADING])]
-        for index_to_remove in reversed(part_indices_to_remove):
-            self.remove_line(index_to_remove)
+    def copy(
+            self: MarkdownFile,
+            deep: bool) -> MarkdownFile:
+        # TODO: test
+        list_to_copy_with = self.parts
+        if deep:
+            list_to_copy_with = copy.deepcopy(list_to_copy_with)
+        return self.__class__(list_to_copy_with)
         
     def metadata_parts(
             self
@@ -574,620 +261,7 @@ The following is the MarkdownFile object's str representation:
         """
         md_parts = self.metadata_parts()
         return parse_metadata_string('\n'.join(md_parts[1:-1]))
-        # try:
-        #     return yaml.safe_load('\n'.join(md_parts[1:-1]))
-        # except (yaml.YAMLError) as e:
-        #     raise ValueError(
-        #         "There is invalid YAML formatting in a MarkdownFile object."
-        #         " The following is its text:\n"
-        #         f"{str(self)}\n\n") from e
-        # try:
-        #     return ruamel.yaml.load()
             
-    def has_metadata(self) -> bool:
-        """
-        Return `True` if this `MarkdownFile` object has fronmatter
-        YAML metadata.
-
-        If the `MarkdownFile` object has any frontmatter YAML metadata, then
-        it is expected to be at the very start; in particular, it must not
-        be preceded by any whitespace characters.
-        """
-        return (self.parts 
-                and self.parts[0]['type'] == MarkdownLineEnum.META)
-
-    def add_metadata_section(
-            self,
-            check_exists: bool = True # If `True`, Check if there is already a metadata section at the beginning and do not add a metadata section if it exists.
-            ) -> None:
-        """Add a frontmatter YAML metadata at the very beginning."""
-        if check_exists and self.has_metadata():
-            return
-        default_meta = [{'type': MarkdownLineEnum.META, 'line': '---\n'},
-                        {'type': MarkdownLineEnum.META, 'line': '---\n'}]
-        self.parts = default_meta + self.parts
-
-    def metadata_lines(
-            self
-            ) -> tuple[int]: # The tuple consists of 2 ints, `a` and `b`, where `self.parts[a:b+1]` represent the metadata lines, including the `'---'` before and after.
-        # TODO: change the index conventions of the output so that
-        # [a:b] is the parts
-        """
-        Return the indices in `self.parts` which are metadata.
-        
-        Assumes that `self.parts` is nonempty. 
-
-        If the MarkdownFile object has any frontmatter YAML metadata, then
-        it is expected to be at the very start; in particular, it must not
-        be preceded by any whitespace characters.
-        
-        **Returns**
-         
-        - tuple
-            - The tuple consists of 2 ints, `a` and `b`, where `self.parts[a:b+1]`
-            represent the metadata lines, including the `'---'` before and after.
-        """
-        for i, part in enumerate(self.parts):
-            if part['type'] == MarkdownLineEnum.META:
-                start = i
-                break
-        for j in range(i+1, len(self.parts)):
-            if self.parts[j]['type'] != MarkdownLineEnum.META:
-                end = j-1
-                break
-        return (start, end)
-        
-    def replace_metadata(
-            self,
-            new_metadata: dict[str], # The dictionary representing the new metadata. The keys are the names of fields. The values are the field values, usually expected to be a single string or a list of strings
-            enquote_entries_in_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
-        ) -> None:
-        """
-        Replace the frontmatter metadata of this MarkdownFile object.
-        
-        Optionally also enquotes string entries in fields specified by
-        `enquote_entries_in_fields`.
-
-        **Warning**
-        - This method is only tested when the values of `new_metadata` are either `str` or
-        `list[str]`.
-        """
-        lines = dict_to_metadata_lines(new_metadata, enquote_entries_in_fields)
-        new_metadata_parts = [{'type': MarkdownLineEnum.META, 'line': line}
-                              for line in lines]
-        new_metadata_parts.insert(0, {'type': MarkdownLineEnum.META, 'line': '---'})
-        new_metadata_parts.append({'type': MarkdownLineEnum.META, 'line': '---'})
-        start, end = self.metadata_lines()
-        self.parts = self.parts[:max(0,start-1)] + new_metadata_parts\
-            + self.parts[end+1:]
-    
-    def remove_metadata(self) -> None:
-        """Remove the frontmatter metadata of this MarkdownFile object."""
-        self.parts = [part for part in self.parts 
-                      if part['type'] != MarkdownLineEnum.META]
-    
-    def has_tag(
-            self,
-            tag: str # The tag. Does not start with the hashtag `'#'`.
-            ) -> bool:
-        """
-        Return `True` if the Markdown file has the specified tag in its
-        YAML frontmatter metadata.
-
-        More specifically, return `True` if the `MarkdownFile` objeect
-
-        1. has YAML frontmatter metadata,
-        2. the metadata has a `'tags'` section,, and
-        3. the `'tags'` section is a list with the specified tag.
-
-        Note that `tag` should not start with the hashtag `#` charater.
-        """
-        if not self.has_metadata():
-            return False
-        metadata = self.metadata()
-        return (bool(metadata) and 'tags' in metadata
-                and tag in metadata['tags'])
-    
-    def add_tags(
-            self,
-            tags: Union[str, list[str]], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
-            skip_repeats: bool = True, # If `True`, then this MarkdownFile will just have unique tags; merges pre-existing repeated tags if necessary. Also, the order of the tags may be changed.
-            skip_repeated_auto: bool = True, # If `True`, then only add tags starting with '_auto/' if the corresponding non-auto tag does not exist, e.g.  '_auto/_meta/definition' is not added if the note already has '_meta/definition'.
-            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
-            ) -> None:
-        """
-        Add tags to the frontmatter metadata.
-        
-        The order of the tags may be changed.
-
-        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
-        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
-        `replace_metadata` invocation preserves enquoted metadata values. 
-
-        """
-        if isinstance(tags, str):
-            tags = [tags]
-        self.add_metadata_section(check_exists=True)
-        metadata = self.metadata()
-        if not metadata:
-            metadata = {}
-        if not 'tags' in metadata:
-            metadata['tags'] = []
-
-        tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
-        if skip_repeated_auto:
-            tags = [tag for tag in tags 
-                    if (not tag_is_auto_tag(tag) 
-                        or strip_auto_from_tag(
-                            tag, with_hash_tag=False) not in metadata['tags'])]
-        if skip_repeats:
-            set_of_tags = set(metadata['tags']) | set(tags)
-            metadata['tags'] = list(set_of_tags)
-        else:
-            metadata['tags'] += tags
-        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
-        
-    def remove_tags(
-            self,
-            tags: list[str], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
-            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
-            ) -> None:
-        """
-        Remove specified tags from the frontmatter metadata, if
-        the frontmatter metadata and the specified tags.
-
-        If the `MarkdownFile` object does not have a frontmatter or
-        if the frontmatter does not include a `tags` line, then
-        the `MarkdownFile` object is not modified.
-        
-        Assumes that this MarkdownFile object has a frontmatter and
-        that the frontmatter includes a tags line.
-        
-        Any repeated tags are either merged into one (if the tag is 
-        not in `tags`) or are removed (if the tag is in `tags`).
-
-        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
-        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
-        `replace_metadata` invocation preserves enquoted metadata values. 
-        """
-        tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
-        metadata = self.metadata()
-        if metadata is None or not 'tags' in metadata:
-            return
-        set_of_tags = set(metadata['tags'])
-        set_of_tags -= set(tags)
-        metadata['tags'] = list(set_of_tags)
-        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
-    
-    def replace_auto_tags_with_regular_tags(
-            self,
-            exclude: list[str] = None, # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.
-            enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
-            ) -> None:
-        """
-        Replace tags in the frontmatter metadata starting with `_auto/`
-        with tags without the `_auto/`.
-
-        Ultimately the `replace_metadata` method is used to modify the YAML metadata.
-        Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
-        `replace_metadata` invocation preserves enquoted metadata values. 
-        """
-        if not exclude:
-            exclude = []
-        metadata = self.metadata()
-        no_auto_tags = [strip_auto_from_tag(tag, with_hash_tag=False)
-                         for tag in metadata['tags']]
-        new_tags = [
-            no_auto if (tag_is_auto_tag(old) and no_auto not in exclude)
-            else old for (no_auto, old) in zip(no_auto_tags, metadata['tags'])
-        ]
-        metadata['tags'] = new_tags
-        self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
-    
-    def remove_in_line_tags(self) -> None:
-        """Remove lines starting with in line tags."""
-        part_indices_to_remove = []
-        for i, part in enumerate(self.parts):
-            if (part['type'] == MarkdownLineEnum.DEFAULT
-                    and part['line'].strip().startswith('#')):
-                part_indices_to_remove.append(i)
-        for i in reversed(part_indices_to_remove):
-            self.remove_line(i)
-            
-    def replace_links_with_display_text(
-            self,
-            remove_embedded_note_links: bool = False # If `True`, remove links to embedded notes as well. If `False`, does not modify embedded notes.`
-            ) -> None:
-        """Remove nonembedded links and replaces them with their display text.
-        """
-        for part in self.parts:
-            if part['type'] == MarkdownLineEnum.META:
-                continue
-            part['line'] = remove_links_from_text(
-                part['line'],
-                remove_embedded_note_links=remove_embedded_note_links)
-    
-    def parts_of_id(
-            self,
-            par_id: str # Must begin with `'^'`.
-            ) -> Union[tuple[int], None]: # `(start,end)` where `self.parts[start:end]` consists of the lines of the specified id. If the specified id does not exist for the note, then `None` is returned.
-        """
-        Return the indices of the lines within the Markdown file
-        belonging to the specified text id.
-
-        This id can be used as an anchor for a link in Obsidian. For example,
-        `[[note#^65809f]]` is a link to a note named `note` to the text with id
-        `65809f`. Such a text is marked with a trailing `^65809f`.
-        """
-        pattern = re.compile(fr'(?:^|\s){re.escape(par_id)}\b(?:\s*?)$')
-        for i, part in enumerate(reversed(self.parts)):
-            match = re.search(pattern, part['line'])
-            if match:
-                break
-
-        end_of_text = len(self.parts) - 1 - i
-        i = end_of_text
-        has_any = _remove_text_id(self.parts[i]['line']).strip() != ''
-        cont = True
-        while i > 0 and cont:
-            cont, has_any = self._include_previous_line_as_id_text(i, has_any)
-            if cont:
-                i -= 1
-        return i, end_of_text+1
-        # self.parts[i:end_of_text+1]
-
-    def _include_previous_line_as_id_text(self, i: int, has_any: bool):
-        """Used in `text_of_id`
-
-        **Parameters**
-        - i - int
-            - Greater than 0.
-        - has_any - bool
-            - `True` if any text beyond the id has been gathered.
-            `False` otherwise.
-
-        **Return**
-        - bool, bool
-            - The first bool is `True` if the previous line should be
-            included in the text of the id. The second bool is `True` if
-            any content any been included in the search.
-        """
-
-        if self.parts[i]['type'] == MarkdownLineEnum.HEADING:
-            return False, True
-        elif self.parts[i-1]['type'] == MarkdownLineEnum.HEADING:
-            return False, has_any
-        elif (self.parts[i]['type'] == MarkdownLineEnum.DISPLAY_LATEX
-                and self.parts[i-1]['type'] == MarkdownLineEnum.DISPLAY_LATEX):
-            return True, True
-        elif self.parts[i-1]['line'].strip() == '':
-            if has_any:
-                return False, True
-            else:
-                return True, False
-        return True, True
-
-    def replace_embedded_links_with_text(
-            self,
-            vault: PathLike,
-            recursive: bool = True, # If `True`, then recursively replaces embedded links in the text of the embedded links.
-            remove_paragraph_id: bool = True # If `True`, then removes the paragraph id's in the text of the embedded links. Leaves the paragraph id's of the origianl text in tact.
-            ) -> None:
-        """
-        Remove embedded links and replaces them with their underlying text,
-        as found in notes in the vault.
-        
-        Assumes that the embedded links do not loop infinitely.
-
-        For embedded links to notes that do not exist in the vault,
-        the embedded links are replaced with blank str.
-
-        No new entries are added to `self.parts` even if the embedded links
-        have multiple lines.
-        """
-        # TODO: implement error raise upon infinite loop.
-        for part in self.parts:
-            part['line'] = self._replace_embedded_links_one_line(
-                part['line'], vault, recursive, remove_paragraph_id)
-    
-    def _replace_embedded_links_one_line(
-            self, text: str, vault: PathLike, recursive: bool,
-            remove_paragraph_id: bool) -> str:
-        # TODO: test what happens when `link_note` is actually an image.
-        # TODO: deal with possibility that a vaultnote gets an image
-        # file name passed.
-        """Used in `replace_embedded_links_with_text`"""
-        embedded_links = find_regex_in_text(text, EMBEDDED_PATTERN)
-        for start, end in reversed(embedded_links):
-            link_object = ObsidianLink.from_text(text[start:end])
-            if link_object.file_name:
-                try:
-                    link_note = VaultNote(
-                        vault, name=link_object.file_name,
-                        update_cache=False)
-                    link_file = MarkdownFile.from_vault_note(link_note)
-                except (NoteDoesNotExistError, NotePathIsNotIdentifiedError):
-                    text = text[:start] + text[end:]
-                    continue
-                # if not link_note.exists():
-                #     text = text[:start] + text[end:]
-                #     continue
-            else:
-                link_file = self
-            if link_object.anchor == 0:
-                replace = str(link_file)
-            elif link_object.anchor.startswith('^'):
-                replace = self._text_of_embedded_link_of_id(
-                    link_file, link_object.anchor, vault, recursive, remove_paragraph_id)
-            elif link_object.anchor:
-                replace = self._text_of_embedded_link_of_section(
-                    link_file, link_object.anchor, vault, recursive, remove_paragraph_id)
-            else:
-                replace = str(link_file)
-            text = text[:start] + replace + text[end:]
-        return text
-            # try:
-            #     vn = VaultNote(vault, name=link_object.file_name)
-            #     mf = MarkdownFile.from_vault_note(vn)
-            # except NoteDoesNotExistError:
-            #     replace = ''
-            # text = text[:start] + replace + text[end:]
-
-    def _text_of_embedded_link_of_id(
-            self, link_file: MarkdownFile, par_id: str, vault: PathLike,
-            recursive: bool, remove_paragraph_id: bool) -> str:
-        """Used in `_replace_embedded_links_one_line"""
-        start, end = link_file.parts_of_id(par_id)
-        embedded_text = self._text_of_lines_of_embedded_links(
-            link_file, vault, start, end, recursive,
-            remove_paragraph_id)
-        if remove_paragraph_id:
-            embedded_text = _remove_text_id(embedded_text)
-        return embedded_text
-
-    def _text_of_embedded_link_of_section(
-            self, link_file: MarkdownFile, heading: str, vault: PathLike,
-            recursive: bool, remove_paragraph_id: bool) -> str:
-        """Used in `_replace_embedded_links_one_line"""
-        start, end = link_file.get_line_numbers_under_heading(
-            title=heading, include_subheadings=True)
-        return self._text_of_lines_of_embedded_links(
-            link_file, vault, start, end, recursive,
-            remove_paragraph_id)
-
-    def _text_of_lines_of_embedded_links(
-            self, link_file: MarkdownFile, vault: PathLike,
-            start: int, end: int, recursive: bool,
-            remove_paragraph_id: bool) -> str:
-        """Used in `_text_of_embedded_link_of_id` and 
-        `_text_of_embedded_link_of_section`
-        """
-        if not recursive:
-            return link_file.text_of_lines(start, end)
-        new_mf = MarkdownFile(
-            copy.deepcopy(link_file.parts[start:end]))
-        new_mf.replace_embedded_links_with_text(
-            vault, recursive, remove_paragraph_id)
-        return str(new_mf)
-
-    def remove_footnotes_to_embedded_links(
-            self,
-            remove_footnote_mentions: bool = True # If `True`, removes the mentions to the footnote to the embedded links in the text.
-            ) -> None:
-        """
-        Remove footnotes to embedded links.
-        
-        These are footnotes whose only content are embedded links, e.g.
-        `[^1]: ![[embedded_note]]`
-        """
-        footnote_parts_to_remove = [
-            (i, part) for i, part in enumerate(self.parts)
-            if part['type'] == MarkdownLineEnum.FOOTNOTE_DESCRIPTION
-            and re.fullmatch(
-                fr'\[\^\w+\]: ?{EMBEDDED_PATTERN}', part['line'].strip())]
-        for i, _ in reversed(footnote_parts_to_remove):
-            self.remove_line(i)
-        if not remove_footnote_mentions:
-            return
-        footnote_labels_to_remove = [
-            re.fullmatch(
-                fr'\[\^(\w+)\]: ?{EMBEDDED_PATTERN}', part['line'].strip()).group(1)
-            for _, part in footnote_parts_to_remove]
-        for part, label in product(self.parts, footnote_labels_to_remove):
-            part['line'] = part['line'].replace(f'[^{label}]', '')
-            
-    def remove_headers(self) -> None:
-        """Remove all headers."""
-        heading_lines = self.get_headings_by_line_number(include_start=False)
-        heading_lines = [line for line in heading_lines]
-        heading_lines.sort()
-        for line in reversed(heading_lines):
-            self.remove_line(line)
-        
-    def remove_double_blank_lines(self) -> None:
-        """Remove blank lines so that there are no consecutive blank lines"""
-        parts_to_remove = []
-        for i, part in enumerate(self.parts):
-            last_blank = self.parts[i-1]['type'] == MarkdownLineEnum.BLANK_LINE
-            if (part['type'] == MarkdownLineEnum.BLANK_LINE and last_blank):
-                parts_to_remove.append(i)
-        for i in reversed(parts_to_remove):
-            self.remove_line(i)
-
-    def remove_html_tags(self) -> None:
-        """Remove HTML tags that are typeset in single lines.
-
-        HTML tags that span multiple lines are ignored.
-        """
-        # TODO: test
-        for _, part in enumerate(self.parts):
-            part['line'], _ = remove_html_tags_in_text(part['line'])
-            # self.parts[i-1]['']
-    
-    def merge_display_math_mode(self) -> None:
-        """Merge chunks of display_math_mode latex lines into single lines"""
-        i = 0
-        ils = MarkdownLineEnum.DISPLAY_LATEX_START
-        while i < len(self.parts):
-            if self.parts[i]['type'] == ils:
-                self._merge_one_display_math_mode_latex_chunk(i)
-            i += 1
-        
-    def _merge_one_display_math_mode_latex_chunk(self, start: int) -> None:
-        """Merge one chunk of display math mode latex lines in self.parts.
-        """
-        j = start + 1 
-        ile = MarkdownLineEnum.DISPLAY_LATEX_END
-        while (j < len(self.parts)
-               and self.parts[j]['type'] is not ile):
-            j += 1
-        end = j + 1
-        lines = [part['line'] for part in self.parts[start:end]]
-        merged = ' '.join(lines)
-        self.remove_lines(start, end)
-        self.insert_line(
-            start, {'type': MarkdownLineEnum.DISPLAY_LATEX_SINGLE,
-                    'line': merged})
-
-    def merge_display_math_mode_into_preceding_text(
-            self,
-            separator: str = '\n' # The str with which to join the latex lines into the text lines. Note that the display math mode latex lines are not joined with this str.
-            ) -> None:
-        """
-        Merge chunks of display math mode latex lines into single lines and merge
-        those single lines into preceding text lines.
-        """
-        self.merge_display_math_mode()
-        i = 0
-        ils = MarkdownLineEnum.DISPLAY_LATEX_SINGLE
-        while i < len(self.parts):
-            if self.parts[i]['type'] == ils:
-                i = self._merge_latex_into_text(i, separator)
-            i += 1
-
-    def _merge_latex_into_text(self, index: int, separator: str) -> int:
-        # TODO: test
-        """Used in `merge_display_math_mode_into_preceding_text`"""
-        j = index-1
-        if j == -1:
-            return index
-        while j >= 0 and self.parts[j]['line'].strip() == '':
-            j -= 1
-        merged = separator.join([self.parts[i]['line'] for i in range(j, index+1)])
-        self.remove_lines(start=j+1, end=index+1)
-        self.parts[j]['line'] = merged
-        return j
-
-    @classmethod
-    def from_file(
-            cls,
-            file_path: PathLike
-            ) -> MarkdownFile:
-        """
-        Return a `MarkdownFile` object from a specified file.
-        
-        **Raises**
-        - FileNotFoundError
-            - If `file_path` points to a file which does not exist.
-        """
-        with open(file_path, 'r', encoding='utf-8') as file:
-            text = file.read()
-        lines = text.split('\n')
-        return cls.from_list(lines)
-            
-    @classmethod
-    def from_list(
-            cls,
-            list_of_lines: list[str]
-            ) -> MarkdownFile:
-        """
-        Return a `MarkdownFile` object from a list of lines.
-        
-        This may not work correctly if the markdown text is not
-        sufficiently well-formatted. These formattings include:
-        - comments must start the line with `'%%'`.
-        - comments must end with `'%%'` followed by whitespaces
-          and nothing else.
-        - indents should be done with tabs?
-        """
-        parts = []
-        parts.extend(cls._look_at_start_of_file(list_of_lines))
-        for line in list_of_lines:
-            parts.append(cls._line_dict(line, parts))
-        return cls(parts)
-    
-    @classmethod
-    def from_vault_note(cls, vn: VaultNote) -> MarkdownFile:
-        """
-        Return a `MarkddownFile` object from a `VaultNote` object.
-        
-        **Raises**
-        - FileNotFoundError
-            - If `vn` represents a note file which does not exist.
-        """
-        return cls.from_file(vn.path())
-    
-    @classmethod
-    def from_string(cls, text: str) -> MarkdownFile:
-        """
-        Return a `MarkdownFile` object from a str.
-        """
-        return cls.from_list(text.splitlines(keepends=False))
-    
-    def copy(self, deep: bool) -> MarkdownFile:
-        # TODO: test
-        list_to_copy_with = self.parts
-        if deep:
-            list_to_copy_with = copy.deepcopy(list_to_copy_with)
-        return self.__class__(list_to_copy_with)
-
-    @classmethod
-    def _look_at_start_of_file(cls, list_of_lines: list[str])\
-            -> list[dict[str, Union[MarkdownLineEnum, str]]]:
-        """
-        Inspect start of file for blank lines and Front matter Meta.
-        
-        Only blank lines may preceed front matter in markdown.
-        May remove leading entries in `list_of_lines`.
-        
-        **Parameters**
-        - list_of_lines - list of str
-
-        **Returns**
-        - list[dict[str, Union[MarkdownLineEnum, str]]]
-            - Each dict has two keys, 'type' and 'line', which respectively
-            hold a `MarkdownLineEnum` and a str as values.
-            
-        **Notes**
-        - First tries to find the opening of the front matter given by
-        `'---'`, then tries to find the closing given by `'---'`.
-        """
-        # Find opening of front matter
-        i = 0
-        parts = []
-        while list_of_lines and list_of_lines[0].isspace():
-            parts.append({'type': MarkdownLineEnum.BLANK_LINE,
-                      'line': list_of_lines[0]})
-            del list_of_lines[0]
-        
-        if not list_of_lines or list_of_lines[i].strip() != '---':
-            return parts
-
-        # Find close of front matter
-        found_close_of_front_matter = False
-        for i, line in enumerate(list_of_lines):
-            if i == 0:
-                continue
-            if line.strip() == '---':
-                found_close_of_front_matter = True
-                break
-        if not found_close_of_front_matter:
-            return parts
-        for j in range(0,i+1):
-            parts.append({'type': MarkdownLineEnum.META,
-                          'line': list_of_lines[0]})
-            del list_of_lines[0]
-        return parts
         
     @classmethod
     def _line_dict(cls, line: str, parts: list[dict])\
@@ -1286,3 +360,1072 @@ def _line_start_and_end_in_line_latex(line: str) -> bool:
     stripped = _remove_text_id(line)
     stripped = stripped.strip(string.whitespace + '*')
     return bool(re.match(r'\$\$.*\$\$', stripped))
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 50
+@patch(cls_method=True)
+def _look_at_start_of_file(
+        cls: MarkdownFile,
+        list_of_lines: list[str])\
+        -> list[dict[str, Union[MarkdownLineEnum, str]]]:
+    """
+    Inspect start of file for blank lines and Front matter Meta.
+    
+    Only blank lines may preceed front matter in markdown.
+    May remove leading entries in `list_of_lines`.
+    
+    **Parameters**
+    - list_of_lines - list of str
+
+    **Returns**
+    - list[dict[str, Union[MarkdownLineEnum, str]]]
+        - Each dict has two keys, 'type' and 'line', which respectively
+        hold a `MarkdownLineEnum` and a str as values.
+        
+    **Notes**
+    - First tries to find the opening of the front matter given by
+    `'---'`, then tries to find the closing given by `'---'`.
+    """
+    # Find opening of front matter
+    i = 0
+    parts = []
+    while list_of_lines and list_of_lines[0].isspace():
+        parts.append({'type': MarkdownLineEnum.BLANK_LINE,
+                    'line': list_of_lines[0]})
+        del list_of_lines[0]
+    
+    if not list_of_lines or list_of_lines[i].strip() != '---':
+        return parts
+
+    # Find close of front matter
+    found_close_of_front_matter = False
+    for i, line in enumerate(list_of_lines):
+        if i == 0:
+            continue
+        if line.strip() == '---':
+            found_close_of_front_matter = True
+            break
+    if not found_close_of_front_matter:
+        return parts
+    for j in range(0,i+1):
+        parts.append({'type': MarkdownLineEnum.META,
+                        'line': list_of_lines[0]})
+        del list_of_lines[0]
+    return parts
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 51
+@patch(cls_method=True)
+def from_list(
+        cls: MarkdownFile,
+        list_of_lines: list[str]
+        ) -> MarkdownFile:
+    """
+    Return a `MarkdownFile` object from a list of lines.
+    
+    This may not work correctly if the markdown text is not
+    sufficiently well-formatted. These formattings include:
+    - comments must start the line with `'%%'`.
+    - comments must end with `'%%'` followed by whitespaces
+        and nothing else.
+    - indents should be done with tabs?
+    """
+    parts = []
+    parts.extend(cls._look_at_start_of_file(list_of_lines))
+    for line in list_of_lines:
+        parts.append(cls._line_dict(line, parts))
+    return cls(parts)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 53
+@patch(cls_method=True)
+def from_vault_note(
+        cls: MarkdownFile,
+        vn: VaultNote) -> MarkdownFile:
+    """
+    Return a `MarkddownFile` object from a `VaultNote` object.
+    
+    **Raises**
+    - FileNotFoundError
+        - If `vn` represents a note file which does not exist.
+    """
+    return cls.from_file(vn.path())
+
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 55
+@patch(cls_method=True)
+def from_file(
+        cls: MarkdownFile,
+        file_path: PathLike
+        ) -> MarkdownFile:
+    """
+    Return a `MarkdownFile` object from a specified file.
+    
+    **Raises**
+    - FileNotFoundError
+        - If `file_path` points to a file which does not exist.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text = file.read()
+    lines = text.split('\n')
+    return cls.from_list(lines)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 57
+@patch
+def text_of_lines(
+        self: MarkdownFile,
+        start: int,
+        end: int
+        ) -> str:
+    """Return the text of `self.parts[start:end]`,
+    adding new line characters `'\n'` in between. """
+    return '\n'.join([
+        line_dict['line'] for line_dict in self.parts[start:end]])
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 59
+@patch(cls_method=True)
+def from_string(
+        cls: MarkdownFile,
+        text: str) -> MarkdownFile:
+    """
+    Return a `MarkdownFile` object from a str.
+    """
+    return cls.from_list(text.splitlines(keepends=False))
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 72
+@patch
+def get_headings_by_line_number(
+        self: MarkdownFile,
+        levels: Union[Iterator[int], int, None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None` then all heading-levels are searched.
+        include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.
+        ) -> dict[int, str]: # The keys are line numbers and each value is str is the heading string, including the leading sharps `'#'`, but without any leading or trailing whitespace characters.
+    """
+    Return a dict of heading titles in the markdown file.
+    """
+    if not levels:
+        levels = []
+    elif type(levels) is int:
+        levels = (levels,)
+    line_numbers = [i for i, line_dict in enumerate(self.parts)
+                    if line_dict['type'] is MarkdownLineEnum.HEADING]
+    extract = {line_number: self.parts[line_number] 
+                for line_number in line_numbers}
+    headings = {line_number: line_dict['line'].strip()
+                for line_number, line_dict in extract.items()
+                if (not(levels) 
+                    or heading_level(line_dict['line']) in levels)}
+    if include_start and 0 not in headings:
+        headings[-1] = ''
+    return headings
+
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 75
+@patch
+def get_headings(
+        self: MarkdownFile,
+        levels: Union[int, Iterator[int], None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. Defaults to `None`, in which case all heading-levels are searched.
+        include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.
+        ) -> list[str]: # Each str is the heading, including leading sharps `'#'`.
+    """
+    Return a list of heading titles in the markdown file.
+    """
+    line_dict = self.get_headings_by_line_number(
+        levels, include_start=include_start)
+    return list(line_dict.values())
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 86
+@patch
+def get_headings_and_text(
+        self: MarkdownFile,
+        levels: Union[Iterator[int], int, None] = None, # The levels of the headings to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
+        include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.        
+        ) -> dict[str, str]: # Each key is the entire str of the heading, including the leading sharps `'#'`, but not including leading or trailing whitespace characters Each value is the str under that heading until the next heading, including at trailing next line characters `\n`.  If `include_start` is `True`, then one of the keys is the empty str and the corresponding value is the start of the text that is not under any heading.
+    # TODO I think there is a bug, e.g. when all headers are level 1 and 
+    # level = 2, include_start = True, everything is treated like the start.
+    """
+    Return a list of headings and the text under each heading.
+    
+    The text under each heading does not include the text of
+    subheadings.
+
+    """
+    headings_by_lines = self.get_headings_by_line_number(levels, include_start)
+    line_numbers = [num for num in headings_by_lines]
+    line_numbers.append(len(self.parts))
+    line_numbers.sort()
+    heading_dict = {}
+    # previous_header_line_num = -1
+    previous_header_line_num = -1 if include_start else line_numbers[0]
+    for i, header_line_num in enumerate(line_numbers):
+        lines = self.parts[previous_header_line_num+1:header_line_num]
+        lines = [line_dict['line'] for line_dict in lines]
+        heading = headings_by_lines.get(previous_header_line_num, '')
+        previous_header_line_num = header_line_num
+        heading_dict[heading] = '\n'.join(lines)
+    return heading_dict
+
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 91
+@patch
+def get_headings_tree(
+        self: MarkdownFile
+        ) -> dict[Union[str, int], Union[str, dict]]: # The keys are 1. line numbers or 2. the str `'title'`.  The values are dict or str (the blank str if root node) respectively. The dicts in themselves recursively represent trees and the str are headings, including the leading sharps.
+    """Return a dict representing the tree of headings in the markdown file.
+
+    **Returns**
+
+    - dict[Union[str, int], Union[str, dict]]
+        - The keys are 1. line numbers or 2. the str `'title'`.  The values
+        are dict or str (the blank str if root node) respectively. The
+        dicts in themselves recursively represent trees and the str are
+        headings, including the leading sharps. In particular, the root
+        level dict also has the blank string `''` associated to the key
+        `'title'`.
+    """
+    headings_dict = self.get_headings_by_line_number(include_start=False)
+    root_dict = {'title': ''}
+    dict_stack = [root_dict]
+    current_level = 0
+    # Go through each heading, and figure out where it should
+    # be added.
+    for line_number, heading in headings_dict.items():
+        new_dict = {'title': heading}
+        while (heading_level(dict_stack[-1]['title'])
+                >= heading_level(heading)):
+            dict_stack.pop()
+        dict_stack[-1][line_number] = new_dict
+        dict_stack.append(new_dict)
+        current_level = heading_level(heading)
+    return root_dict
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 94
+@patch
+def get_line_number_of_heading(
+        self: MarkdownFile,
+        title: Union[str, None] = None, # Title of the heading. Does not include the leading sharps (`'#'`). If `None`, then return the line number of any heading after the specified line number.
+        from_line: int = 0, # The line number to start searching for the heading with `title` from.
+        levels: Union[Iterator[int], int, None] = None # The levels of the heading to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
+        ) -> int: # An index in `self.parts`. If no index/line number of the matching heading exists, then return -1.
+    """
+    Return the line number of the heading with the specified
+    title after the specified line number.
+    """
+    if type(levels) is int:
+        levels = (levels,)
+    heading_satisfies = lambda x: (
+        x['type'] is MarkdownLineEnum.HEADING
+        and (levels is None or heading_level(x['line']) in levels)
+        and (title is None or heading_title(x['line']) == title))
+    return next((i for i in range(from_line, len(self.parts))
+                    if heading_satisfies(self.parts[i])), -1)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 104
+@patch
+def get_line_numbers_under_heading(
+        self: MarkdownFile,
+        title: Union[str, None] = None, # Title of the heading. Does not include the leading sharps (`'#'`). If `None`, then return the line number of any heading after the specified line number.
+        from_line: int = 0, # The line number to start searching for the heading with `title` from.
+        levels: Union[Iterator[int], int, None] = None, # The levels of the heading to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
+        include_subheadings: bool = True # If `True`, then include the subheadings.
+        ) -> Union[tuple[int], int]: # `(start, end)` where `self.parts[start:end]` represents the parts under the heading, including the start of the heading.  If the heading of the specified title does not exist, then returns -1.
+    """
+    Return the line numbers belonging to the heading.
+    """
+    # TODO: implement from_line, levels and then test
+    start_line = self.get_line_number_of_heading(title)
+    if start_line == -1:
+        return -1
+    level = heading_level(self.parts[start_line]['line'])
+    if include_subheadings:
+        levels_to_search = range(1, level+1)
+    else:
+        levels_to_search = None
+    headings_and_lines = self.get_headings_by_line_number(
+        levels=levels_to_search)
+    lines_with_headings = list(headings_and_lines)
+    lines_with_headings.sort()
+    index_of_start = lines_with_headings.index(start_line)
+    if len(lines_with_headings) - 1 >= index_of_start + 1:
+        end_line = lines_with_headings[index_of_start + 1]
+    else:
+        end_line = len(self.parts)
+    return (start_line, end_line)
+
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 111
+@patch
+def insert_line(
+        self: MarkdownFile,
+        index: int, # The index at which to add `line_dict` into `self.parts`.
+        line_dict: dict[str, Union[MarkdownLineEnum, str]] # See `self.parts`.
+        ) -> None:
+    """Add a line at the specified index/line number to `self.parts`."""
+    self.parts.insert(index, line_dict)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 113
+@patch
+def remove_line(
+        self: MarkdownFile,
+        index: int = -1 # The index of the line to remove from `self.parts`.
+        ) -> None:
+    """Remove a line from `self.parts`."""
+    del self.parts[index]
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 115
+@patch
+def remove_lines(
+        self: MarkdownFile,
+        start: int, # The index of the first line to remove from `self.parts`.
+        end: int # The end index to remove; the line of index `end` is not removed, but the line of index `end - ` is.
+        ) -> list[dict]:
+    """Remove lines from `self.parts`."""
+    to_return = self.parts[start:end]
+    del self.parts[start:end]
+    return to_return
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 117
+@patch
+def pop_line(
+        self: MarkdownFile,
+        index: int = -1 # The index of the line to pop from `self.parts`.
+        ) -> dict[str, Union[MarkdownLineEnum, str]]: # The popped line
+    """Remove a line from `self.parts` and get its value."""
+    return self.parts.pop(index)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 119
+@patch
+def add_line_to_end(
+        self: MarkdownFile,
+        line_dict: dict[str, Union[MarkdownLineEnum, str]] # See `self.parts`.
+        ) -> None:
+    """Add a line to the end of `self.parts`."""
+    self.parts.append(line_dict)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 121
+@patch
+def add_blank_line_to_end(
+        self: MarkdownFile) -> None:
+    """Add a blank line to the end of `self.parts`."""
+    # TODO: Should the blank line be '\n' or ''?
+    self.add_line_to_end(
+        {'type': MarkdownLineEnum.BLANK_LINE, 'line': '\n'})
+    
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 123
+@patch
+def add_line_in_section(
+        self: MarkdownFile,
+        title: str, # Title of the heading (without the leading sharps `'#'`)
+        line_dict: dict[str, Union[MarkdownLineEnum, str]], # The line to add
+        start: bool = True # If `True`, add to the start of the section. If `False`, add to the end of the section.
+        ) -> None:
+    # TODO start=False is not implemented. 
+    # TODO Be able to tell what the inserted line's type is.
+    # TODO This seems to work incorrectly if there are no lines
+    # after a header.
+    """Add a line in section specified by its title."""
+    line_number = self.get_line_number_of_heading(title=title)
+    self.insert_line(line_number + 1, line_dict)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 126
+@patch
+def remove_section(
+        self: MarkdownFile,
+        title: str # The title of the section to remove (without the starting `'#'`'s)
+        ) -> list[dict]:
+    """
+    Remove the section with the specified title, including subsections,
+    if the section exists.
+    """
+    section_line = self.get_line_number_of_heading(title=title)
+    if section_line == -1:
+        return
+    level = heading_level(self.parts[section_line]['line'])
+    big_level_lines = self.get_headings_by_line_number(range(1, level+1))
+    line_numbers = [line_num for line_num in big_level_lines]
+    line_numbers.sort()
+    i = line_numbers.index(section_line) + 1
+    next_section_line = (
+        line_numbers[i] if i < len(line_numbers) else len(self.parts))
+    return self.remove_lines(section_line, next_section_line)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 132
+@patch
+def clear_section(
+        self: MarkdownFile,
+        title: str, # Title of the section (Without the leading sharps `'#'`)
+        leave_blank_line: bool = True, # If `True`, leaves a blank line at the end of the section.
+        clear_subsections: Optional[str] = None # `'clear'`, `'delete'`, or `None`. If `'clear'`, then just clears the contents of subsections, but does not affect the headers. If `'delete'`, then clears the contents of the subsections and deletes the headers. If `None`, then does not affect either. 
+        ) -> None:
+    # TODO: implement clear_subsections
+    """
+    Clear the section with the specified title, if it exists.
+    
+    Does not clear subsections.
+    """
+    section_line = self.get_line_number_of_heading(title=title)
+    if section_line == -1:
+        return
+    next_section_line = self.get_line_number_of_heading(
+        from_line=section_line+1)
+    if next_section_line == -1:
+        next_section_line = len(self.parts)
+    self.parts = self.parts[:section_line+1] + self.parts[next_section_line:]
+    if leave_blank_line:
+        self.insert_line(
+            section_line + 1,
+            {'type': MarkdownLineEnum.BLANK_LINE, 'line': ''})
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 137
+@patch
+def clear_all_sections(
+        self: MarkdownFile,
+        leave_blank_lines: bool = True
+        # If True, leaves a blank line in each section
+        ) -> None:
+    """
+    Clear all sections.
+    
+    Does not clear frontmatter metadata. Leaves all headers intact.
+    """
+    part_indices_to_remove = [
+        i for (i, part) in enumerate(self.parts)
+        if (part['type'] not in [MarkdownLineEnum.META,
+                                    MarkdownLineEnum.HEADING])]
+    for index_to_remove in reversed(part_indices_to_remove):
+        self.remove_line(index_to_remove)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 141
+@patch
+def has_metadata(
+        self: MarkdownFile) -> bool:
+    """
+    Return `True` if this `MarkdownFile` object has fronmatter
+    YAML metadata.
+
+    If the `MarkdownFile` object has any frontmatter YAML metadata, then
+    it is expected to be at the very start; in particular, it must not
+    be preceded by any whitespace characters.
+    """
+    return (
+        self.parts 
+        and self.parts[0]['type'] == MarkdownLineEnum.META)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 143
+@patch
+def metadata_lines(
+        self: MarkdownFile
+        ) -> tuple[int]: # The tuple consists of 2 ints, `a` and `b`, where `self.parts[a:b+1]` represent the metadata lines, including the `'---'` before and after.
+    # TODO: change the index conventions of the output so that
+    # [a:b] is the parts
+    """
+    Return the indices in `self.parts` which are metadata.
+    
+    Assumes that `self.parts` is nonempty. 
+
+    If the MarkdownFile object has any frontmatter YAML metadata, then
+    it is expected to be at the very start; in particular, it must not
+    be preceded by any whitespace characters.
+    
+    **Returns**
+        
+    - tuple
+        - The tuple consists of 2 ints, `a` and `b`, where `self.parts[a:b+1]`
+        represent the metadata lines, including the `'---'` before and after.
+    """
+    for i, part in enumerate(self.parts):
+        if part['type'] == MarkdownLineEnum.META:
+            start = i
+            break
+    for j in range(i+1, len(self.parts)):
+        if self.parts[j]['type'] != MarkdownLineEnum.META:
+            end = j-1
+            break
+    return (start, end)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 145
+@patch
+def replace_metadata(
+        self: MarkdownFile,
+        new_metadata: dict[str], # The dictionary representing the new metadata. The keys are the names of fields. The values are the field values, usually expected to be a single string or a list of strings
+        enquote_entries_in_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+    ) -> None:
+    """
+    Replace the frontmatter metadata of this MarkdownFile object.
+    
+    Optionally also enquotes string entries in fields specified by
+    `enquote_entries_in_fields`.
+
+    **Warning**
+    - This method is only tested when the values of `new_metadata` are either `str` or
+    `list[str]`.
+    """
+    lines = dict_to_metadata_lines(new_metadata, enquote_entries_in_fields)
+    new_metadata_parts = [{'type': MarkdownLineEnum.META, 'line': line}
+                            for line in lines]
+    new_metadata_parts.insert(0, {'type': MarkdownLineEnum.META, 'line': '---'})
+    new_metadata_parts.append({'type': MarkdownLineEnum.META, 'line': '---'})
+    start, end = self.metadata_lines()
+    self.parts = self.parts[:max(0,start-1)] + new_metadata_parts\
+        + self.parts[end+1:]
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 148
+@patch
+def remove_metadata(
+    self: MarkdownFile) -> None:
+    """Remove the frontmatter metadata of this MarkdownFile object."""
+    self.parts = [part for part in self.parts 
+                    if part['type'] != MarkdownLineEnum.META]
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 161
+@patch
+def add_metadata_section(
+        self: MarkdownFile,
+        check_exists: bool = True # If `True`, Check if there is already a metadata section at the beginning and do not add a metadata section if it exists.
+        ) -> None:
+    """Add a frontmatter YAML metadata at the very beginning."""
+    if check_exists and self.has_metadata():
+        return
+    default_meta = [{'type': MarkdownLineEnum.META, 'line': '---\n'},
+                    {'type': MarkdownLineEnum.META, 'line': '---\n'}]
+    self.parts = default_meta + self.parts
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 170
+@patch
+def has_tag(
+        self: MarkdownFile,
+        tag: str # The tag. Does not start with the hashtag `'#'`.
+        ) -> bool:
+    """
+    Return `True` if the Markdown file has the specified tag in its
+    YAML frontmatter metadata.
+
+    More specifically, return `True` if the `MarkdownFile` objeect
+
+    1. has YAML frontmatter metadata,
+    2. the metadata has a `'tags'` section,, and
+    3. the `'tags'` section is a list with the specified tag.
+
+    Note that `tag` should not start with the hashtag `#` charater.
+    """
+    if not self.has_metadata():
+        return False
+    metadata = self.metadata()
+    return (bool(metadata) and 'tags' in metadata
+            and tag in metadata['tags'])
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 172
+@patch
+def add_tags(
+        self: MarkdownFile,
+        tags: Union[str, list[str]], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
+        skip_repeats: bool = True, # If `True`, then this MarkdownFile will just have unique tags; merges pre-existing repeated tags if necessary. Also, the order of the tags may be changed.
+        skip_repeated_auto: bool = True, # If `True`, then only add tags starting with '_auto/' if the corresponding non-auto tag does not exist, e.g.  '_auto/_meta/definition' is not added if the note already has '_meta/definition'.
+        enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+        ) -> None:
+    """
+    Add tags to the frontmatter metadata.
+    
+    The order of the tags may be changed.
+
+    Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+    Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+    `replace_metadata` invocation preserves enquoted metadata values. 
+
+    """
+    if isinstance(tags, str):
+        tags = [tags]
+    self.add_metadata_section(check_exists=True)
+    metadata = self.metadata()
+    if not metadata:
+        metadata = {}
+    if not 'tags' in metadata:
+        metadata['tags'] = []
+
+    tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
+    if skip_repeated_auto:
+        tags = [tag for tag in tags 
+                if (not tag_is_auto_tag(tag) 
+                    or strip_auto_from_tag(
+                        tag, with_hash_tag=False) not in metadata['tags'])]
+    if skip_repeats:
+        set_of_tags = set(metadata['tags']) | set(tags)
+        metadata['tags'] = list(set_of_tags)
+    else:
+        metadata['tags'] += tags
+    self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 174
+@patch
+def remove_tags(
+        self: MarkdownFile,
+        tags: list[str], # The str representing the tags. May or may not start with `'#'`, e.g. `'#_meta/definition'` or `'_meta/definition'`.
+        enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+        ) -> None:
+    """
+    Remove specified tags from the frontmatter metadata, if
+    the frontmatter metadata and the specified tags.
+
+    If the `MarkdownFile` object does not have a frontmatter or
+    if the frontmatter does not include a `tags` line, then
+    the `MarkdownFile` object is not modified.
+    
+    Assumes that this MarkdownFile object has a frontmatter and
+    that the frontmatter includes a tags line.
+    
+    Any repeated tags are either merged into one (if the tag is 
+    not in `tags`) or are removed (if the tag is in `tags`).
+
+    Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+    Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+    `replace_metadata` invocation preserves enquoted metadata values. 
+    """
+    tags = [tag[1:] if tag.startswith('#') else tag for tag in tags]
+    metadata = self.metadata()
+    if metadata is None or not 'tags' in metadata:
+        return
+    set_of_tags = set(metadata['tags'])
+    set_of_tags -= set(tags)
+    metadata['tags'] = list(set_of_tags)
+    self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 181
+@patch
+def replace_auto_tags_with_regular_tags(
+        self: MarkdownFile,
+        exclude: list[str] = None, # The tags whose `_auto/` tags should not be converted. The str should not start with `'#'` and should not start with `'_auto/'`.
+        enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+        ) -> None:
+    """
+    Replace tags in the frontmatter metadata starting with `_auto/`
+    with tags without the `_auto/`.
+
+    Ultimately the `replace_metadata` method is used to modify the YAML metadata.
+    Use the `enquote_entries_in_metadata_fields` parameter to ensure that the
+    `replace_metadata` invocation preserves enquoted metadata values. 
+    """
+    if not exclude:
+        exclude = []
+    metadata = self.metadata()
+    no_auto_tags = [strip_auto_from_tag(tag, with_hash_tag=False)
+                        for tag in metadata['tags']]
+    new_tags = [
+        no_auto if (tag_is_auto_tag(old) and no_auto not in exclude)
+        else old for (no_auto, old) in zip(no_auto_tags, metadata['tags'])
+    ]
+    metadata['tags'] = new_tags
+    self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 187
+@patch
+def remove_in_line_tags(
+        self: MarkdownFile) -> None:
+    """Remove lines starting with in line tags."""
+    part_indices_to_remove = []
+    for i, part in enumerate(self.parts):
+        if (part['type'] == MarkdownLineEnum.DEFAULT
+                and part['line'].strip().startswith('#')):
+            part_indices_to_remove.append(i)
+    for i in reversed(part_indices_to_remove):
+        self.remove_line(i)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 193
+@patch
+def replace_links_with_display_text(
+        self: MarkdownFile,
+        remove_embedded_note_links: bool = False # If `True`, remove links to embedded notes as well. If `False`, does not modify embedded notes.`
+        ) -> None:
+    """Remove nonembedded links and replaces them with their display text.
+    """
+    for part in self.parts:
+        if part['type'] == MarkdownLineEnum.META:
+            continue
+        part['line'] = remove_links_from_text(
+            part['line'],
+            remove_embedded_note_links=remove_embedded_note_links)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 198
+@patch
+def remove_footnotes_to_embedded_links(
+        self: MarkdownFile,
+        remove_footnote_mentions: bool = True # If `True`, removes the mentions to the footnote to the embedded links in the text.
+        ) -> None:
+    """
+    Remove footnotes to embedded links.
+    
+    These are footnotes whose only content are embedded links, e.g.
+    `[^1]: ![[embedded_note]]`
+    """
+    footnote_parts_to_remove = [
+        (i, part) for i, part in enumerate(self.parts)
+        if part['type'] == MarkdownLineEnum.FOOTNOTE_DESCRIPTION
+        and re.fullmatch(
+            fr'\[\^\w+\]: ?{EMBEDDED_PATTERN}', part['line'].strip())]
+    for i, _ in reversed(footnote_parts_to_remove):
+        self.remove_line(i)
+    if not remove_footnote_mentions:
+        return
+    footnote_labels_to_remove = [
+        re.fullmatch(
+            fr'\[\^(\w+)\]: ?{EMBEDDED_PATTERN}', part['line'].strip()).group(1)
+        for _, part in footnote_parts_to_remove]
+    for part, label in product(self.parts, footnote_labels_to_remove):
+        part['line'] = part['line'].replace(f'[^{label}]', '')
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 205
+@patch
+def remove_headers(
+        self: MarkdownFile) -> None:
+    """Remove all headers."""
+    heading_lines = self.get_headings_by_line_number(include_start=False)
+    heading_lines = [line for line in heading_lines]
+    heading_lines.sort()
+    for line in reversed(heading_lines):
+        self.remove_line(line)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 209
+@patch
+def remove_double_blank_lines(
+        self: MarkdownFile) -> None:
+    """Remove blank lines so that there are no consecutive blank lines"""
+    parts_to_remove = []
+    for i, part in enumerate(self.parts):
+        last_blank = self.parts[i-1]['type'] == MarkdownLineEnum.BLANK_LINE
+        if (part['type'] == MarkdownLineEnum.BLANK_LINE and last_blank):
+            parts_to_remove.append(i)
+    for i in reversed(parts_to_remove):
+        self.remove_line(i)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 213
+@patch
+def _text_of_embedded_link_of_id(
+        self: MarkdownFile,
+        link_file: MarkdownFile,
+        par_id: str,
+        vault: PathLike,
+        recursive: bool,
+        remove_paragraph_id: bool) -> str:
+    """Used in `_replace_embedded_links_one_line"""
+    start, end = link_file.parts_of_id(par_id)
+    embedded_text = self._text_of_lines_of_embedded_links(
+        link_file, vault, start, end, recursive,
+        remove_paragraph_id)
+    if remove_paragraph_id:
+        embedded_text = _remove_text_id(embedded_text)
+    return embedded_text
+
+@patch
+def _text_of_embedded_link_of_id(
+        self: MarkdownFile,
+        link_file: MarkdownFile,
+        par_id: str,
+        vault: PathLike,
+        recursive: bool,
+        remove_paragraph_id: bool) -> str:
+    """Used in `_replace_embedded_links_one_line"""
+    start, end = link_file.parts_of_id(par_id)
+    embedded_text = self._text_of_lines_of_embedded_links(
+        link_file, vault, start, end, recursive,
+        remove_paragraph_id)
+    if remove_paragraph_id:
+        embedded_text = _remove_text_id(embedded_text)
+    return embedded_text
+
+@patch
+def _text_of_embedded_link_of_section(
+        self: MarkdownFile,
+        link_file: MarkdownFile,
+        heading: str,
+        vault: PathLike,
+        recursive: bool,
+        remove_paragraph_id: bool) -> str:
+    """Used in `_replace_embedded_links_one_line"""
+    start, end = link_file.get_line_numbers_under_heading(
+        title=heading, include_subheadings=True)
+    return self._text_of_lines_of_embedded_links(
+        link_file, vault, start, end, recursive,
+        remove_paragraph_id)
+
+@patch
+def _text_of_lines_of_embedded_links(
+        self: MarkdownFile,
+        link_file: MarkdownFile,
+        vault: PathLike,
+        start: int,
+        end: int, recursive: bool,
+        remove_paragraph_id: bool) -> str:
+    """Used in `_text_of_embedded_link_of_id` and 
+    `_text_of_embedded_link_of_section`
+    """
+    if not recursive:
+        return link_file.text_of_lines(start, end)
+    new_mf = MarkdownFile(
+        copy.deepcopy(link_file.parts[start:end]))
+    new_mf.replace_embedded_links_with_text(
+        vault, recursive, remove_paragraph_id)
+    return str(new_mf)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 214
+@patch
+def _replace_embedded_links_one_line(
+        self: MarkdownFile,
+        text: str,
+        vault: PathLike,
+        recursive: bool,
+        remove_paragraph_id: bool) -> str:
+    # TODO: test what happens when `link_note` is actually an image.
+    # TODO: deal with possibility that a vaultnote gets an image
+    # file name passed.
+    """Used in `replace_embedded_links_with_text`"""
+    embedded_links = find_regex_in_text(text, EMBEDDED_PATTERN)
+    for start, end in reversed(embedded_links):
+        link_object = ObsidianLink.from_text(text[start:end])
+        if link_object.file_name:
+            try:
+                link_note = VaultNote(
+                    vault, name=link_object.file_name,
+                    update_cache=False)
+                link_file = MarkdownFile.from_vault_note(link_note)
+            except (NoteDoesNotExistError, NotePathIsNotIdentifiedError):
+                text = text[:start] + text[end:]
+                continue
+            # if not link_note.exists():
+            #     text = text[:start] + text[end:]
+            #     continue
+        else:
+            link_file = self
+        if link_object.anchor == 0:
+            replace = str(link_file)
+        elif link_object.anchor.startswith('^'):
+            replace = self._text_of_embedded_link_of_id(
+                link_file, link_object.anchor, vault, recursive, remove_paragraph_id)
+        elif link_object.anchor:
+            replace = self._text_of_embedded_link_of_section(
+                link_file, link_object.anchor, vault, recursive, remove_paragraph_id)
+        else:
+            replace = str(link_file)
+        text = text[:start] + replace + text[end:]
+    return text
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 215
+@patch
+def replace_embedded_links_with_text(
+        self: MarkdownFile,
+        vault: PathLike,
+        recursive: bool = True, # If `True`, then recursively replaces embedded links in the text of the embedded links.
+        remove_paragraph_id: bool = True # If `True`, then removes the paragraph id's in the text of the embedded links. Leaves the paragraph id's of the origianl text in tact.
+        ) -> None:
+    """
+    Remove embedded links and replaces them with their underlying text,
+    as found in notes in the vault.
+    
+    Assumes that the embedded links do not loop infinitely.
+
+    For embedded links to notes that do not exist in the vault,
+    the embedded links are replaced with blank str.
+
+    No new entries are added to `self.parts` even if the embedded links
+    have multiple lines.
+    """
+    # TODO: implement error raise upon infinite loop.
+    for part in self.parts:
+        part['line'] = self._replace_embedded_links_one_line(
+            part['line'], vault, recursive, remove_paragraph_id)
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 217
+@patch
+def _include_previous_line_as_id_text(
+    self: MarkdownFile,
+    i: int,
+    has_any: bool):
+    """Used in `text_of_id`
+
+    **Parameters**
+    - i - int
+        - Greater than 0.
+    - has_any - bool
+        - `True` if any text beyond the id has been gathered.
+        `False` otherwise.
+
+    **Return**
+    - bool, bool
+        - The first bool is `True` if the previous line should be
+        included in the text of the id. The second bool is `True` if
+        any content any been included in the search.
+    """
+
+    if self.parts[i]['type'] == MarkdownLineEnum.HEADING:
+        return False, True
+    elif self.parts[i-1]['type'] == MarkdownLineEnum.HEADING:
+        return False, has_any
+    elif (self.parts[i]['type'] == MarkdownLineEnum.DISPLAY_LATEX
+            and self.parts[i-1]['type'] == MarkdownLineEnum.DISPLAY_LATEX):
+        return True, True
+    elif self.parts[i-1]['line'].strip() == '':
+        if has_any:
+            return False, True
+        else:
+            return True, False
+    return True, True
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 218
+@patch
+def parts_of_id(
+            self: MarkdownFile,
+            par_id: str # Must begin with `'^'`.
+            ) -> Union[tuple[int], None]: # `(start,end)` where `self.parts[start:end]` consists of the lines of the specified id. If the specified id does not exist for the note, then `None` is returned.
+        """
+        Return the indices of the lines within the Markdown file
+        belonging to the specified text id.
+
+        This id can be used as an anchor for a link in Obsidian. For example,
+        `[[note#^65809f]]` is a link to a note named `note` to the text with id
+        `65809f`. Such a text is marked with a trailing `^65809f`.
+        """
+        pattern = re.compile(fr'(?:^|\s){re.escape(par_id)}\b(?:\s*?)$')
+        for i, part in enumerate(reversed(self.parts)):
+            match = re.search(pattern, part['line'])
+            if match:
+                break
+
+        end_of_text = len(self.parts) - 1 - i
+        i = end_of_text
+        has_any = _remove_text_id(self.parts[i]['line']).strip() != ''
+        cont = True
+        while i > 0 and cont:
+            cont, has_any = self._include_previous_line_as_id_text(i, has_any)
+            if cont:
+                i -= 1
+        return i, end_of_text+1
+        # self.parts[i:end_of_text+1]
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 222
+@patch
+def remove_html_tags(
+        self: MarkdownFile) -> None:
+    """Remove HTML tags that are typeset in single lines.
+
+    HTML tags that span multiple lines are ignored.
+    """
+    # TODO: test
+    for _, part in enumerate(self.parts):
+        part['line'], _ = remove_html_tags_in_text(part['line'])
+        # self.parts[i-1]['']
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 225
+@patch
+def _merge_one_display_math_mode_latex_chunk(
+        self: MarkdownFile,
+        start: int) -> None:
+    """Merge one chunk of display math mode latex lines in self.parts.
+    """
+    j = start + 1 
+    ile = MarkdownLineEnum.DISPLAY_LATEX_END
+    while (j < len(self.parts)
+            and self.parts[j]['type'] is not ile):
+        j += 1
+    end = j + 1
+    lines = [part['line'] for part in self.parts[start:end]]
+    merged = ' '.join(lines)
+    self.remove_lines(start, end)
+    self.insert_line(
+        start, {'type': MarkdownLineEnum.DISPLAY_LATEX_SINGLE,
+                'line': merged})
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 226
+@patch
+def merge_display_math_mode(
+        self: MarkdownFile) -> None:
+    """Merge chunks of display_math_mode latex lines into single lines"""
+    i = 0
+    ils = MarkdownLineEnum.DISPLAY_LATEX_START
+    while i < len(self.parts):
+        if self.parts[i]['type'] == ils:
+            self._merge_one_display_math_mode_latex_chunk(i)
+        i += 1
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 229
+@patch
+def merge_display_math_mode_into_preceding_text(
+        self: MarkdownFile,
+        separator: str = '\n' # The str with which to join the latex lines into the text lines. Note that the display math mode latex lines are not joined with this str.
+        ) -> None:
+    """
+    Merge chunks of display math mode latex lines into single lines and merge
+    those single lines into preceding text lines.
+    """
+    self.merge_display_math_mode()
+    i = 0
+    ils = MarkdownLineEnum.DISPLAY_LATEX_SINGLE
+    while i < len(self.parts):
+        if self.parts[i]['type'] == ils:
+            i = self._merge_latex_into_text(i, separator)
+        i += 1
+
+
+@patch
+def _merge_latex_into_text(
+        self: MarkdownFile,
+        index: int,
+        separator: str) -> int:
+    # TODO: test
+    """Used in `merge_display_math_mode_into_preceding_text`"""
+    j = index-1
+    if j == -1:
+        return index
+    while j >= 0 and self.parts[j]['line'].strip() == '':
+        j -= 1
+    merged = separator.join([self.parts[i]['line'] for i in range(j, index+1)])
+    self.remove_lines(start=j+1, end=index+1)
+    self.parts[j]['line'] = merged
+    return j
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 243
+@patch
+def write(
+    self: MarkdownFile,
+    vn: VaultNote, # Represents the file.
+    mode: str = 'w', # The specific mode to write the file with.
+    # enquote_entries_in_metadata_fields: list[str] = [] # A list of str of fields in the YAML metadata whose entries need to be enquoted. If there is a string that is not a key of `new_metadata`, then that string is essentially ignored (in particular, no errors are raised).
+    check_validity: bool = True # If `True`, then check whether a MarkdownFile object could be instantiated from `self.__str__()` before writing to the file. If not, then a `ValueError` is raised.
+    ) -> None:
+    r"""
+    Write to the file specified by a `VaultNote` object.
+
+    If the file that the `VaultNote` object represents does not exist,
+    then this method creates it.
+
+    **Raises**
+    - `ValueError`
+        - If `check_validity` is `True` and if `str(self)` cannot be parsed
+        as a `MarkdownFile` object. If this error is raised, then most likely the
+        issue is that the frontmatter metadata cannot be parsed by `pyyaml` and
+        the metadata field elements need to be escaped and/or enquoted.    
+        It is recommended to use `.replace_metadata` and passing arguments to the
+        `enquote_entries_in_fields` parameter or to use the `dict_to_metadata_lines`
+        function to ensure that metadata fields are
+        enquoted and escaped.
+    """
+    if not vn.exists():
+        vn.create()
+    # if enquote_entries_in_metadata_fields:
+    #     self.replace_metadata(
+    #         self.metadata(), enquote_entries_in_metadata_fields)
+    if check_validity:
+        try:
+            new_mf = MarkdownFile.from_string(str(self))
+            new_mf.metadata()
+        except Exception as e:
+            raise ValueError(fr"""Tried to write the MarkdownFile object to {vn.path()}, 
+but the output of `.__str__()` on the MarkdownFile object is not parseable as as MarkdownFile object. 
+Most likely, the YAML frontmatter cannot be parsed, and metadata field elements need to
+be enquoted and/or escaped (say via using double slashes `\\` instead of single slashes `\`
+and by using `\"` instead of just `"`). It is recommended to apply the `.replace_metadata` method of the
+`MarkdownFile` object, specifying arguments for the `enquote_entries_in_fields` parameter.
+The following is the MarkdownFile object's str representation:
+\n\n{str(self)}
+""")
+
+    with open(vn.path(), mode, encoding='utf-8') as file:
+        file.write(str(self))
+        file.close()
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 249
+# @patch

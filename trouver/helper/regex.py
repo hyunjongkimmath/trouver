@@ -20,9 +20,11 @@ def find_regex_in_text(
     """Return ranges in `text` where `pattern` occurs.
     """
     matches = re.finditer(pattern, text)
+    # matches = re.findall(pattern, text)
+    # print(matches)
     return [match.span() for match in matches]
 
-# %% ../../nbs/37_helper.regex.ipynb 13
+# %% ../../nbs/37_helper.regex.ipynb 14
 def separate_indices_from_str(
         text: str,
         indices: list[tuple[int, int]] # The indices for substrings in `text` to separate.
@@ -45,7 +47,7 @@ def separate_indices_from_str(
     parts.append(text[last_pair[1]:])
     return parts
 
-# %% ../../nbs/37_helper.regex.ipynb 16
+# %% ../../nbs/37_helper.regex.ipynb 17
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -110,7 +112,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../../nbs/37_helper.regex.ipynb 22
+# %% ../../nbs/37_helper.regex.ipynb 23
 def latex_indices(
         text: str,
         ) -> list[tuple[int, int]]:
@@ -174,5 +176,5 @@ def inline_latex_indices(
 #     pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$|(?<!\\)\$.*?(?<!\\)\$", re.DOTALL)
 #     return find_regex_in_text(text, pattern)
 
-# %% ../../nbs/37_helper.regex.ipynb 30
+# %% ../../nbs/37_helper.regex.ipynb 31
 #| export

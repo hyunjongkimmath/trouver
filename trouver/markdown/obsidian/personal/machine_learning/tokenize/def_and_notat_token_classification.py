@@ -510,8 +510,8 @@ def _divide_token_preds_into_parts(
 
 # %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 72
 def _ranges_overlap(
-        current_1: tuple[HTMLTagWithIndices],
-        current_2: tuple[HTMLTagWithIndices]
+        current_1: HTMLTagWithIndices,
+        current_2: HTMLTagWithIndices
         # current_1: tuple[bs4.element.Tag, int, int],
         # current_2: tuple[bs4.element.Tag, int, int]
         ) -> bool:
@@ -848,7 +848,7 @@ def _add_nice_boxing_attrs_to_def_and_notat_tags(
     for tag, start, end in html_tag_data:
         if ('notation' in tag.attrs or 'definition' in tag.attrs) and 'style' not in tag.attrs:
             tag.attrs['style'] = "border-width:1px;border-style:solid;padding:3px"
-        listy.append((tag, start, end)) 
+        listy.append(HTMLTagWithIndices(tag, start, end)) 
     return listy
 
 
@@ -998,8 +998,8 @@ def _get_token_preds_by_dividing_main_text(
         html_tags_in_piece = _consolidate_token_preds(
             text, html_tags_in_piece)
         # start and end indices need to be re-adjusted with respect to their places in `main_text`
-        html_tags_for_piece_in_main_text = [
-            (tag, start_of_piece + start, start_of_piece + end)
+        html_tags_for_piece_in_main_text: list[HTMLTagWithIndices] = [
+            HTMLTagWithIndices(tag, start_of_piece + start, start_of_piece + end)
             for tag, start, end in html_tags_in_piece]
         cumulative_html_tags_in_main = _collate_html_tags(
             cumulative_html_tags_in_main, html_tags_for_piece_in_main_text)

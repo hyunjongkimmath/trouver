@@ -1,2 +1,0 @@
-# 
-- [[this_note_is_in_the_temp_folder_and_should_be_moved_3_chapter_reference_4_where_it_is_linked_by_the_index_note]]

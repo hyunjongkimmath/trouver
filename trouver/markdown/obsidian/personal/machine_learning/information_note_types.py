@@ -379,6 +379,7 @@ def _change_label_tags_for_single_note(
     elif overwrite == 'ww':
         mf.remove_tags(
             [tag for tag in all_label_tags if tag.startswith('_auto/')])
+        mf.add_tags(tags_to_add, skip_repeated_auto=True)
     elif overwrite == 'a':
         for tag in prediction:
             _append_single_predicted_tag(mf, tag, add_auto_label)

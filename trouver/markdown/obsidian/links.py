@@ -6,9 +6,11 @@
 from __future__ import annotations
 from enum import Enum
 import re
+from typing import Literal, Optional, Union, Type
+
+from fastcore.basics import patch
 
 from ...helper.regex import find_regex_in_text, replace_string_by_indices
-from typing import Union
 
 
 # %% auto 0
@@ -81,8 +83,10 @@ class ObsidianLink:
     
     **Attributes**
 
-    - `is_embedded` - `bool`
-        - Whether or not the link is embedded.
+    - `is_embedded` - `bool` or `-1`
+        - Whether or not the link is embedded. If a bool, then the link is
+          definitely embedded or not embedded. Otherwise, the link may or 
+          may not be embedded.
     - `file_name` - `str`, or `-1`
         - The destination of the link. It is either 
         
@@ -116,17 +120,19 @@ class ObsidianLink:
     
     **Parameters**
 
-    - is_embedded - bool
-    - file_name - str or `None`
-        - If `None`, set `self.file_name` to `-1`.
-    - anchor - str or `None`
-    - custom_text - str or `None`
+    - is_embedded - bool or `-1`.
+    - file_name - str, `0`, or `-1`
+    - anchor - str, `0`, or `-1`
+    - custom_text - str, `0` or `-1`
     - link_type - `LinkType`
     """
     
     def __init__(
-            self, is_embedded: bool, file_name: Union[str, int],
-            anchor: Union[str, int], custom_text: Union[str, int],
+            self,
+            is_embedded: bool,
+            file_name: Union[str, Literal[0], Literal[-1]],
+            anchor: Union[str, Literal[0], Literal[-1]],
+            custom_text: Union[str, Literal[0], Literal[-1]],
             link_type: LinkType = LinkType.WIKILINK):
         self.is_embedded = is_embedded
         self.file_name = file_name
@@ -135,39 +141,6 @@ class ObsidianLink:
         self.link_type = link_type
 
 
-    @staticmethod
-    def from_text(text: str) -> ObsidianLink:
-        """Return an ObsidianLink object from text.
-                
-        **Raises**
-
-        - InteralLinkFormatError
-            - If `text` is not properly formatted as an Obsidian internal link.
-        """
-        is_embedded = text.startswith("!")
-        regex_object = re.compile(WIKILINK_CAPTURE_PATTERN)
-        matches = regex_object.match(text)
-        if matches:
-            file_name = matches.group(1)
-            anchor = matches.group(3)
-            custom_text = matches.group(5)
-            link_type = LinkType.WIKILINK
-        else:
-            regex_object = re.compile(MARKDOWNLINK_CAPTURE_PATTERN)
-            matches = regex_object.match(text)
-            if not matches:
-                raise LinkFormatError(text)
-            file_name = matches.group(2).replace('%20', ' ')
-            anchor = matches.group(4)
-            if anchor:
-                anchor = anchor.replace('%20', ' ')
-            custom_text = matches.group(1)
-            link_type = LinkType.MARKDOWN
-        if anchor is None:
-            anchor = 0
-        if custom_text is None:
-            custom_text = 0
-        return ObsidianLink(is_embedded, file_name, anchor, custom_text, link_type)
 
     def _parse_text_as_wikilink(text: str):
         """
@@ -179,99 +152,7 @@ class ObsidianLink:
         # TODO
         return
 
-    def to_regex(self
-            )-> str: # Represents a regex.
-        """Return the regex for that this `ObsidianLink` object represents.
 
-        Assumes that `self.file_name`, `self.anchor`, and `self.custom_text` are
-        regex-formatted strings, e.g. if `self.custom_text` is `denotes?`, then the
-        outputted regex-pattern matches links whose custom text is either `denote`
-        or `denotes`.
-
-        If neither `self.file_name`, `self.anchor` nor `self.custom_text` is `-1`,
-        then the regex will in fact be a concrete string.
-        """
-        embedding = '!' if self.is_embedded else ''
-
-        if type(self.file_name) == str:
-            filing = self.file_name
-        else:  # self.file_name == -1
-            filing = r'([^#\|]*)?'
-        
-        if type(self.anchor) == str:
-            anchoring = f'#{self.anchor}'
-        elif self.anchor == 0:
-            anchoring = ''
-        else:  # self.anchor == -1
-            anchoring = '(#(.*?))?'
-          
-        if type(self.custom_text) == str and self.link_type == LinkType.WIKILINK:
-            customing = fr'\|{self.custom_text}'
-        elif type(self.custom_text) == str and self.link_type == LinkType.MARKDOWN:
-            customing = self.custom_text
-        elif self.custom_text == 0:
-            customing = ''
-        else:  # self.custom == -1
-            if self.link_type == LinkType.MARKDOWN:
-                customing = fr'(.*?)?'
-            else:
-                customing = fr'(\|(.*?))?'
-
-        if self.link_type == LinkType.WIKILINK:
-            return fr'{embedding}\[\[{filing}{anchoring}{customing}\]\]'
-        else:
-            # Markdown links format whitespace with '%20'
-            filing = filing.replace(' ' , '%20')  
-            anchoring = anchoring.replace(' ', '%20')
-            return fr'{embedding}\[{customing}\]\({filing}{anchoring}\)'
-    
-    def __str__(self) -> str:
-        # TODO: Choose what to do about | vs. \|.
-        return self.to_string()
-
-    def __hash__(self) -> int:
-        return hash(self.to_regex())
-
-    def to_string(self
-            ) -> str: # The string for the link
-        """
-        Return the string for the link if it is concrete.
- 
-        **Raises**
-
-        - ValueError
-            - If `self.file_name`, `self.anchor` or `self.custom_text`
-            is -1, i.e. ambiguously represents an anchor or custom text.
-        """
-        if self.is_abstract():
-            raise ValueError(
-                f'The ObsidianLink object is abstract.'
-            )
-        assert (self.anchor != -1 and self.custom_text != -1
-                and self.file_name != -1)
-        embedding = '!' if self.is_embedded else ''
-
-        if type(self.anchor) == str:
-            anchoring = f'#{self.anchor}'
-        else:  # self.anchor == 0
-            anchoring = ''
-          
-        if type(self.custom_text) == str:
-            if self.link_type == LinkType.WIKILINK:
-                customing = fr'|{self.custom_text}'
-            else:
-                customing = self.custom_text
-        else:  # self.custom_text == 0:
-            customing = ''
-        
-        if self.link_type == LinkType.WIKILINK:
-            return f'{embedding}[[{self.file_name}{anchoring}{customing}]]'
-        else:
-            # Markdown links format whitespace with '%20'
-            file_name = self.file_name.replace(' ' , '%20')  
-            anchoring = anchoring.replace(' ', '%20')
-            return fr'{embedding}[{customing}]({file_name}{anchoring})'
-    
     def convert_link_type(
             self,
             link_type: LinkType
@@ -283,63 +164,244 @@ class ObsidianLink:
         # TODO
         return
     
-    def displayed_text(self
-            ) -> str: # The displayed text
-        # TODO: implement error if any of the attributes is -1
-        """Returns the displayed text of this link.
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 16
+@patch
+def __str__(
+        self: ObsidianLink
+        ) -> str:
+    # TODO: Choose what to do about | vs. \|.
+    return self.to_string()
+
+@patch
+def __repr__(
+        self: ObsidianLink
+        ) -> str:
+    return f'ObsidianLink(text="{self.__str__()}")'
+
+@patch
+def __hash__(
+        self: ObsidianLink
+        ) -> int:
+    return hash(self.to_regex())
+
+
+@patch
+def to_string(
+        self: ObsidianLink
+        ) -> str: # The string for the link
+    """
+    Return the string for the link if it is concrete.
+
+    **Raises**
+
+    - ValueError
+        - If `self.file_name`, `self.anchor` or `self.custom_text`
+        is -1, i.e. ambiguously represents an anchor or custom text.
+    """
+    if self.is_abstract():
+        raise ValueError(
+            f'The ObsidianLink object is abstract.'
+        )
+    assert (self.anchor != -1 and self.custom_text != -1
+            and self.file_name != -1)
+    embedding = '!' if self.is_embedded else ''
+
+    if type(self.anchor) == str:
+        anchoring = f'#{self.anchor}'
+    else:  # self.anchor == 0
+        anchoring = ''
         
-        `self.file_name`, `self.custom_text` and `self.anchor` are
-        assumed to be not `-1`.
-        """
-        if self.custom_text:
-            return self.custom_text
+    if type(self.custom_text) == str:
+        if self.link_type == LinkType.WIKILINK:
+            customing = fr'|{self.custom_text}'
         else:
-            if not self.anchor:
-                return self.file_name
-            else:
-                return f'{self.file_name} > {self.anchor}'
-
-    def is_abstract(self) -> bool:
-        """
-        Return `True` if self is abstract, i.e. file_name, anchor,
-        or custom_text is `-1`.
-        """
-        return self.anchor == -1 or self.file_name == -1 or self.anchor == -1
-
-
-    def __copy__(self):
-        new_instance = self.__class__(
-            self.is_embedded,
-            self.file_name,
-            self.anchor,
-            self.custom_text, 
-            self.link_type)
-        return new_instance
-
-    def __eq__(self, other):
-        if not isinstance(other, self.__class__) or not isinstance(self, other.__class__):
-            return False
-        return (
-            self.is_embedded == other.is_embedded
-            and self.file_name == other.file_name
-            and self.anchor == other.anchor
-            and self.custom_text == other.custom_text
-            and self.link_type == other.link_type)
+            customing = self.custom_text
+    else:  # self.custom_text == 0:
+        customing = ''
     
+    if self.link_type == LinkType.WIKILINK:
+        return f'{embedding}[[{self.file_name}{anchoring}{customing}]]'
+    else:
+        # Markdown links format whitespace with '%20'
+        file_name = self.file_name.replace(' ' , '%20')  
+        anchoring = anchoring.replace(' ', '%20')
+        return fr'{embedding}[{customing}]({file_name}{anchoring})'
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 57
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 22
+@patch
+def displayed_text(
+        self: ObsidianLink
+        ) -> str: # The displayed text
+    # TODO: implement error if any of the attributes is -1
+    """Returns the displayed text of this link.
+    
+    `self.file_name`, `self.custom_text` and `self.anchor` are
+    assumed to be not `-1`.
+    """
+    if self.custom_text:
+        return self.custom_text
+    else:
+        if not self.anchor:
+            return self.file_name
+        else:
+            return f'{self.file_name} > {self.anchor}'
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 24
+@patch
+def is_abstract(
+        self: ObsidianLink
+        ) -> bool:
+    """
+    Return `True` if self is abstract, i.e. file_name, anchor,
+    or custom_text is `-1`.
+    """
+    return self.anchor == -1 or self.file_name == -1 or self.anchor == -1
+
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 26
+@patch
+def __copy__(
+        self: ObsidianLink):
+    new_instance = self.__class__(
+        self.is_embedded,
+        self.file_name,
+        self.anchor,
+        self.custom_text, 
+        self.link_type)
+    return new_instance
+
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 28
+@patch
+def __eq__(
+        self: ObsidianLink,
+        other: ObsidianLink) -> bool:
+    if not isinstance(other, self.__class__) or not isinstance(self, other.__class__):
+        return False
+    return (
+        self.is_embedded == other.is_embedded
+        and self.file_name == other.file_name
+        and self.anchor == other.anchor
+        and self.custom_text == other.custom_text
+        and self.link_type == other.link_type)
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 31
+@staticmethod
+@patch(cls_method=True)
+def from_text(
+        cls: ObsidianLink,
+        text: str) -> ObsidianLink:
+    """Return an `ObsidianLink` object from text.
+
+    Note that the `is_embedded` attribute of the `ObsidianLink` object constructed
+    with this function is a `bool` value.
+            
+    **Raises**
+
+    - InteralLinkFormatError
+        - If `text` is not properly formatted as an Obsidian internal link.
+    """
+    is_embedded = text.startswith("!")
+    regex_object = re.compile(WIKILINK_CAPTURE_PATTERN)
+    matches = regex_object.match(text)
+    if matches:
+        file_name = matches.group(1)
+        anchor = matches.group(3)
+        custom_text = matches.group(5)
+        link_type = LinkType.WIKILINK
+    else:
+        regex_object = re.compile(MARKDOWNLINK_CAPTURE_PATTERN)
+        matches = regex_object.match(text)
+        if not matches:
+            raise LinkFormatError(text)
+        file_name = matches.group(2).replace('%20', ' ')
+        anchor = matches.group(4)
+        if anchor:
+            anchor = anchor.replace('%20', ' ')
+        custom_text = matches.group(1)
+        link_type = LinkType.MARKDOWN
+    if anchor is None:
+        anchor = 0
+    if custom_text is None:
+        custom_text = 0
+    return ObsidianLink(is_embedded, file_name, anchor, custom_text, link_type)
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 55
+@patch
+def to_regex(
+    self: ObsidianLink
+        )-> str: # Represents a regex.
+    """Return the regex for that this `ObsidianLink` object represents.
+
+    Assumes that `self.file_name`, `self.anchor`, and `self.custom_text` are
+    regex-formatted strings, e.g. if `self.custom_text` is `denotes?`, then the
+    outputted regex-pattern matches links whose custom text is either `denote`
+    or `denotes`.
+
+    If neither `self.file_name`, `self.anchor` nor `self.custom_text` is `-1`,
+    then the regex will in fact be a concrete string.
+    """
+    if self.is_embedded == True:
+        embedding = '!'
+    elif self.is_embedded == False:
+        embedding = r'(?<!\!)'
+    else: # self.is_embedded == -1
+        embedding = ''
+
+    # embedding = '!' if self.is_embedded else ''
+
+    if type(self.file_name) == str:
+        filing = self.file_name
+    else:  # self.file_name == -1
+        filing = r'([^#\|]*?)?'
+    
+    if type(self.anchor) == str:
+        anchoring = f'#{self.anchor}'
+    elif self.anchor == 0:
+        anchoring = ''
+    else:  # self.anchor == -1
+        anchoring = '(#(.*?))?'
+        
+    if type(self.custom_text) == str and self.link_type == LinkType.WIKILINK:
+        customing = fr'\|{self.custom_text}'
+    elif type(self.custom_text) == str and self.link_type == LinkType.MARKDOWN:
+        customing = self.custom_text
+    elif self.custom_text == 0:
+        customing = ''
+    else:  # self.custom == -1
+        if self.link_type == LinkType.MARKDOWN:
+            customing = fr'(.*?)?'
+        else:
+            customing = fr'(\|(.*?))?'
+
+    if self.link_type == LinkType.WIKILINK:
+        return fr'{embedding}\[\[{filing}{anchoring}{customing}\]\]'
+    else:
+        # Markdown links format whitespace with '%20'
+        filing = filing.replace(' ' , '%20')  
+        anchoring = anchoring.replace(' ', '%20')
+        return fr'{embedding}\[{customing}\]\({filing}{anchoring}\)'
+
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 70
 def links_from_text(
-        text: str
+        text: str,
+        link_to_search: Optional[ObsidianLink] = None,
         ) -> list[ObsidianLink]: # The `ObsidianLink` objects are ordered by appearance.
     """
     Return a list of `ObsidianLink` objects corresponding to links
     found in the text.
     """
-    ranges = link_ranges_in_text(text)
+    if link_to_search is None:
+        ranges = link_ranges_in_text(text)
+    else:
+        pattern = link_to_search.to_regex()
+        ranges = find_regex_in_text(text, pattern)
     link_strs = [text[start:end] for start, end in ranges]
     return [ObsidianLink.from_text(link_str) for link_str in link_strs]
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 61
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 75
 def remove_links_from_text(
         text: str,
         exclude: list[ObsidianLink] = None, # A list of `ObsidianLink` objects of links to not be removed.
@@ -378,7 +440,7 @@ def _do_not_remove_link(text: str, exclude_patterns: list[re.Pattern]) -> bool:
             return True
     return False
 
-# %% ../../../nbs/06_markdown.obsidian.links.ipynb 70
+# %% ../../../nbs/06_markdown.obsidian.links.ipynb 84
 def replace_links_in_text(
         text: str,
         links_to_replace: ObsidianLink,

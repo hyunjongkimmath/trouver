@@ -676,11 +676,11 @@ def rename(
     """
     parent_dir = Path(os.path.dirname(self.rel_path))
     old_wikilink_pattern_by_name = ObsidianLink(
-        is_embedded=False, file_name=self.name, anchor=-1, custom_text=-1)
+        is_embedded=-1, file_name=self.name, anchor=-1, custom_text=-1)
     old_markdownlink_pattern_by_name_1 = ObsidianLink(
-        is_embedded=False, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+        is_embedded=-1, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
     old_markdownlink_pattern_by_name_2 = ObsidianLink(
-        is_embedded=False, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
+        is_embedded=-1, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
     self.move_to(parent_dir / f'{new_name}.md')
     if not replace_links_in_vault:
         return

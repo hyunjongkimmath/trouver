@@ -1,2 +1,0 @@
-- [[_index_reference_1]]
-- [[_index_reference_2]]
