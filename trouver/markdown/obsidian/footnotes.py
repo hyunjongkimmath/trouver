@@ -4,7 +4,8 @@
 
 # %% auto 0
 __all__ = ['find_footnote_descriptions_in_markdown_text', 'find_footnote_mentions_in_markdown_text',
-           'remove_footnote_mentions_in_markdown_text', 'embedded_note_of_footnote', 'footnote_is_simple_embedded_note']
+           'remove_footnote_mentions_in_markdown_text', 'embedded_note_of_footnote', 'footnote_is_simple_embedded_note',
+           'identify_available_footnote_numbers']
 
 # %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 2
 import os
@@ -88,3 +89,34 @@ def footnote_is_simple_embedded_note(
     Return `True` if the footnote description is that of a simple embedded note.
     """
     return bool(embedded_note_of_footnote(footnote))
+
+# %% ../../../nbs/08_markdown.obsidian.footnotes.ipynb 24
+def identify_available_footnote_numbers(
+        text: str,
+        count: int = 1, # The number of available footnote numbers to obtain
+        ) -> list[int]:
+    """
+    Identify the lowest available footnote numbers not used in the given Markdown text.
+
+    Args:
+        text (str): The Markdown text to search for used footnote numbers.
+        count (int): The number of available footnote numbers to return.
+
+    Returns:
+        list[int]: A list of the lowest available footnote numbers.
+    """
+    # Find all occurrences of [^number] (both references and definitions)
+    used_numbers = set(
+        int(match)
+        for match in re.findall(r'\[\^(\d+)\]', text)
+    )
+    # Find the lowest available numbers not in used_numbers
+    available = []
+    candidate = 1
+    while len(available) < count:
+        if candidate not in used_numbers:
+            available.append(candidate)
+        candidate += 1
+
+    return available
+

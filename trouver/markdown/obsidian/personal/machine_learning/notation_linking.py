@@ -5,13 +5,16 @@
 # %% auto 0
 __all__ = ['NotationNoteInitData', 'notat_linking_data_from_notation_notes', 'data_points_for_reference', 'text_from_note_data',
            'text_from_data_point', 'augment_notation_linking_data', 'prediction_by_model',
-           'rank_notat_notes_to_potentially_link_to', 'add_links_to_notation_note_via_data_point']
+           'rank_notat_notes_to_potentially_link_to', 'add_links_to_notation_note_via_data_point',
+           'count_notat_note_links', 'sieve_then_add_links_to_notation_notes']
 
 # %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 5
+import ast
 from os import PathLike
 from pathlib import Path
 import random
 import re
+import sys
 from typing import Literal, NamedTuple, Optional, TypedDict, Union
 
 from scipy.spatial.distance import cosine
@@ -20,25 +23,27 @@ import transformers
 from transformers.pipelines.text_classification import TextClassificationPipeline
 
 
+
+from .....helper import get_top_counted_items
+from trouver.helper.latex import (
+        dollar_sign_manipulation, random_char_modification, remove_math_keywords, random_word_removal,
+        random_latex_command_removal, augment_text, change_font_styles_at_random,
+        remove_font_styles_at_random, change_greek_letters_at_random, choose_modification_methods_at_random
+)
 from ....markdown.file import MarkdownFile, MarkdownLineEnum
-from ...links import MARKDOWNLINK_CAPTURE_PATTERN, LinkFormatError
-from ..information_notes import reference_of_information_note
+from ...links import MARKDOWNLINK_CAPTURE_PATTERN, LinkFormatError, ObsidianLink, link_ranges_in_text
+from ..information_notes import reference_of_information_note, index_note_of_note
+from .notation import notat_note_data_from_parsed_and_main_note_processed
 from ..notation.in_standard_information_note import notation_notes_linked_in_see_also_section
 from ..notation.parse import NotationNoteParsed, parse_notation_note, _notat_str
 from ..note_processing import process_standard_information_note
 from ..note_type import note_is_of_type, type_of_note, PersonalNoteTypeEnum
-from ..notes import notes_linked_in_notes_linked_in_note
-
-from trouver.helper.latex import (
-        dollar_sign_manipulation, random_char_modification, remove_math_keywords, random_word_removal,
-        random_latex_command_removal, augment_text, change_font_styles_at_random,
-        remove_font_styles_at_random, change_greek_letters_at_random
-)
+from ..notes import notes_linked_in_notes_linked_in_note, notes_linked_in_note
 from trouver.markdown.obsidian.personal.machine_learning.notation import (
     NotationNoteData, NotationLinkingDataPoint, data_point_to_notation_note_data_pair, 
     notation_note_data_pair_to_data_point)
 from .notation_summarization import _notation_note_has_auto_summary_tag
-from ...vault import VaultNote
+from ...vault import VaultNote, NotePathIsNotIdentifiedError
 
 # %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 9
 class NotationNoteInitData(NamedTuple):
@@ -576,12 +581,14 @@ def _augment_notation_linking_data_once(
         method_inclusion_chance = 0.8
         scale = 1.5
     
-    random_methods = []
-    def create_method(method, p, scale):
-        return lambda x: method(x, p=p*scale)
-    for method, p in methods:
-        if random.random() < method_inclusion_chance:
-            random_methods.append(create_method(method, p, scale))
+    random_methods = choose_modification_methods_at_random(
+        methods, method_inclusion_chance, scale)
+    # random_methods = []
+    # def create_method(method, p, scale):
+    #     return lambda x: method(x, p=p*scale)
+    # for method, p in methods:
+    #     if random.random() < method_inclusion_chance:
+    #         random_methods.append(create_method(method, p, scale))
 
     augmented_datapoint = datapoint.copy()
     for key in ['origin_notation_note_content', 'processed_main_of_origin_content', 'latex_in_original_or_summarized_in_origin', 'summarized_in_origin', 'processed_main_of_relied_content', 'relied_notation_note_content', 'latex_in_original_or_summarized_in_relied', 'summarized_in_relied']:
@@ -730,7 +737,8 @@ def _add_link_to_notation_note_in_mf(
 def add_links_to_notation_note_via_data_point(
         origin_data: NotationNoteData,
         relied_data_list: list[NotationNoteData],
-        pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
+        pipeline: Union[TextClassificationPipeline, SentenceTransformer],
+        # pipeline: transformers.pipelines.text_classification.TextClassificationPipeline,
         vault: Path, # The vault in which the notes are.
         threshold: float = 0.5, # The threshold for `pipeline`'s prediction of how likely it is that a relied notation note should be linked in order for the linking to actually happen.
         only_add_links_to_notation_notes_with_confirmed_summaries: bool = True # If `True`, and if `pipeline` determines that the origina note should link to a notation note with an autogenerated summary or no summary, then print a messaage about this, but do not add the link.
@@ -759,3 +767,423 @@ def add_links_to_notation_note_via_data_point(
             names_of_notation_notes_added.append(relied_data['notation_note_name'])
     mf.write(origin_notat_note)
     return names_of_notation_notes_added
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 39
+def _identify_note_type_and_setup(
+        vault: PathLike,
+        current_note: VaultNote
+        ) -> tuple[VaultNote, bool]: # The main information note along with whether `current_note` is an information note.
+    # Some tweaking to make sure that `current_note` exists
+    rel_path = current_note.rel_path
+    current_note = VaultNote(vault, rel_path)
+    if not current_note.exists():
+        print(fr'''
+Note was determined not to exist.
+The vault was {vault}.
+The note name was {current_note.name}.
+The note path was {rel_path}.''')
+        sys.exit(0)
+
+    if note_is_of_type(current_note, PersonalNoteTypeEnum.STANDARD_INFORMATION_NOTE):
+        main_note = current_note
+        current_note_is_info_note = True
+        return main_note, current_note_is_info_note
+    elif note_is_of_type(current_note, PersonalNoteTypeEnum.NOTATION_NOTE):
+        notation_note = current_note 
+        notat_note_parsed: NotationNoteParsed = parse_notation_note(notation_note)
+        main_note = VaultNote(vault, name=notat_note_parsed.name_of_main_note)
+        current_note_is_info_note = False
+        return main_note, current_note_is_info_note
+    else:
+        print('note was neither an info note nor a notation note. The note path was {rel_path}.')
+        sys.exit(0)
+
+
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 40
+def _info_notes_for_reference(
+        reference_index_note: VaultNote,
+        vault: PathLike) -> list[VaultNote]:
+    info_notes: list[VaultNote] = notes_linked_in_notes_linked_in_note(
+        reference_index_note, as_dict=False)
+    info_notes = [
+        note for note in info_notes if note.exists() and note_is_of_type(note, PersonalNoteTypeEnum.STANDARD_INFORMATION_NOTE)]
+    return info_notes
+
+def _notat_notes_introduced_by_info_notes(
+        info_notes: list[VaultNote]) -> list[VaultNote]:
+    notat_notes: list[VaultNote] = []
+    for info_note in info_notes:
+        notat_notes.extend(
+            notation_notes_linked_in_see_also_section(
+                info_note, info_note.vault))
+    return notat_notes
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 42
+def _get_processed_content_of_info_notes(
+        info_notes: list[VaultNote],
+        vault: PathLike,
+        ) -> dict[str, str]:
+    info_notes_and_processed_content: dict[str, str] = {}
+    for note in info_notes:
+        try:
+            info_notes_and_processed_content[note.name] = str(
+                process_standard_information_note(MarkdownFile.from_vault_note(note), vault))
+        except TypeError as e:
+            print(f"An error occurred while trying to process the following note: {note.name}")
+            print(e)
+            info_notes_and_processed_content[note.name] = note.text()
+    return info_notes_and_processed_content
+
+def _get_notation_note_data(
+        info_notes_and_processed_content: dict[str, str],
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        vault: PathLike,
+        reference: str,
+        ) -> dict[str, NotationNoteData]:
+
+    notation_note_data: dict[str, NotationNoteData] = {}
+    for notat_note_name, parsed in notation_notes_and_parsed.items():
+        try:
+            notation_note_data[notat_note_name] = notat_note_data_from_parsed_and_main_note_processed(
+                notat_note_name,
+                parsed,
+                info_notes_and_processed_content[parsed.name_of_main_note],
+                vault,
+                reference)
+        except Exception as e:
+            print(f"An error occurred while trying to parse and process the following note: {notat_note_name}")
+            print(e)
+    return notation_note_data
+
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 43
+def count_notat_note_links(
+        notation_notes_and_parsed: dict[str, NotationNoteData]
+        ) -> dict[str, int]:
+    link_counts: dict[str, int] = {} # Keys: names of notation notes, values: the number of times the notation note is linked to by another notation note.
+    for _, parsed in notation_notes_and_parsed.items():
+        for _, linked_notat_note_name in parsed.linked_notation_notes:
+            if linked_notat_note_name.endswith('.md'):
+                linked_notat_note_name = linked_notat_note_name[:-3]
+            if linked_notat_note_name not in link_counts:
+                link_counts[linked_notat_note_name] = 1
+            else:
+                link_counts[linked_notat_note_name] += 1
+    return link_counts
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 44
+def _notat_note_names_linked_by_notat_notes_in_info_note(
+        info_note: VaultNote,
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        ) -> list[str]:
+    notat_notes_in_info_note: list[VaultNote] = notation_notes_linked_in_see_also_section(
+        info_note, info_note.vault)
+    notat_notes_linked_by_notat_notes_in_info_notes: set[str] = set()
+    for notat_note in notat_notes_in_info_note:
+        linked_data = notation_notes_and_parsed[notat_note.name].linked_notation_notes
+        print(linked_data)
+        for _, linked_notat_note_name in linked_data:
+            if linked_notat_note_name.endswith('.md'):
+                linked_notat_note_name = linked_notat_note_name[:-3]
+            notat_notes_linked_by_notat_notes_in_info_notes.add(linked_notat_note_name)
+    return list(notat_notes_linked_by_notat_notes_in_info_notes)
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 46
+def _get_preceding_info_notes_in_section(
+        index_note_for_section: VaultNote,
+        info_note_name: str, # The name of the info note for which the preceding info notes in `index_note_for_section` should be found,
+        vault: PathLike,
+        ) -> list[VaultNote]:
+    info_notes: list[VaultNote] = notes_linked_in_note(index_note_for_section, as_dict=False)
+    preceding_info_notes: list[VaultNote] = []
+
+    for other_info_note in info_notes:
+        if other_info_note.name == info_note_name:
+            break
+        try:
+            mf = MarkdownFile.from_vault_note(other_info_note)
+        except NotePathIsNotIdentifiedError as e:
+            # other_info_note = VaultNote(other_info_note.vault, name=other_info_note.name, update_cache=True)
+            other_info_note = VaultNote(vault, name=other_info_note.name, update_cache=True)
+            mf = MarkdownFile.from_vault_note(other_info_note)
+        except Exception as e:
+            continue
+        meta = mf.metadata()
+        if meta is not None and 'tags' in meta and (
+            '_meta/definition' in meta['tags'] or
+            '_meta/notation' in meta['tags'] or
+            '_auto/_meta/definition' in meta['tags'] or
+            '_auto/_meta/notation' in meta['tags']):
+                preceding_info_notes.append(other_info_note)
+    return preceding_info_notes
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 47
+def _get_preceding_notation_note_names(
+        preceding_info_notes: list[VaultNote],
+        vault: PathLike,
+        ) -> list[str]:
+        # Get the most linked notation notes from all the preceding info notes except for the last three.
+    preceding_notation_notes: list[str] = []
+    for preceding_info_note in preceding_info_notes[:-3]:
+        try:
+            notat_notes_in_info_note = notation_notes_linked_in_see_also_section(
+                preceding_info_note, preceding_info_note.vault)
+            preceding_notation_notes.extend([note.name for note in notat_notes_in_info_note])
+        except NotePathIsNotIdentifiedError as e:
+            preceding_info_note = VaultNote(vault, name=preceding_info_note.name, update_cache=True)
+            notat_notes_in_info_note = notation_notes_linked_in_see_also_section(
+                preceding_info_note, preceding_info_note.vault)
+            preceding_notation_notes.extend([note.name for note in notat_notes_in_info_note])
+    return preceding_notation_notes
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 48
+def _filter_preceding_notation_notes(
+        preceding_notation_notes: list[str],
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        ) -> list[str]:
+    preceding_notation_note_link_counts: dict[str, int] = {
+        name: 0 for name in preceding_notation_notes}
+
+    for _, parsed in notation_notes_and_parsed.items():
+        for _, linked_notat_note_name in parsed.linked_notation_notes:
+            if linked_notat_note_name.endswith('.md'):
+                linked_notat_note_name = linked_notat_note_name[:-3]
+            if linked_notat_note_name in preceding_notation_note_link_counts:
+                preceding_notation_note_link_counts[linked_notat_note_name] += 1
+
+    return get_top_counted_items(preceding_notation_note_link_counts, 0.2)
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 49
+def _get_most_recent_preceding_notation_notes(
+        preceding_info_notes: list[VaultNote]
+        ) -> list[str]:
+    most_recent_preceding_notation_notes: list[str] = []
+    for preceding_info_note in preceding_info_notes[-3:]:
+        notat_notes_in_info_note = notation_notes_linked_in_see_also_section(
+            preceding_info_note, preceding_info_note.vault)
+        most_recent_preceding_notation_notes.extend([note.name for note in notat_notes_in_info_note])
+    return most_recent_preceding_notation_notes
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 51
+def _get_notat_notes_embedded_in_info_note(
+        info_note: VaultNote,
+        notation_note_data: dict[str, NotationNoteData],
+        ) -> list[str]: 
+    # Get notation notes embedded in info note
+    info_note_text = info_note.text()
+    link_ranges = link_ranges_in_text(info_note_text)
+    notation_notes_embedded_in_info_note: list[str] = []
+    for start, end in link_ranges:
+        link = ObsidianLink.from_text(info_note_text[start:end])
+        if link.is_embedded:
+            if link.file_name in notation_note_data:
+                notation_notes_embedded_in_info_note.append(link.file_name)
+    return notation_notes_embedded_in_info_note
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 52
+def _get_relied_data_to_consider(
+        vault: PathLike,
+        reference: str,
+        all_notes_to_consider_to_link: set[str],
+        notation_note_data: dict[str, NotationNoteData],
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        info_notes_and_processed_content: dict[str, str],
+        ) -> list[NotationNoteData]:
+    relied_data_to_consider: list[NotationNoteData] = []
+    for note_name in all_notes_to_consider_to_link:
+        # If the following happenes, then it may be the case that we are working in a vault inside a vault, and notation_notes_and_parsed and notation_note_data do not contain the data for notation notes in other subvaults.
+        # Try to add the data for note_name to notation_notes_and_parsed and notation_note_data:
+        if note_name in notation_note_data:
+            relied_data_to_consider.append(notation_note_data[note_name])
+            continue
+        notat_note = VaultNote(vault, name=note_name)
+        if not notat_note.exists():
+            continue
+        parsed = parse_notation_note(notat_note)
+        notation_notes_and_parsed[note_name] = parsed
+        notation_note_data[note_name] = notat_note_data_from_parsed_and_main_note_processed(
+            note_name,
+            parsed,
+            info_notes_and_processed_content[parsed.name_of_main_note],
+            vault,
+            reference)
+        relied_data_to_consider.append(notation_note_data[note_name])
+    return relied_data_to_consider
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 53
+def _get_notat_note_names_to_add_links_to(
+        current_note: VaultNote,
+        current_note_is_info_note: bool,
+        notat_notes_in_info_note: list[str],
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        # notation_note: Optional[VaultNote], # The current/notation note if `current_note_is_info_note` is `True`
+        ) -> list[str]:
+
+    if current_note_is_info_note:
+        notat_note_names_to_add_links_to: list[str] = [] 
+        for name in notat_notes_in_info_note:
+            parsed_data: NotationNoteParsed = notation_notes_and_parsed[name]
+            has_auto_tag = (
+                parsed_data.yaml_frontmatter_meta is not None
+                and 'tags' in parsed_data.yaml_frontmatter_meta
+                and '_auto/notation_notes_linked' in parsed_data.yaml_frontmatter_meta['tags'])
+            has_linked_notation_notes = bool(parsed_data.linked_notation_notes)
+            if has_auto_tag or not has_linked_notation_notes:
+                notat_note_names_to_add_links_to.append(name)
+        # filter out things from notat note names to add links to if they do not contain the _auto tag and they already have some linked notation notes.
+    else:
+        notat_note_names_to_add_links_to: list[str] = [current_note.name]
+    return notat_note_names_to_add_links_to
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 54
+def _add_links_to_sieved_notat_notes(
+        vault: PathLike,
+        notat_note_names_to_add_links_to: list[str],
+        notation_note_data: dict[str, NotationNoteData],
+        notation_notes_and_parsed: dict[str, NotationNoteParsed],
+        relied_data_to_consider: list[NotationNoteData],
+        other_data: list[NotationNoteData],
+        notation_linking_rag_sentence_transformer,
+        notation_linking_rag_classifier,
+        ):
+    for notat_note_name in notat_note_names_to_add_links_to:
+        if notat_note_name not in notation_notes_and_parsed:
+            # print(notation_notes_and_parsed)
+            print(notat_note_name)
+            continue
+        try:
+            # print(notat_note_name)
+            already_linked_in_notat_notes: list[str] = [
+                name for _, name in notation_notes_and_parsed[notat_note_name].linked_notation_notes]
+            already_linked_in_notat_notes: list[str] = [
+                name if not name.endswith('.md') else name[:-3] for name in already_linked_in_notat_notes]
+            relied_data_to_consider_for_notat_note: list[NotationNoteData] = [
+                relied_data for relied_data in relied_data_to_consider if relied_data['notation_note_name'] not in already_linked_in_notat_notes
+                ]
+
+            # First use the sentence transformers to quickly determine
+            # which links the sentence transformers is confident
+            # about adding which links to add filter out  
+
+            # 1. among `relied_data_to_consider_for_notat_note`, add
+            # the link if sentence transformers has at least .9
+            # amount of confidence.
+
+            added_links_1: list[str] = add_links_to_notation_note_via_data_point(
+                notation_note_data[notat_note_name],
+                relied_data_to_consider_for_notat_note,
+                notation_linking_rag_sentence_transformer,
+                vault,
+                threshold = 0.9)
+
+            # 2. consider other_data, also using sentence transformers
+            # which is much higher confidence threshold
+            added_links_2: list[str] = add_links_to_notation_note_via_data_point(
+                notation_note_data[notat_note_name],
+                other_data,
+                notation_linking_rag_sentence_transformer,
+                vault,
+                threshold = 0.99)
+
+            added_links: set[str] = set(added_links_1)
+            added_links.update(added_links_2)
+
+            # 3. Use the classifier model to properly add others
+            # sift out the candidates among the ones that were
+            # added as links by the sentence transformers
+            relied_data_to_consider_for_notat_note = [
+                relied_data for relied_data in relied_data_to_consider if relied_data['notation_note_name'] not in added_links
+                ]
+            add_links_to_notation_note_via_data_point(
+                notation_note_data[notat_note_name],
+                relied_data_to_consider_for_notat_note,
+                notation_linking_rag_classifier,
+                vault)
+
+
+
+        except Exception as e:
+            print(f'{notat_note_name} raised an exception')
+            print(e)
+            raise(e)
+
+# %% ../../../../../nbs/34_markdown.obsidian.personal.machine_learning.notation_linking.ipynb 55
+def sieve_then_add_links_to_notation_notes(
+        vault: PathLike,
+        current_note: VaultNote, # Either an info note that introduces the notation notes in which to add links to other notation notes or a notation note in which to add links to.
+        reference_name: str, 
+        notation_linking_rag_sentence_transformer,
+        notation_linking_rag_classifier,
+        ) -> None:
+
+    main_note, current_note_is_info_note = _identify_note_type_and_setup(
+        vault, current_note)
+    info_note_name = main_note.name
+    index_note_for_section = index_note_of_note(main_note)
+    index_note = index_note_of_note(index_note_for_section)
+    reference_index_note = VaultNote(vault, name=index_note.name)
+    reference = reference_index_note.name[7:]
+    vault = reference_index_note.vault
+
+    info_notes: list[VaultNote] = _info_notes_for_reference(
+        reference_index_note, vault)
+    notat_notes: list[VaultNote] = _notat_notes_introduced_by_info_notes(info_notes)
+    notation_notes_and_parsed: dict[str, NotationNoteParsed] = {
+    notat_note.name: parse_notation_note(notat_note) for notat_note in notat_notes}
+    info_notes_and_processed_content = _get_processed_content_of_info_notes(
+        info_notes, vault)
+
+
+
+
+        
+    notation_note_data: dict[str, NotationNoteData] = _get_notation_note_data(
+        info_notes_and_processed_content, notation_notes_and_parsed, vault,
+        reference)
+
+    link_counts = count_notat_note_links(notation_notes_and_parsed)
+    top_linked_note_names = get_top_counted_items(link_counts, 0.05, 5)
+    preceding_info_notes: list[VaultNote] = _get_preceding_info_notes_in_section(
+        index_note_for_section, info_note_name, vault)
+    preceding_notation_notes = _get_preceding_notation_note_names(
+        preceding_info_notes, vault)
+    top_linked_notat_note_names_in_preceding_info_notes = _filter_preceding_notation_notes(
+        preceding_notation_notes, notation_notes_and_parsed)
+    most_recent_preceding_notation_notes = _get_most_recent_preceding_notation_notes(
+        preceding_info_notes)
+
+    # Get the other notation notes linked in the same info note.
+    info_note = VaultNote(vault, name=info_note_name)
+    notat_notes_in_info_note: list[VaultNote] = notation_notes_linked_in_see_also_section(info_note, info_note.vault)
+    notat_notes_in_info_note: list[str] = [note.name for note in notat_notes_in_info_note] 
+    notation_notes_embedded_in_info_note = _get_notat_notes_embedded_in_info_note(
+        info_note, notation_note_data)
+
+    all_notes_to_consider_to_link: set[str] = set()
+    all_notes_to_consider_to_link.update(top_linked_note_names)
+    all_notes_to_consider_to_link.update(top_linked_notat_note_names_in_preceding_info_notes)
+    all_notes_to_consider_to_link.update(notat_notes_in_info_note)
+    all_notes_to_consider_to_link.update(most_recent_preceding_notation_notes)
+    all_notes_to_consider_to_link.update(notation_notes_embedded_in_info_note)
+
+    relied_data_to_consider = _get_relied_data_to_consider(
+        vault, reference, all_notes_to_consider_to_link, notation_note_data,
+        notation_notes_and_parsed, info_notes_and_processed_content)
+    note_names_for_relied_data_to_consider: set[str] = set(
+        [relied_data['notation_note_name'] for relied_data in relied_data_to_consider])
+    # other_data consists the data for notation notes essentially outside
+    # of relied_data_to_consider; the sentence transformer will consider
+    # whether to link these data, which is fast; the threshold for whether
+    # to link these data is much higher.
+    other_data: list[NotationNoteData] = [
+        data for note_name, data in notation_note_data.items() if note_name not in note_names_for_relied_data_to_consider]
+    notat_note_names_to_add_links_to: list[str] = _get_notat_note_names_to_add_links_to(
+        current_note, current_note_is_info_note,
+        notat_notes_in_info_note, notation_notes_and_parsed)
+        
+    _add_links_to_sieved_notat_notes(
+        vault, notat_note_names_to_add_links_to, notation_note_data, notation_notes_and_parsed,
+        relied_data_to_consider, other_data, notation_linking_rag_sentence_transformer,
+        notation_linking_rag_classifier)
+

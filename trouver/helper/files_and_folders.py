@@ -4,7 +4,7 @@
 
 # %% auto 0
 __all__ = ['existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
-           'file_is_compressed', 'uncompress_file', 'get_download_path', 'get_huggingface_cache_dir']
+           'md_files_in_dir', 'file_is_compressed', 'uncompress_file', 'get_download_path', 'get_huggingface_cache_dir']
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 2
 import bz2
@@ -17,7 +17,7 @@ from pathlib import Path
 import platform
 import sys
 import tarfile
-from typing import Optional
+from typing import Optional, Union
 import zipfile
 
 from deprecated import deprecated
@@ -160,6 +160,23 @@ def files_of_format_sorted(
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
 # %% ../../nbs/46_helper.files_and_folders.ipynb 39
+def md_files_in_dir(
+        dir: PathLike, # The directory in which to find the Markdown files.
+        root: PathLike, # The "root" directory for this query. This is assumed to be some ancestor directory to `dir`. The outputed paths are relative to this. 
+        as_dict: bool = False,
+        ) -> Union[list[str], dict[str, list[str]]]:
+    dir = Path(dir)
+    root = Path(root)
+    paths =  [os.path.relpath(path, root) for path in dir.glob(f'**/*.md')]
+    if as_dict:
+        dicty = {path_name_no_ext(path): [] for path in paths}
+        for path in paths:
+            dicty[path_name_no_ext(path)].append(path)
+        return dicty
+    else:
+        return paths
+
+# %% ../../nbs/46_helper.files_and_folders.ipynb 42
 def file_is_compressed(
         filename: str
         ):
@@ -183,7 +200,7 @@ def file_is_compressed(
     # Check if the file extension is in the set of compressed extensions
     return file_extension.lower() in compressed_extensions
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 41
+# %% ../../nbs/46_helper.files_and_folders.ipynb 44
 @deprecated("This function was originally implemented to be used in the `_download_source` function in `49_helper.arxiv.ipynb`, but it seems to be unable to properly handle `tar.gz` files that are actually `.gz` files.")
 def uncompress_file(
         file_path: PathLike,
@@ -318,7 +335,7 @@ def uncompress_file(
 #     return uncompressed_files
 
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 44
+# %% ../../nbs/46_helper.files_and_folders.ipynb 47
 # def is_gzipped(file_path):
 #     with open(file_path, 'rb') as f:
 #         magic_number = f.read(2)
@@ -331,7 +348,7 @@ def uncompress_file(
 #     except (tarfile.TarError, OSError):
 #         return False
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 47
+# %% ../../nbs/46_helper.files_and_folders.ipynb 50
 def get_download_path() -> str:
     """
     Return the user's download folder
@@ -345,7 +362,7 @@ def get_download_path() -> str:
     else:  # For Unix-based systems (Linux, macOS)
         return os.path.join(os.path.expanduser('~'), 'Downloads')
 
-# %% ../../nbs/46_helper.files_and_folders.ipynb 49
+# %% ../../nbs/46_helper.files_and_folders.ipynb 52
 def get_huggingface_cache_dir():
     # Determine the cache directory
     cache_dir = os.environ.get("HF_HOME") or os.environ.get("XDG_CACHE_HOME")

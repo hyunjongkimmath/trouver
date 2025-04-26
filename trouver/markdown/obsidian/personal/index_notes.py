@@ -123,17 +123,23 @@ def correspond_headings_with_folder(
     headings = index.get_headings(levels=1)
     headings = [heading_title(heading) for heading in headings]
     folders = subsection_folders(index_note, vault, output_type='name')
-    correspond_dict = {get_alphanumeric(heading, 'heading'): (heading, folder)
+    if headings[0] == '':
+        correspond_dict = {get_alphanumeric(heading, 'heading'): (heading, folder)
+                       for heading, folder in zip(headings[1:], folders)}
+    else:
+        correspond_dict = {get_alphanumeric(heading, 'heading'): (heading, folder)
                        for heading, folder in zip(headings, folders)}
+    
     # TODO do a better job at the conditional below; 
     # for example, consider the start of the text blank if it's just empty lines with spaces.
-    if (include_non_heading and index.parts
-            and index.parts[0]['type'] != MarkdownLineEnum.HEADING):
+    if (include_non_heading and headings[0] == ''):
+    # if (include_non_heading and index.parts
+    #         and index.parts[0]['type'] != MarkdownLineEnum.HEADING):
         correspond_dict[''] = ('', '')
     return correspond_dict
     
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 19
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 20
 def information_notes_linked_in_index_note(
         index_note: VaultNote, # The note indexing the information notes.
         vault: PathLike,
@@ -146,9 +152,10 @@ def information_notes_linked_in_index_note(
     Assumes that all notes in the vault have unique names.
     """
     parent_folder = os.path.dirname(index_note.rel_path)
-    headings_folders = correspond_headings_with_folder(index_note, vault)
+    headings_folders: dict[str, str] = correspond_headings_with_folder(
+        index_note, vault)
     mf = MarkdownFile.from_vault_note(index_note)
-    headings_text = mf.get_headings_and_text(levels=1, include_start=True)
+    headings_text: dict[str, str] = mf.get_headings_and_text(levels=1, include_start=True)
     headings_text = {heading_title(heading): text for heading, text
                      in headings_text.items()}
     text_under_headings = {heading_index: headings_text[heading] 
@@ -170,7 +177,7 @@ def information_notes_linked_in_index_note(
     return notes_by_headings
     
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 21
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 23
 def move_information_notes_to_correct_folder(
         index_note: VaultNote,
         vault: PathLike,
@@ -200,7 +207,7 @@ def _move_notes_under_heading(
         note.move_to_folder(Path(parent_folder) / destination_folder)
 
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 25
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 27
 def move_information_notes_to_correct_folder_for_all_indices(
         index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
         vault: PathLike,
@@ -221,7 +228,7 @@ def move_information_notes_to_correct_folder_for_all_indices(
         move_information_notes_to_correct_folder(
             index_note, vault, hints=hints+[index_note.rel_path])
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 35
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 37
 def convert_title_to_folder_name(title: str) -> str:
     # TODO: remove left/right
     """
@@ -248,7 +255,7 @@ def convert_title_to_folder_name(title: str) -> str:
     title = sanitize_filename(title)
     return title
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 37
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 39
 def convert_heading_to_folder_name(
         heading: str # Matches regex `\# (\w+?)\. (.*?)`
         ) -> str:
@@ -271,7 +278,7 @@ def convert_heading_to_folder_name(
         #print(heading)
     return f'{alphanumeric}_{convert_title_to_folder_name(title)}'    
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 39
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 41
 def make_folders_from_index_note_headers(
         index_note: VaultNote
         ) -> None:
@@ -293,7 +300,7 @@ def make_folders_from_index_note_headers(
         except OSError as error:
             pass
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 42
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 44
 # TODO: do an example of the `include_embedded_notes` paramtere.
 def get_notes_from_index_note(
         vault: PathLike, # The path to the Obsidian vault directory
@@ -321,7 +328,7 @@ def get_notes_from_index_note(
                        for index_note in index_notes]
     return index_notes
 
-# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 48
+# %% ../../../../nbs/12_markdown.obsidian.personal.index_notes.ipynb 50
 def add_link_in_index_note_after_note_link(
         index_note: VaultNote,
         note_to_add_link_after: VaultNote,

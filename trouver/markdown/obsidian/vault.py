@@ -16,7 +16,7 @@ from typing import Optional, Sequence, Union
 from fastcore.basics import patch
 
 from trouver.helper.files_and_folders import (
-    path_no_ext, path_name_no_ext
+    path_no_ext, path_name_no_ext, md_files_in_dir
 )
 from .links import ObsidianLink, LinkType, replace_links_in_text
 
@@ -124,14 +124,12 @@ def path_to_obs_id(
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 23
 def all_paths_to_notes_in_vault(
-        vault: PathLike, as_dict: bool = False)\
-        -> Union[list[str], dict[str, list[str]]]:
+        vault: PathLike,
+        as_dict: bool = False
+        ) -> Union[list[str], dict[str, list[str]]]:
     """Return the paths, relative to the Obsidian vault, of notes 
     in the Obsidian vault.
        
-    This may not actually return all of the paths to the notes, see
-    the parameter `as_dict`.
-
     **Parameters**
 
     - `vault` - `PathLike`
@@ -139,10 +137,9 @@ def all_paths_to_notes_in_vault(
     - `as_dict` - `bool`
         - If `True`, then returns a dict. If `False`, then returns
         a list. Defaults to `False`. If there are multiple notes with the same
-        name in the vault, and `as_dict` is set to `True`, then the dictionary
-        will contain only one of the (relative) paths to those notes among its
-        values. If `as_dict` is set to `False`, then the list will contain
-        all the paths to the notes even when notes with non-unique names exist.
+        name in the vault, and if `as_dict` is set to `True`, then the dictionary
+        will contain a list of the (relative) paths (as str) to those notes.
+        
         
     **Returns**
 
@@ -151,15 +148,16 @@ def all_paths_to_notes_in_vault(
         True, then returns a dict whose keys are str, which are (unique) names
         of the notes in the vault, and the values are the paths.
     """
-    vault = Path(vault)
-    paths =  [os.path.relpath(path, vault) for path in vault.glob(f'**/*.md')]
-    if as_dict:
-        dicty = {path_name_no_ext(path): [] for path in paths}
-        for path in paths:
-            dicty[path_name_no_ext(path)].append(path)
-        return dicty
-    else:
-        return paths
+    return md_files_in_dir(dir=vault, root=vault, as_dict=as_dict)
+    # vault = Path(vault)
+    # paths =  [os.path.relpath(path, vault) for path in vault.glob(f'**/*.md')]
+    # if as_dict:
+    #     dicty = {path_name_no_ext(path): [] for path in paths}
+    #     for path in paths:
+    #         dicty[path_name_no_ext(path)].append(path)
+    #     return dicty
+    # else:
+    #     return paths
 
 
 # %% ../../../nbs/03_markdown.obsidian.vault.ipynb 29
@@ -297,6 +295,15 @@ class VaultNote:
     
     cache = {}
     
+    def __repr__(self):
+        # if self.rel_path and self.
+        if self.rel_path_identified():
+            if self.name:
+                return f"VaultNote(vault={repr(self.vault)}, name={self.name}, rel_path={repr(self.rel_path)})"
+            else:
+                return f"VaultNote(vault={repr(self.vault)}, rel_path={repr(self.rel_path)})"
+        else:
+            return f"VaultNote(vault={repr(self.vault)}, name={self.name})"
 
     @classmethod
     def _check_if_cache_needs_to_update(
@@ -306,7 +313,7 @@ class VaultNote:
         """
         return not bool(cls._get_from_cache(vault, name))
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 52
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 53
 @patch(cls_method=True)
 def _get_from_cache(
         cls: VaultNote,
@@ -326,7 +333,7 @@ def _get_from_cache(
         return None
     return vault_dict[name]
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 53
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 54
 @patch
 def _identify_rel_path(
         self: VaultNote
@@ -365,7 +372,7 @@ def identify_rel_path(
         self.__class__.update_cache(self.vault)
         self.identify_rel_path(update_cache=False)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 54
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 55
 @patch(cls_method=True)
 def update_cache(
         cls: VaultNote,
@@ -378,21 +385,21 @@ def update_cache(
 
         
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 55
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 56
 @patch(cls_method=True)
 def clear_cache(cls: VaultNote):
     r"""Class method to clear out the entire cache for all vaults."""
     cls.cache = {}
         
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 56
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 57
 @patch
 def rel_path_identified(self: VaultNote) -> bool:
     r"""Return `True` if `self.rel_path` is identified, i.e. is a path
     that is not `None`."""
     return self.rel_path is not None
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 57
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 58
 @patch(cls_method=True)
 def _add_single_entry_to_cache(
         cls: VaultNote,
@@ -441,12 +448,12 @@ def _remove_single_entry_from_cache(
         cache_path for cache_path in cls.cache[vault_str][name]
         if Path(cache_path) != rel_path]
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 59
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 60
 # TODO: test/document
 @patch
 def path(self: VaultNote,
         relative=False # If `True`, then return the path relative to the vault. Otherwise, return the absolute path.
-        ) -> Union[Path, None]: # Path to the note if self.rel_path is deterined. `None` otherwise.
+        ) -> Union[Path, None]: # Path to the note if self.rel_path is determined. `None` otherwise.
     r"""Returns the path to the note.
 
     **Raises**
@@ -458,7 +465,7 @@ def path(self: VaultNote,
     return Path(self.rel_path) if relative\
         else self.vault / self.rel_path
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 61
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 62
 @patch
 # TODO: test/document
 def directory(self: VaultNote,
@@ -470,7 +477,7 @@ def directory(self: VaultNote,
     return rel_dir if relative else self.vault / rel_dir
 
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 64
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 65
 @patch
 def __init__(
         self: VaultNote,
@@ -496,7 +503,7 @@ def __init__(
         self.rel_path = None
         self.identify_rel_path(update_cache=update_cache)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 67
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 68
 @patch
 def exists(
         self: VaultNote,
@@ -521,7 +528,7 @@ def exists(
         return False
     return os.path.exists(abs_path)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 81
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 82
 @patch(cls_method=True)
 def _check_name_exists_and_unique_in_vault_cache(
         cls: VaultNote,
@@ -557,7 +564,7 @@ def _check_name_exists_and_unique_in_vault_cache(
             raise NoteDoesNotExistError.from_note_name(name)
 
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 90
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 91
 @patch
 def obsidian_identifier(self: VaultNote) -> str:
     r"""Return the Obsidian identifier of the `VaultNote` object.
@@ -568,7 +575,7 @@ def obsidian_identifier(self: VaultNote) -> str:
     """
     return path_to_obs_id(self.rel_path)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 98
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 99
 @patch
 def text(
         self: VaultNote
@@ -589,7 +596,25 @@ def text(
     return text
 
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 103
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 102
+@patch
+# TODO: test
+def write(
+        self: VaultNote,
+        text: str,
+        mode: str = 'w', # The specific mode to write the file with.
+        encoding: str = 'utf-8',
+    ) -> None:
+    """
+    Does nothing if `self.exists()` is `False`.
+    """
+    if not self.exists():
+        return
+    with open(self.path(), mode, encoding=encoding) as file:
+        file.write(text)
+        file.close()
+
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 106
 @patch
 def create(self: VaultNote):
     # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
@@ -613,7 +638,7 @@ def create(self: VaultNote):
         self.vault, self.rel_path)
 
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 105
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 108
 @patch
 def delete(self: VaultNote):
     r"""Delete the note if it exists.
@@ -624,7 +649,7 @@ def delete(self: VaultNote):
         os.remove(self.path())
         self.__class__._remove_single_entry_from_cache(self.vault, self.rel_path)
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 107
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 110
 @patch
 def move_to(self: VaultNote,
             rel_path: PathLike # The path in which to rename the path to `self` as, relative to `self.vault`.
@@ -654,7 +679,7 @@ def move_to_folder(self: VaultNote,
     """
     self.move_to(Path(rel_dir) / f'{self.name}.md')
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 110
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 113
 @patch
 def rename(
         self: VaultNote,
@@ -699,7 +724,7 @@ def rename(
                     file.write(text)
                     file.close()
 
-# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 122
+# %% ../../../nbs/03_markdown.obsidian.vault.ipynb 125
 @patch(cls_method=True)
 def unique_name(
         cls: VaultNote,

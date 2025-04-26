@@ -5,14 +5,21 @@
 # %% ../../nbs/00_helper.ipynb 2
 from __future__ import annotations
 import random
-
+from typing import Callable, Hashable, TypeVar
+from itertools import zip_longest
 import string
+
+import Levenshtein
+from Levenshtein import distance
+from thefuzz import fuzz
+import fuzzywuzzy
 
 
 
 # %% auto 0
-__all__ = ['substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc', 'split_string_at_indices',
-           'split_list_into_chunks']
+__all__ = ['K', 'substring_generator', 'sublist_generator', 'is_punctuation', 'is_not_space_and_not_punc',
+           'split_string_at_indices', 'split_list_into_chunks', 'get_top_counted_items', 'char_substitution_cost',
+           'partial_ratio_with_alphabet', 'latex_str_in_latex_str_fuzz_metric', 'latex_str_is_likely_in_latex_str']
 
 # %% ../../nbs/00_helper.ipynb 4
 def substring_generator(input_string: str):
@@ -70,3 +77,130 @@ def split_list_into_chunks(original_list, split_ratio=0.75):
     
     return list1, list2
 
+
+# %% ../../nbs/00_helper.ipynb 14
+K = TypeVar('K', bound=Hashable)  # Generic type for keys
+
+def get_top_counted_items(
+        data: dict[K, int],
+        top_percentile: float = 0.10,
+        max_number: int = 5,
+    ) -> list[K]:
+        """Returns top items from a dictionary where keys are of type K and values are counts.
+        
+        Args:
+            data: Dictionary with keys of type K and integer counts as values
+            top_percentile: Percentage of top items to return (default: 0.10)
+            max_number: Maximum number of items to return (default: 5)
+            
+        Returns:
+            List of keys with the highest counts, maintaining the original key type
+        """
+        sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        num_items = max(1, min(int(len(data) * top_percentile), max_number))
+        return [item[0] for item in sorted_items[:num_items]]
+
+
+# %% ../../nbs/00_helper.ipynb 18
+# def char_substitution_cost(c1: str, c2: str) -> float:
+#     if c1 == c2 or c1 is None or c2 is None:
+#         return 0
+    
+#     if c1 not in string.ascii_letters or c2 not in string.ascii_letters:
+#         return 1.0
+    
+#     c1, c2 = c1.lower(), c2.lower()
+#     letter_dist = abs(ord(c1) - ord(c2)) / 25
+#     return min(letter_dist * 0.8, 0.8)
+
+def char_substitution_cost(c1: str, c2: str) -> float:
+    if c1 == c2 or c1 is None or c2 is None:
+        return 0
+    
+    if c1 not in string.ascii_letters or c2 not in string.ascii_letters:
+        return 1.0
+    
+    c1, c2 = c1.lower(), c2.lower()
+    letter_dist = abs(ord(c1) - ord(c2))
+    
+    # Non-linear penalty curve
+    if letter_dist <= 5:
+        return (letter_dist / 5) * 0.5  # 0-0.5 penalty for 0-5 distance
+    else:
+        return min(0.5 + (letter_dist - 5)/20, 0.8)  # 0.5-0.8 penalty for >5 distance
+
+def partial_ratio_with_alphabet(s1: str, s2: str) -> float:
+    """Alphabet-aware partial ratio implementation."""
+    if not s1 or not s2:
+        return 0.0  # or 100.0 if you consider empty strings a perfect match
+    # Ensure s1 is the shorter string
+    if len(s1) > len(s2):
+        s1, s2 = s2, s1
+    
+    len1, len2 = len(s1), len(s2)
+    best_score = 0
+    
+    # Slide shorter string over longer string
+    for i in range(len2 - len1 + 1):
+        substring = s2[i:i+len1]
+        
+        # Calculate custom Levenshtein distance
+        d = [[0] * (len1 + 1) for _ in range(2)]
+        for j in range(len1 + 1):
+            d[0][j] = j
+            
+        for j in range(1, len1 + 1):
+            current_char = substring[j-1]
+            d[1][0] = j
+            
+            for k in range(1, len1 + 1):
+                cost = char_substitution_cost(s1[k-1], current_char)
+                d[1][k] = min(
+                    d[0][k] + 1,       # deletion
+                    d[1][k-1] + 1,     # insertion
+                    d[0][k-1] + cost   # substitution
+                )
+            
+            # Swap rows for memory efficiency
+            d[0], d[1] = d[1], d[0]
+        
+        raw_distance = d[0][len1]
+        similarity = 1 - (raw_distance / len1)
+        best_score = max(best_score, similarity)
+    
+    return best_score * 100
+
+
+# %% ../../nbs/00_helper.ipynb 20
+def latex_str_in_latex_str_fuzz_metric(
+    substring_candidate: str,
+    superstring_candidate: str
+) -> float:
+    """Fuzzy containment metric without length checks."""
+    
+    # Calculate components
+    partial_sim_fuzz = fuzz.partial_ratio(substring_candidate, superstring_candidate) / 100
+    partial_sim_math = partial_ratio_with_alphabet(substring_candidate, superstring_candidate) / 100
+    
+    # Add containment penalty factor
+    containment_penalty = (
+        1.0 if len(substring_candidate) <= len(superstring_candidate)
+        else (len(superstring_candidate) / len(substring_candidate)) ** 2  # Quadratic penalty
+    )
+    
+    # Combined score with dynamic weighting
+    combined_score = 0.2 * partial_sim_fuzz + 0.8 * partial_sim_math
+    
+    # Apply fuzzy containment logic
+    return combined_score * containment_penalty
+
+
+# %% ../../nbs/00_helper.ipynb 25
+def latex_str_is_likely_in_latex_str(
+        substring_candidate: str, #  
+        superstring_candidate: str,
+        metric: Callable[[str, str], float] = latex_str_in_latex_str_fuzz_metric,
+        threshold: float = 0.8, # The metric needs to achieve at least this threshold for `substring candidate` to be considered to be in `superstring_candidate`.
+        ) -> bool:
+    score = metric(substring_candidate, superstring_candidate)
+    return score > threshold

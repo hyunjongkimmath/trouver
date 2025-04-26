@@ -428,7 +428,7 @@ def summarize_notation(
         summarizer: pipelines.text2text_generation.SummarizationPipeline,
         fix_formatting: bool = True, # If `True`, run `fix_autogen_formatting` on `summarizer`'s summary before retuning it.
         latex_in_original_comes_first: bool = True, # This is a parameter to pass to calls to the `single_input_for_notation_summarization` function. If `True`, the `latex_in_original` piece appears before the `main_note_content`
-        correct_syntax_error: bool = True # If `True`, attempt to correct latex syntax error 
+        correct_syntax_error: bool = True, # If `True`, attempt to correct latex syntax error 
         ) -> str:
     """Summarize a notation introduced in a mathematical text using
     a huggingface pipeline.

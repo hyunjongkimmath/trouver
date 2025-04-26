@@ -10,7 +10,7 @@ from itertools import product
 from os import PathLike
 import re
 import string
-from typing import Iterator, Union, Optional
+from typing import Iterator, Literal, Union, Optional
 import warnings
 import yaml
 
@@ -218,6 +218,8 @@ class MarkdownFile:
         """Return the text representation of the `MarkdownFile` object"""
         return self.text_of_lines(0, len(self.parts))
 
+    
+
     def copy(
             self: MarkdownFile,
             deep: bool) -> MarkdownFile:
@@ -227,40 +229,6 @@ class MarkdownFile:
             list_to_copy_with = copy.deepcopy(list_to_copy_with)
         return self.__class__(list_to_copy_with)
         
-    def metadata_parts(
-            self
-            ) -> list[str]: # Each str is a 'line' from `self.parts` from the frontmatter YAML metadata.
-        # TODO: test
-        """
-        Return the sublist from `self.parts` consisting of the parts
-        that are of the frontmatter yaml metadata.
-        """
-        return [part['line'] for part in self.parts 
-                if part['type'] == MarkdownLineEnum.META]
-    
-    def metadata(
-            self
-            ) -> Union[dict[str], None]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`. If there is not frontmatter YAML metadata, then this return value is `None`.
-        # TODO: change the Exception to some kind of yaml format exception.
-        """
-        Return the frontmatter metadata as a dict.
-
-
-        **Raises**
-
-        - ValueError
-            - If any exceptions are raised when reading (i.e. parsing or scanning
-            the YAML metadata. In doing so, `str(self)` is printed. Moreover,
-            the appropriate `yaml.parser.ParserError`, `yaml.scanner.ScannerError`,
-            or `yaml.reader.ReaderError` is also raised.
-
-        **Warning**
-        Writing the metadata read with this function can be faulty if
-        the metadata attempts to escape characters that cannot be read by
-        YAML; the escapes are not preserved upon writing.
-        """
-        md_parts = self.metadata_parts()
-        return parse_metadata_string('\n'.join(md_parts[1:-1]))
             
         
     @classmethod
@@ -489,7 +457,7 @@ def from_string(
     """
     return cls.from_list(text.splitlines(keepends=False))
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 72
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 73
 @patch
 def get_headings_by_line_number(
         self: MarkdownFile,
@@ -516,7 +484,7 @@ def get_headings_by_line_number(
     return headings
 
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 75
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 76
 @patch
 def get_headings(
         self: MarkdownFile,
@@ -524,13 +492,14 @@ def get_headings(
         include_start: bool = True # If `True` and if this object contains text that is not under a heading (i.e. the text does not start with a heading), then include `-1` as a key with the empty str as value.
         ) -> list[str]: # Each str is the heading, including leading sharps `'#'`.
     """
-    Return a list of heading titles in the markdown file.
+    Return a list of heading titles in the markdown file, in the order that they appear.
     """
-    line_dict = self.get_headings_by_line_number(
+    line_dict: dict[int, str] = self.get_headings_by_line_number(
         levels, include_start=include_start)
-    return list(line_dict.values())
+    return [value for key, value in sorted(line_dict.items())]
+    # return list(line_dict.values())
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 86
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 88
 @patch
 def get_headings_and_text(
         self: MarkdownFile,
@@ -562,7 +531,7 @@ def get_headings_and_text(
     return heading_dict
 
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 91
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 94
 @patch
 def get_headings_tree(
         self: MarkdownFile
@@ -595,7 +564,7 @@ def get_headings_tree(
         current_level = heading_level(heading)
     return root_dict
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 94
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 97
 @patch
 def get_line_number_of_heading(
         self: MarkdownFile,
@@ -616,7 +585,7 @@ def get_line_number_of_heading(
     return next((i for i in range(from_line, len(self.parts))
                     if heading_satisfies(self.parts[i])), -1)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 104
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 107
 @patch
 def get_line_numbers_under_heading(
         self: MarkdownFile,
@@ -624,7 +593,7 @@ def get_line_numbers_under_heading(
         from_line: int = 0, # The line number to start searching for the heading with `title` from.
         levels: Union[Iterator[int], int, None] = None, # The levels of the heading to search for. Each int is between 1 and 6 inclusive, as each heading can be of levels 1 to 6. If `None`, then all heading-levels are searched.
         include_subheadings: bool = True # If `True`, then include the subheadings.
-        ) -> Union[tuple[int], int]: # `(start, end)` where `self.parts[start:end]` represents the parts under the heading, including the start of the heading.  If the heading of the specified title does not exist, then returns -1.
+        ) -> Union[tuple[int], Literal[-1]]: # `(start, end)` where `self.parts[start:end]` represents the parts under the heading, including the start of the heading.  If the heading of the specified title does not exist, then returns -1.
     """
     Return the line numbers belonging to the heading.
     """
@@ -649,7 +618,7 @@ def get_line_numbers_under_heading(
     return (start_line, end_line)
 
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 111
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 114
 @patch
 def insert_line(
         self: MarkdownFile,
@@ -659,7 +628,7 @@ def insert_line(
     """Add a line at the specified index/line number to `self.parts`."""
     self.parts.insert(index, line_dict)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 113
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 116
 @patch
 def remove_line(
         self: MarkdownFile,
@@ -668,7 +637,7 @@ def remove_line(
     """Remove a line from `self.parts`."""
     del self.parts[index]
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 115
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 118
 @patch
 def remove_lines(
         self: MarkdownFile,
@@ -680,7 +649,7 @@ def remove_lines(
     del self.parts[start:end]
     return to_return
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 117
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 120
 @patch
 def pop_line(
         self: MarkdownFile,
@@ -689,7 +658,7 @@ def pop_line(
     """Remove a line from `self.parts` and get its value."""
     return self.parts.pop(index)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 119
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 122
 @patch
 def add_line_to_end(
         self: MarkdownFile,
@@ -698,7 +667,7 @@ def add_line_to_end(
     """Add a line to the end of `self.parts`."""
     self.parts.append(line_dict)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 121
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 124
 @patch
 def add_blank_line_to_end(
         self: MarkdownFile) -> None:
@@ -708,7 +677,7 @@ def add_blank_line_to_end(
         {'type': MarkdownLineEnum.BLANK_LINE, 'line': '\n'})
     
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 123
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 126
 @patch
 def add_line_in_section(
         self: MarkdownFile,
@@ -724,7 +693,7 @@ def add_line_in_section(
     line_number = self.get_line_number_of_heading(title=title)
     self.insert_line(line_number + 1, line_dict)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 126
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 129
 @patch
 def remove_section(
         self: MarkdownFile,
@@ -736,7 +705,7 @@ def remove_section(
     """
     section_line = self.get_line_number_of_heading(title=title)
     if section_line == -1:
-        return
+        return []
     level = heading_level(self.parts[section_line]['line'])
     big_level_lines = self.get_headings_by_line_number(range(1, level+1))
     line_numbers = [line_num for line_num in big_level_lines]
@@ -746,7 +715,7 @@ def remove_section(
         line_numbers[i] if i < len(line_numbers) else len(self.parts))
     return self.remove_lines(section_line, next_section_line)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 132
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 135
 @patch
 def clear_section(
         self: MarkdownFile,
@@ -773,7 +742,7 @@ def clear_section(
             section_line + 1,
             {'type': MarkdownLineEnum.BLANK_LINE, 'line': ''})
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 137
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 140
 @patch
 def clear_all_sections(
         self: MarkdownFile,
@@ -792,7 +761,46 @@ def clear_all_sections(
     for index_to_remove in reversed(part_indices_to_remove):
         self.remove_line(index_to_remove)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 141
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 144
+@patch
+def metadata(
+        self: MarkdownFile
+        ) -> Union[dict[str], None]: # The keys are `str` of the labels/names of the metadata. The values are the metadata, which are usually `str` or `list`. If there is not frontmatter YAML metadata, then this return value is `None`.
+    # TODO: change the Exception to some kind of yaml format exception.
+    """
+    Return the frontmatter metadata as a dict.
+
+
+    **Raises**
+
+    - ValueError
+        - If any exceptions are raised when reading (i.e. parsing or scanning
+        the YAML metadata. In doing so, `str(self)` is printed. Moreover,
+        the appropriate `yaml.parser.ParserError`, `yaml.scanner.ScannerError`,
+        or `yaml.reader.ReaderError` is also raised.
+
+    **Warning**
+    Writing the metadata read with this function can be faulty if
+    the metadata attempts to escape characters that cannot be read by
+    YAML; the escapes are not preserved upon writing.
+    """
+    md_parts = self.metadata_parts()
+    return parse_metadata_string('\n'.join(md_parts[1:-1]))
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 146
+@patch
+def metadata_parts(
+        self: MarkdownFile
+        ) -> list[str]: # Each str is a 'line' from `self.parts` from the frontmatter YAML metadata.
+    # TODO: test
+    """
+    Return the sublist from `self.parts` consisting of the parts
+    that are of the frontmatter yaml metadata.
+    """
+    return [part['line'] for part in self.parts 
+            if part['type'] == MarkdownLineEnum.META]
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 147
 @patch
 def has_metadata(
         self: MarkdownFile) -> bool:
@@ -808,7 +816,7 @@ def has_metadata(
         self.parts 
         and self.parts[0]['type'] == MarkdownLineEnum.META)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 143
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 149
 @patch
 def metadata_lines(
         self: MarkdownFile
@@ -840,7 +848,7 @@ def metadata_lines(
             break
     return (start, end)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 145
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 151
 @patch
 def replace_metadata(
         self: MarkdownFile,
@@ -866,7 +874,7 @@ def replace_metadata(
     self.parts = self.parts[:max(0,start-1)] + new_metadata_parts\
         + self.parts[end+1:]
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 148
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 154
 @patch
 def remove_metadata(
     self: MarkdownFile) -> None:
@@ -874,7 +882,7 @@ def remove_metadata(
     self.parts = [part for part in self.parts 
                     if part['type'] != MarkdownLineEnum.META]
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 161
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 167
 @patch
 def add_metadata_section(
         self: MarkdownFile,
@@ -887,7 +895,25 @@ def add_metadata_section(
                     {'type': MarkdownLineEnum.META, 'line': '---\n'}]
     self.parts = default_meta + self.parts
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 170
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 176
+@patch
+def tags(
+        self: MarkdownFile
+        ) -> Union[set[str] | None]:
+    """
+    Return the tags in the YAML frontmatter metadata if available.
+    """
+    if not self.has_metadata():
+        return None
+    metadata = self.metadata()
+    if metadata and 'tags' in metadata:
+        return set(metadata['tags'])
+    else:
+        return None
+    # return (bool(metadata) and 'tags' in metadata
+    #         and tag in metadata['tags'])
+
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 178
 @patch
 def has_tag(
         self: MarkdownFile,
@@ -905,13 +931,17 @@ def has_tag(
 
     Note that `tag` should not start with the hashtag `#` charater.
     """
-    if not self.has_metadata():
+    tags = self.tags()
+    if self.tags is None:
         return False
-    metadata = self.metadata()
-    return (bool(metadata) and 'tags' in metadata
-            and tag in metadata['tags'])
+    return tag in tags
+    # if not self.has_metadata():
+    #     return False
+    # metadata = self.metadata()
+    # return (bool(metadata) and 'tags' in metadata
+    #         and tag in metadata['tags'])
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 172
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 180
 @patch
 def add_tags(
         self: MarkdownFile,
@@ -952,7 +982,7 @@ def add_tags(
         metadata['tags'] += tags
     self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 174
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 182
 @patch
 def remove_tags(
         self: MarkdownFile,
@@ -986,7 +1016,7 @@ def remove_tags(
     metadata['tags'] = list(set_of_tags)
     self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 181
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 189
 @patch
 def replace_auto_tags_with_regular_tags(
         self: MarkdownFile,
@@ -1013,7 +1043,7 @@ def replace_auto_tags_with_regular_tags(
     metadata['tags'] = new_tags
     self.replace_metadata(metadata, enquote_entries_in_metadata_fields)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 187
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 195
 @patch
 def remove_in_line_tags(
         self: MarkdownFile) -> None:
@@ -1026,7 +1056,7 @@ def remove_in_line_tags(
     for i in reversed(part_indices_to_remove):
         self.remove_line(i)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 193
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 201
 @patch
 def replace_links_with_display_text(
         self: MarkdownFile,
@@ -1041,7 +1071,7 @@ def replace_links_with_display_text(
             part['line'],
             remove_embedded_note_links=remove_embedded_note_links)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 198
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 206
 @patch
 def remove_footnotes_to_embedded_links(
         self: MarkdownFile,
@@ -1069,7 +1099,7 @@ def remove_footnotes_to_embedded_links(
     for part, label in product(self.parts, footnote_labels_to_remove):
         part['line'] = part['line'].replace(f'[^{label}]', '')
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 205
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 213
 @patch
 def remove_headers(
         self: MarkdownFile) -> None:
@@ -1080,7 +1110,7 @@ def remove_headers(
     for line in reversed(heading_lines):
         self.remove_line(line)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 209
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 217
 @patch
 def remove_double_blank_lines(
         self: MarkdownFile) -> None:
@@ -1093,7 +1123,7 @@ def remove_double_blank_lines(
     for i in reversed(parts_to_remove):
         self.remove_line(i)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 213
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 221
 @patch
 def _text_of_embedded_link_of_id(
         self: MarkdownFile,
@@ -1137,8 +1167,13 @@ def _text_of_embedded_link_of_section(
         recursive: bool,
         remove_paragraph_id: bool) -> str:
     """Used in `_replace_embedded_links_one_line"""
-    start, end = link_file.get_line_numbers_under_heading(
+    line_nums_under_heading = link_file.get_line_numbers_under_heading(
         title=heading, include_subheadings=True)
+    if line_nums_under_heading == -1:
+        return ''
+    start, end = line_nums_under_heading
+    # start, end = link_file.get_line_numbers_under_heading(
+    #     title=heading, include_subheadings=True)
     return self._text_of_lines_of_embedded_links(
         link_file, vault, start, end, recursive,
         remove_paragraph_id)
@@ -1162,7 +1197,7 @@ def _text_of_lines_of_embedded_links(
         vault, recursive, remove_paragraph_id)
     return str(new_mf)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 214
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 222
 @patch
 def _replace_embedded_links_one_line(
         self: MarkdownFile,
@@ -1186,9 +1221,6 @@ def _replace_embedded_links_one_line(
             except (NoteDoesNotExistError, NotePathIsNotIdentifiedError):
                 text = text[:start] + text[end:]
                 continue
-            # if not link_note.exists():
-            #     text = text[:start] + text[end:]
-            #     continue
         else:
             link_file = self
         if link_object.anchor == 0:
@@ -1204,7 +1236,7 @@ def _replace_embedded_links_one_line(
         text = text[:start] + replace + text[end:]
     return text
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 215
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 223
 @patch
 def replace_embedded_links_with_text(
         self: MarkdownFile,
@@ -1229,7 +1261,7 @@ def replace_embedded_links_with_text(
         part['line'] = self._replace_embedded_links_one_line(
             part['line'], vault, recursive, remove_paragraph_id)
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 217
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 225
 @patch
 def _include_previous_line_as_id_text(
     self: MarkdownFile,
@@ -1265,7 +1297,7 @@ def _include_previous_line_as_id_text(
             return True, False
     return True, True
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 218
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 226
 @patch
 def parts_of_id(
             self: MarkdownFile,
@@ -1296,7 +1328,7 @@ def parts_of_id(
         return i, end_of_text+1
         # self.parts[i:end_of_text+1]
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 222
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 230
 @patch
 def remove_html_tags(
         self: MarkdownFile) -> None:
@@ -1309,7 +1341,7 @@ def remove_html_tags(
         part['line'], _ = remove_html_tags_in_text(part['line'])
         # self.parts[i-1]['']
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 225
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 233
 @patch
 def _merge_one_display_math_mode_latex_chunk(
         self: MarkdownFile,
@@ -1329,7 +1361,7 @@ def _merge_one_display_math_mode_latex_chunk(
         start, {'type': MarkdownLineEnum.DISPLAY_LATEX_SINGLE,
                 'line': merged})
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 226
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 234
 @patch
 def merge_display_math_mode(
         self: MarkdownFile) -> None:
@@ -1341,7 +1373,7 @@ def merge_display_math_mode(
             self._merge_one_display_math_mode_latex_chunk(i)
         i += 1
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 229
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 237
 @patch
 def merge_display_math_mode_into_preceding_text(
         self: MarkdownFile,
@@ -1377,7 +1409,7 @@ def _merge_latex_into_text(
     self.parts[j]['line'] = merged
     return j
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 243
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 251
 @patch
 def write(
     self: MarkdownFile,
@@ -1422,10 +1454,11 @@ and by using `\"` instead of just `"`). It is recommended to apply the `.replace
 The following is the MarkdownFile object's str representation:
 \n\n{str(self)}
 """)
+    vn.write(str(self), mode, 'utf-8')
 
-    with open(vn.path(), mode, encoding='utf-8') as file:
-        file.write(str(self))
-        file.close()
+    # with open(vn.path(), mode, encoding='utf-8') as file:
+    #     file.write(str(self))
+    #     file.close()
 
-# %% ../../../nbs/04_markdown.markdown.file.ipynb 249
+# %% ../../../nbs/04_markdown.markdown.file.ipynb 257
 # @patch

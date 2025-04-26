@@ -635,7 +635,7 @@ def _order_of_notat_notes(
     notat_note_names_and_inds = sorted(notat_note_names_and_inds, key=lambda x: x[1])
     return [name for name, _ in notat_note_names_and_inds]
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 66
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 63
 SPECIAL_CHARACTERS = ['.', '+', '*', '?', '^', '$', '(', ')',
                       '[', ']', '{', '}', '|', '\\']
 replaceable_groups = [['mathrm', 'operatorname', 'rm', 'text'],
@@ -741,7 +741,7 @@ def _look_into_node(
 def _macro_is_actually_placeholder(macro: str) -> bool:
     return macro.isnumeric()
 
-# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 70
+# %% ../../../../../nbs/20_markdown.obsidian.personal.notation.ipynb 67
 def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     r"""Returns a regex str to detect the notation of the notation note.
     

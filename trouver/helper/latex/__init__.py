@@ -9,7 +9,8 @@ __all__ = ['REGEX_PATTERN_DETECTIONS', 'temp_dict', 'FONT_STYLE_COMMANDS', 'UNCO
            'fix_autogen_formatting', 'correct_latex_syntax_error', 'modify_at_random', 'remove_font_styles_at_random',
            'change_font_styles_at_random', 'change_greek_letters_at_random', 'random_char_modification',
            'dollar_sign_manipulation', 'remove_math_keywords', 'random_word_removal', 'random_latex_command_removal',
-           'push_dollar_signs', 'push_dollar_sign', 'remove_split_commands', 'augment_text']
+           'push_dollar_signs', 'push_dollar_sign', 'remove_split_commands', 'augment_text',
+           'choose_modification_methods_at_random']
 
 # %% ../../../nbs/47_helper.latex.ipynb 3
 import random
@@ -1156,3 +1157,22 @@ def augment_text(
 #     return ""
 
 
+
+# %% ../../../nbs/47_helper.latex.ipynb 104
+def _create_method(method, p, scale):
+    """
+    Helper function to `choose_modification_methods_at_random`
+    """
+    return lambda x: method(x, p=p*scale)
+
+# %% ../../../nbs/47_helper.latex.ipynb 105
+def choose_modification_methods_at_random(
+        methods: list[tuple[Callable, float]],
+        method_inclusion_chance = float, # The chance to include each method
+        scale = float, # The amount by which to "scale" the method's tendency to modify the text.
+        ) -> list[Callable[[str], str]]:
+    random_methods: list[Callable[[str], str]] = []
+    for method, p in methods:
+        if random.random() < method_inclusion_chance:
+            random_methods.append(_create_method(method, p, scale))
+    return random_methods
