@@ -929,7 +929,7 @@ def locate_footnote_embedded_notation_link(
     for start, end in indices:
         latex_text = text[start:end]
         latex_text = latex_text.strip('$ ')
-        score = latex_str_in_latex_str_fuzz_metric(notation, latex_text)
+        score: float = latex_str_in_latex_str_fuzz_metric(notation, latex_text)
         if score > threshold and locate_by == 'first':
             return end
         else:
@@ -937,7 +937,7 @@ def locate_footnote_embedded_notation_link(
     max_key = max(scores, key=scores.get)
     return max_key
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 61
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 62
 def _where_to_add_notation_links(
         origin_note: VaultNote,
         relied_notes: list[VaultNote],
@@ -958,7 +958,7 @@ def _where_to_add_notation_links(
         where_to_add[location].append(relied_note)
     return where_to_add
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 62
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 63
 def _add_notation_note_embedded_footnotes(
         text: str,
         where_to_add: dict[int, list[VaultNote]],
@@ -983,7 +983,8 @@ def _add_notation_note_embedded_footnotes(
         pieces = [text[0:location], text[location:new_line_index], text[new_line_index:]]
 
         if location > 1 and text[location-2] == '$': # latex str ends with '$$'
-            pieces.append(f'\n\n{footnote_text}\n\n{footnote_mentions}\n\n')
+            # pieces.append(f'\n\n{footnote_text}\n\n{footnote_mentions}\n\n')
+            pieces.insert(2, f'\n\n{footnote_text}\n\n{footnote_mentions}\n\n')
             text = ''.join(pieces)
             # start a new line to add the footnotes and then start another
             # to add the footnote mentions.
@@ -995,7 +996,7 @@ def _add_notation_note_embedded_footnotes(
     return text
     
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 64
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 65
 def add_notation_note_embedded_footnotes_to_info_note(
         origin_note: VaultNote, # An info note
         relied_notes: Optional[VaultNote | list[VaultNote]] = None, # notation notes to add embedded footnotes for.
@@ -1040,13 +1041,13 @@ def add_notation_note_embedded_footnotes_to_info_note(
     origin_note.write(new_text)
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 69
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 70
 class SummarizationDataPoint(TypedDict):
     input: str
     output: str
     notat_note_name: str
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 70
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 71
 def summarization_data(
         notat_note_data_point: NotatNoteData,
         info_note_data: dict[str, InfoNoteData], # For getting data from the linked notes.
@@ -1113,7 +1114,7 @@ def summarization_data(
 
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 71
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 72
 def augment_notat_note_data_for_summarization(
         notat_note_data_point: NotatNoteData,
         augmentation: Literal['high', 'mid' ,'low'],
@@ -1161,7 +1162,7 @@ def augment_notat_note_data_for_summarization(
                 NoteLinkEnum.NOTAT_TO_INFO_VIA_NOTAT)
     return notat_note_data_copy
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 72
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 73
 def notat_note_data_admissible_for_summarization_data(
         notat_note_data_point: NotatNoteData
         ) -> bool:  # `True` if the notation note data does not have the `_auto/notation_summary` tag, and the content of the notation note is essentially note blank.
@@ -1171,7 +1172,7 @@ def notat_note_data_admissible_for_summarization_data(
         return False 
     return bool(notat_note_data_point.note_content.strip())
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 75
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 76
 def _add_augmented_data_points(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -1192,7 +1193,7 @@ def _add_augmented_data_points(
                 aug_data_point, info_note_data, notat_note_data, format, augmentation))
     
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 76
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 77
 def summarization_dataset_from_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],

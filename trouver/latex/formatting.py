@@ -5,9 +5,10 @@
 # %% auto 0
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'EQUATION_LIKE_ENVS', 'MATH_MODE_DELIMITERS', 'BEGIN_END_EQUATIONLIKE_ENV',
            'REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES', 'REMOVE_COMMENTS', 'INLINE_MATHMODE_TO_OWN_PARAGRAPH',
-           'MERGE_MULTILINE_PARAGRAPH', 'REMOVE_XSPACE', 'REMOVE_ENSUREMATH', 'is_number', 'replace_command_in_text',
-           'replace_commands_in_text', 'replace_commands_in_latex_document', 'adjust_common_syntax_to_markdown',
-           'replace_input_and_include', 'remove_dollar_signs_around_equationlike_envs']
+           'MERGE_MULTILINE_PARAGRAPH', 'REMOVE_XSPACE', 'REMOVE_ENSUREMATH', 'REMOVE_STARTING_BLANK_SPACE',
+           'is_number', 'replace_command_in_text', 'replace_commands_in_text', 'replace_commands_in_latex_document',
+           'adjust_common_syntax_to_markdown', 'replace_input_and_include',
+           'remove_dollar_signs_around_equationlike_envs']
 
 # %% ../../nbs/31_latex.formatting.ipynb 2
 import re
@@ -465,6 +466,18 @@ def _replace_ensuremath(match):
     return content
 
 # %% ../../nbs/31_latex.formatting.ipynb 37
+def _remove_starting_blank_space(text):
+    """
+    Removes leading whitespace from each line in the input text.
+    Preserves original line breaks and relative indentation between lines.
+    """
+    return '\n'.join(
+        line.lstrip(' \t')  # Remove leading spaces and tabs
+        for line in text.splitlines()
+    )
+ 
+
+# %% ../../nbs/31_latex.formatting.ipynb 39
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -480,6 +493,7 @@ INLINE_MATHMODE_TO_OWN_PARAGRAPH = 'inline_mathmode_to_own_paragraph'
 MERGE_MULTILINE_PARAGRAPH = 'merge_multiline_paragraph'
 REMOVE_XSPACE = 'remove_xspace'
 REMOVE_ENSUREMATH = 'remove_ensuremath'
+REMOVE_STARTING_BLANK_SPACE = 'remove_starting_blank_space'
 def adjust_common_syntax_to_markdown(
         text: str,  # The LaTeX code to adjust to Markdown.
         options: list[str] = [
@@ -552,9 +566,11 @@ def adjust_common_syntax_to_markdown(
         text = _remove_xspace(text)
     if REMOVE_ENSUREMATH in options:
         text = _remove_ensuremath(text)
+    if REMOVE_STARTING_BLANK_SPACE:
+        text = _remove_starting_blank_space(text)
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 49
+# %% ../../nbs/31_latex.formatting.ipynb 51
 def replace_input_and_include(
         document: str,
         dir: PathLike, # The directory containing the `.tex` files which are to be included.
@@ -619,7 +635,7 @@ def replace_input_and_include(
     processed_chunks = [process_chunk(chunk) for chunk in chunks]
     return ''.join(processed_chunks)
 
-# %% ../../nbs/31_latex.formatting.ipynb 55
+# %% ../../nbs/31_latex.formatting.ipynb 57
 def remove_dollar_signs_around_equationlike_envs(text: str):
     """
     Remove dollar signs preceding and following displaymath/equation-like environments.

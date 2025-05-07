@@ -932,7 +932,8 @@ def has_tag(
     Note that `tag` should not start with the hashtag `#` charater.
     """
     tags = self.tags()
-    if self.tags is None:
+    if tags is None:
+    # if self.tags is None:
         return False
     return tag in tags
     # if not self.has_metadata():

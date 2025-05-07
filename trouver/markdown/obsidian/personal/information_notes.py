@@ -136,7 +136,8 @@ def main_content(note: VaultNote) -> str:
     
 
 # %% ../../../../nbs/21_markdown.obsidian.personal.information_notes.ipynb 14
-def reference_notes_in_references_section_of_information_note(note: VaultNote) -> list:
+def reference_notes_in_references_section_of_information_note(
+        note: VaultNote) -> list[ObsidianLink]:
     """Returns a list of ``ObsidianLink`` objects corresponding to
     reference notes in the "References" section of the information note.
     
@@ -151,7 +152,7 @@ def reference_notes_in_references_section_of_information_note(note: VaultNote) -
     # TODO incomplete
     line = md_file.get_line_number_of_heading(title="References")
     line += 1
-    reference_links = []
+    reference_links: list[ObsidianLink] = []
     while md_file.parts[line]['type'] != MarkdownLineEnum.HEADING:
         reference_links += links_from_text(md_file.parts[line]['line'])
         line += 1
@@ -170,7 +171,7 @@ def reference_of_information_note(note: VaultNote) -> VaultNote:
     **Returns**
     - VaultNote
     """
-    reference_links = reference_notes_in_references_section_of_information_note(note)
+    reference_links: list[ObsidianLink] = reference_notes_in_references_section_of_information_note(note)
     md_file = MarkdownFile.from_vault_note(note)
     first_footnote = find_footnote_descriptions_in_markdown_text(str(md_file))[0]
     
