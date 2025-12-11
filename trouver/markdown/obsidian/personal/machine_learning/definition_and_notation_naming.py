@@ -21,17 +21,18 @@ import warnings
 from .....helper.html import (
     remove_html_tags_in_text, add_HTML_tag_data_to_raw_text,
     StrAndHTMLTagsWithIndices, HTMLTagWithIndices)
-from trouver.helper.latex import (
-    fix_autogen_formatting, correct_latex_syntax_error,
-    _list_of_candidates_from_math_mode_strings, math_mode_string_is_syntactically_valid,
-
+from trouver.helper.latex.formatting import (
+    fix_autogen_formatting
 )
-from trouver.helper.latex import (
+from trouver.helper.latex.processing import (
+    correct_latex_syntax_error, _list_of_candidates_from_math_mode_strings, math_mode_string_is_syntactically_valid,
+)
+from trouver.helper.latex.augment import (
     random_char_modification,
     dollar_sign_manipulation, remove_math_keywords, random_word_removal, random_latex_command_removal,
     push_dollar_signs, augment_text,
     change_font_styles_at_random, change_greek_letters_at_random, remove_font_styles_at_random
-    ) 
+)
 
 from ....markdown.file import MarkdownFile
 from ..note_processing import process_standard_information_note

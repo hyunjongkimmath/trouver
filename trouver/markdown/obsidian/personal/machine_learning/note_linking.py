@@ -36,7 +36,8 @@ from .....helper import latex_str_is_likely_in_latex_str, latex_str_in_latex_str
 from .....helper.numbers import modify_int_by_at_most_at_most_offset, modify_int_by_at_most_at_most_value
 from .....helper.regex import find_regex_in_text, latex_indices
 from ....markdown.file import MarkdownFile
-from trouver.helper.latex import (
+
+from trouver.helper.latex.augment import (
     augment_text, choose_modification_methods_at_random, remove_font_styles_at_random, change_font_styles_at_random, change_greek_letters_at_random, remove_math_keywords, random_latex_command_removal, random_word_removal, dollar_sign_manipulation, random_char_modification
     )
 from ...footnotes import identify_available_footnote_numbers

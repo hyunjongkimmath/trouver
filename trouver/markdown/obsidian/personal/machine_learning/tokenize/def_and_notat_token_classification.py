@@ -26,12 +26,10 @@ from ......helper.definition_and_notation import double_asterisk_indices, notati
 from trouver.helper.html import (
     add_HTML_tag_data_to_raw_text, add_space_to_lt_symbols_without_space, remove_html_tags_in_text, StrAndHTMLTagsWithIndices,
     HTMLTagWithIndices)
-from trouver.helper.latex import (
-    _is_balanced_braces, _first_curly_bracket, _last_curly_bracket, random_char_modification,
-    dollar_sign_manipulation, remove_math_keywords, random_word_removal, random_latex_command_removal,
-    push_dollar_signs, augment_text,
-    change_font_styles_at_random, change_greek_letters_at_random, remove_font_styles_at_random
-    ) 
+from ......helper.latex.core import _is_balanced_braces, _first_curly_bracket, _last_curly_bracket
+from ......helper.latex.augment import (
+    augment_text, change_font_styles_at_random, change_greek_letters_at_random, dollar_sign_manipulation, push_dollar_sign, random_char_modification, random_latex_command_removal, random_word_removal, remove_font_styles_at_random, remove_math_keywords)
+
 from ......helper.regex import latex_indices, replace_string_by_indices
 from .....markdown.file import MarkdownFile, MarkdownLineEnum
 from ...note_processing import process_standard_information_note

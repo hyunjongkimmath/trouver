@@ -10,7 +10,7 @@ from pathlib import Path
 import os
 from os import PathLike
 
-from ....constants import ALPHABETICAL_SUBDIRECTORIES
+from ....helper.constants import ALPHABETICAL_SUBDIRECTORIES
 
 # %% ../../../../nbs/27_markdown.obsidian.personal.vault.ipynb 6
 def setup_obsidian_vault_for_trouver(
