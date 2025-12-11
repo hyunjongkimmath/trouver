@@ -527,7 +527,9 @@ def setup_reference_from_latex_parts(
             parts, custom_commands, repeat_replacing_custom_commands, verbose, replace_spaced_commands)
     if adjust_common_latex_syntax_to_markdown:
         parts = [
-            DividedLatexPart(note_title=part['note_title'], text=adjust_common_syntax_to_markdown(part['text']))
+            DividedLatexPart(
+                note_title=part['note_title'],
+                text=adjust_common_syntax_to_markdown(part['text']))
             for part in parts]
 
     # Assumes that all the `parts` have distinct titles.

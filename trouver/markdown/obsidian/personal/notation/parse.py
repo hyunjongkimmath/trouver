@@ -133,7 +133,7 @@ class NotationNoteParsed(NamedTuple):
           the corresponding entry in the bulleted list is of the form
           `- [<latex_str>](<notation_note_name)`.
     """
-    yaml_frontmatter_meta: Union[dict, None]
+    yaml_frontmatter_meta: Union[dict[str], None]
     notation_str: Union[str, None] # TODO: Is there a good reason for notation_str to potentially be `None`?
     name_of_main_note: Union[str, None]
     main_content_markdown_file: MarkdownFile

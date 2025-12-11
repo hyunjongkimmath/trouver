@@ -380,7 +380,9 @@ def _make_index_file(
         then the item contains the title of the chapter of the reference as its index-0
         item, and the titles of the sections for the chapter.
     """
-    index_note = VaultNote(vault, rel_path = reference_directory / f'_index_{reference_name}.md')
+    index_note = VaultNote(
+        vault,
+        rel_path = reference_directory / f'_index_{reference_name}.md')
     index_note.create()
     chapter_titles = _chapter_titles(chapters)
 

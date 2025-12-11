@@ -10,6 +10,8 @@ from pathlib import Path
 import os
 from os import PathLike
 
+from ....constants import ALPHABETICAL_SUBDIRECTORIES
+
 # %% ../../../../nbs/27_markdown.obsidian.personal.vault.ipynb 6
 def setup_obsidian_vault_for_trouver(
         vault: PathLike, # The path to the vault to setup.
@@ -67,8 +69,7 @@ def _setup_alphabetical_subdirectories(
     Assumes that ``dir`` exists, but the subdirectory with name ``name`` does not.
     """
     os.mkdir(dir / name)
-    sub_names = ['A-E', 'F-J', 'K-O', 'P-T', 'U-Z']
-    for sub_name in sub_names:
+    for sub_name in ALPHABETICAL_SUBDIRECTORIES:
         os.mkdir(dir / name / sub_name)
         first_letter, last_letter = ord(sub_name[0]), ord(sub_name[-1])
         for i in range(first_letter, last_letter+1):

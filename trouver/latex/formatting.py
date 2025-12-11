@@ -7,7 +7,7 @@ __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'EQUATION_LIKE_ENVS', 'MATH_MODE_DEL
            'REPLACE_BACKTICK_AND_APOSTROPHE_QUOTES', 'REMOVE_COMMENTS', 'INLINE_MATHMODE_TO_OWN_PARAGRAPH',
            'MERGE_MULTILINE_PARAGRAPH', 'REMOVE_XSPACE', 'REMOVE_ENSUREMATH', 'REMOVE_STARTING_BLANK_SPACE',
            'is_number', 'replace_command_in_text', 'replace_commands_in_text', 'replace_commands_in_latex_document',
-           'adjust_common_syntax_to_markdown', 'replace_input_and_include',
+           'adjust_common_syntax_to_markdown', 'adjust_common_formatting_while_editing', 'replace_input_and_include',
            'remove_dollar_signs_around_equationlike_envs']
 
 # %% ../../nbs/31_latex.formatting.ipynb 2
@@ -30,7 +30,7 @@ from ..helper.latex.macros_and_commands import(
 from .preamble import divide_preamble 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 5
+# %% ../../nbs/31_latex.formatting.ipynb 6
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -48,12 +48,12 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../../nbs/31_latex.formatting.ipynb 7
+# %% ../../nbs/31_latex.formatting.ipynb 8
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/31_latex.formatting.ipynb 12
+# %% ../../nbs/31_latex.formatting.ipynb 13
 def _replace_command(
         match: regex.match,
         command_tuple: tuple[str, int, Union[None, str], str],
@@ -74,7 +74,7 @@ def _replace_command(
     else:
         return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
 
-# %% ../../nbs/31_latex.formatting.ipynb 13
+# %% ../../nbs/31_latex.formatting.ipynb 14
 # def _replace_spaced_command(
 #         match: regex.Match,
 #         command_tuple: tuple[str, int, Union[None, str], str],
@@ -146,7 +146,7 @@ def _replace_spaced_command(
     return regex.sub(r'\\(\d)', repl, replace_pattern).replace(r'\\', '\\')
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 14
+# %% ../../nbs/31_latex.formatting.ipynb 15
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -180,7 +180,7 @@ def replace_command_in_text(
         text)
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 19
+# %% ../../nbs/31_latex.formatting.ipynb 20
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: list[tuple[str, int, Union[None, str], str]], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -209,7 +209,7 @@ def replace_commands_in_text(
             break
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 24
+# %% ../../nbs/31_latex.formatting.ipynb 25
 def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1, # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
@@ -239,7 +239,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/31_latex.formatting.ipynb 28
+# %% ../../nbs/31_latex.formatting.ipynb 29
 # EQUATION_LIKE_ENVS = []
 
 # def _replace_math_mode_delimiters(text: str):
@@ -292,8 +292,10 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
 
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 30
-def _inline_mathmode_to_own_paragraph(text: str):
+# %% ../../nbs/31_latex.formatting.ipynb 31
+def _inline_mathmode_to_own_paragraph(
+        text: str
+        ) -> str:
     """Add newlines before and after inline mathmode strings in `text`
     if necessary so that each inline mathmode string has at least one
     blank line before and after.
@@ -376,7 +378,34 @@ def _remove_one_blank_space_if_exists(
     return text
 
 
-# %% ../../nbs/31_latex.formatting.ipynb 33
+# %% ../../nbs/31_latex.formatting.ipynb 34
+def _is_special_line(line: str):
+    """Helper function to `_merge_multilines."""
+    stripped = line.strip()
+    return (stripped.startswith('\\begin')
+            or stripped.startswith('\\section') 
+            or stripped.startswith('\\subsection')
+            or stripped.startswith('\\subsubsection')
+            or stripped.startswith('\\item')
+            # or line.strip().startswith('$$')
+            )
+
+
+# %% ../../nbs/31_latex.formatting.ipynb 36
+def _strip_and_return_whitespaces(
+        text: str) -> tuple[str, str, str]: # The leading whitespaces, the sripped string, and the trailing whitespaces 
+    """
+    Strip `text` and return the leading and trailing whitespaces as well.
+
+    Helper function to `_merge_multilines.
+    """
+    lstripped = text.lstrip()
+    leading_whitespaces = text[:-len(lstripped)]
+    rstripped = text.rstrip()
+    trailing_whitespaces = text[len(rstripped):]
+    return leading_whitespaces, text.strip(), trailing_whitespaces
+
+# %% ../../nbs/31_latex.formatting.ipynb 38
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -409,32 +438,7 @@ def _merge_multilines_for_non_mathmode_part(text: str):
     main = "\n\n".join(new_lines)
     return f'{leading_whitespaces}{main.strip()}{trailing_whitespaces}'
 
-
-def _is_special_line(line: str):
-    """Helper function to `_merge_multilines."""
-    stripped = line.strip()
-    return (stripped.startswith('\\begin')
-            or stripped.startswith('\\section') 
-            or stripped.startswith('\\subsection')
-            or stripped.startswith('\\subsubsection')
-            or stripped.startswith('\\item')
-            # or line.strip().startswith('$$')
-            )
-
-def _strip_and_return_whitespaces(
-        text: str) -> tuple[str, str, str]: # The leading whitespaces, the sripped string, and the trailing whitespaces 
-    """
-    Strip `text` and return the leading and trailing whitespaces as well.
-
-    Helper function to `_merge_multilines.
-    """
-    lstripped = text.lstrip()
-    leading_whitespaces = text[:-len(lstripped)]
-    rstripped = text.rstrip()
-    trailing_whitespaces = text[len(rstripped):]
-    return leading_whitespaces, text.strip(), trailing_whitespaces
-
-# %% ../../nbs/31_latex.formatting.ipynb 35
+# %% ../../nbs/31_latex.formatting.ipynb 40
 def _remove_xspace(
         text: str) -> str:
     r"""
@@ -465,7 +469,7 @@ def _replace_ensuremath(match):
     content = match.group(1)
     return content
 
-# %% ../../nbs/31_latex.formatting.ipynb 37
+# %% ../../nbs/31_latex.formatting.ipynb 42
 def _remove_starting_blank_space(text):
     """
     Removes leading whitespace from each line in the input text.
@@ -477,7 +481,7 @@ def _remove_starting_blank_space(text):
     )
  
 
-# %% ../../nbs/31_latex.formatting.ipynb 39
+# %% ../../nbs/31_latex.formatting.ipynb 44
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -570,7 +574,19 @@ def adjust_common_syntax_to_markdown(
         text = _remove_starting_blank_space(text)
     return text
 
-# %% ../../nbs/31_latex.formatting.ipynb 51
+# %% ../../nbs/31_latex.formatting.ipynb 50
+def adjust_common_formatting_while_editing(
+        text: str) -> str:
+    r"""
+    Adjust some common syntax details in `text`. 
+
+    This function is intended to be used while editing a note.
+    """
+    return adjust_common_syntax_to_markdown(
+        text,
+        options=[INLINE_MATHMODE_TO_OWN_PARAGRAPH, MERGE_MULTILINE_PARAGRAPH])
+
+# %% ../../nbs/31_latex.formatting.ipynb 57
 def replace_input_and_include(
         document: str,
         dir: PathLike, # The directory containing the `.tex` files which are to be included.
@@ -635,7 +651,7 @@ def replace_input_and_include(
     processed_chunks = [process_chunk(chunk) for chunk in chunks]
     return ''.join(processed_chunks)
 
-# %% ../../nbs/31_latex.formatting.ipynb 57
+# %% ../../nbs/31_latex.formatting.ipynb 63
 def remove_dollar_signs_around_equationlike_envs(text: str):
     """
     Remove dollar signs preceding and following displaymath/equation-like environments.

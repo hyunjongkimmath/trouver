@@ -684,7 +684,7 @@ def consolidate_caches(
     return new_cache
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 48
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 49
 def remove_blank_or_no_link_data_from_cache(
         cache: dict[str, dict[str, list[NoteLinkEnum]]], # See `parse_link_cache_note`. The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
         ) -> dict[str, dict[str, list[NoteLinkEnum]]]: # A new cache, with lists that are either blank or which only contain `NoteLinkEnum.NO_LINK` are removed and with blank dict values are also removed..
@@ -700,7 +700,7 @@ def remove_blank_or_no_link_data_from_cache(
     return new_cache
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 50
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 51
 def remove_nonexistent_note_names_from_cache(
         cache: dict[str, dict[str, list[NoteLinkEnum]]], # See `parse_link_cache_note`. The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
         vault: PathLike
@@ -722,7 +722,7 @@ def remove_nonexistent_note_names_from_cache(
                 origin_dict.pop(relied_note_name)
     return cache_copy
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 53
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 54
 def sieve_potential_relied_notes(
         vault: PathLike,
         reference: str,
@@ -806,7 +806,7 @@ def sieve_potential_relied_notes(
 
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 54
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 55
 def _predict_one_direction_and_consolidate_cache(
         origin_note: VaultNote,
         relied_note: VaultNote,
@@ -826,7 +826,7 @@ def _predict_one_direction_and_consolidate_cache(
         origin_note, relied_note, predictor, format, note_data, threshold=threshold)
     consolidate_note_linking_predictions_into_cache(origin_note, outputs, cache)
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 55
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 56
 def predict_on_relied_note_and_related_notat_notes(
         origin_note: VaultNote,
         relied_note: VaultNote,
@@ -871,7 +871,7 @@ def predict_on_relied_note_and_related_notat_notes(
                 skip_already_made_predictions, threshold)
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 57
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 58
 def similar_notat_notes_in_note(
         origin_note: VaultNote, # Either an info or a notat note
         notation_notes: VaultNote | list[VaultNote], # The notation notes that are considered to be 
@@ -905,7 +905,7 @@ def similar_notat_notes_in_note(
     return matching_notat_notes
         
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 59
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 60
 def locate_footnote_embedded_notation_link(
         origin_note: VaultNote, # An info note 
         notation_note: VaultNote, # The notation notes that are considered to be 
@@ -937,7 +937,7 @@ def locate_footnote_embedded_notation_link(
     max_key = max(scores, key=scores.get)
     return max_key
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 62
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 63
 def _where_to_add_notation_links(
         origin_note: VaultNote,
         relied_notes: list[VaultNote],
@@ -958,7 +958,7 @@ def _where_to_add_notation_links(
         where_to_add[location].append(relied_note)
     return where_to_add
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 63
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 64
 def _add_notation_note_embedded_footnotes(
         text: str,
         where_to_add: dict[int, list[VaultNote]],
@@ -996,7 +996,7 @@ def _add_notation_note_embedded_footnotes(
     return text
     
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 65
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 66
 def add_notation_note_embedded_footnotes_to_info_note(
         origin_note: VaultNote, # An info note
         relied_notes: Optional[VaultNote | list[VaultNote]] = None, # notation notes to add embedded footnotes for.
@@ -1041,13 +1041,13 @@ def add_notation_note_embedded_footnotes_to_info_note(
     origin_note.write(new_text)
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 70
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 71
 class SummarizationDataPoint(TypedDict):
     input: str
     output: str
     notat_note_name: str
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 71
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 72
 def summarization_data(
         notat_note_data_point: NotatNoteData,
         info_note_data: dict[str, InfoNoteData], # For getting data from the linked notes.
@@ -1114,7 +1114,7 @@ def summarization_data(
 
 
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 72
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 73
 def augment_notat_note_data_for_summarization(
         notat_note_data_point: NotatNoteData,
         augmentation: Literal['high', 'mid' ,'low'],
@@ -1162,7 +1162,7 @@ def augment_notat_note_data_for_summarization(
                 NoteLinkEnum.NOTAT_TO_INFO_VIA_NOTAT)
     return notat_note_data_copy
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 73
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 74
 def notat_note_data_admissible_for_summarization_data(
         notat_note_data_point: NotatNoteData
         ) -> bool:  # `True` if the notation note data does not have the `_auto/notation_summary` tag, and the content of the notation note is essentially note blank.
@@ -1172,7 +1172,7 @@ def notat_note_data_admissible_for_summarization_data(
         return False 
     return bool(notat_note_data_point.note_content.strip())
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 76
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 77
 def _add_augmented_data_points(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -1193,7 +1193,7 @@ def _add_augmented_data_points(
                 aug_data_point, info_note_data, notat_note_data, format, augmentation))
     
 
-# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 77
+# %% ../../../../../nbs/57_markdown.obsidian.personal.machine_learning.note_linking.ipynb 78
 def summarization_dataset_from_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],

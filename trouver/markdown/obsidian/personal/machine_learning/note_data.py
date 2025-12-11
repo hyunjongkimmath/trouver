@@ -1034,7 +1034,7 @@ def note_data_from_reference(
 
 
 
-# %% ../../../../../nbs/59_markdown.obsidian.personal.machine_learning.note_data.ipynb 61
+# %% ../../../../../nbs/59_markdown.obsidian.personal.machine_learning.note_data.ipynb 56
 def find_reverse_links(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -1063,7 +1063,7 @@ def find_reverse_links(
             other_note_data.reverse_linked_notes[notat_note_name] = set(link_types)
     
 
-# %% ../../../../../nbs/59_markdown.obsidian.personal.machine_learning.note_data.ipynb 64
+# %% ../../../../../nbs/59_markdown.obsidian.personal.machine_learning.note_data.ipynb 59
 def get_main_note_content_of_notat_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],

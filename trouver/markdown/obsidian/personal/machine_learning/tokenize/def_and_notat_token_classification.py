@@ -869,78 +869,18 @@ def def_and_notat_preds_by_model(
     return tag_data
 
 # %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 87
-def auto_mark_def_and_notats(
-        note: VaultNote,  # The standard information note in which to find the definitions and notations.
-        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
-        # remove_existing_def_and_notat_markings: bool = False,  # If `True`, remove definition and notation markings (both via surrounding by double asterisks `**` as per the legacy method and via HTML tags)
-        excessive_space_threshold: int = 2,
-        add_boxing_attr_to_existing_def_and_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
-    ) -> None:
-    """
-    Predict and mark where definitions and notation occur in a note using
-    a token classification ML model.
+# def _process_mf(
+#         mf: MarkdownFile) -> None:
+#     """
+#     Merge display math mode as needed
 
-    Assumes that the note is a standard information note that does not
-    have a lot of "user modifications", such as footnotes, links,
-    and HTML tags. If
-    there are many modifications, then these might be deleted.
+#     Helper function to `auto_mark_def_and_notats`
+#     """
+#     # mf.merge_display_math_mode()
+#     # mf.merge_display_math_mode_into_preceding_text()
+#     mf.
 
-    Assumes that the paragraphs in the text of the note are "not too long".
-    Currently, this means that the paragraphs in the number of tokens
-    in the text of the note should (roughly) not exceed 
-    `pipeline.tokenizer.model_max_length`.
-
-    Existing markings for definition and notation data (i.e. by
-    surrounding with double asterisks or by HTML tags) are preserved
-    (and turned into HTML tags), unless the markings overlap with 
-    predictions, in which case the original is preserved (and still
-    turned into an HTML tag if possible)
-
-    Since the model can make "invalid" predictions (mostly those which
-    start or end within a LaTeX math mode str), the actual markings
-    are not necessarily direct translates from the model's predictions.
-    See the helper function `_consolidate_token_preds` for more details
-    on how this is implemented.
-    
-    **Raises**
-    Warning messages (`UserWarning`) are printed in the following situations:
-
-    - There are two consecutive tokens within the `pipeline`'s predictions
-      of different entity types (e.g. one is predicted to belong within a
-      definition and the other within a notation), but the latter token's
-      predicted `'entity'` more specifically begins with `'I-'` (i.e. is
-      `'I-definition'` or `'I-notation'`) as opposed to `'B-'`.
-        - `note`'s name, and path are included in the warning message in
-          this case.
-    - There are two consecutive tokens within the `pipeline`'s predictions
-      which the pipeline predicts to belong to the same entity, and yet
-      there is excessive space (specified by `excessive_space_threshold`)
-      between the end of the first token and the start of the second.
-
-    """
-    mf = MarkdownFile.from_vault_note(note)
-    _process_mf(mf)
-    first_non_metadata_line, see_also_line = _get_main_text_lines(mf)
-     
-    main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
-    main_text = _format_main_text_and_add_html_tag_data(
-        note, pipeline, add_boxing_attr_to_existing_def_and_notat_markings,
-        excessive_space_threshold, main_text)
-    _write_text_with_html_tag_preds_to_note(
-        note, mf, main_text, first_non_metadata_line, see_also_line)
-
-
-def _process_mf(
-        mf: MarkdownFile) -> None:
-    """
-    Merge display math mode as needed
-
-    Helper function to `auto_mark_def_and_notats`
-    """
-    mf.merge_display_math_mode()
-    mf.merge_display_math_mode_into_preceding_text()
-
-
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 88
 def _get_main_text_lines(
         mf: MarkdownFile) -> tuple[int, int]:
     """Helper function to `auto_mark_def_and_notats`"""
@@ -953,86 +893,19 @@ def _get_main_text_lines(
     return first_non_metadata_line, see_also_line
 
 
-def _format_main_text_and_add_html_tag_data(
-        note: VaultNote,
-        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
-        add_boxing_attr_to_existing_def_and_notat_markings: bool,
-        excessive_space_threshold: int,
-        main_text: str,  # The main text to format and to add HTML tag data to
-        ) -> str:
-    """Helper function to `auto_mark_def_and_notats`"""
-    main_text = add_space_to_lt_symbols_without_space(main_text)
-    main_text = convert_double_asterisks_to_html_tags(main_text)
-    main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
-    if add_boxing_attr_to_existing_def_and_notat_markings:
-        existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
-            existing_html_tag_data)
 
-    html_tags_to_add = _get_token_preds_by_dividing_main_text(
-        main_text, pipeline, note, excessive_space_threshold)
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 89
+def _append_to_pieces_start_and_end(
+        pieces_start_and_end: list[tuple[int, int]],
+        start_chunk: tuple[str, int, int],
+        end_chunk: tuple[str, int, int]
+        ) -> None:
+    """Helper function to `_find_places_to_divide_from_chunks`"""
+    start_char_index = start_chunk[1]
+    end_char_index = end_chunk[1] + len(end_chunk[0])
+    pieces_start_and_end.append([start_char_index, end_char_index])
 
-    html_tags_to_add_back = _collate_html_tags(
-        existing_html_tag_data, html_tags_to_add)
-    return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
-
-
-def _get_token_preds_by_dividing_main_text(
-        main_text: str,
-        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
-        note: VaultNote,
-        excessive_space_threshold: int,    
-        # ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
-        ) -> list[HTMLTagWithIndices]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
-    """
-    Divide the `main_text` into not-too-long pieces to return HTML tag predictions
-
-    Helper function for `_format_main_text_and_add_html_tag_data`.
-    """
-    pieces_start_and_end = _divide_main_text(main_text, pipeline)
-    cumulative_html_tags_in_main = []
-    for start_of_piece, end_of_piece in pieces_start_and_end:
-        # text = main_text[start_of_piece:end_of_piece]
-        text = main_text[start_of_piece:]
-        html_tags_in_piece: list[HTMLTagWithIndices] = _html_tags_from_token_preds(
-            text, pipeline(text), note, excessive_space_threshold)
-        html_tags_in_piece = _consolidate_token_preds(
-            text, html_tags_in_piece)
-        # start and end indices need to be re-adjusted with respect to their places in `main_text`
-        html_tags_for_piece_in_main_text: list[HTMLTagWithIndices] = [
-            HTMLTagWithIndices(tag, start_of_piece + start, start_of_piece + end)
-            for tag, start, end in html_tags_in_piece]
-        cumulative_html_tags_in_main = _collate_html_tags(
-            cumulative_html_tags_in_main, html_tags_for_piece_in_main_text)
-    return cumulative_html_tags_in_main
-
-
-def _divide_main_text(
-        main_text: str,
-        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
-        # ) -> list[tuple[str, int, int]]:  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
-        ) -> list[tuple[int, int]]:  # Each tuple is a start and end range for pieces of `main_text` to be considered for predictions
-    """Divides `main_text` so that predictions can be made on smaller chunks of text.
-    
-    Assumes that dividing `main_text` along newline characters `\n` will result in
-    pieces that are "not too long".
-
-    Helper function to `_format_main_text_and_add_html_tag_data`.
-
-
-    """
-    main_text.split('\n')
-    tokenizer = pipeline.tokenizer
-    newline_indices = [i for i, char in enumerate(main_text) if char == '\n']
-    newline_indices.insert(0, 0)
-    chunks = []  # list[tuple[str, int, int]]  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
-    for start, end in pairwise(newline_indices):
-        chunk = main_text[start:end]
-        chunks.append((chunk, start, len(tokenizer(chunk)['input_ids'])))
-    last_chunk = main_text[newline_indices[-1]:]
-    chunks.append((last_chunk, newline_indices[-1], len(tokenizer(chunk))))
-    return _find_places_to_divide_from_chunks(chunks, pipeline)
-
-
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 90
 def _find_places_to_divide_from_chunks(
         chunks: list[tuple[str, int, int]], # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1133,18 +1006,91 @@ def _find_places_to_divide_from_chunks(
     return pieces_start_and_end
 
 
-def _append_to_pieces_start_and_end(
-        pieces_start_and_end: list[tuple[int, int]],
-        start_chunk: tuple[str, int, int],
-        end_chunk: tuple[str, int, int]
-        ) -> None:
-    """Helper function to `_find_places_to_divide_from_chunks`"""
-    start_char_index = start_chunk[1]
-    end_char_index = end_chunk[1] + len(end_chunk[0])
-    pieces_start_and_end.append([start_char_index, end_char_index])
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 91
+def _divide_main_text(
+        main_text: str,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
+        # ) -> list[tuple[str, int, int]]:  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
+        ) -> list[tuple[int, int]]:  # Each tuple is a start and end range for pieces of `main_text` to be considered for predictions
+    """Divides `main_text` so that predictions can be made on smaller chunks of text.
+    
+    Assumes that dividing `main_text` along newline characters `\n` will result in
+    pieces that are "not too long".
+
+    Helper function to `_format_main_text_and_add_html_tag_data`.
+
+
+    """
+    main_text.split('\n')
+    tokenizer = pipeline.tokenizer
+    newline_indices = [i for i, char in enumerate(main_text) if char == '\n']
+    newline_indices.insert(0, 0)
+    chunks = []  # list[tuple[str, int, int]]  # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
+    for start, end in pairwise(newline_indices):
+        chunk = main_text[start:end]
+        chunks.append((chunk, start, len(tokenizer(chunk)['input_ids'])))
+    last_chunk = main_text[newline_indices[-1]:]
+    chunks.append((last_chunk, newline_indices[-1], len(tokenizer(chunk))))
+    return _find_places_to_divide_from_chunks(chunks, pipeline)
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 92
+def _get_token_preds_by_dividing_main_text(
+        main_text: str,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
+        note: VaultNote,
+        excessive_space_threshold: int,    
+        # ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
+        ) -> list[HTMLTagWithIndices]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
+    """
+    Divide the `main_text` into not-too-long pieces to return HTML tag predictions
+
+    Helper function for `_format_main_text_and_add_html_tag_data`.
+    """
+    pieces_start_and_end = _divide_main_text(main_text, pipeline)
+    cumulative_html_tags_in_main = []
+    for start_of_piece, end_of_piece in pieces_start_and_end:
+        # text = main_text[start_of_piece:end_of_piece]
+        text = main_text[start_of_piece:]
+        html_tags_in_piece: list[HTMLTagWithIndices] = _html_tags_from_token_preds(
+            text, pipeline(text), note, excessive_space_threshold)
+        html_tags_in_piece = _consolidate_token_preds(
+            text, html_tags_in_piece)
+        # start and end indices need to be re-adjusted with respect to their places in `main_text`
+        html_tags_for_piece_in_main_text: list[HTMLTagWithIndices] = [
+            HTMLTagWithIndices(tag, start_of_piece + start, start_of_piece + end)
+            for tag, start, end in html_tags_in_piece]
+        cumulative_html_tags_in_main = _collate_html_tags(
+            cumulative_html_tags_in_main, html_tags_for_piece_in_main_text)
+    return cumulative_html_tags_in_main
+
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 93
+def _format_main_text_and_add_html_tag_data(
+        note: VaultNote,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
+        add_boxing_attr_to_existing_def_and_notat_markings: bool,
+        excessive_space_threshold: int,
+        main_text: str,  # The main text to format and to add HTML tag data to
+        ) -> str:
+    """Helper function to `auto_mark_def_and_notats`"""
+    main_text = add_space_to_lt_symbols_without_space(main_text)
+    main_text = convert_double_asterisks_to_html_tags(main_text)
+    main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
+    if add_boxing_attr_to_existing_def_and_notat_markings:
+        existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
+            existing_html_tag_data)
+
+    html_tags_to_add = _get_token_preds_by_dividing_main_text(
+        main_text, pipeline, note, excessive_space_threshold)
+
+    html_tags_to_add_back = _collate_html_tags(
+        existing_html_tag_data, html_tags_to_add)
+    return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
 
 
 
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 94
 def _write_text_with_html_tag_preds_to_note(
         note: VaultNote,
         mf: MarkdownFile,
@@ -1162,4 +1108,67 @@ def _write_text_with_html_tag_preds_to_note(
                    {'type': MarkdownLineEnum.DEFAULT, 'line': main_text})
     mf.add_tags('_auto/def_and_notat_identified')
     mf.write(note)
+
+# %% ../../../../../../nbs/28_markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.ipynb 95
+def auto_mark_def_and_notats(
+        note: VaultNote,  # The standard information note in which to find the definitions and notations.
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
+        # remove_existing_def_and_notat_markings: bool = False,  # If `True`, remove definition and notation markings (both via surrounding by double asterisks `**` as per the legacy method and via HTML tags)
+        excessive_space_threshold: int = 2,
+        add_boxing_attr_to_existing_def_and_notat_markings: bool = True # If `True`, then nice attributes are added to the existing notation HTML tags, if not already present.
+    ) -> None:
+    """
+    Predict and mark where definitions and notation occur in a note using
+    a token classification ML model.
+
+    Assumes that the note is a standard information note that does not
+    have a lot of "user modifications", such as footnotes, links,
+    and HTML tags. If
+    there are many modifications, then these might be deleted.
+
+    Assumes that the paragraphs in the text of the note are "not too long".
+    Currently, this means that the paragraphs in the number of tokens
+    in the text of the note should (roughly) not exceed 
+    `pipeline.tokenizer.model_max_length`.
+
+    Existing markings for definition and notation data (i.e. by
+    surrounding with double asterisks or by HTML tags) are preserved
+    (and turned into HTML tags), unless the markings overlap with 
+    predictions, in which case the original is preserved (and still
+    turned into an HTML tag if possible)
+
+    Since the model can make "invalid" predictions (mostly those which
+    start or end within a LaTeX math mode str), the actual markings
+    are not necessarily direct translates from the model's predictions.
+    See the helper function `_consolidate_token_preds` for more details
+    on how this is implemented.
+    
+    **Raises**
+    Warning messages (`UserWarning`) are printed in the following situations:
+
+    - There are two consecutive tokens within the `pipeline`'s predictions
+      of different entity types (e.g. one is predicted to belong within a
+      definition and the other within a notation), but the latter token's
+      predicted `'entity'` more specifically begins with `'I-'` (i.e. is
+      `'I-definition'` or `'I-notation'`) as opposed to `'B-'`.
+        - `note`'s name, and path are included in the warning message in
+          this case.
+    - There are two consecutive tokens within the `pipeline`'s predictions
+      which the pipeline predicts to belong to the same entity, and yet
+      there is excessive space (specified by `excessive_space_threshold`)
+      between the end of the first token and the start of the second.
+
+    """
+    mf = MarkdownFile.from_vault_note(note)
+    mf.cleanup_formatting()
+    # _process_mf(mf)
+    first_non_metadata_line, see_also_line = _get_main_text_lines(mf)
+     
+    main_text = mf.text_of_lines(first_non_metadata_line, see_also_line)
+    main_text = _format_main_text_and_add_html_tag_data(
+        note, pipeline, add_boxing_attr_to_existing_def_and_notat_markings,
+        excessive_space_threshold, main_text)
+    _write_text_with_html_tag_preds_to_note(
+        note, mf, main_text, first_non_metadata_line, see_also_line)
+
 
