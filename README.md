@@ -134,7 +134,7 @@ The model
 [`hyunjongkimmath/information_note_type`](https://huggingface.co/hyunjongkimmath/information_note_type)
 predicts what type a given excerpt of text is (using `Markdown` tags).
 See
-[`markdown.obsidian.personal.machine_learning.information_note_types`](markdown.obsidian.personal.machine_learning.information_note_types.html)
+[`machine_learning.information_note_types`](machine_learning.information_note_types.html)
 for more details.
 
 For example, the model should predict that the following excerpt is a
@@ -215,7 +215,7 @@ The model
 [`hyunjongkimmath/def_and_notat_token_classification_model`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model)
 attempts to find where exactly definitions and notations are introduced
 in a given excerpt of text. See
-[`markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification`](markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html)
+[`machine_learning.tokenize.def_and_notat_token_classification`](machine_learning.tokenize.def_and_notat_token_classification.html)
 
 For example, take the following excerpt.
 
@@ -236,7 +236,7 @@ For example, take the following excerpt.
 > We use the notation $\overline{B}(x, r)$ for closed balls.
 
 The model should predict (and functions in the module
-[`markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification`](markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification.html)
+[`machine_learning.tokenize.def_and_notat_token_classification`](machine_learning.tokenize.def_and_notat_token_classification.html)
 should mark) the following definitions and notations as introduced in
 the text:
 
@@ -426,9 +426,9 @@ The functionalities of `trouver`, used in conjunction with
 amount of time and effort needed to re-find and re-learn these
 definitions and notations. `trouver` can divide a LaTeX document into
 not-too-long notes (see the
-[`divide_latex_text`](https://hyunjongkimmath.github.io/trouver/latex.divide.html#divide_latex_text)
+[`divide_latex_text`](https://hyunjongkimmath.github.io/trouver/latex_00.divide.html#divide_latex_text)
 function in [latex.divide](latex.divide.html#divide_latex_text) and the
-[`setup_reference_from_latex_parts`](https://hyunjongkimmath.github.io/trouver/latex.convert.html#setup_reference_from_latex_parts)
+[`setup_reference_from_latex_parts`](https://hyunjongkimmath.github.io/trouver/latex_20.convert.html#setup_reference_from_latex_parts)
 function in [latex.convert](latex.convert.html)) for an `Obsidian.md`
 vault.
 
@@ -438,10 +438,9 @@ can be searched and opened. In essence, one can use the [aforementioned
 functionalities](#descriptions-of-functionalities) to automatically
 identify definitions and notations introduced throughout the
 mathematical text, create new notes dedicated to each notation (see the
-[`make_notation_notes_from_HTML_tags`](https://hyunjongkimmath.github.io/trouver/markdown.obsidian.personal.notation.html#make_notation_notes_from_html_tags)
-function in
-[markdown.obsidian.personal.notation](markdown.obsidian.personal.notation.html)),
-and write summaries of what the notations denote.
+[`make_notation_notes_from_HTML_tags`](https://hyunjongkimmath.github.io/trouver/notation_10_management.html#make_notation_notes_from_html_tags)
+function in [notation.management](notation.management.html)), and write
+summaries of what the notations denote.
 
 These notation notes can then be linked/embedded into other notes as
 needed, thereby making it much easier to view what a notation denotes.

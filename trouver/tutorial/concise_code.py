@@ -22,12 +22,12 @@ from trouver.latex.convert import (
     setup_reference_from_latex_parts
 )
 from ..latex.preamble import replace_inclusion_of_style_file_with_code
-from ..markdown.markdown.file import MarkdownFile
-from ..markdown.obsidian.personal.machine_learning.information_note_types import automatically_add_note_type_tags
-from ..markdown.obsidian.personal.machine_learning.tokenize.def_and_notat_token_classification import auto_mark_def_and_notats
-from ..markdown.obsidian.personal.machine_learning.definition_and_notation_naming import add_names_to_html_tags_in_info_note
-from ..markdown.obsidian.personal.machine_learning.notation_summarization import append_summary_to_notation_note
-from ..markdown.obsidian.personal.notes import notes_linked_in_notes_linked_in_note, notes_linked_in_note
-from ..markdown.obsidian.personal.notation import make_notation_notes_from_double_asts, make_notation_notes_from_HTML_tags
-from ..markdown.obsidian.personal.notation.in_standard_information_note import notation_notes_linked_in_see_also_section
-from ..markdown.obsidian.vault import VaultNote
+from ..markdown.file import MarkdownFile
+from ..machine_learning.information_note_types import automatically_add_note_type_tags
+from ..machine_learning.tokenize.def_and_notat_token_classification import auto_mark_def_and_notats
+from ..machine_learning.definition_and_notation_naming import add_names_to_html_tags_in_info_note
+from ..machine_learning.notation_summarization import append_summary_to_notation_note
+from ..personal_vault.notes import notes_linked_in_notes_linked_in_note, notes_linked_in_note
+from ..notation.management import make_notation_notes_from_double_asts, make_notation_notes_from_HTML_tags
+from ..notation.in_standard_info_note import notation_notes_linked_in_see_also_section
+from ..obsidian.vault import VaultNote
