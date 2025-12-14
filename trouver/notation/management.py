@@ -19,7 +19,7 @@ from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, Latex
 
 from ..helper.html import remove_html_tags_in_text
 from ..helper.path_accepted_string import latex_to_path_accepted_string
-from ..markdown.file import MarkdownFile, MarkdownLineEnum, _sanitize_characters_for_str_metadata_entry 
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum, _sanitize_characters_for_str_metadata_entry 
 from trouver.obsidian.links import (
     LinkType, LinkFormatError, ObsidianLink
 )

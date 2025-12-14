@@ -52,7 +52,7 @@ from ..latex import find_main_latex_file
 from ..latex.convert import convert_notes_to_latex_code, setup_reference_from_latex_parts
 from ..latex.divide import divide_latex_text
 from ..latex.preamble import divide_preamble, replace_inclusion_of_style_file_with_code
-from ..markdown.file import MarkdownFile
+from ..obsidian.file import MarkdownFile
 from ..machine_learning.information_note_types import automatically_add_note_type_tags
 from ..machine_learning.tokenize.def_and_notat_token_classification import auto_mark_def_and_notats, convert_double_asterisks_to_html_tags
 from ..machine_learning.notation_summarization import append_summary_to_notation_note

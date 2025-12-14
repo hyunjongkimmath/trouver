@@ -24,7 +24,7 @@ from trouver.helper.files_and_folders import (
 )
 from ..helper.html import remove_html_tags_in_text
 from ..helper.regex import replace_string_by_indices
-from trouver.markdown.file import (
+from trouver.obsidian.file import(
     MarkdownFile, MarkdownLineEnum
 )
 

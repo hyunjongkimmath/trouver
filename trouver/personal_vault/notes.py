@@ -8,7 +8,7 @@ __all__ = ['notes_linked_in_note', 'notes_linked_in_notes_linked_in_note', 'note
 # %% ../../nbs/05_personal_vault_10.notes.ipynb 2
 from typing import Union
 
-from trouver.markdown.file import (
+from trouver.obsidian.file import(
     MarkdownFile
 )
 from trouver.obsidian.links import (

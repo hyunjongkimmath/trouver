@@ -31,7 +31,7 @@ from ...helper.latex.augment import (
     augment_text, change_font_styles_at_random, change_greek_letters_at_random, dollar_sign_manipulation, push_dollar_sign, random_char_modification, random_latex_command_removal, random_word_removal, remove_font_styles_at_random, remove_math_keywords)
 
 from ...helper.regex import latex_indices, replace_string_by_indices
-from ...markdown.file import MarkdownFile, MarkdownLineEnum
+from ...obsidian.file import MarkdownFile, MarkdownLineEnum
 from ...personal_vault.note_processing import process_standard_information_note
 from ...obsidian.vault import VaultNote
 

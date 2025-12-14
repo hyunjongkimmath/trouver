@@ -22,7 +22,7 @@ from trouver.helper.latex.augment import (
 augment_text, choose_modification_methods_at_random, remove_font_styles_at_random, change_font_styles_at_random, change_greek_letters_at_random, remove_math_keywords, random_latex_command_removal, random_word_removal, dollar_sign_manipulation, random_char_modification
 )
 from ..helper.regex import find_regex_in_text, latex_indices
-from ..markdown.file import MarkdownFile
+from ..obsidian.file import MarkdownFile
 from ..obsidian.links import links_from_text, LinkType, ObsidianLink, MARKDOWNLINK_CAPTURE_PATTERN
 from ..notation.in_standard_info_note import notation_notes_linked_in_see_also_section
 from ..notation.parse import NotationNoteParsed, parse_notation_note, notation_in_note, main_of_notation

@@ -25,7 +25,7 @@ import warnings
 
 from ..helper.files_and_folders import path_name_no_ext, md_files_in_dir
 from ..helper.alphabet import alphabet_to_alphabet_group
-from trouver.markdown.file import (
+from trouver.obsidian.file import(
     MarkdownFile, MarkdownLineEnum
 )
 from trouver.markdown.heading import (

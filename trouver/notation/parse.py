@@ -10,7 +10,7 @@ from os import PathLike, remove
 import re
 from typing import NamedTuple, Optional, Union
 
-from ..markdown.file import MarkdownFile, MarkdownLineEnum 
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum 
 from ..obsidian.links import link_ranges_in_text, ObsidianLink, MARKDOWNLINK_PATTERN, MARKDOWNLINK_CAPTURE_PATTERN, WIKILINK_PATTERN
 from ..obsidian.vault import VaultNote
 from ..personal_vault.note_processing import process_standard_information_note

@@ -33,7 +33,7 @@ import torch
 from datasets import Dataset
 
 from ..helper.date_and_time import current_time_formatted_to_minutes
-from ..markdown.file import MarkdownFile
+from ..obsidian.file import MarkdownFile
 from .database_update import max_ID, append_to_database
 from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote

@@ -12,7 +12,7 @@ from pathlib import Path, PureWindowsPath, WindowsPath
 import re
 from typing import Optional, Union
 
-from ..markdown.file import MarkdownFile, MarkdownLineEnum, replace_embedded_links_with_text
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum, replace_embedded_links_with_text
 from ..obsidian.footnotes import remove_footnote_mentions_in_markdown_text
 from ..obsidian.links import EMBEDDED_PATTERN, remove_links_from_text
 from ..obsidian.vault import VaultNote

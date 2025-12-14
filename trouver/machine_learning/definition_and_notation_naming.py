@@ -34,7 +34,7 @@ from trouver.helper.latex.augment import (
     change_font_styles_at_random, change_greek_letters_at_random, remove_font_styles_at_random
 )
 
-from ..markdown.file import MarkdownFile
+from ..obsidian.file import MarkdownFile
 from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote
 

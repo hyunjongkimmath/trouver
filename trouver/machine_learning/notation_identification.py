@@ -19,7 +19,7 @@ from trouver.helper.definition_and_notation import (
 )
 from ..helper.date_and_time import current_time_formatted_to_minutes
 from ..helper.regex import latex_indices, replace_string_by_indices
-from ..markdown.file import MarkdownFile, MarkdownLineEnum
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum
 from ..personal_vault.note_processing import process_standard_information_note
 from .database_update import append_to_database
 from trouver.obsidian.vault import(

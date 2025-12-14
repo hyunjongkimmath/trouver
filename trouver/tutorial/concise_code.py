@@ -22,7 +22,7 @@ from trouver.latex.convert import (
     setup_reference_from_latex_parts
 )
 from ..latex.preamble import replace_inclusion_of_style_file_with_code
-from ..markdown.file import MarkdownFile
+from ..obsidian.file import MarkdownFile
 from ..machine_learning.information_note_types import automatically_add_note_type_tags
 from ..machine_learning.tokenize.def_and_notat_token_classification import auto_mark_def_and_notats
 from ..machine_learning.definition_and_notation_naming import add_names_to_html_tags_in_info_note

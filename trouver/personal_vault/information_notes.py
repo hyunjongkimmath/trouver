@@ -18,7 +18,7 @@ import re
 from typing import Optional, Union, Tuple
 
 from ..helper.files_and_folders import path_name_no_ext
-from trouver.markdown.file import (
+from trouver.obsidian.file import(
     MarkdownFile, MarkdownLineEnum
 )
 from trouver.obsidian.footnotes import (

@@ -28,7 +28,7 @@ from ..helper import get_top_counted_items
 from trouver.helper.latex.augment import (
     dollar_sign_manipulation, random_char_modification, remove_math_keywords, random_word_removal, random_latex_command_removal, augment_text, change_font_styles_at_random, remove_font_styles_at_random, change_greek_letters_at_random, choose_modification_methods_at_random
     )
-from ..markdown.file import MarkdownFile, MarkdownLineEnum
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum
 from ..obsidian.links import MARKDOWNLINK_CAPTURE_PATTERN, LinkFormatError, ObsidianLink, link_ranges_in_text
 from ..personal_vault.information_notes import reference_of_information_note, index_note_of_note
 from .notation import notat_note_data_from_parsed_and_main_note_processed

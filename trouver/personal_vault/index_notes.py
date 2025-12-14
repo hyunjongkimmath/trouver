@@ -21,7 +21,7 @@ from natsort import natsorted
 from pathvalidate import sanitize_filename
 
 from ..helper.files_and_folders import path_name_no_ext
-from trouver.markdown.file import (
+from trouver.obsidian.file import(
     MarkdownFile, MarkdownLineEnum
 )
 from ..markdown.heading import heading_title

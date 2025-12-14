@@ -17,7 +17,7 @@ from pathlib import Path
 from ..helper.definition_and_notation import notation_asterisk_indices
 from ..helper.html import remove_html_tags_in_text 
 from ..helper.latex import latex_indices 
-from ..markdown.file import MarkdownFile, MarkdownLineEnum
+from ..obsidian.file import MarkdownFile, MarkdownLineEnum
 from ..obsidian.links import ObsidianLink
 from ..personal_vault.information_notes import bulleted_links_of_type_in_section
 from ..personal_vault.note_type import note_is_of_type, PersonalNoteTypeEnum
