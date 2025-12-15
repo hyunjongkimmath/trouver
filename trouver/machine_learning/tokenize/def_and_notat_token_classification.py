@@ -5,7 +5,8 @@
 # %% auto 0
 __all__ = ['latex_commands_to_avoid', 'convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile',
            'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'augment_html_data',
-           'def_and_notat_preds_by_model', 'auto_mark_def_and_notats']
+           'def_and_notat_preds_by_model', 'get_def_and_notat_predictions', 'mark_def_and_notat_predictions',
+           'predict_and_mark_def_and_notats', 'auto_mark_def_and_notats', 'latex_highlight_formatter']
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 4
 from collections.abc import Callable
@@ -448,7 +449,9 @@ def _html_tag_data_from_part(
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 68
 def _current_token_continues_the_previous_token(
-        current_token: dict, previous_token: dict, note: Optional[VaultNote]
+        current_token: dict,
+        previous_token: dict,
+        note: Optional[VaultNote] = None,
         ) -> bool:
     """
     Helper function to `_divide_token_preds_into_parts`.
@@ -474,8 +477,8 @@ def _current_token_continues_the_previous_token(
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 70
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
-        note: VaultNote,
-        excessive_space_threshold: int
+        excessive_space_threshold: int,
+        note: Optional[VaultNote] = None
         ) -> list[list[dict[str]]]:
     """
     Divide `token_preds` into parts so that each part
@@ -778,8 +781,8 @@ def _no_overlap_with_previous_tag_data(
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]], # An output of `pipeline(text)`; Each dict likely contains keys such as `'entity'`, `'score'`, `'index'`, `'word'`, `'start'`, and `'end'`, depending on the model used.
-        note: VaultNote,
-        excessive_space_threshold: int
+        excessive_space_threshold: int,
+        note: Optional[VaultNote] = None,
         ) -> list[HTMLTagWithIndices]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
         # ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
     """
@@ -788,7 +791,7 @@ def _html_tags_from_token_preds(
     Helper function to `auto_mark_def_and_notats`.
     """
     parts: list[list[dict[str]]] = _divide_token_preds_into_parts(
-        token_preds, note, excessive_space_threshold)
+        token_preds, excessive_space_threshold, note)
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
@@ -863,7 +866,7 @@ def def_and_notat_preds_by_model(
     `auto_mark_def_and_notats`, but does not raise warning messages as
     in `auto_mark_def_and_notats`.
     """
-    tag_data = _html_tags_from_token_preds(text, pipeline(text), None, 2)
+    tag_data = _html_tags_from_token_preds(text, pipeline(text), 2, None)
     return tag_data
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 87
@@ -1029,15 +1032,15 @@ def _divide_main_text(
         chunk = main_text[start:end]
         chunks.append((chunk, start, len(tokenizer(chunk)['input_ids'])))
     last_chunk = main_text[newline_indices[-1]:]
-    chunks.append((last_chunk, newline_indices[-1], len(tokenizer(chunk))))
+    chunks.append((last_chunk, newline_indices[-1], len(tokenizer(last_chunk)['input_ids'])))
     return _find_places_to_divide_from_chunks(chunks, pipeline)
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 92
 def _get_token_preds_by_dividing_main_text(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
-        note: VaultNote,
-        excessive_space_threshold: int,    
+        excessive_space_threshold: int, 
+        note: Optional[VaultNote] = None,
         # ) -> list[tuple[bs4.element.Tag, int, int]]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
         ) -> list[HTMLTagWithIndices]:  # Tag element, start, end, where main_text[start:end] needs to be replaced by the tag element.
     """
@@ -1051,7 +1054,7 @@ def _get_token_preds_by_dividing_main_text(
         # text = main_text[start_of_piece:end_of_piece]
         text = main_text[start_of_piece:]
         html_tags_in_piece: list[HTMLTagWithIndices] = _html_tags_from_token_preds(
-            text, pipeline(text), note, excessive_space_threshold)
+            text, pipeline(text), excessive_space_threshold, note)
         html_tags_in_piece = _consolidate_token_preds(
             text, html_tags_in_piece)
         # start and end indices need to be re-adjusted with respect to their places in `main_text`
@@ -1064,6 +1067,74 @@ def _get_token_preds_by_dividing_main_text(
 
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 93
+def get_def_and_notat_predictions(
+        main_text: str,
+        pipeline: pipelines.token_classification.TokenClassificationPipeline,
+        excessive_space_threshold: int,
+        note: Optional[VaultNote] = None
+        ) -> list[HTMLTagWithIndices]:
+    """
+    Identifies definitions and notations in the text using the ML pipeline.
+
+    Returns a list of `HTMLTagWithIndices` containing the predicted tags 
+    and their start/end indices in `main_text`.
+    """
+    # 1. Divide text (if needed) and get raw token predictions
+    html_tags_to_add = _get_token_preds_by_dividing_main_text(
+        main_text, pipeline, excessive_space_threshold, note)
+    
+    # 2. Return the structured data directly
+    # Note: _get_token_preds_by_dividing_main_text already returns 
+    # list[HTMLTagWithIndices] after calling `consolidate_token_preds`.
+    return html_tags_to_add
+
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
+def mark_def_and_notat_predictions(
+        main_text: str, # The original text.
+        predictions: list[HTMLTagWithIndices], # The list of predictions (ranges and metadata) returned by `get_def_and_notat_predictions`. Assumes these are sorted and non-overlapping (which `get_def_and_notat_predictions` ensures).
+        formatter: Callable[[str, HTMLTagWithIndices], str] # A function that takes the *extracted substring* (the text being marked) and the prediction object, and returns the *formatted string* to replace it with.
+        ) -> str: # The modified text with predictions marked.
+    """
+    Applies formatting to the `main_text` based on the definition and notation predictions.
+    """
+    # Iterate backwards so that index changes don't affect subsequent replacements
+    # (HTMLTagWithIndices are typically sorted by start index, so reversing is safe)
+    sorted_preds = sorted(predictions, key=lambda x: x.start, reverse=True)
+    
+    formatted_text_list = list(main_text)
+    
+    for pred in sorted_preds:
+        start, end = pred.start, pred.end
+        original_substring = main_text[start:end]
+        
+        # Apply the user-defined formatting rule
+        replacement_text = formatter(original_substring, pred)
+        
+        # Replace the slice in the text
+        # (Using list slicing for efficiency vs repeated string concatenation)
+        formatted_text_list[start:end] = list(replacement_text)
+        
+    return "".join(formatted_text_list)
+
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 98
+def predict_and_mark_def_and_notats(
+        main_text: str, # The text to run predictions on and format.
+        pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline.
+        # note: VaultNote, # The note associated with the text (used for debugging/logging).
+        formatter: Callable[[str, HTMLTagWithIndices], str], # The function that formats the text based on predictions.
+        excessive_space_threshold: int # Threshold for detecting excessive spacing in predictions.
+        ) -> str: # The formatted text.
+    """
+    Runs definition and notation detection on `main_text` and applies the `formatter`.
+    """
+    predictions = get_def_and_notat_predictions(
+        main_text, pipeline, excessive_space_threshold)
+    return mark_def_and_notat_predictions(main_text, predictions, formatter)
+
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 100
 def _format_main_text_and_add_html_tag_data(
         note: VaultNote,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1072,23 +1143,36 @@ def _format_main_text_and_add_html_tag_data(
         main_text: str,  # The main text to format and to add HTML tag data to
         ) -> str:
     """Helper function to `auto_mark_def_and_notats`"""
+    # 1. Pre-processing
     main_text = add_space_to_lt_symbols_without_space(main_text)
     main_text = convert_double_asterisks_to_html_tags(main_text)
     main_text, existing_html_tag_data = remove_html_tags_in_text(main_text)
+
+    # 2. Handle existing tag styling
     if add_boxing_attr_to_existing_def_and_notat_markings:
         existing_html_tag_data = _add_nice_boxing_attrs_to_def_and_notat_tags(
             existing_html_tag_data)
 
-    html_tags_to_add = _get_token_preds_by_dividing_main_text(
-        main_text, pipeline, note, excessive_space_threshold)
+    # 3. Get New Predictions
+    new_tag_data = get_def_and_notat_predictions(
+        main_text, pipeline, excessive_space_threshold, note)
 
-    html_tags_to_add_back = _collate_html_tags(
-        existing_html_tag_data, html_tags_to_add)
-    return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
+    # 4. Merge old and new tags
+    all_tags_to_add = _collate_html_tags(
+        existing_html_tag_data, new_tag_data)
+
+    # 5. Apply to text
+    return add_HTML_tag_data_to_raw_text(main_text, all_tags_to_add)
+    # html_tags_to_add = _get_token_preds_by_dividing_main_text(
+    #     main_text, pipeline, note, excessive_space_threshold)
+
+    # html_tags_to_add_back = _collate_html_tags(
+    #     existing_html_tag_data, html_tags_to_add)
+    # return add_HTML_tag_data_to_raw_text(main_text, html_tags_to_add_back)
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 102
 def _write_text_with_html_tag_preds_to_note(
         note: VaultNote,
         mf: MarkdownFile,
@@ -1107,7 +1191,7 @@ def _write_text_with_html_tag_preds_to_note(
     mf.add_tags('_auto/def_and_notat_identified')
     mf.write(note)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 95
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 103
 def auto_mark_def_and_notats(
         note: VaultNote,  # The standard information note in which to find the definitions and notations.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1169,4 +1253,46 @@ def auto_mark_def_and_notats(
     _write_text_with_html_tag_preds_to_note(
         note, mf, main_text, first_non_metadata_line, see_also_line)
 
+
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 110
+def latex_highlight_formatter(text: str, pred: HTMLTagWithIndices) -> str:
+    r"""
+    Formats definitions and notations with LaTeX highlighting commands.
+    
+    Rules:
+    - Definitions: \hldef{text}
+    - Notations:
+        - $...$ -> \hl{$...$}
+        - $$...$$ -> $$\hlin{...}$$
+        - \begin{align*}...\end{align*} -> \hlalign{\begin{align*}...\end{align*}}
+    """
+    is_definition = 'definition' in pred.tag.attrs
+    
+    # --- Case 1: Definition ---
+    if is_definition:
+        return f"\\hldef{{{text}}}"
+    
+    # --- Case 2: Notation ---
+    # We need to detect the type of math environment in `text`
+    
+    stripped_text = text.strip()
+    
+    # Subcase 2a: Display Math with $$...$$
+    if stripped_text.startswith('$$') and stripped_text.endswith('$$'):
+        # Extract content inside $$...$$
+        # Content length is len(text) - 4 (for the two $$ pairs)
+        # We need to handle potential whitespace, so we use indices based on the strip
+        inner_content = stripped_text[2:-2] 
+        return f"$$\\hlin{{{inner_content}}}$$"
+    
+    # Subcase 2b: Align Environment
+    # Checks for \begin{align*} or \begin{align}
+    if r'\begin{align' in text:
+        return f"\\hlalign{{{text}}}"
+    
+    # Subcase 2c: Inline Math $...$ (Default for notations)
+    # Note: We wrap the *entire* text (including $) in \hl{...}
+    # User requirement: "if $blah$, then \hl{$blah$}"
+    return f"\\hl{{{text}}}"
 

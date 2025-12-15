@@ -6,7 +6,7 @@
 __all__ = ['alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet', 'alphabet_or_latex_command_to_alphabet_group']
 
 # %% ../../nbs/01_helper_05.alphabet.ipynb 2
-from ..constants import ALPHABET_TO_ALPHABET_GROUP_DICT
+from .constants import ALPHABET_TO_ALPHABET_GROUP_DICT
 
 # %% ../../nbs/01_helper_05.alphabet.ipynb 5
 def alphabet_to_alphabet_group(character: str) -> str:
