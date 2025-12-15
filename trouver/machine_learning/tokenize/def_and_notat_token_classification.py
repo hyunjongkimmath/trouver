@@ -4,9 +4,11 @@
 
 # %% auto 0
 __all__ = ['latex_commands_to_avoid', 'convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile',
-           'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'augment_html_data',
-           'def_and_notat_preds_by_model', 'get_def_and_notat_predictions', 'mark_def_and_notat_predictions',
-           'predict_and_mark_def_and_notats', 'auto_mark_def_and_notats', 'latex_highlight_formatter']
+           'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag',
+           'extract_html_tag_indices_from_marked_text', 'html_data_from_marked_text', 'latex_highlight_parser',
+           'augment_html_data', 'def_and_notat_preds_by_model', 'get_def_and_notat_predictions',
+           'mark_def_and_notat_predictions', 'predict_and_mark_def_and_notats', 'auto_mark_def_and_notats',
+           'latex_highlight_formatter']
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 4
 from collections.abc import Callable
@@ -20,6 +22,7 @@ from typing import Literal, Optional, TypedDict, Union
 import warnings
 
 import bs4
+import regex
 from transformers import BatchEncoding, pipelines, PreTrainedTokenizer, PreTrainedTokenizerFast
 
 from ...helper import is_not_space_and_not_punc, split_string_at_indices
@@ -304,7 +307,299 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 47
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 48
+def _calculate_clean_indices_and_create_tags(
+        original_text: str,
+        markings: list[tuple[str, int, int, dict]]
+        ) -> tuple[str, list[HTMLTagWithIndices]]:
+    """Helper: returns (clean_text, list_of_tags)."""
+    results = []
+    clean_text_parts = []
+    current_raw_idx = 0
+    clean_text_len = 0
+    soup = bs4.BeautifulSoup("", 'html.parser')
+
+    for content, raw_start, raw_end, attrs in markings:
+        # Append text BEFORE the mark
+        pre_text = original_text[current_raw_idx:raw_start]
+        clean_text_parts.append(pre_text)
+        
+        pre_text_len = len(pre_text)
+        clean_text_len += pre_text_len
+        
+        # Calculate indices
+        tag_start = clean_text_len
+        tag_end = tag_start + len(content)
+        
+        # Create Tag
+        tag_name = "b" if "definition" in attrs else "span"
+        tag = soup.new_tag(tag_name, **attrs)
+        tag.string = content
+        results.append(HTMLTagWithIndices(tag, tag_start, tag_end))
+        
+        # Append the CONTENT of the mark (clean text)
+        clean_text_parts.append(content)
+        
+        clean_text_len += len(content)
+        current_raw_idx = raw_end
+
+    # Append remaining text
+    clean_text_parts.append(original_text[current_raw_idx:])
+    
+    return "".join(clean_text_parts), results
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 49
+def extract_html_tag_indices_from_marked_text(
+        text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
+        marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
+        ) -> list[HTMLTagWithIndices]: # A list of `HTMLTagWithIndices` objects. The start/end indices corresponds to the *inner content's* location in a "clean" version of the text (where markings are removed).
+    """
+    Extracts a list of HTML tags and their indices from marked text.
+    """
+    markings = marker_parser(text)
+    markings.sort(key=lambda x: x[1])
+    _, tags = _calculate_clean_indices_and_create_tags(text, markings)
+    return tags
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 51
+def html_data_from_marked_text(
+        text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
+        marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
+        ) -> StrAndHTMLTagsWithIndices: # An object containing the "clean" text (markings removed) and the list of HTML tags with their indices in that clean text.
+    """
+    Creates an `StrAndHTMLTagsWithIndices` object from text with custom markings.
+    """
+    markings = marker_parser(text)
+    markings.sort(key=lambda x: x[1])
+    clean_text, tags = _calculate_clean_indices_and_create_tags(text, markings)
+    
+    return StrAndHTMLTagsWithIndices(clean_text, tags)
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 55
+def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
+    """
+    Parses LaTeX highlighting commands (\\hldef, \\hl, \\hlin, \\hlalign) to identify
+    definitions and notations.
+    
+    This function is designed to be passed as the `marker_parser` argument to
+    `html_data_from_marked_text`.
+
+    It handles nested braces using recursive regex and strips surrounding whitespace 
+    from the inner content (e.g., stripping padding newlines in `\\hlalign{\\n ... \\n}`).
+    It also implements special logic for `\\hlin` to expand the notation range to 
+    include surrounding `$$` delimiters if present.
+
+    Returns
+    -------
+    list[tuple[str, int, int, dict]]
+        A list of tuples representing the found markings. Each tuple contains:
+        1. **Content** (`str`): The inner text of the marking (stripped of padding whitespace).
+           This is the text that will remain in the "clean" output and be wrapped by the tag.
+        2. **Start Index** (`int`): The start index of the *entire marking wrapper* 
+           (e.g., the index of `\\`) in the original `text`.
+        3. **End Index** (`int`): The end index of the *entire marking wrapper* 
+           (e.g., the index after `}`) in the original `text`.
+        4. **Attributes** (`dict`): A dictionary of HTML attributes, e.g. 
+           `{'definition': ''}` or `{'notation': ''}`.
+    """
+    pattern = r'\\(hldef|hlalign|hlin|hl)\s*(\{(?:[^{}]++|(?2))*\})'
+    results = []
+    
+    for match in regex.finditer(pattern, text):
+        cmd_type = match.group(1)
+        full_brace_group = match.group(2)
+        raw_inner = full_brace_group[1:-1]
+        match_start, match_end = match.span()
+        
+        # Strip padding whitespace from content
+        lstripped = raw_inner.lstrip()
+        stripped = lstripped.rstrip()
+        content = stripped
+        
+        start = match_start
+        end = match_end
+        attrs = {'definition' if cmd_type == 'hldef' else 'notation': ''}
+        
+        if cmd_type == 'hlin':
+            # 1. Scan Backwards for start $$
+            p = start - 1
+            while p >= 0 and text[p].isspace(): p -= 1
+            
+            # Check if we hit $$ immediately (ignoring space)
+            if p >= 1 and text[p] == '$' and text[p-1] == '$':
+                found_start_dollars = True
+                new_start = p - 1
+                # BUG WAS HERE: prefix = "" 
+                # FIX: Capture the text between $$ (p+1) and \hlin (start)
+                prefix = text[p+1 : start] 
+            else:
+                found_start_dollars = False
+                prefix = "" # Initialize for safety
+
+            
+            # 2. Scan Forwards for end $$
+            # We want to allow punctuation like "." or "," between } and $$
+            # E.g. $$ \hlin{x}. $$
+            
+            q = end
+            suffix = ""
+            found_end_dollars = False
+            
+            # Heuristic: Scan forward for a limited distance or until $$
+            # We capture everything between } and $$ into 'suffix'
+            # Stop if we hit a newline (safeguard)
+            temp_q = q
+            while temp_q < len(text) - 1:
+                if text[temp_q] == '\n': break
+                
+                if text[temp_q] == '$' and text[temp_q+1] == '$':
+                    found_end_dollars = True
+                    new_end = temp_q + 2
+                    # The text between original end and $$ is the suffix
+                    suffix = text[end:temp_q]
+                    # Clean the suffix? Usually we just want to include it.
+                    # e.g. suffix might be ". " (period and space)
+                    # We usually trim the space before the $$, but keeping it is safer for fidelity.
+                    break
+                temp_q += 1
+            
+            # Only apply expansion if we found BOTH start and end $$
+            # AND (optionally) if we found the start $$ directly. 
+            # (Does it make sense to have content BEFORE \hlin? e.g. $$ x = \hlin{y} $$?
+            #  If so, we should scan backwards for $$ similarly to how we scanned forwards).
+            
+            # Let's implement symmetric scanning for robustness.
+            
+            # RE-TRY Backward Scan with content capture
+            if not found_start_dollars:
+                 temp_p = start - 1
+                 while temp_p >= 1:
+                     if text[temp_p] == '\n': break
+                     if text[temp_p] == '$' and text[temp_p-1] == '$':
+                         found_start_dollars = True
+                         new_start = temp_p - 1
+                         prefix = text[temp_p+1 : start] # Content between $$ and \hlin
+                         break
+                     temp_p -= 1
+
+            if found_start_dollars and found_end_dollars:
+                # We found $$ ... \hlin{...} ... $$
+                # We want the tag to cover the WHOLE thing: "$$ prefix content suffix $$"
+                # And we want to remove the WHOLE thing from the text.
+                
+                # Careful: The 'prefix' and 'suffix' currently contain the raw characters 
+                # from the marked text (including potentially ignored spaces).
+                # We should probably strip excessive padding next to the $$ inside the tag?
+                # Standard convention: $$ content $$ -> Tag content "$$ content $$"
+                
+                # Let's just assemble it raw to preserve user's punctuation/spacing logic,
+                # then maybe strip outer edges if needed.
+                
+                # Current 'content' is stripped inner content of \hlin.
+                # 'prefix' is text between $$ and \hlin.
+                # 'suffix' is text between \hlin and $$.
+                
+                # Example: $$ \hlin{K}. $$
+                # prefix = " "
+                # content = "K"
+                # suffix = ". "
+                # Result: "$$ K. $$"
+                
+                full_content = f"$${prefix}{content}{suffix}$$"
+                
+                content = full_content
+                start = new_start
+                end = new_end
+
+        results.append((content, start, end, attrs))
+        
+    return results
+    # pattern = r'\\(hldef|hlalign|hlin|hl)\s*(\{(?:[^{}]++|(?2))*\})'
+    
+    # results = []
+    
+    # for match in regex.finditer(pattern, text):
+    #     cmd_type = match.group(1)
+    #     full_brace_group = match.group(2)
+        
+    #     # Raw content inside braces (e.g. " \n Content \n ")
+    #     raw_inner = full_brace_group[1:-1]
+        
+    #     # Calculate indices relative to the 'text' string
+    #     # Match span covers `\hl{...}`
+    #     match_start, match_end = match.span()
+        
+    #     # We want to identify where the "real" content starts/ends inside the match
+    #     # Start of raw_inner is: match_end - 1 (closing brace) - len(raw_inner)
+    #     # Actually easier: find start of {
+    #     brace_start_idx = match.start(2) # Index of {
+    #     inner_start_idx = brace_start_idx + 1
+        
+    #     # Find leading/trailing whitespace length
+    #     lstripped = raw_inner.lstrip()
+    #     leading_ws_len = len(raw_inner) - len(lstripped)
+        
+    #     stripped = lstripped.rstrip()
+    #     trailing_ws_len = len(lstripped) - len(stripped)
+        
+    #     content = stripped
+    #     attrs = {'definition' if cmd_type == 'hldef' else 'notation': ''}
+        
+    #     # 1. Base Range: The command wrapper `\cmd{` and `}`.
+    #     # We want to effectively say:
+    #     # "Remove `\cmd{ \n`", keep `Content`, "Remove `\n }`".
+    #     # But our interface only supports "Remove `Range`, Insert `Content`".
+        
+    #     # If we return `start=match_start`, `end=match_end`, `content=stripped`:
+    #     # "Remove `\hl{ \n Content \n }`. Insert `Content`."
+    #     # Result Clean Text: `Content`. (Newlines LOST).
+        
+    #     # If the user WANTS those newlines preserved in the clean text (outside the tag),
+    #     # we have a problem. The current architecture assumes "Marked Region" -> "Tag".
+    #     # It doesn't support "Marked Region" -> "Prefix + Tag + Suffix".
+        
+    #     # DECISION: 
+    #     # For `\hlalign`, users usually write:
+    #     # \hlalign{
+    #     # \begin{align}
+    #     # ...
+    #     # \end{align}
+    #     # }
+    #     # They EXPECT the clean text to contain the newlines so the align renders correctly?
+    #     # Actually, LaTeX doesn't care about the surrounding newlines much.
+    #     # `\begin{align}...\end{align}` is valid without extra newlines.
+    #     # So losing the newlines inside the braces is probably ACCEPTABLE and cleaner.
+        
+    #     # HOWEVER, if `$$ \hlin{ x } $$` -> `$$x$$`. Losing spaces is fine.
+        
+    #     # Special Logic for \hlin ($$) remains...
+        
+    #     # Let's apply the stripping logic:
+        
+    #     start = match_start
+    #     end = match_end
+        
+    #     if cmd_type == 'hlin':
+    #         # ... (Logic to expand to $$ remains same, but apply to `stripped` content) ...
+    #         # Re-implementing simplified logic for clarity in this snippet:
+    #         p = start - 1
+    #         while p >= 0 and text[p].isspace(): p -= 1
+    #         if p >= 1 and text[p] == '$' and text[p-1] == '$':
+    #             new_start = p - 1
+    #             q = end
+    #             while q < len(text) and text[q].isspace(): q += 1
+    #             if q < len(text) - 1 and text[q] == '$' and text[q+1] == '$':
+    #                 new_end = q + 2
+    #                 content = f"$${content}$$"
+    #                 start = new_start
+    #                 end = new_end
+
+    #     results.append((content, start, end, attrs))
+        
+    # return results
+
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 66
 def _split_text_by_html_data_parts(
         # text_tags_and_locations = StrAndHTMLTagsWithIndices
         datapoint: HTMLData
@@ -326,7 +621,7 @@ def _split_text_by_html_data_parts(
     return to_return
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 51
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 70
 def augment_html_data(
         datapoint: HTMLData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -395,7 +690,7 @@ def _augment_html_data_once(
         accumulated_len += len(text)
     return HTMLData(note_name=note_name, raw_text=accumulated_text, tags=tags_with_indices)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 65
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 84
 def _make_tag(
         text: str,
         entity_type: str # 'definition' or 'notation'
@@ -447,7 +742,7 @@ def _html_tag_data_from_part(
     return HTMLTagWithIndices(_make_tag(html_text, entity_type), start_char_pos, end_char_pos)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 68
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 87
 def _current_token_continues_the_previous_token(
         current_token: dict,
         previous_token: dict,
@@ -474,7 +769,7 @@ def _current_token_continues_the_previous_token(
         return False
         
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 70
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 89
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
         excessive_space_threshold: int,
@@ -509,7 +804,7 @@ def _divide_token_preds_into_parts(
     return token_preds_parts
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 72
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 91
 def _ranges_overlap(
         current_1: HTMLTagWithIndices,
         current_2: HTMLTagWithIndices
@@ -524,7 +819,7 @@ def _ranges_overlap(
     return max(current_1.start, current_2.start) < min(current_1.end, current_2.end)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 74
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 93
 # If the ML model predicts 
 # predictions made around 
 latex_commands_to_avoid = [
@@ -597,7 +892,7 @@ latex_commands_to_avoid = [
 ]
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 75
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
 def _str_contains_latex_command_to_avoid(text):
     """
     Helper function to `_consolidate_token_preds`
@@ -608,7 +903,7 @@ def _str_contains_latex_command_to_avoid(text):
             return True
     return False
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 77
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 96
 def _consolidate_token_preds(
         main_text: str,
         tag_data: list[HTMLTagWithIndices]
@@ -777,7 +1072,7 @@ def _no_overlap_with_previous_tag_data(
     return True
     
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 79
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 98
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]], # An output of `pipeline(text)`; Each dict likely contains keys such as `'entity'`, `'score'`, `'index'`, `'word'`, `'start'`, and `'end'`, depending on the model used.
@@ -795,7 +1090,7 @@ def _html_tags_from_token_preds(
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 81
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 100
 def _collate_html_tags(
         tag_data_1: list[HTMLTagWithIndices],
         tag_data_2: list[HTMLTagWithIndices],
@@ -836,7 +1131,7 @@ def _collate_html_tags(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 83
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 102
 def _add_nice_boxing_attrs_to_def_and_notat_tags(
         html_tag_data: list[HTMLTagWithIndices]
         ) -> list[HTMLTagWithIndices]:
@@ -854,7 +1149,7 @@ def _add_nice_boxing_attrs_to_def_and_notat_tags(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 85
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 104
 def def_and_notat_preds_by_model(
         text: str,  
         pipeline # The pipeline object created using the token classification model and its tokenizer
@@ -869,7 +1164,7 @@ def def_and_notat_preds_by_model(
     tag_data = _html_tags_from_token_preds(text, pipeline(text), 2, None)
     return tag_data
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 87
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 106
 # def _process_mf(
 #         mf: MarkdownFile) -> None:
 #     """
@@ -881,7 +1176,7 @@ def def_and_notat_preds_by_model(
 #     # mf.merge_display_math_mode_into_preceding_text()
 #     mf.
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 88
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 107
 def _get_main_text_lines(
         mf: MarkdownFile) -> tuple[int, int]:
     """Helper function to `auto_mark_def_and_notats`"""
@@ -895,7 +1190,7 @@ def _get_main_text_lines(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 89
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 108
 def _append_to_pieces_start_and_end(
         pieces_start_and_end: list[tuple[int, int]],
         start_chunk: tuple[str, int, int],
@@ -906,7 +1201,7 @@ def _append_to_pieces_start_and_end(
     end_char_index = end_chunk[1] + len(end_chunk[0])
     pieces_start_and_end.append([start_char_index, end_char_index])
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 90
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 109
 def _find_places_to_divide_from_chunks(
         chunks: list[tuple[str, int, int]], # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1008,7 +1303,7 @@ def _find_places_to_divide_from_chunks(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 91
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 110
 def _divide_main_text(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1035,7 +1330,7 @@ def _divide_main_text(
     chunks.append((last_chunk, newline_indices[-1], len(tokenizer(last_chunk)['input_ids'])))
     return _find_places_to_divide_from_chunks(chunks, pipeline)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 92
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 111
 def _get_token_preds_by_dividing_main_text(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1066,7 +1361,7 @@ def _get_token_preds_by_dividing_main_text(
     return cumulative_html_tags_in_main
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 93
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 112
 def get_def_and_notat_predictions(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline,
@@ -1089,7 +1384,7 @@ def get_def_and_notat_predictions(
     return html_tags_to_add
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 113
 def mark_def_and_notat_predictions(
         main_text: str, # The original text.
         predictions: list[HTMLTagWithIndices], # The list of predictions (ranges and metadata) returned by `get_def_and_notat_predictions`. Assumes these are sorted and non-overlapping (which `get_def_and_notat_predictions` ensures).
@@ -1118,7 +1413,7 @@ def mark_def_and_notat_predictions(
     return "".join(formatted_text_list)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 98
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 117
 def predict_and_mark_def_and_notats(
         main_text: str, # The text to run predictions on and format.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline.
@@ -1134,7 +1429,7 @@ def predict_and_mark_def_and_notats(
     return mark_def_and_notat_predictions(main_text, predictions, formatter)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 100
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 119
 def _format_main_text_and_add_html_tag_data(
         note: VaultNote,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1172,7 +1467,7 @@ def _format_main_text_and_add_html_tag_data(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 102
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 121
 def _write_text_with_html_tag_preds_to_note(
         note: VaultNote,
         mf: MarkdownFile,
@@ -1191,7 +1486,7 @@ def _write_text_with_html_tag_preds_to_note(
     mf.add_tags('_auto/def_and_notat_identified')
     mf.write(note)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 103
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 122
 def auto_mark_def_and_notats(
         note: VaultNote,  # The standard information note in which to find the definitions and notations.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1255,7 +1550,7 @@ def auto_mark_def_and_notats(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 110
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 130
 def latex_highlight_formatter(text: str, pred: HTMLTagWithIndices) -> str:
     r"""
     Formats definitions and notations with LaTeX highlighting commands.
