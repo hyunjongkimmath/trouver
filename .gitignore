@@ -1,3 +1,5 @@
+
+
 _docs/
 _proc/
 
@@ -152,3 +154,61 @@ checklink/cookies.txt
 
 # Building the GUI with pyinstaller
 gui_building
+
+
+
+
+# Training outputs and checkpoints
+nbs/output/
+output/
+checkpoints/
+*.pt
+*.pth
+*.safetensors
+runs/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Virtual environments
+venv/
+env/
+ENV/
+*_venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files
+*.csv
+*.h5
+*.hdf5
+*.pkl
+*.pickle
