@@ -30,6 +30,7 @@ from typing import Literal, Optional, TypedDict, TypeVar, Union
 from fastcore.basics import patch
 import torch
 from transformers import Pipeline
+from jarowinkler import jarowinkler_similarity 
 
 
 from ..helper import latex_str_is_likely_in_latex_str, latex_str_in_latex_str_fuzz_metric
@@ -44,7 +45,7 @@ from ..obsidian.footnotes import identify_available_footnote_numbers
 from ..obsidian.links import links_from_text, LinkType, ObsidianLink, MARKDOWNLINK_CAPTURE_PATTERN
 from ..personal_vault.information_notes import index_note_of_note
 from trouver.machine_learning.note_data import (
-    NoteLinkEnum, NoteData, note_data_order_cmp, randomly_modify, InfoNoteData, NotatNoteData, note_data_from_index_note, note_data_from_reference, find_reverse_links, get_main_note_content_of_notat_note_data, _note_data_from_vault_note_on_the_fly
+    NoteLinkEnum, NoteData, note_data_order_cmp, randomly_modify, InfoNoteData, NotatNoteData, note_data_from_index_note, note_data_from_reference, find_reverse_links, get_main_note_content_of_notat_note_data, _note_data_from_vault_note_on_the_fly, _update_dict
     )
 from ..notation.in_standard_info_note import notation_notes_linked_in_see_also_section
 from ..notation.parse import NotationNoteParsed, parse_notation_note, notation_in_note, main_of_notation
@@ -226,15 +227,15 @@ def _similar_notation_pairs(
     The similarity is measured by Jaro-Winkler, which works well on short
     strings.
     """
-    jarowinkler = JaroWinkler()
+    # jarowinkler = JaroWinkler()
     # similar_notation_pairs: list[tuple[str, str]] = []
     similar_notation_dict: dict[str, set[str]] = {}
     for notat_name_1, notat_name_2 in combinations(notat_note_data, 2):
         notat_data_1, notat_data_2 = notat_note_data[notat_name_1], notat_note_data[notat_name_2]
         notat_str_1 = notat_data_1.parsed.notation_str
         notat_str_2 = notat_data_2.parsed.notation_str
-        similarity = jarowinkler.similarity(notat_str_1, notat_str_2)
-        reverse_similarity = jarowinkler.similarity(notat_str_1[::-1], notat_str_2[::-1]) 
+        similarity = jarowinkler_similarity(notat_str_1, notat_str_2)
+        reverse_similarity = jarowinkler_similarity(notat_str_1[::-1], notat_str_2[::-1]) 
         if similarity > 0.9 or reverse_similarity > 0.9:
             _update_dict(similar_notation_dict, notat_name_1, notat_name_2)
             _update_dict(similar_notation_dict, notat_name_2, notat_name_1)
@@ -299,162 +300,230 @@ def _pair_is_admissible(
         return False
     return True
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 14
-def sieve_note_data_pairs(
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 15
+def _classify_anchor_notes(
         info_note_data: dict[str, InfoNoteData],
-        notat_note_data: dict[str, NotatNoteData],
+        notat_note_data: dict[str, NotatNoteData]
+        ) -> tuple[set[str], set[str], set[str], set[str]]:
+    """Hidden helper: Classify notes into High/Mid counts for sieving."""
+    high_info, high_notat = _high_count_note_data(info_note_data, notat_note_data)
+    mid_info, mid_notat = _mid_count_note_data(info_note_data, notat_note_data, high_info, high_notat)
+    return high_info | high_notat, mid_info | mid_notat, high_info, high_notat
+
+def _gather_raw_pairs(
+        high_notes: set[str],
+        mid_notes: set[str],
+        note_data: dict[str, NoteData],
+        notat_note_data: dict[str, NotatNoteData]
+        ) -> set[tuple[str, str]]:
+    """Hidden helper: Collect positive, negative, and similar-notation pairs."""
+    pos_pairs = _positive_instances_from_high_or_mid_count_notes(high_notes, mid_notes, note_data)
+    neg_pairs = _negative_instances_from_high_or_mid_count_notes(
+        high_notes, mid_notes, note_data, num_pairs=len(pos_pairs)*3)
+    
+    sieved_pairs = set(pos_pairs) | set(neg_pairs)
+    
+    # Add hard negatives (similar notation)
+    sim_dict = _similar_notation_pairs(notat_note_data)
+    sim_pairs = _pairs_with_notation_notes_replaced_with_similar_notation_notes(
+        sieved_pairs, len(pos_pairs), sim_dict)
+    
+    return sieved_pairs | set(sim_pairs)
+
+def _filter_admissible_pairs(
+        candidate_pairs: set[tuple[str, str]],
+        note_data: dict[str, NoteData],
+        info_data: dict[str, InfoNoteData],
+        notat_data: dict[str, NotatNoteData]
         ) -> list[NotePairData]:
-    note_data: dict[str, NoteData] = {}
-    note_data.update(info_note_data)
-    note_data.update(notat_note_data)
-    high_count_info_notes, high_count_notat_notes = _high_count_note_data(
-        info_note_data, notat_note_data) # set[str]
-    high_count_notes: set[str] = high_count_info_notes.union(high_count_notat_notes)
-    mid_count_info_notes, mid_count_notat_notes = _mid_count_note_data(
-        info_note_data, notat_note_data, high_count_info_notes, high_count_notat_notes)
-    mid_count_notes: set[str] = mid_count_info_notes.union(mid_count_notat_notes)
+    """Hidden helper: Convert valid raw pairs into NotePairData objects."""
+    final_data = []
+    for origin, relied in candidate_pairs:
+        if _pair_is_admissible(origin, relied, note_data, info_data, notat_data):
+            final_data.append(NotePairData(
+                origin_note=note_data[origin], 
+                relied_note=note_data[relied]))
+    return final_data
 
-    positive_pairs: list[tuple[str, str]] = _positive_instances_from_high_or_mid_count_notes(
-        high_count_notes, mid_count_notes, note_data)
-    negative_pairs: list[tuple[str, str]] = _negative_instances_from_high_or_mid_count_notes(
-        high_count_notes, mid_count_notes, note_data, len(positive_pairs)*3)
-    sieved_pairs: set[tuple[str, str]] = set(positive_pairs)
-    sieved_pairs.update(negative_pairs)
 
-    similar_notation_dict: dict[str, set[str]] = _similar_notation_pairs(notat_note_data)
-    # similar_notation_names: list[tuple[str, str]] = _similar_notation_pairs(notat_note_data)
-    sieved_pairs.update(_pairs_with_notation_notes_replaced_with_similar_notation_notes(
-        sieved_pairs, len(positive_pairs), similar_notation_dict))
-    sieved_pairs_list = list(sieved_pairs)
-    note_pair_data_list: list[NotePairData] = []
-    for origin_note, relied_note in sieved_pairs_list:
-        if not _pair_is_admissible(
-                origin_note, relied_note, note_data, info_note_data, notat_note_data):
-            continue
-        note_pair_data_list.append(
-            NotePairData(
-                origin_note=note_data[origin_note],
-                relied_note=note_data[relied_note]))
-    return note_pair_data_list
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 16
+def sieve_note_data_pairs(
+        info_note_data: dict[str, InfoNoteData], # Data for all standard information notes.
+        notat_note_data: dict[str, NotatNoteData] # Data for all notation notes.
+        ) -> list[NotePairData]: # A balanced list of note pairs for training.
+    """
+    Constructs a balanced training dataset of note pairs by sampling positive links, 
+    inferred negative links, and 'hard negative' pairs with similar notation.
+    """
+    note_data = {**info_note_data, **notat_note_data}
+    
+    # 1. Identify "Anchor" notes (well-connected notes suitable for sampling)
+    high_notes, mid_notes, _, _ = _classify_anchor_notes(info_note_data, notat_note_data)
+    
+    # 2. Gather raw candidate pairs (Positives + Negatives + Similar Notation)
+    raw_pairs = _gather_raw_pairs(high_notes, mid_notes, note_data, notat_note_data)
+    
+    # 3. Filter for admissibility and format
+    return _filter_admissible_pairs(raw_pairs, note_data, info_note_data, notat_note_data)
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 21
+
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 23
 def _erase_position_metadata(
-        augmentation: Literal['high', 'mid',' low'] | None,
+        augmentation: Literal['high', 'mid', 'low'] | None
         ) -> bool:
     """
-
+    Randomly determines whether to erase positional metadata based on augmentation intensity.
+    
+    - 'high': 30% chance
+    - 'mid':  20% chance
+    - 'low':  10% chance
     """
+    if augmentation is None: return False
+    
     rand_value = random.random()
-    if augmentation == 'high':
-        return rand_value < 0.3
-    elif augmentation == 'mid':
-        return rand_value < 0.2
-    elif augmentation == 'low':
-        return rand_value < 0.1
-    return False
-    
-    
+    thresholds = {'high': 0.3, 'mid': 0.2, 'low': 0.1}
+    return rand_value < thresholds.get(augmentation, 0.0)
+
+#| export
 def string_from_note_pair(
-            pair_data: NotePairData,
-            format: Literal['bert', 't5'],
-            # note_data: dict[str, NoteData],
-        ) -> str:
+        pair_data: NotePairData, # The pair of notes to convert.
+        format: Literal['bert', 't5'] # The model architecture determines the separator token.
+        ) -> str: # A single string combining both notes.
+    """
+    Formats a pair of notes into a single input string for NLP models.
+    
+    Combines the `data_string` of both notes, separated by a model-specific delimiter.
+    """
     origin_data = pair_data['origin_note']
     relied_data = pair_data['relied_note']
     origin_data_string = origin_data.data_string(format)
     relied_data_string = relied_data.data_string(format)
+    
     if format == 'bert':
         return f'{origin_data_string}\n\n[SEP]\n\n{relied_data_string}'
     else:
+        # T5 typically uses </s> or specific sentinel tokens depending on pre-training
         return f'{origin_data_string}\n\n</s>\n\n{relied_data_string}'
 
-
+#| export
 def augment_note_pair(
-        pair_data: NotePairData,
-        augmentation: Optional[Literal['high', 'mid', 'low']] = None,
-        include_position_data_for_origin: bool = True,
-        include_position_data_for_relied: bool = True,
-        ) -> NotePairData:
+        pair_data: NotePairData, # The original note pair.
+        augmentation: Optional[Literal['high', 'mid', 'low']] = None, # Intensity of augmentation.
+        include_position_data_for_origin: bool = True, # Force inclusion/exclusion of origin metadata.
+        include_position_data_for_relied: bool = True # Force inclusion/exclusion of relied metadata.
+        ) -> NotePairData: # A new, modified NotePairData object.
     """
-    Return an augmented copy of `pair_data`.
+    Creates an augmented copy of a note pair for training data variety.
+    
+    Applies text perturbations (via `randomly_modify`) and optionally erases 
+    positional metadata (section numbers, etc.) to force the model to focus on content.
     """
     origin_data = pair_data['origin_note'].deepcopy()
     relied_data = pair_data['relied_note'].deepcopy()
-    erase_position_data_for_origin_data = _erase_position_metadata(augmentation) or not include_position_data_for_origin
-    erase_position_data_for_relied_data = _erase_position_metadata(augmentation) or not include_position_data_for_relied
+    
+    # Determine if we should erase metadata (probabilistic OR forced)
+    erase_origin = _erase_position_metadata(augmentation) or not include_position_data_for_origin
+    erase_relied = _erase_position_metadata(augmentation) or not include_position_data_for_relied
+    
     if augmentation is not None:
-        origin_data.randomly_modify(augmentation, erase_position_data_for_origin_data)
-        relied_data.randomly_modify(augmentation, erase_position_data_for_relied_data)
-    return NotePairData(
-        origin_note=origin_data, relied_note=relied_data)
+        origin_data.randomly_modify(augmentation, erase_position_metadata=erase_origin)
+        relied_data.randomly_modify(augmentation, erase_position_metadata=erase_relied)
+        
+    return NotePairData(origin_note=origin_data, relied_note=relied_data)
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 23
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 28
+# class NoteLinkingDataPoint(TypedDict):
+#     """
+#     A dict object that is 
+#     """
+#     origin_note_name: str
+#     relied_note_name: str
+#     input_text: str
+#     # Keys derived from NoteLinkEnum (excluding NO_LINK)
+#     link_types: list[str] # The str are the names of `NoteLinkEnum`.
+#     # info_to_info_in_content: bool
+#     # info_to_info_in_see_also: bool
+#     # info_to_info_via_notat: bool
+#     # info_to_notat_via_embedding: bool
+#     # notat_to_info: bool
+#     # notat_to_info_via_notat: bool
+#     # notat_to_notat: bool
+
+#| export
 class NoteLinkingDataPoint(TypedDict):
     """
-    A dict object that is 
+    A dictionary structure representing a single training example for the model.
     """
-    origin_note_name: str
-    relied_note_name: str
-    input_text: str
-    # Keys derived from NoteLinkEnum (excluding NO_LINK)
-    link_types: list[str] # The str are the names of `NoteLinkEnum`.
-    # info_to_info_in_content: bool
-    # info_to_info_in_see_also: bool
-    # info_to_info_via_notat: bool
-    # info_to_notat_via_embedding: bool
-    # notat_to_info: bool
-    # notat_to_info_via_notat: bool
-    # notat_to_notat: bool
+    origin_note_name: str # Name of the source note.
+    relied_note_name: str # Name of the target note.
+    input_text: str # Concatenated text of both notes (augmented).
+    link_types: list[str] # List of active link types (labels) for multi-label classification.
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 24
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 29
 def dict_data_point_from_pair(
-        pair_data: NotePairData,
-        format: Literal['bert', 't5'],
-        # note_data: dict[str, NoteData],
-        ) -> NoteLinkingDataPoint:
+        pair_data: NotePairData, # The note pair to convert.
+        format: Literal['bert', 't5'] # Format for the input text string.
+        ) -> NoteLinkingDataPoint: # The structured training example.
     """
-    Obtain a `NoteLinkingDataPoint` object from a `NotePairData` object.
+    Converts a raw `NotePairData` into a labeled `NoteLinkingDataPoint` for training.
+    
+    Extracts the link types (labels) and generates the formatted input text.
     """
     origin_note_name = pair_data['origin_note'].note_name
     relied_note_name = pair_data['relied_note'].note_name
     input_text = string_from_note_pair(pair_data, format)    
     
-    link_types: list[NoteLinkEnum] = list(
-        link_types_for_note_pair_data(pair_data))
-    link_types: list[str] = [value.name for value in link_types]
+    # Get active links as a set of Enums, convert to list of strings for JSON/Dataset compatibility
+    active_links = link_types_for_note_pair_data(pair_data)
+    link_types_str = [link.name for link in active_links]
+    
     return NoteLinkingDataPoint(
         origin_note_name=origin_note_name,
         relied_note_name=relied_note_name,
         input_text=input_text,
-        link_types=link_types,)
+        link_types=link_types_str
+    )
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 25
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 31
 def dataset_from_note_data(
-        info_note_data: dict[str, InfoNoteData],
-        notat_note_data: dict[str, NotatNoteData],
-        augment: bool,
-        format: Literal['bert', 't5'],
-        ) -> Dataset:
+        info_note_data: dict[str, InfoNoteData], # Pool of information notes.
+        notat_note_data: dict[str, NotatNoteData], # Pool of notation notes.
+        augment: bool, # Whether to generate augmented copies of data points.
+        format: Literal['bert', 't5'] # Model format for text encoding.
+        ) -> Dataset: # A HuggingFace Dataset ready for training.
+    """
+    Full pipeline: Sieves note pairs, augments them, and compiles a HuggingFace Dataset.
+    
+    If `augment` is True, generates 3 additional versions (low, mid, high intensity) 
+    for every sampled pair, effectively quadrupling the dataset size.
+    """
+    # 1. Gather raw pairs via heuristic sieving
     note_data_pairs: list[NotePairData] = sieve_note_data_pairs(
         info_note_data, notat_note_data)
+    
     dict_data: list[NoteLinkingDataPoint] = []
+    
     for pair_data in note_data_pairs:
+        # Add original (un-augmented) data point
         dict_data.append(dict_data_point_from_pair(
             pair_data, format))
+        
         if not augment:
             continue
+            
+        # Add 3 augmented versions
         for augmentation in ['low', 'mid', 'high']:
             augmented_pair_data = augment_note_pair(
                 pair_data, augmentation)
             dict_data.append(dict_data_point_from_pair(
                 augmented_pair_data, format))
+                
     return Dataset.from_list(dict_data)
-    
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 28
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 35
 class MultiLabelPipeline(Pipeline):
     """
     Implementing this `Pipeline` class is necessary because HuggingFAce's standard
@@ -479,7 +548,7 @@ class MultiLabelPipeline(Pipeline):
         probabilities = torch.sigmoid(logits)  # Use sigmoid for multi-label
         return probabilities.tolist()
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 29
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 36
 def prediction_by_note_linking_model(
         origin_data: NoteData, # The `NoteData` object representing the "origin note", i.e.  the note from which a link to the "relied note" is considered.
         relied_data: NoteData, # The `NoteData` object representing the "relied note", i.e.  the note to which a link from the "origin note" is considered.
@@ -509,7 +578,7 @@ def prediction_by_note_linking_model(
             output[label] = preds[id] > label_threshold
     return output
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 32
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 39
 def predict_note_linking(
         origin_note: VaultNote, 
         relied_notes: VaultNote| list[VaultNote],
@@ -561,7 +630,7 @@ def predict_note_linking(
     return output_dict
     
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 36
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 43
 def link_cache_note(
         vault: PathLike,
         reference: str,
@@ -577,7 +646,7 @@ def link_cache_note(
         vn.create()
     return vn
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 38
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 45
 def separate_blocks(
         text: str) -> list[str]:
     """
@@ -602,7 +671,7 @@ def separate_blocks(
     return blocks
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 40
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 47
 def parse_link_cache_note(
         link_cache_note: VaultNote,
         ) -> dict[str, dict[str, list[NoteLinkEnum]]]: # The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
@@ -627,7 +696,7 @@ def parse_link_cache_note(
     return link_types
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 42
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 49
 def write_link_cache_note(
         link_types: dict[str, dict[str, list[NoteLinkEnum]]],
         cache_note: VaultNote,
@@ -648,7 +717,7 @@ def write_link_cache_note(
         chunks.append(chunk_text)
     cache_note.write('\n\n'.join(chunks))
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 44
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 51
 def consolidate_note_linking_predictions_into_cache(
         origin_note: VaultNote | str,
         predictions: dict[str, list[NoteLinkEnum]], # An output of `predict_note_linking``
@@ -673,7 +742,7 @@ def consolidate_note_linking_predictions_into_cache(
         cache[origin_note][relied_note_name] = list(link_enums)
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 46
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 53
 def consolidate_caches(
         cache_1: dict[str, dict[str, list[NoteLinkEnum]]], # See `parse_link_cache_note`. The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
         cache_2: dict[str, dict[str, list[NoteLinkEnum]]],
@@ -685,7 +754,7 @@ def consolidate_caches(
     return new_cache
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 49
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 56
 def remove_blank_or_no_link_data_from_cache(
         cache: dict[str, dict[str, list[NoteLinkEnum]]], # See `parse_link_cache_note`. The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
         ) -> dict[str, dict[str, list[NoteLinkEnum]]]: # A new cache, with lists that are either blank or which only contain `NoteLinkEnum.NO_LINK` are removed and with blank dict values are also removed..
@@ -701,7 +770,7 @@ def remove_blank_or_no_link_data_from_cache(
     return new_cache
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 51
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 58
 def remove_nonexistent_note_names_from_cache(
         cache: dict[str, dict[str, list[NoteLinkEnum]]], # See `parse_link_cache_note`. The first key is the name of an "origin note". The second key is the name of a "relied note" with respect to the origin note. The value is a list of the link types from the origin note to the relied note.
         vault: PathLike
@@ -723,7 +792,7 @@ def remove_nonexistent_note_names_from_cache(
                 origin_dict.pop(relied_note_name)
     return cache_copy
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 54
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 61
 def sieve_potential_relied_notes(
         vault: PathLike,
         reference: str,
@@ -807,7 +876,7 @@ def sieve_potential_relied_notes(
 
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 55
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 62
 def _predict_one_direction_and_consolidate_cache(
         origin_note: VaultNote,
         relied_note: VaultNote,
@@ -827,7 +896,7 @@ def _predict_one_direction_and_consolidate_cache(
         origin_note, relied_note, predictor, format, note_data, threshold=threshold)
     consolidate_note_linking_predictions_into_cache(origin_note, outputs, cache)
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 56
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 63
 def predict_on_relied_note_and_related_notat_notes(
         origin_note: VaultNote,
         relied_note: VaultNote,
@@ -872,7 +941,7 @@ def predict_on_relied_note_and_related_notat_notes(
                 skip_already_made_predictions, threshold)
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 58
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 65
 def similar_notat_notes_in_note(
         origin_note: VaultNote, # Either an info or a notat note
         notation_notes: VaultNote | list[VaultNote], # The notation notes that are considered to be 
@@ -906,7 +975,7 @@ def similar_notat_notes_in_note(
     return matching_notat_notes
         
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 60
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 67
 def locate_footnote_embedded_notation_link(
         origin_note: VaultNote, # An info note 
         notation_note: VaultNote, # The notation notes that are considered to be 
@@ -938,7 +1007,7 @@ def locate_footnote_embedded_notation_link(
     max_key = max(scores, key=scores.get)
     return max_key
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 63
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 70
 def _where_to_add_notation_links(
         origin_note: VaultNote,
         relied_notes: list[VaultNote],
@@ -959,7 +1028,7 @@ def _where_to_add_notation_links(
         where_to_add[location].append(relied_note)
     return where_to_add
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 64
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 71
 def _add_notation_note_embedded_footnotes(
         text: str,
         where_to_add: dict[int, list[VaultNote]],
@@ -997,7 +1066,7 @@ def _add_notation_note_embedded_footnotes(
     return text
     
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 66
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 73
 def add_notation_note_embedded_footnotes_to_info_note(
         origin_note: VaultNote, # An info note
         relied_notes: Optional[VaultNote | list[VaultNote]] = None, # notation notes to add embedded footnotes for.
@@ -1042,13 +1111,13 @@ def add_notation_note_embedded_footnotes_to_info_note(
     origin_note.write(new_text)
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 71
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 78
 class SummarizationDataPoint(TypedDict):
     input: str
     output: str
     notat_note_name: str
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 72
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 79
 def summarization_data(
         notat_note_data_point: NotatNoteData,
         info_note_data: dict[str, InfoNoteData], # For getting data from the linked notes.
@@ -1115,7 +1184,7 @@ def summarization_data(
 
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 73
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 80
 def augment_notat_note_data_for_summarization(
         notat_note_data_point: NotatNoteData,
         augmentation: Literal['high', 'mid' ,'low'],
@@ -1163,7 +1232,7 @@ def augment_notat_note_data_for_summarization(
                 NoteLinkEnum.NOTAT_TO_INFO_VIA_NOTAT)
     return notat_note_data_copy
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 74
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 81
 def notat_note_data_admissible_for_summarization_data(
         notat_note_data_point: NotatNoteData
         ) -> bool:  # `True` if the notation note data does not have the `_auto/notation_summary` tag, and the content of the notation note is essentially note blank.
@@ -1173,7 +1242,7 @@ def notat_note_data_admissible_for_summarization_data(
         return False 
     return bool(notat_note_data_point.note_content.strip())
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 77
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 84
 def _add_augmented_data_points(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -1194,7 +1263,7 @@ def _add_augmented_data_points(
                 aug_data_point, info_note_data, notat_note_data, format, augmentation))
     
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 78
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 85
 def summarization_dataset_from_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],

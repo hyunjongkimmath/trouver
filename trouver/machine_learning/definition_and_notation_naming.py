@@ -39,7 +39,8 @@ from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote
 
 from trouver.machine_learning.notation_summarization import (
-    notation_summarization_data_from_note, single_input_for_notation_summarization, NotationSummaryData
+    notation_summarization_data_from_note, single_input_for_notation_summarization, NotationSummaryData,
+    format_classical, format_training_tokens
 )
 
 
@@ -327,9 +328,14 @@ def autogen_name_from_notation_note(
         check_for_actual_summarization=False)
     if data_dict is None:
         return None
-    # TODO: change classical_formatting to False after retraining the model for this formatting
+    # TODO: change formatter to format_training_tokens after retraining the model for this formatting
     input = single_input_for_notation_summarization(
-        data_dict, classical_formatting=True)
+        data_dict, 
+        input_formatter=format_classical
+    )
+
+    # input = single_input_for_notation_summarization(
+    #     data_dict, classical_formatting=True)
     return pipeline(input)[0]['summary_text']
 
 def sanitize_autogen_name(autogen_name):
