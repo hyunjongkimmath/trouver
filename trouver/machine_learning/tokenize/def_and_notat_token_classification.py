@@ -10,7 +10,7 @@ __all__ = ['latex_commands_to_avoid', 'DEF_NOTAT_VERIFY_SYSTEM_PROMPT', 'DEF_NOT
            'latex_highlight_parser', 'augment_html_data', 'def_and_notat_preds_by_model',
            'get_def_and_notat_predictions', 'mark_def_and_notat_predictions', 'predict_and_mark_def_and_notats',
            'auto_mark_def_and_notats', 'latex_highlight_formatter', 'AuditResult', 'AuditVoteResult',
-           'run_strict_audit', 'run_audit_voting']
+           'salvage_audit_result', 'run_strict_audit', 'run_audit_voting', 'run_audit_voting_maker']
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 4
 from collections.abc import Callable
@@ -1605,9 +1605,9 @@ For every mathematical object or term, apply this binary test.
 
 **1. THE TARGET (Must be Marked)**
 A term is a Target if and only if the excerpt **establishes its meaning for the first time** intended for use beyond the immediate sentence.
-*   **New Constructions:** "For any field $K$, let $G_K$ denote..." (Mark $G_K$).
+*   **New Constructions:** "For any field $K$, let <span notation>$G_K$</span> denote..." (Mark $G_K$).
 *   **Formal Definitions:** "We say a sheaf is <b definition>flasque</b> if..." (Mark "flasque").
-*   **Explicit Assignments:** "We define the L-series $L(s, \chi)$ as..." (Mark "L-series" and $L(s, \chi)$).
+*   **Explicit Assignments:** "We define the <b definition>L-series</b> <span notation>$L(s, \chi)$</span> as..." (Mark "L-series" and $L(s, \chi)$).
 *   **Self-Contained "Recalls":** If the text says "Recall that X is called Y if [Definition]", and the excerpt contains the actual definition criteria, Mark Y. The author is establishing the definition for this text.
     *   *Correct:* "Recall that $X$ is <b definition>totally disconnected</b> if connected components are points."
     *   *Incorrect (Don't mark):* "Recall the properties of totally disconnected spaces."
@@ -1631,162 +1631,39 @@ Everything else is Context. This includes:
 
 *   **Correct Definition:** "We call a functor $F$ <b definition>representable</b> if..."
     *   *Reason:* Defines the property "representable". $F$ is Context.
-*   **Correct Notation:** "Let $\mathbb{A}^n$ denote affine space."
+*   **Correct Notation:** "Let <span notation>$\mathbb{A}^n</span>$ denote affine space."
     *   *Reason:* Explicit assignment of global notation.
 *   **False Positive (Do not mark):** "Let $C$ be a category. If $C$ has limits..."
     *   *Reason:* $C$ is a generic variable used to set the stage.
 *   **False Positive (Do not mark):** "The fiber product $X \times_Y Z$ (see Chapter 1)..."
     *   *Reason:* Reference to a prior definition.
 
-### IV. Output format
-Analyze the excerpt based on these rules. Determine `has_incorrect_markings` (Context marked as Target) and `has_missing_markings` (Target not marked). Return the result as a JSON object matching the requested schema. Provide detailed reasoning distinguishing "Target" from "Context".
+### IV. Output Format
+Return a JSON object with:
+1. has_incorrect_markings: Set to true if the text contains a <b definition> or <span notation> that violates the Context rules (i.e., a False Positive).
+2. has_missing_markings: Set to true if the text contains a term that meets the Target rules but has no HTML tags (i.e., a False Negative).
+3. "reasoning": string (Strictly limited to 30 words).
+
+### V. Constraints on Reasoning
+- DO NOT provide an introductory "Step-by-step" or "Let's analyze" paragraph.
+- DO NOT repeat the rules or definitions of Target/Context.
+- DO NOT provide a preamble. Start immediately with the analysis.
+- DO NOT quote the excerpt.
+- FORMAT: Use a simple list: [Term]: [Target/Context] - [3-word reason].
+- If no errors are found, the reasoning should simply be "All markings conform to rules."
+
+Output Requirement: You must start the reasoning string with the character [ and follow the list format. Do not use conversational fillers.
 """
 
 
 # %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 136
-# DEF_NOTAT_VERIFY_SYSTEM_PROMPT = r"""
-# You are an expert auditor of mathematical texts, trained to identify errors in semantic markings of definitions and notations introduced in small parts ("excerpts") of mathematical text. Your analysis must be guided by the following principle and rules. The markings are by HTML tags that contain the attribute "definition" or "notation".
-
-# I. The Core Principle: Definitional Intent
-
-# The primary goal of the markings is to determine the EXACT location that a definition or notation in an excerpt is defined at. In principle, a reader with knowledge of all definitions and notations across all excerpts should be able to understand any part of the overarching text. YOUR primary goal is to determine whether or not the markings in the provided excerpt succeed at this goal.
-
-# You must be able to distinguish between:
-
-#     Definitions and notations that are INTRODUCED in the excerpt. This MUST be marked.
-
-#     "Supporting Cast": Local Variables that should not have any bearing outside the immediate excerpt, ALONG WITH pre-existing or standard definitions and notations that are neither introduced nor defined in the excerept.
-
-# A marking is an error if and only if it violates this principle.
-# II. The Rules of Auditing
-
-#     Before all else, read the excerpt and identify only Global Main Subjects: objects or notations intended to persist across multiple sections as standard terminology for the entire work. If a variable is introduced to state a specific Theorem or Lemma (e.g., 'Let G be a group' in the context of Theorem 1), it is Supporting Cast for that specific logic and must not be marked.
-
-#         "In this section, K is a field..." -> K is explicitly described as a variable needed to understand other parts of the section.
-
-#     Classify All Other Objects as Supporting Cast: Any variable or object used in a context of application is Supporting Cast.
-
-#         Clues for Supporting Cast (No Mark): 'It suffices to treat...', 'By induction on...', 'We have...', 'Recall that...', 'Note that...'. These phrases indicate the text is using existing tools to perform a proof.
-
-#         Clues for Main Subject (Mark): 'We define...', 'We shall denote...', 'Let us call...'. These indicate the initial assignment of a name/symbol to a concept."
-    
-#         "Let C be a category..." -> C is Supporting Cast. The text is using **A** (as opposed to some specific) category, not defining what a category is.
-
-#         "Let g: G -> X be a morphism..." -> g, G, and X are Supporting Cast (again, the morphism is **A MORPHISM** (as opposed to some specific morphism)). They are props for the discussion and/or the definitions/notations being defined.
-
-#     Distinguish Construction from Application: An object is a Main Subject only if the notation itself or the specific name is being assigned for the first time.
-
-#         Example: 'We define the L-series L(s,χ)=...' is a Main Subject.
-
-#         Counter-Example: 'Consider the L-series L(s,χ) defined in Chapter 1' is Supporting Cast.
-
-#         Counter-Example: Gal(L/K) in a theorem is an application of a standard construction, and not the introduction of one unless an introduction or reminder is explicit.
-
-#     Construction vs. Instance: An object is a Main Subject only if the text is defining a general construction or global notation.
-
-#         Example: 'For any field K, let G_K​ denote its Galois group.' → This is an introduction of notation G_K​. (Mark it).
-
-#         Counter-Example: 'Let G=Gal(L/K) be the Galois group of the extension.' → This is merely naming a specific instance for the sake of a proof. G is Supporting Cast. (Do not mark)."
-
-#     Distinguishing Definition from Reminder: 
-#         Since you only see an excerpt, use the "First Invocation" Heuristic: 
-#         Assume a notation/term is being introduced if it meets two criteria:
-#         1. It is a Specialized Notation (multicharacter symbols like tr.deg, cd_p, or functional operators) rather than a simple variable (x, y, K).
-#         2. The text explicitly links the symbol to its formal name (e.g., "where tr.deg denotes the transcendental degree"). 
-        
-#         Even if this appears in a "where" clause or a proof, treat it as a Main Subject "in effect" for this excerpt.
-
-#     Handle Malformed Text (OCR Errors): Treat mathematical notation that is missing its $ delimiters (e.g., L\left(X\right)) as if it were properly wrapped. If it represents a Main Subject, it requires a mark.
-
-#     However, you are NOT trying to judge whether the given excerpt is well formatted or even coherent. You are trying to only decide whether or not the excerpt introduces definitions and notations and whether it marks those newly introduced definitions and notations
-
-# III. Illustrative Guide & Edge Cases
-
-# Reference these examples to resolve ambiguity.
-
-#     Example A: Clear Definition
-
-#         Text: "We say that a sheaf F is <b style="border-width:1px;border-style:solid;padding:3px" definition="">flasque</b> if for every open set U, the map... is surjective."
-
-#         Analysis: The Main Subject is the property "flasque." The mark is CORRECT. F and U are Supporting Cast.
-
-#     Example B: The Ambiguous "Let..." Clause
-
-#         Scenario 1 (Supporting Cast):
-
-#             Text: "Let $C$ be a category... We say the inductive limit of $G$ is <b style="border-width:1px;border-style:solid;padding:3px" definition="">universal</b> if..."
-
-#             Analysis: The Main Subject is the property "universal." The object $C$ is merely Supporting Cast, used to provide a context for the definition. Tagging $C$ would be an INCORRECT MARKING. On the other hand Tagging "universal" is a CORRECT MARKING.
-
-#         Scenario 2 (Supporting Cast): In a Proof or Theorem, 'Let X be...' is almost always Supporting Cast. Rule of Thumb: If an object is defined as a specific instance to prove a point (e.g., 'There exists a subextension L′...'), it is Supporting Cast. A Main Subject is typically introduced in a formal 'Definition' block or via the phrase 'We shall call such a [concept] a...'
-
-#     Example C: New Construction
-
-#         Text: "Let $g: G \to X$ and $m: Y \to X$ be morphisms. We define the fiber product, denoted <span style="border-width:1px;border-style:solid;padding:3px" notation="">$G \times_X Y$</span>, as the pullback..."
-
-#         Analysis: g, G, X, m, Y are all Supporting Cast. The Main Subjects are the term "fiber product" and its notation $G \times_X Y$. Both require marks. Tagging g or m would be INCORRECT.
-
-# IV. Final Instructions
-
-#     Analyze: Read the user's text and apply the Core Principle and Rules to identify the definitions and notations that are being introduced and to identify the Supporting Cast.
-
-#     Reason: In your reasoning, explicitly use the terms "Definitions and Notations Introduced" and "Supporting Cast" to justify your findings. State why an object fits into one category or the other.
-
-#     Conclude: Based on your analysis, determine the values for has_incorrect_markings and has_missing_markings. An incorrect marking is a tag on a Supporting Cast member. A missing marking is a lack of a tag on a Main Subject.
-
-#     Format: Provide your result as a valid JSON object matching the requested schema. Your reasoning must be detailed with at least 4 sentences and follow the steps above.
-
-# """
-
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 137
-# DEF_NOTAT_VERIFY_SYSTEM_PROMPT = r"""
-# You are a rigorous Mathematical Text Auditor. Your goal is to identify semantic marking errors in LaTeX/HTML definitions.
-
-# ### 1. RECOGNITION RULES (Crucial)
-# - DEFINED TERMS: If the text says "An object X is [Term] if..." or "We call Y a [Term]...", the [Term] IS the primary subject and MUST be tagged.
-# - INSTANTIATED OBJECTS: If a specific object is introduced with "Let X be...", "Define X as...", or "Consider the object X...", then X ITSELF is a notation that MUST be tagged.
-#     - Example: "Let $\mathbb{A}^m_0$ be the affine space..." -> $\mathbb{A}^m_0$ IS a notation/definition here.
-#     - Contrast: "Let $n$ be an integer..." -> $n$ is a generic variable (do not tag).
-# - NOTATION: Symbols like $X_{proet}$, $\Delta_f$, or specific spaces like $\mathbb{A}_0^m$ are formal notations. If they are tagged with <b> or <span>, they are CORRECT.
-# - UNWRAPPED MATH: If a string looks like math (e.g., has `\left(`, `\mathscr`, `_0`, `^2`), TREAT IT AS MATH NOTATION, even if it lacks dollar sign $ wrappers.
-#     - Example: `L\left(X, t\right)` -> Treat as `$L(X, t)$` -> **MUST BE TAGGED** if it's the term being defined.
-# - **EXPLICIT DEFINITIONS**: Any symbol followed by "defined... by", ":=", or "given by" is a DEFINED TERM.
-#     - Text: "The L-series L(X,t)... defined... by..." -> Both "L-series" AND "L(X,t)" MUST be tagged.
-
-# ### 2. EVALUATION CRITERIA
-# - False Positives (has_incorrect_markings): Tags on common english words (e.g., "sine"), repeated tags for terms defined previously, or tags on *truly* generic variables like $i, j, n$ used only as indices.
-# - False Negatives (has_missing_markings):
-#     - Missing tags on the primary term being introduced (e.g., "The **Swan Conductor**").
-#     - Missing tags on the specific mathematical object being instantiated (e.g., "Let **$X$** be...").
-#     - Missing tags on new notation symbols (e.g., $:=$, $\mapsto$).
-# - **False Negatives (has_missing_markings):**
-#     - Missing tags on definitions (even if English term is tagged, the associated notation MUST also be tagged).
-#     - **CRITICAL:** Missing tags on "naked" LaTeX code that represents the defined term (e.g., `L\left(...\right)`).
-
-# ### 3. MANDATORY AUDIT STEPS
-# 1. List what is actually inside <b> and <span> tags.
-# 2. Check if untagged math symbols are *specific objects* (mark missing) or *generic indices* (ignore).
-# 3. Only vote TRUE if there is a clear violation.
-
-# ### INSTRUCTIONS:
-# 1. Perform a step-by-step audit of the text.
-# 2. Explicitly distinguish between "Generic Variables" (n, i, k) and "Specific Instantiated Objects" (X, G, $\mathbb{A}^n$).
-# 3. Output valid JSON.
-
-# You are running in 'Structured Output' mode. 
-# You must output a VALID JSON object matching the requested schema.
-
-# REASONING MUST BE DETAILED: 4+ sentences minimum.
-
-# """
-
 DEF_NOTAT_VERIFY_USER_PROMPT = r"""
 Audit the following excerpt of mathematical text for definition and notation marking errors. Return the result in the specified JSON format.
 
 """
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 138
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 137
 class AuditResult(BaseModel):
     reasoning: str
     has_incorrect_markings: bool
@@ -1801,15 +1678,60 @@ class AuditVoteResult(TypedDict, total=True):
     total_votes: int      # Useful for context/percentage
     stats: str
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 139
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 138
 INITIAL_ERROR_MESSAGE = "ERROR during LLM call"
+def salvage_audit_result(raw_content: str, error_msg: str) -> AuditResult:
+    """
+    Attempts to extract boolean flags from a truncated or malformed JSON string.
+    Returns a 'Success' AuditResult if flags are found, otherwise returns an Error result.
+    """
+    if raw_content:
+        if len(raw_content.strip()) < 10:
+             return AuditResult(reasoning=f"{INITIAL_ERROR_MESSAGE}: Empty response", 
+                               has_incorrect_markings=False, has_missing_markings=False)
+        # Normalize: remove whitespace and newlines for robust string matching
+        clean = raw_content.lower().replace(" ", "").replace("\n", "").replace("\\n", "")
+        
+        def extract_bool(key):
+            if f'"{key}":true' in clean: return True
+            if f'"{key}":false' in clean: return False
+            return None
+
+        inc = extract_bool("has_incorrect_markings")
+        mis = extract_bool("has_missing_markings")
+
+        # If we found BOTH flags, we can salvage the vote even if JSON is broken
+        if inc is not None and mis is not None:
+            # <--- CHANGE: Extract only the text after the flags if possible
+            # This makes the "Reasonings" section of your final report readable
+            display_text = raw_content.split('"reasoning":')[-1].strip(' "}').replace('\\n', '\n')
+            return AuditResult(
+                reasoning=f"TRUNCATED SALVAGE: {display_text[:200]}...",
+                has_incorrect_markings=inc,
+                has_missing_markings=mis
+            )
+            # return AuditResult(
+            #     # reasoning=f"TRUNCATED SALVAGE: {raw_content[:150]}...",
+            #     # has_incorrect_markings=inc,
+            #     # has_missing_markings=mis
+            # )
+            
+    # If flags are missing, return the error string to trigger 'ignore' in voting logic
+    return AuditResult(
+        reasoning=f"{INITIAL_ERROR_MESSAGE}: {error_msg}",
+        has_incorrect_markings=False,
+        has_missing_markings=False
+    )
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 142
 def run_strict_audit(
         client: OpenAI,
         text_to_check: str,
         system_prompt: str = DEF_NOTAT_VERIFY_SYSTEM_PROMPT,
         user_prompt: str = DEF_NOTAT_VERIFY_USER_PROMPT,
-        temperature: float = 0.7,
+        temperature: float = 0.3,
         verbose: bool = False,
+        max_tokens=1024, # Max tokens for 
         ) -> AuditResult:
     """
     Make a client (running on an LLM) audit the definition and notation markings
@@ -1819,6 +1741,7 @@ def run_strict_audit(
 
     Sends text to the model and forces a JSON response matching AuditResult.
     """
+    raw_content = ""
     try:
         response = client.chat.completions.create(
             model="local-model-name",  # Name often ignored by local servers, but required
@@ -1827,7 +1750,7 @@ def run_strict_audit(
                 {"role": "user", "content": f"{user_prompt}:\n\n{text_to_check}"},
             ],
             temperature=temperature,  # Low temperature = more deterministic structure
-            max_tokens=512,
+            max_tokens=1024,
             # --- THE FIX: NEW STRUCTURED OUTPUT FORMAT ---
             # response_format={
             #     "type": "json_schema",
@@ -1846,9 +1769,9 @@ def run_strict_audit(
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "reasoning": {"type": "string"},
                             "has_incorrect_markings": {"type": "boolean"},
-                            "has_missing_markings": {"type": "boolean"}
+                            "has_missing_markings": {"type": "boolean"},
+                            "reasoning": {"type": "string"},
                         },
                         "required": ["reasoning", "has_incorrect_markings", "has_missing_markings"],
                         "additionalProperties": False
@@ -1865,17 +1788,54 @@ def run_strict_audit(
         
         return result
 
+    # except Exception as e:
+    #     # Attempt to extract what was generated before the crash
+    #     # raw_content might be partially populated depending on your client's state
+    #     partial_reasoning = raw_content if 'raw_content' in locals() else str(e)
+    #     if verbose:
+    #         print(f"Audit Failed: {e}")
+    #     return AuditResult(
+    #         reasoning=f"{INITIAL_ERROR_MESSAGE}: {partial_reasoning}",
+    #         has_incorrect_markings=False,
+    #         has_missing_markings=False
+    #     )
+
     except Exception as e:
-        if verbose:
-            print(f"Audit Failed: {e}")
-        return AuditResult(
-            reasoning=f"{INITIAL_ERROR_MESSAGE}: {str(e)}",
-            has_incorrect_markings=False,
-            has_missing_markings=False
-        )
+        # if verbose: print(f"Audit Failed: {e}")
+        # Invoke the factored-out salvage logic
+        return salvage_audit_result(raw_content, str(e))
+    # except Exception as e:
+    #     if 'raw_content' in locals() and raw_content:
+    #         # Normalize content for easier searching
+    #         clean_content = raw_content.lower().replace(" ", "")
+            
+    #         # Helper to find boolean values in truncated JSON
+    #         def extract_bool(key):
+    #             if f'"{key}":true' in clean_content: return True
+    #             if f'"{key}":false' in clean_content: return False
+    #             return None # Not generated yet
 
+    #         salvaged_inc = extract_bool("has_incorrect_markings")
+    #         salvaged_mis = extract_bool("has_missing_markings")
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 140
+    #         # Only count this as a "Success" if we got both booleans.
+    #         # Otherwise, the reasoning is likely so short the logic hasn't started.
+    #         if salvaged_inc is not None and salvaged_mis is not None:
+    #             return AuditResult(
+    #                 reasoning=f"TRUNCATED SALVAGE: {raw_content[:200]}...",
+    #                 has_incorrect_markings=salvaged_inc,
+    #                 has_missing_markings=salvaged_mis
+    #             )
+                
+    #     # If we couldn't even get the booleans, return the error so the 
+    #     # voting logic knows to ignore this attempt and try again.
+    #     return AuditResult(
+    #         reasoning=f"{INITIAL_ERROR_MESSAGE}: {str(e)}",
+    #         has_incorrect_markings=False,
+    #         has_missing_markings=False
+    #     )
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 146
 ALL_AUDITS_FAILED_STRING = "All audit attempts failed due to system errors."
 def run_audit_voting(
         client: OpenAI,
@@ -1954,6 +1914,8 @@ def run_audit_voting(
 
     reasonings = [f"[{i+1}] {audit.reasoning}" for i, audit in enumerate(audits)]
 
+    truncation_count = sum(1 for a in failures if "json" in a.reasoning.lower() or "eof" in a.reasoning.lower())
+
     return AuditVoteResult(
         should_remove=inc_votes >= threshold,
         should_add=mis_votes >= threshold,
@@ -1963,54 +1925,192 @@ def run_audit_voting(
         total_votes=total,
         stats=(
             f"Summary: {inc_votes} inc, {mis_votes} mis, {error_count} failed out of {total} total attempts.\n"
+            f"({truncation_count} were JSON/EOF errors) out of {total} total attempts.\n"
             f"Threshold for action (based on {valid_vote_count} successes): {threshold}\n\n"
             f"Reasonings:\n" + "\n\n".join(reasonings)
         )
     )
+
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 152
+# def run_audit_voting_maker(
+#         client: OpenAI,
+#         text_to_check: str,
+#         K: int = 3,              # The MAKER "Head" threshold
+#         max_samples: int = 15,    # Safety cap to prevent infinite loops
+#         verbose: bool = True,
+#         system_prompt: str = DEF_NOTAT_VERIFY_SYSTEM_PROMPT,
+#         user_prompt: str = DEF_NOTAT_VERIFY_USER_PROMPT,
+#         temperature: float = 0.7,
+#         ) -> AuditVoteResult:
+#     """
+#     Implements MAKER voting: 'First to a head by K'.
+#     Samples continue until the lead of one outcome over the other reaches K.
+#     """
+#     audits: list[AuditResult] = []
     
-    # error_count = len(failures)
-    # total = len(audits)
-    # total = len(audits)
-    # # failures = [
-    #     # a for a in audits if a.reasoning.startswith(INITIAL_ERROR_MESSAGE)]
-    # error_count = len(failures)
-    # threshold = (len(audits) // 2) + 1
-    # inc_votes = sum(1 for audit in audits if audit.has_incorrect_markings)
-    # mis_votes = sum(1 for audit in audits if audit.has_missing_markings)
+#     # Tallies for the 'First to a head' logic
+#     # We track (True votes - False votes) for each boolean
+#     inc_diff = 0 
+#     mis_diff = 0
+    
+#     inc_votes = 0
+#     mis_votes = 0
+#     successful_count = 0
+#     total_attempts = 0
 
-    # # Check if all attempts resulted in an error object
-    # if all(audit.reasoning.startswith(INITIAL_ERROR_MESSAGE) for audit in audits):
-    #     return AuditVoteResult(
-    #         should_remove=False, 
-    #         should_add=False, 
-    #         incorrect_tally=0,
-    #         missing_tally=0,
-    #         error_tally = error_count,
-    #         total_votes=total,
-    #         stats=ALL_AUDITS_FAILED_STRING
-    #     )
+#     if verbose:
+#         print(f"--- Starting MAKER Audit (K={K}) ---")
 
-    # reasonings = [f"[{i+1}] {audit.reasoning}" for i, audit in enumerate(audits)]
-    # # reasonings = [audit.reasoning for audit in audits]
+#     while total_attempts < max_samples:
+#         audit = run_strict_audit(
+#             client, text_to_check, system_prompt, user_prompt, temperature, verbose)
+#         total_attempts += 1
 
-    # return AuditVoteResult(
-    #     should_remove=inc_votes >= threshold,
-    #     should_add=mis_votes >= threshold,
-    #     incorrect_tally=inc_votes,
-    #     missing_tally=mis_votes,
-    #     error_tally=error_count,
-    #     total_votes=total,
-    #     stats=(
-    #         f"Summary: {inc_votes} inc, {mis_votes} mis, {error_count} failed out of {total}.\n"
-    #         f"Threshold for action: {threshold}\n\n"
-    #         f"Reasonings:\n" + "\n\n".join(reasonings)
-    #     )
-    # )
-    # # return AuditVoteResult(
-    # #     should_remove = inc_votes >= threshold,
-    # #     should_add = mis_votes >= threshold,
-    # #     incorrect_tally=inc_votes,
-    # #     missing_tally=missing_votes,
-    # #     total_votes=total,
-    # #     stats = f"Inc: {inc_votes}/{len(audits)}, Mis: {mis_votes}/{len(audits)}\n\nReasonings:\n\n{"\n\n".join(reasonings)}"
-    # # )
+#         is_error = audit.reasoning.startswith(INITIAL_ERROR_MESSAGE)
+#         if is_error:
+#             audits.append(audit)
+#             continue # Errors don't count towards the lead in MAKER
+
+#         successful_count += 1
+#         audits.append(audit)
+
+#         # Update Incorrect Markings Tally
+#         if audit.has_incorrect_markings:
+#             inc_votes += 1
+#             inc_diff += 1
+#         else:
+#             inc_diff -= 1
+
+#         # Update Missing Markings Tally
+#         if audit.has_missing_markings:
+#             mis_votes += 1
+#             mis_diff += 1
+#         else:
+#             mis_diff -= 1
+
+#         if verbose:
+#             print(f"Sample {total_attempts}: INC_LEAD={inc_diff}, MIS_LEAD={mis_diff}")
+
+#         # MAKER TERMINATION CRITERIA:
+#         # We stop if at least categories have reached a lead of absolute K
+#         # (Meaning we are confident that the markings in the excerpt need checking)
+#         if abs(inc_diff) >= K or abs(mis_diff) >= K:
+#             break
+
+#     # Determine final result based on the sign of the lead
+#     # If lead is positive (+K), the answer is True. If negative (-K), the answer is False.
+#     should_remove = inc_diff >= K
+#     should_add = mis_diff >= K
+
+#     error_count = total_attempts - successful_count
+#     reasonings = [f"[{i+1}] {a.reasoning}" for i, a in enumerate(audits)]
+
+#     return AuditVoteResult(
+#         should_remove=should_remove,
+#         should_add=should_add,
+#         incorrect_tally=inc_votes,
+#         missing_tally=mis_votes,
+#         error_tally=error_count,
+#         total_votes=total_attempts,
+#         stats=(
+#             f"MAKER Result: K={K} reached in {total_attempts} attempts.\n"
+#             f"Final Leads: Incorrect={inc_diff}, Missing={mis_diff}\n"
+#             f"Successes: {successful_count}, Errors: {error_count}\n\n"
+#             f"Reasonings:\n" + "\n\n".join(reasonings)
+#         )
+#     )
+
+#| export
+def run_audit_voting_maker(
+        client: OpenAI,
+        text_to_check: str,
+        K: int = 3,
+        max_samples: int = 15,
+        verbose: bool = True,
+        system_prompt: str = DEF_NOTAT_VERIFY_SYSTEM_PROMPT,
+        user_prompt: str = DEF_NOTAT_VERIFY_USER_PROMPT,
+        temperature: float = 0.7,
+        ) -> AuditVoteResult:
+    
+    audits: list[AuditResult] = []
+    
+    # Leads for independent categories
+    inc_diff = 0 
+    mis_diff = 0
+    
+    # Status flags to stop updating a category once it reaches K
+    inc_settled = False
+    mis_settled = False
+
+    inc_votes = 0
+    mis_votes = 0
+    successful_count = 0
+    total_attempts = 0
+
+    if verbose:
+        print(f"--- Starting Independent MAKER Audit (K={K}) ---")
+
+    while total_attempts < max_samples:
+        # Check if both types have reached confidence
+        if inc_settled and mis_settled:
+            break
+
+        audit = run_strict_audit(
+            client, text_to_check, system_prompt, user_prompt, temperature, verbose)
+        total_attempts += 1
+
+        if audit.reasoning.startswith(INITIAL_ERROR_MESSAGE):
+            audits.append(audit)
+            continue 
+
+        successful_count += 1
+        audits.append(audit)
+
+        # Update Incorrect Markings Tally ONLY if not yet settled
+        if not inc_settled:
+            if audit.has_incorrect_markings:
+                inc_votes += 1
+                inc_diff += 1
+            else:
+                inc_diff -= 1
+            
+            if abs(inc_diff) >= K:
+                inc_settled = True
+                if verbose: print(f"-> Incorrect Markings SETTLED at lead {inc_diff}")
+
+        # Update Missing Markings Tally ONLY if not yet settled
+        if not mis_settled:
+            if audit.has_missing_markings:
+                mis_votes += 1
+                mis_diff += 1
+            else:
+                mis_diff -= 1
+            
+            if abs(mis_diff) >= K:
+                mis_settled = True
+                if verbose: print(f"-> Missing Markings SETTLED at lead {mis_diff}")
+
+        if verbose:
+            print(f"Sample {total_attempts}: INC_LEAD={inc_diff} (S:{inc_settled}), MIS_LEAD={mis_diff} (S:{mis_settled})")
+
+    # Determine final results based on locked leads
+    should_remove = inc_diff >= K
+    should_add = mis_diff >= K
+
+    error_count = total_attempts - successful_count
+    reasonings = [f"[{i+1}] {a.reasoning}" for i, a in enumerate(audits)]
+
+    return AuditVoteResult(
+        should_remove=should_remove,
+        should_add=should_add,
+        incorrect_tally=inc_votes,
+        missing_tally=mis_votes,
+        error_tally=error_count,
+        total_votes=total_attempts,
+        stats=(
+            f"MAKER Result: K={K} reached in {total_attempts} attempts.\n"
+            f"Final Leads: Incorrect={inc_diff}, Missing={mis_diff}\n"
+            f"Settled: Inc={inc_settled}, Mis={mis_settled}\n"
+            f"Reasonings:\n" + "\n\n".join(reasonings)
+        )
+    )
