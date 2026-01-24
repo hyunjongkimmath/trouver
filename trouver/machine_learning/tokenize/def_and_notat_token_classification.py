@@ -78,7 +78,7 @@ def _html_tag_from_double_ast(
         return f'<b definition="">{no_asts}</b>'
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 10
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 11
 def raw_text_with_html_tags_from_markdownfile(
         mf: MarkdownFile,
         vault: PathLike
@@ -94,7 +94,7 @@ def raw_text_with_html_tags_from_markdownfile(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 18
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 19
 class HTMLData(TypedDict):
     note_name: str
     raw_text: str
@@ -102,7 +102,7 @@ class HTMLData(TypedDict):
     # list[bs4.element.Tag]
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 19
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 20
 def html_data_from_note(
         note_or_mf: Union[VaultNote, MarkdownFile], # Either a `VaultNote`` object to a note or a `MarkdownFile` object from which to extra html data.
         vault: Optional[PathLike] = None, # If vault to use when processing the `MarkdownFile` objects (if `note_of_mf` is a `VaultNote`, then this `MarkdownFile` object is created from the text of the note), cf. the `process_standard_information_note` function.
@@ -147,7 +147,7 @@ def html_data_from_note(
 
     return HTMLData(note_name=note_name, raw_text=raw_text, tags=tags_and_locations)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 30
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 31
 def tokenize_html_data(
         html_locus: HTMLData, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -311,7 +311,7 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 48
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 49
 def _calculate_clean_indices_and_create_tags(
         original_text: str,
         markings: list[tuple[str, int, int, dict]]
@@ -352,7 +352,7 @@ def _calculate_clean_indices_and_create_tags(
     
     return "".join(clean_text_parts), results
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 49
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 50
 def extract_html_tag_indices_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -365,7 +365,7 @@ def extract_html_tag_indices_from_marked_text(
     _, tags = _calculate_clean_indices_and_create_tags(text, markings)
     return tags
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 51
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 52
 def html_data_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -379,7 +379,7 @@ def html_data_from_marked_text(
     
     return StrAndHTMLTagsWithIndices(clean_text, tags)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 55
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 56
 def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
     """
     Parses LaTeX highlighting commands (\\hldef, \\hl, \\hlin, \\hlalign) to identify
@@ -603,7 +603,7 @@ def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
     # return results
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 66
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 67
 def _split_text_by_html_data_parts(
         # text_tags_and_locations = StrAndHTMLTagsWithIndices
         datapoint: HTMLData
@@ -625,7 +625,7 @@ def _split_text_by_html_data_parts(
     return to_return
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 70
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 71
 def augment_html_data(
         datapoint: HTMLData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -694,7 +694,7 @@ def _augment_html_data_once(
         accumulated_len += len(text)
     return HTMLData(note_name=note_name, raw_text=accumulated_text, tags=tags_with_indices)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 84
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 85
 def _make_tag(
         text: str,
         entity_type: str # 'definition' or 'notation'
@@ -746,7 +746,7 @@ def _html_tag_data_from_part(
     return HTMLTagWithIndices(_make_tag(html_text, entity_type), start_char_pos, end_char_pos)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 87
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 88
 def _current_token_continues_the_previous_token(
         current_token: dict,
         previous_token: dict,
@@ -773,7 +773,7 @@ def _current_token_continues_the_previous_token(
         return False
         
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 89
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 90
 def _divide_token_preds_into_parts(
         token_preds: list[dict[str]],
         excessive_space_threshold: int,
@@ -808,7 +808,7 @@ def _divide_token_preds_into_parts(
     return token_preds_parts
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 91
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 92
 def _ranges_overlap(
         current_1: HTMLTagWithIndices,
         current_2: HTMLTagWithIndices
@@ -823,7 +823,7 @@ def _ranges_overlap(
     return max(current_1.start, current_2.start) < min(current_1.end, current_2.end)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 93
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
 # If the ML model predicts 
 # predictions made around 
 latex_commands_to_avoid = [
@@ -896,7 +896,7 @@ latex_commands_to_avoid = [
 ]
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 94
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 95
 def _str_contains_latex_command_to_avoid(text):
     """
     Helper function to `_consolidate_token_preds`
@@ -907,7 +907,7 @@ def _str_contains_latex_command_to_avoid(text):
             return True
     return False
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 96
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 97
 def _consolidate_token_preds(
         main_text: str,
         tag_data: list[HTMLTagWithIndices]
@@ -1076,7 +1076,7 @@ def _no_overlap_with_previous_tag_data(
     return True
     
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 98
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 99
 def _html_tags_from_token_preds(
         main_text: str,
         token_preds: list[dict[str]], # An output of `pipeline(text)`; Each dict likely contains keys such as `'entity'`, `'score'`, `'index'`, `'word'`, `'start'`, and `'end'`, depending on the model used.
@@ -1094,7 +1094,7 @@ def _html_tags_from_token_preds(
     return [_html_tag_data_from_part(main_text, part) for part in parts]
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 100
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 101
 def _collate_html_tags(
         tag_data_1: list[HTMLTagWithIndices],
         tag_data_2: list[HTMLTagWithIndices],
@@ -1135,7 +1135,7 @@ def _collate_html_tags(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 102
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 103
 def _add_nice_boxing_attrs_to_def_and_notat_tags(
         html_tag_data: list[HTMLTagWithIndices]
         ) -> list[HTMLTagWithIndices]:
@@ -1153,7 +1153,7 @@ def _add_nice_boxing_attrs_to_def_and_notat_tags(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 104
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 105
 def def_and_notat_preds_by_model(
         text: str,  
         pipeline # The pipeline object created using the token classification model and its tokenizer
@@ -1168,7 +1168,7 @@ def def_and_notat_preds_by_model(
     tag_data = _html_tags_from_token_preds(text, pipeline(text), 2, None)
     return tag_data
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 106
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 107
 # def _process_mf(
 #         mf: MarkdownFile) -> None:
 #     """
@@ -1180,7 +1180,7 @@ def def_and_notat_preds_by_model(
 #     # mf.merge_display_math_mode_into_preceding_text()
 #     mf.
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 107
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 108
 def _get_main_text_lines(
         mf: MarkdownFile) -> tuple[int, int]:
     """Helper function to `auto_mark_def_and_notats`"""
@@ -1194,7 +1194,7 @@ def _get_main_text_lines(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 108
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 109
 def _append_to_pieces_start_and_end(
         pieces_start_and_end: list[tuple[int, int]],
         start_chunk: tuple[str, int, int],
@@ -1205,7 +1205,7 @@ def _append_to_pieces_start_and_end(
     end_char_index = end_chunk[1] + len(end_chunk[0])
     pieces_start_and_end.append([start_char_index, end_char_index])
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 109
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 110
 def _find_places_to_divide_from_chunks(
         chunks: list[tuple[str, int, int]], # The str is a chunk of text, the first int is the index in `main_text` that the chunk starts at, and the second int is the approximate token length of the text. Appending all the chunks of text as they are should result back in the original text.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1307,7 +1307,7 @@ def _find_places_to_divide_from_chunks(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 110
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 111
 def _divide_main_text(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1334,7 +1334,7 @@ def _divide_main_text(
     chunks.append((last_chunk, newline_indices[-1], len(tokenizer(last_chunk)['input_ids'])))
     return _find_places_to_divide_from_chunks(chunks, pipeline)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 111
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 112
 def _get_token_preds_by_dividing_main_text(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text. Here, the tokenizer of this pipeline is used to estimate how many tokens a piece of subtext will have.
@@ -1365,7 +1365,7 @@ def _get_token_preds_by_dividing_main_text(
     return cumulative_html_tags_in_main
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 112
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 113
 def get_def_and_notat_predictions(
         main_text: str,
         pipeline: pipelines.token_classification.TokenClassificationPipeline,
@@ -1388,7 +1388,7 @@ def get_def_and_notat_predictions(
     return html_tags_to_add
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 113
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 114
 def mark_def_and_notat_predictions(
         main_text: str, # The original text.
         predictions: list[HTMLTagWithIndices], # The list of predictions (ranges and metadata) returned by `get_def_and_notat_predictions`. Assumes these are sorted and non-overlapping (which `get_def_and_notat_predictions` ensures).
@@ -1417,7 +1417,7 @@ def mark_def_and_notat_predictions(
     return "".join(formatted_text_list)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 117
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 118
 def predict_and_mark_def_and_notats(
         main_text: str, # The text to run predictions on and format.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline.
@@ -1433,7 +1433,7 @@ def predict_and_mark_def_and_notats(
     return mark_def_and_notat_predictions(main_text, predictions, formatter)
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 119
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 120
 def _format_main_text_and_add_html_tag_data(
         note: VaultNote,
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1471,7 +1471,7 @@ def _format_main_text_and_add_html_tag_data(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 121
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 122
 def _write_text_with_html_tag_preds_to_note(
         note: VaultNote,
         mf: MarkdownFile,
@@ -1490,7 +1490,7 @@ def _write_text_with_html_tag_preds_to_note(
     mf.add_tags('_auto/def_and_notat_identified')
     mf.write(note)
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 122
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 123
 def auto_mark_def_and_notats(
         note: VaultNote,  # The standard information note in which to find the definitions and notations.
         pipeline: pipelines.token_classification.TokenClassificationPipeline, # The token classification pipeline that is used to predict whether tokens are part of definitions or notations introduced in the text.
@@ -1554,7 +1554,7 @@ def auto_mark_def_and_notats(
 
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 130
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 131
 def latex_highlight_formatter(text: str, pred: HTMLTagWithIndices) -> str:
     r"""
     Formats definitions and notations with LaTeX highlighting commands.
@@ -1596,7 +1596,7 @@ def latex_highlight_formatter(text: str, pred: HTMLTagWithIndices) -> str:
     return f"\\hl{{{text}}}"
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 135
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 136
 DEF_NOTAT_VERIFY_SYSTEM_PROMPT = r"""
 You are an expert auditor of mathematical texts. Your task is to validate semantic HTML markings (attributes: "definition" or "notation") within an excerpt. You must determine if the current markings correctly identify **newly introduced** terms while ignoring **contextual** objects.
 
@@ -1656,14 +1656,14 @@ Output Requirement: You must start the reasoning string with the character [ and
 """
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 136
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 137
 DEF_NOTAT_VERIFY_USER_PROMPT = r"""
 Audit the following excerpt of mathematical text for definition and notation marking errors. Return the result in the specified JSON format.
 
 """
 
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 137
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 138
 class AuditResult(BaseModel):
     reasoning: str
     has_incorrect_markings: bool
@@ -1678,7 +1678,7 @@ class AuditVoteResult(TypedDict, total=True):
     total_votes: int      # Useful for context/percentage
     stats: str
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 138
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 139
 INITIAL_ERROR_MESSAGE = "ERROR during LLM call"
 def salvage_audit_result(raw_content: str, error_msg: str) -> AuditResult:
     """
@@ -1723,7 +1723,7 @@ def salvage_audit_result(raw_content: str, error_msg: str) -> AuditResult:
         has_missing_markings=False
     )
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 142
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 143
 def run_strict_audit(
         client: OpenAI,
         text_to_check: str,
@@ -1835,7 +1835,7 @@ def run_strict_audit(
     #         has_missing_markings=False
     #     )
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 146
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 147
 ALL_AUDITS_FAILED_STRING = "All audit attempts failed due to system errors."
 def run_audit_voting(
         client: OpenAI,
@@ -1931,7 +1931,7 @@ def run_audit_voting(
         )
     )
 
-# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 152
+# %% ../../../nbs/07_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb 153
 # def run_audit_voting_maker(
 #         client: OpenAI,
 #         text_to_check: str,

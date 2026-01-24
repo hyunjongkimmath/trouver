@@ -9,24 +9,190 @@ __all__ = ['double_asterisk_indices', 'notation_asterisk_indices', 'definition_a
 from .regex import find_regex_in_text
 
 # %% ../../nbs/01_helper_07.definition_and_notation.ipynb 6
-def double_asterisk_indices(
-        text: str # the str in which to find the indices of double asterisk surrounded text.
-        ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
-    # TODO: fix double asterisks in math mode.
-    """Return the indices in `str` of text surrounded by double asterisks.
+import re
+
+def _get_bold_indices_with_braces(text):
+    """
+    Finds indices of text wrapped in double asterisks (**...**).
+    Handles cases where ** might appear inside LaTeX curly braces {}.
+    """
+    indices = []
+    i = 0
+    n = len(text)
     
-    Assumes there no LaTeX math mode string has double asterisks.
+    while i < n:
+        # Check for start of bold block
+        if text[i:i+2] == '**':
+            start = i
+            i += 2
+            brace_depth = 0
+            found_end = False
+            
+            while i < n:
+                # Track braces to ignore ** inside them (e.g. M^{**})
+                if text[i] == '{':
+                    brace_depth += 1
+                elif text[i] == '}':
+                    brace_depth = max(0, brace_depth - 1)
+                
+                # Check for end of bold block
+                # Must be ** and we must not be inside curly braces
+                if text[i:i+2] == '**' and brace_depth == 0:
+                    end = i + 2
+                    indices.append((start, end))
+                    i += 2
+                    found_end = True
+                    break
+                
+                i += 1
+            
+            if not found_end:
+                # If we reached end of string without closing **, stop
+                break
+        else:
+            i += 1
+            
+    return indices
+
+# def _is_notation(text, start, end):
+#     """
+#     Determines if a bolded section is notation.
+#     Criteria: The content inside **...** starts and ends with $.
+#     """
+#     # Extract content inside **...**
+#     content = text[start+2:end-2].strip()
+#     return content.startswith('$') and content.endswith('$')
+
+def _is_notation(text, start, end):
+    """
+    Determines if a bolded section is notation.
+    Criteria: The content MUST be a SINGLE LaTeX math block.
+    It must start with $ (or $$) and the MATCHING closing $ (or $$) 
+    must be the very last characters of the string.
+    """
+    # Extract content inside **...**
+    content = text[start+2:end-2].strip()
+    
+    # 1. Identify the delimiter ($ or $$)
+    if content.startswith('$$'):
+        delimiter = '$$'
+        search_start_index = 2
+    elif content.startswith('$'):
+        delimiter = '$'
+        search_start_index = 1
+    else:
+        # Does not start with math delimiter -> Not notation
+        return False
+        
+    # 2. Find the CLOSING delimiter for the FIRST opening delimiter
+    i = search_start_index
+    while i < len(content):
+        # Skip escaped characters (like \$)
+        if content[i] == '\\':
+            i += 2
+            continue
+            
+        # Check if we found the delimiter
+        if content[i:].startswith(delimiter):
+            # We found the closing delimiter.
+            # 3. CRITICAL CHECK: Is this the end of the string?
+            # If there is text after this closing delimiter, it's a Definition (mixed text).
+            if i + len(delimiter) == len(content):
+                return True
+            else:
+                return False
+        
+        i += 1
+            
+    # If we finish the loop without finding a closing delimiter, it's malformed/text.
+    return False
+
+
+
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 7
+# def double_asterisk_indices(
+#         text: str # the str in which to find the indices of double asterisk surrounded text.
+#         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
+#     # TODO: fix double asterisks in math mode.
+#     """Return the indices in `str` of text surrounded by double asterisks.
+    
+#     Assumes there no LaTeX math mode string has double asterisks.
+
+#     **See Also**
+    
+#     - `notation_asterisk_indices`
+#     - `definition_asterisk_indices`
+#     """
+#     return find_regex_in_text(text, pattern=r'\*\*[^*]+\*\*')
+
+def double_asterisk_indices(text: str) -> list[tuple[int, int]]:
+    r"""
+    Finds indices of text wrapped in double asterisks (**...**).
+    
+    This function is robust to LaTeX syntax:
+    1. It ignores ** appearing inside curly braces {} (e.g., **$M^{**}$**).
+    2. It respects escaped characters (e.g., \** is treated as literal asterisks).
 
     **See Also**
     
     - `notation_asterisk_indices`
     - `definition_asterisk_indices`
     """
-    return find_regex_in_text(text, pattern=r'\*\*[^*]+\*\*')
+    indices = []
+    i = 0
+    n = len(text)
+    
+    while i < n:
+        # 1. Handle escaped characters in the main text flow
+        if text[i] == '\\':
+            i += 2
+            continue
+            
+        # 2. Check for start of bold block
+        if text[i:i+2] == '**':
+            start = i
+            current = i + 2
+            brace_depth = 0
+            found_end = False
+            
+            while current < n:
+                char = text[current]
+                
+                # Handle escaped characters inside the block
+                if char == '\\':
+                    current += 2
+                    continue
+                
+                # Track braces to ignore ** inside them (e.g. \command{**})
+                if char == '{':
+                    brace_depth += 1
+                elif char == '}':
+                    brace_depth = max(0, brace_depth - 1)
+                
+                # Check for end of bold block
+                # Must be ** and we must not be inside curly braces
+                if text[current:current+2] == '**' and brace_depth == 0:
+                    end = current + 2
+                    indices.append((start, end))
+                    i = end # Move main index past this block
+                    found_end = True
+                    break
+                
+                current += 1
+            
+            if not found_end:
+                # If we opened a ** but never closed it properly, 
+                # just move past the opening ** to avoid infinite loop.
+                i += 2 
+        else:
+            i += 1
+            
+    return indices
 
 
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 8
+
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 9
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -38,12 +204,13 @@ def notation_asterisk_indices(
     Assumes that no LaTeX math mode string has the dollar sign character
     within it.
     """
-    return find_regex_in_text(
-        text, pattern=r'\*\*\$\$[^$]+\$\$\*\*|\*\*\$[^$]+\$\*\*')
-    # I previous used this, but it was not picking up notation LaTeX str
-    # containing asterisks, e.g. `**$\pi^*$**``, `**$\pi_*$**`.`
     # return find_regex_in_text(
-    #     text, pattern='\*\*\$\$[^*$]+\$\$\*\*|\*\*\$[^*$]+\$\*\*')
+    #     text, pattern=r'\*\*\$\$[^$]+\$\$\*\*|\*\*\$[^$]+\$\*\*')
+    all_bolds = _get_bold_indices_with_braces(text)
+    return [
+        (start, end) for start, end in all_bolds 
+        if _is_notation(text, start, end)
+    ]
 
 
 def definition_asterisk_indices(
@@ -57,11 +224,17 @@ def definition_asterisk_indices(
     Assumes that no LaTeX math mode string has double asterisks and that no
     LaTeX math mode string has the dollar sign character within it.
     """
-    all_double_asterisks = double_asterisk_indices(text)
-    notations = notation_asterisk_indices(text)
-    return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
+    # all_double_asterisks = double_asterisk_indices(text)
+    # notations = notation_asterisk_indices(text)
+    # return [tuppy for tuppy in all_double_asterisks if tuppy not in notations]
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 22
+    all_bolds = _get_bold_indices_with_braces(text)
+    return [
+        (start, end) for start, end in all_bolds 
+        if not _is_notation(text, start, end)
+    ]
+
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 23
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
