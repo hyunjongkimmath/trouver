@@ -5,7 +5,7 @@
 # %% auto 0
 __all__ = ['REGEX_PATTERN_DETECTIONS', 'temp_dict', 'extract_latex_commands', 'extract_commands_from_nodes', 'custom_commands',
            'regex_pattern_detecting_command', 'regex_pattern_detecting_space_separated_command',
-           'detect_incorrect_latex_commands', 'math_mode_string_is_syntactically_valid']
+           'detect_incorrect_latex_commands', 'check_unescaped_dollar', 'math_mode_string_is_syntactically_valid']
 
 # %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 2
 import re
@@ -83,8 +83,11 @@ def extract_commands_from_nodes(
         elif isinstance(node, LatexEnvironmentNode):
             commands.extend(_detect_begin_and_end_environments(node.latex_verbatim()))
         # If the node has a nodelist, extract commands from it
-        if hasattr(node, 'nodelist'):
-            extract_commands_from_nodes(commands, node.nodelist)
+        nodelist = getattr(node, 'nodelist', None)
+        if nodelist is not None:
+            extract_commands_from_nodes(commands, nodelist)
+        # if hasattr(node, 'nodelist'):
+        #     extract_commands_from_nodes(commands, node.nodelist)
 
 def _detect_begin_and_end_environments(
         latex_string: str
@@ -447,6 +450,19 @@ def detect_incorrect_latex_commands(
     return False
 
 # %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 25
+def check_unescaped_dollar(txt: str) -> bool:
+    """Returns True if dollar signs are validly used."""
+    if _has_unescaped_dollar(txt):
+        math_mode_indices = latex_indices(txt)
+        if len(math_mode_indices) != 1:
+            return False
+        # Ensure the math mode spans the entire string
+        if not (math_mode_indices[0][0] == 0 and math_mode_indices[0][1] == len(txt)):
+            return False
+    return True
+
+
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 27
 def math_mode_string_is_syntactically_valid(
         text: str,
         ) -> bool:
@@ -466,35 +482,28 @@ def math_mode_string_is_syntactically_valid(
     """
     # 
     text = text.strip()
-    math_mode_indices = latex_indices(text)
-    if _has_unescaped_dollar(text):
-        if len(math_mode_indices) != 1:
-            return False
-        if (math_mode_indices[0][0] != 0 or math_mode_indices[0][1] != len(text)):
-            return False
-    if not _does_not_end_with_script(text):
-        return False
-    if _detect_backslash_space_curly(text):
-        return False
-    if not _is_balanced_braces(text):
-        return False
-    if _has_invalid_left_right_bracket(text):
-        return False
-    if not _is_left_right_balanced(text):
-        return False
-    if _has_double_script(text):
-        return False
-    if _has_double_script_literal(text):
-        return False
-    if detect_incorrect_latex_commands(text):
-        return False
-    if bool(detect_unbalanced_environments(text)):
-        return False
-    return True
+    # List of validation functions. Each returns True if the check passes.
+    # Functions that detect errors (return True on error) are negated with a lambda.
+    checks = [
+        check_unescaped_dollar,
+        _does_not_end_with_script,
+        _is_balanced_braces,
+        _is_left_right_balanced,
+        lambda t: not _detect_backslash_space_curly(t),
+        lambda t: not _has_invalid_left_right_bracket(t),
+        lambda t: not _has_double_script(t),
+        lambda t: not _has_double_script_literal(t),
+        lambda t: not detect_incorrect_latex_commands(t),
+        lambda t: not detect_unbalanced_environments(t), # bool([]) is False
+    ]
+
+    # The string is valid if all checks pass.
+    return all(check(text) for check in checks)
 
 
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 41
+
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 43
 # def math_mode_string_is_syntactically_clean(
 #         text: str,
 #         ) -> bool:

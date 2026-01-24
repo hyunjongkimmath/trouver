@@ -1,0 +1,4 @@
+# Ignore the exported python library (so Gemini only sees notebooks)
+trouver/
+
+_proc/
