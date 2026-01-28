@@ -280,7 +280,7 @@ def predict_note_types(
         vault: PathLike, # The vault with the notes.
         notes: list[VaultNote], # The notes with texts to predict
         remove_NO_TAG: bool = True, # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
-        consolidation: Optional[Callable] = consolidate_single_text_predictions_by_sum_of_confidence, # The method to consolidate between different predictions made by the possibly more-than-one model in `learners`.
+        consolidation: Optional[Callable[[list[tuple[list[str], dict[str, float]]]], list[str]]] = consolidate_single_text_predictions_by_sum_of_confidence, # The method to consolidate between different predictions made by the possibly more-than-one model in `learners`.
         ) -> list[list[str]]: # Each `list[str]`` corresponds to an item in `notes` and contains the predicted note types for that note.
     """
 

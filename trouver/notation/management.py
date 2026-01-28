@@ -6,18 +6,23 @@
 __all__ = ['MAX_NOTE_NAME_LENGTH', 'SPECIAL_CHARACTERS', 'replaceable_groups', 'REPLACEABLES', 'notations_to_add_in_index',
            'index_notation_note_formatted_entry', 'make_a_notation_note', 'make_notation_notes_from_double_asts',
            'make_notation_notes_from_HTML_tags', 'notation_note_has_no_verified_content', 'remove_bad_notation_notes',
-           'reorder_notation_note_links_in_see_also_section', 'regex_from_latex', 'regex_from_notation_note']
+           'reorder_notation_note_links_in_see_also_section', 'regex_from_latex', 'regex_from_notation_note',
+           'find_best_notation_substring', 'extract_valid_notation_from_source', 'correct_notation_names_in_HTML_tags',
+           'fix_notation_name_syntax_in_HTML_tags', 'fix_notation_syntax_in_notation_note']
 
 # %% ../../nbs/06_notation_10_management.ipynb 2
 from os import PathLike
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 import warnings
 
+from bs4 import BeautifulSoup, Tag
 from multiset import Multiset
 from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, LatexGroupNode, LatexCharsNode
 
 from ..helper.html import remove_html_tags_in_text
+from ..helper.latex.macros_and_commands import (
+    math_mode_string_is_syntactically_valid, math_mode_string_has_soft_or_hard_syntax_errors)
 from ..helper.path_accepted_string import latex_to_path_accepted_string
 from ..obsidian.file import MarkdownFile, MarkdownLineEnum, _sanitize_characters_for_str_metadata_entry 
 from trouver.obsidian.links import (
@@ -776,3 +781,469 @@ def regex_from_notation_note(vault: PathLike, note: VaultNote) -> str:
     else:
         notation = notation_in_note(note, vault)
         return regex_from_latex(notation[1:-1])  # Get rid of `'$'`.
+
+# %% ../../nbs/06_notation_10_management.ipynb 71
+import difflib
+
+def _expand_to_valid_latex(text: str, start: int, end: int) -> str:
+    r"""
+    Expands the substring text[start:end] outwards until it has balanced
+    delimiters and respects LaTeX command boundaries.
+    
+    Handles:
+    1. Command Integrity: \text, \frac (expands left if split)
+    2. Standard Delimiters: (), [], {}
+    3. Escaped Braces: \{, \} (treated as a distinct pair)
+    """
+    n = len(text)
+    
+    # --- Phase 0: Expand Left for Command/Word Integrity ---
+    # If we start in the middle of a word (e.g. 'ext' in '\text'), expand left.
+    # We only expand if the current character is a letter.
+    while start > 0:
+        curr_char = text[start]
+        prev_char = text[start - 1]
+        
+        # If current is letter and prev is letter, we are inside a word -> expand
+        if curr_char.isalpha() and prev_char.isalpha():
+            start -= 1
+        # If current is letter and prev is backslash, we are at command start -> expand and stop
+        elif curr_char.isalpha() and prev_char == '\\':
+            start -= 1
+            break
+        # Otherwise, stop
+        else:
+            break
+
+    # Define pairs. We treat \{ and \} as distinct tokens.
+    pairs = {')': '(', ']': '[', '}': '{', r'\}': r'\{'}
+    rev_pairs = {'(': ')', '[': ']', '{': '}', r'\{': r'\}'}
+    
+    # Helper to identify token at index i
+    def get_token(s, i):
+        # Check for escaped brace \{ or \}
+        if s[i] == '\\':
+            if i + 1 < len(s) and s[i+1] in '{}':
+                return s[i:i+2], 2 # Token, Length
+            return None, 2 # Escaped other char, skip 2
+        # Check for standard delimiters
+        if s[i] in '()[]{}':
+            return s[i], 1
+        return None, 1 # Regular char
+
+    # --- Phase 1: Expand Left (Fix Unmatched Closing Delimiters) ---
+    while True:
+        substring = text[start:end]
+        stack = []
+        unmatched_closer_info = None # (token, index_in_substring)
+
+        i = 0
+        while i < len(substring):
+            token, length = get_token(substring, i)
+            
+            if token:
+                if token in rev_pairs: # It's an opener
+                    stack.append(token)
+                elif token in pairs: # It's a closer
+                    if stack and stack[-1] == pairs[token]:
+                        stack.pop()
+                    else:
+                        # Found an unmatched closer
+                        unmatched_closer_info = (token, i)
+                        break
+                elif token is None: 
+                    pass
+            
+            i += length
+        
+        if unmatched_closer_info:
+            unmatched_token, _ = unmatched_closer_info
+            needed_opener = pairs[unmatched_token]
+            
+            # Scan backwards from start to find the matching opener
+            balance = 0
+            found_opener = False
+            
+            k = start - 1
+            while k >= 0:
+                # Check if current char is part of an escaped brace
+                token_at_k = None
+                
+                if text[k] in '{}' and k > 0 and text[k-1] == '\\':
+                    # Check if the \ is not itself escaped
+                    bs_count = 0
+                    m = k - 1
+                    while m >= 0 and text[m] == '\\':
+                        bs_count += 1
+                        m -= 1
+                    
+                    if bs_count % 2 == 1:
+                        token_at_k = '\\' + text[k]
+                        k_decrement = 2
+                    else:
+                        token_at_k = text[k]
+                        k_decrement = 1
+                elif text[k] in '()[]{}':
+                    token_at_k = text[k]
+                    k_decrement = 1
+                else:
+                    k_decrement = 1
+
+                if token_at_k:
+                    if token_at_k == unmatched_token:
+                        balance -= 1
+                    elif token_at_k == needed_opener:
+                        if balance == 0:
+                            start = k - (k_decrement - 1)
+                            found_opener = True
+                            break
+                        else:
+                            balance += 1
+                
+                k -= k_decrement
+            
+            if not found_opener:
+                break 
+        else:
+            break
+
+    # --- Phase 2: Expand Right (Fix Unmatched Opening Delimiters) ---
+    while True:
+        substring = text[start:end]
+        stack = []
+        
+        i = 0
+        while i < len(substring):
+            token, length = get_token(substring, i)
+            if token:
+                if token in rev_pairs:
+                    stack.append(token)
+                elif token in pairs:
+                    if stack and stack[-1] == pairs[token]:
+                        stack.pop()
+            i += length
+        
+        if stack:
+            needed_closer = rev_pairs[stack[-1]]
+            balance = 0
+            found_closer = False
+            
+            k = end
+            while k < n:
+                token, length = get_token(text, k)
+                
+                if token:
+                    if token == stack[-1]:
+                        balance -= 1
+                    elif token == needed_closer:
+                        if balance == 0:
+                            end = k + length
+                            found_closer = True
+                            break
+                        else:
+                            balance += 1
+                
+                k += length
+            
+            if not found_closer:
+                break
+        else:
+            break
+            
+    return text[start:end]
+
+# --- Helper Functions (Required for context) ---
+
+def _get_best_match_span(source_text: str, predicted_text: str) -> tuple[int, int]:
+    if not predicted_text or not source_text:
+        return 0, 0
+    matcher = difflib.SequenceMatcher(None, source_text, predicted_text)
+    match = matcher.find_longest_match(0, len(source_text), 0, len(predicted_text))
+    if match.size == 0:
+        return 0, 0
+    return match.a, match.a + match.size
+
+
+# %% ../../nbs/06_notation_10_management.ipynb 72
+def find_best_notation_substring(source_text: str, predicted_text: str, min_match_ratio: float = 0.4) -> str:
+    """
+    Finds the minimal syntactically valid substring in source_text that contains
+    the best match for predicted_text.
+    
+    Args:
+        source_text: The text to search in.
+        predicted_text: The prediction to anchor.
+        min_match_ratio: The fraction of predicted_text length that must be matched 
+                         to consider it a valid hit. Prevents matching random single letters.
+    """
+    if not source_text or not predicted_text:
+        return predicted_text
+
+    # 1. Find the best raw substring match
+    matcher = difflib.SequenceMatcher(None, source_text, predicted_text)
+    match = matcher.find_longest_match(0, len(source_text), 0, len(predicted_text))
+    
+    if match.size == 0:
+        return predicted_text
+        
+    # 2. Validate Match Quality
+    # Calculate how much of the prediction was actually found in the source.
+    ratio = match.size / len(predicted_text)
+    
+    # Heuristic to reject noise:
+    # - If prediction is tiny (e.g. "x"), we require an exact match (ratio 1.0).
+    # - Otherwise, we require the match to cover at least `min_match_ratio` (default 40%) of the prediction.
+    if len(predicted_text) < 3:
+        if match.size < len(predicted_text):
+            return predicted_text # Reject partial matches for tiny predictions
+    elif ratio < min_match_ratio:
+        return predicted_text # Reject weak matches (likely noise like matching 'h' in '\alpha')
+
+    start = match.a
+    end = match.a + match.size
+    
+    # 3. Expand to valid LaTeX
+    return _expand_to_valid_latex(source_text, start, end)
+
+# %% ../../nbs/06_notation_10_management.ipynb 74
+def extract_valid_notation_from_source(
+        predicted_name: str,
+        source_text_in_tag: str) -> str:
+    """
+    Extracts the best matching syntactically valid notation substring 
+    from the source text based on the predicted name.
+
+        It strips surrounding math delimiters ($ or $$) from the source text 
+    before searching.
+
+    Examples:
+    
+    >>> # Scenario 1: Truncated prediction fixed by source
+    >>> source = "$$ \\mathcal{F}(U) $$"
+    >>> pred = "\\mathcal{F}(U"
+    >>> extract_valid_notation_from_source(pred, source)
+    '\\mathcal{F}(U)'
+
+    >>> # Scenario 2: Prediction grounded in source (removes delimiters)
+    >>> source = "$ x_i $"
+    >>> pred = "x_i"
+    >>> extract_valid_notation_from_source(pred, source)
+    'x_i'
+    """
+    if not source_text_in_tag:
+        return predicted_name
+
+    # Clean the source text (remove display math delimiters)
+    clean_source = source_text_in_tag.strip()
+    if clean_source.startswith('$$') and clean_source.endswith('$$'):
+        clean_source = clean_source[2:-2].strip()
+    elif clean_source.startswith('$') and clean_source.endswith('$'):
+        clean_source = clean_source[1:-1].strip()
+        
+    return find_best_notation_substring(clean_source, predicted_name)
+
+
+# def _correct_syntax(
+#         predicted_name: str, 
+#         tag: Tag,
+#         ) -> str:
+#     """
+#     Corrects the syntax of a predicted name by finding the best matching
+#     valid substring within the source text of the HTML tag.
+#     """
+#     source_text_in_tag: str = tag.text
+#     if not source_text_in_tag:
+#         return predicted_name
+
+#     # 1. Clean the source text (remove display math delimiters if present)
+#     # We want to search inside "$$ ... $$", not include the dollars in the result.
+#     clean_source = source_text_in_tag.strip()
+#     if clean_source.startswith('$$') and clean_source.endswith('$$'):
+#         clean_source = clean_source[2:-2].strip()
+#     elif clean_source.startswith('$') and clean_source.endswith('$'):
+#         clean_source = clean_source[1:-1].strip()
+        
+#     # 2. Find the best valid substring using your robust logic
+#     return find_best_notation_substring(clean_source, predicted_name)
+
+# %% ../../nbs/06_notation_10_management.ipynb 77
+from bs4 import BeautifulSoup
+from bs4.element import Tag
+# from trouver.helper.html import remove_html_tags_in_text
+# from trouver.notation.management import (
+#     math_mode_string_has_soft_or_hard_syntax_errors, 
+#     extract_valid_notation_from_source
+# )
+
+def correct_notation_names_in_HTML_tags(text: str) -> str:
+    """
+    Scans the text for HTML tags with 'notation' attributes, checks for syntax errors
+    in the attribute value, and corrects them based on the tag's inner text.
+    
+    This function uses `remove_html_tags_in_text` to obtain the Tag objects.
+    It locates these tags in the original text sequentially to determine 
+    the correct indices for replacement, ignoring the indices returned by 
+    `remove_html_tags_in_text` as they correspond to the cleaned text.
+    """
+    # 1. Get the list of tags. 
+    # tags_and_locs is a list of (Tag, start_in_cleaned, end_in_cleaned)
+    _, tags_and_locs = remove_html_tags_in_text(text)
+    
+    replacements = []
+    current_search_index = 0
+    
+    # 2. Iterate through the tags returned by the helper
+    for tag, _, _ in tags_and_locs:
+        # Ensure we are working with a Tag object
+        if not isinstance(tag, Tag):
+            continue
+
+        # Convert the Tag object back to a string to find it in the original text.
+        # Note: This assumes that str(tag) matches the formatting in the original text.
+        tag_str = str(tag)
+        
+        # Find the tag in the original text starting from where we left off.
+        real_start = text.find(tag_str, current_search_index)
+        
+        if real_start == -1:
+            # If exact string match fails (e.g. due to BS4 normalization differences),
+            # we skip to avoid corrupting the text.
+            continue
+            
+        real_end = real_start + len(tag_str)
+        current_search_index = real_end
+        
+        # 3. Check if the tag has a notation attribute
+        if not tag.has_attr('notation'):
+            continue
+            
+        current_notation = tag['notation']
+        
+        # 4. Check and Fix Syntax
+        if math_mode_string_has_soft_or_hard_syntax_errors(current_notation):
+            source_text = tag.get_text()
+            corrected_notation = extract_valid_notation_from_source(current_notation, source_text)
+            
+            # If a better valid string was found, update the tag and queue replacement
+            if corrected_notation != current_notation:
+                # Update the Tag object in memory
+                tag['notation'] = corrected_notation
+                
+                # Generate the new HTML string for the updated tag
+                new_tag_str = str(tag)
+                
+                # Queue the replacement using the REAL indices found in this loop
+                replacements.append((real_start, real_end, new_tag_str))
+
+    # 5. Apply replacements in reverse order to maintain index validity
+    for start, end, new_str in reversed(replacements):
+        text = text[:start] + new_str + text[end:]
+        
+    return text
+
+
+
+
+# %% ../../nbs/06_notation_10_management.ipynb 80
+# from trouver.obsidian.vault import VaultNote # Adjust import path as needed
+
+def fix_notation_name_syntax_in_HTML_tags(
+        note: VaultNote) -> None:
+    """
+    Fixes syntax errors in the 'notation' attributes of HTML tags within a VaultNote.
+
+    This function reads the note's content, identifies notation tags with 
+    syntactically invalid attributes (e.g., unbalanced braces), and attempts 
+    to repair them by extracting valid substrings from the tag's inner text.
+    
+    If changes are detected, the note's content is updated in-place using `replace_text`.
+    """
+    original_text = note.text()
+    
+    # Delegate the text processing to the string-handling function
+    new_text = correct_notation_names_in_HTML_tags(original_text)
+    
+    # Only trigger a write operation if actual changes were made
+    if new_text != original_text:
+        note.write(new_text)
+
+
+# %% ../../nbs/06_notation_10_management.ipynb 82
+import re
+import yaml
+# from trouver.obsidian.vault import VaultNote
+# from trouver.notation.management import (
+#     math_mode_string_has_soft_or_hard_syntax_errors,
+#     extract_valid_notation_from_source
+# )
+
+def fix_notation_syntax_in_notation_note(note: VaultNote) -> None:
+    """
+    Checks if the notation string defined in a notation note has syntax errors
+    and attempts to fix it using the 'latex_in_original' metadata as the ground truth.
+    
+    This function expects the notation note to follow the standard format:
+    Frontmatter with 'latex_in_original', followed by a body starting with:
+    $<notation_str>$ [[linked_note_name|denotes]] ...
+    """
+    content = note.text()
+    
+    # 1. Parse Frontmatter to get the ground truth (latex_in_original)
+    # We look for the YAML block between the first two '---' lines
+    frontmatter_match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+    if not frontmatter_match:
+        return
+        
+    try:
+        metadata = yaml.safe_load(frontmatter_match.group(1))
+    except yaml.YAMLError:
+        return
+        
+    if 'latex_in_original' not in metadata:
+        return
+        
+    latex_sources = metadata['latex_in_original']
+    # Ensure we have a single string for the source text
+    if isinstance(latex_sources, list):
+        source_text = " ".join(latex_sources)
+    else:
+        source_text = str(latex_sources)
+        
+    if not source_text:
+        return
+
+    # 2. Find the notation definition pattern in the body
+    # Pattern: $<notation>$ [[...|denotes]]
+    # We capture the notation string between the dollar signs.
+    # Regex breakdown:
+    # (\$\s*)       : Group 1 - Opening dollar and optional space
+    # (.*?)         : Group 2 - The notation string (non-greedy)
+    # (\s*\$\s*\[\[ : Group 3 - Closing dollar, space, and start of wikilink
+    # .*?           : Link target
+    # \|denotes\]\] : Literal |denotes]]
+    pattern = re.compile(r'(\$\s*)(.*?)(\s*\$\s*\[\[.*?\|denotes\]\])')
+    
+    match = pattern.search(content)
+    if not match:
+        return
+        
+    prefix = match.group(1)
+    current_notation = match.group(2)
+    suffix = match.group(3)
+    
+    # 3. Check for syntax errors
+    if math_mode_string_has_soft_or_hard_syntax_errors(current_notation):
+        # 4. Attempt correction using the metadata as source
+        corrected_notation = extract_valid_notation_from_source(current_notation, source_text)
+        
+        # If a valid correction was found that differs from the current one
+        if corrected_notation != current_notation:
+            # Reconstruct the text segment
+            new_segment = f"{prefix}{corrected_notation}{suffix}"
+            
+            # Replace the specific match in the content
+            start, end = match.span()
+            new_content = content[:start] + new_segment + content[end:]
+            
+            note.write(new_content)
+

@@ -165,7 +165,7 @@ def parse_notation_note(
         vault: Optional[PathLike] = None, # The vault If `None`, then uses `notation_note.vault`
         process_notation_note_content: bool = False, # If `True` run `process_standard_information_note` on the content of the notation note.
         remove_file_extension_from_linked_note_names: bool = True # `If `True`, remove file extensions of `.md` from the links to notation notes within `notation_note`.
-        ) -> tuple[NotationNoteParsed]:
+        ) -> NotationNoteParsed:
     """Parse information from the notation note.
 
     **Returns**

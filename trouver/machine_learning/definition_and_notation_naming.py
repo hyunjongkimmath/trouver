@@ -34,6 +34,10 @@ from trouver.helper.latex.augment import (
     change_font_styles_at_random, change_greek_letters_at_random, remove_font_styles_at_random
 )
 
+from ..helper.latex.macros_and_commands import (math_mode_string_has_soft_or_hard_syntax_errors)
+from ..notation.management import extract_valid_notation_from_source
+
+
 from ..obsidian.file import MarkdownFile
 from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote
@@ -245,7 +249,7 @@ def _name_prediction_for_data_point(
     return summarizer_output[0]['summary_text']
 
 
-# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 14
+# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 15
 def add_names_to_html_tags_in_info_note(
         info_note: VaultNote,
         def_and_notat_pipeline: Optional[pipelines.text2text_generation.SummarizationPipeline] = None, # A pipeline wrapping an ML model which predicts the naming of both definition and notations.
@@ -290,8 +294,8 @@ def add_names_to_html_tags_in_info_note(
             def_or_notat = 'definition'
         elif 'notation' in tag.attrs:
             def_or_notat = 'notation'
-            if correct_syntax and math_mode_string_is_syntactically_valid(name):
-                name = _correct_syntax(name, tag)
+            if correct_syntax and math_mode_string_has_soft_or_hard_syntax_errors(name):
+                name = extract_valid_notation_from_source(name, tag.text)
             if fix_formatting:
                 name = fix_autogen_formatting(name)
         else:
@@ -309,17 +313,17 @@ def add_names_to_html_tags_in_info_note(
     mf.write(info_note)
 
 
-def _correct_syntax(
-        name: str,
-        tag: Tag
-        ) -> str:
-    """
-    This is a helper function of `add_names_to_html_tags_in_info_note`.
-    """
-    replacement_candidates = _list_of_candidates_from_math_mode_strings(tag.text)
-    return correct_latex_syntax_error(name, replacement_candidates)
+# def _correct_syntax(
+#         name: str,
+#         tag: Tag
+#         ) -> str:
+#     """
+#     This is a helper function of `add_names_to_html_tags_in_info_note`.
+#     """
+#     replacement_candidates = _list_of_candidates_from_math_mode_strings(tag.text)
+#     return correct_latex_syntax_error(name, replacement_candidates)
 
-# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 17
+# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 21
 # TODO: test
 def autogen_name_from_notation_note(
         notation_note: VaultNote, pipeline):
@@ -363,7 +367,7 @@ def add_autogen_name_to_notation_note(
 
 
 
-# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 18
+# %% ../../nbs/07_machine_learning_25.definition_and_notation_naming.ipynb 22
 # TODO: test
 def predict_name_and_add_to_notation_note(
         notation_note: VaultNote,

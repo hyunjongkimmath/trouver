@@ -5,7 +5,8 @@
 # %% auto 0
 __all__ = ['REGEX_PATTERN_DETECTIONS', 'temp_dict', 'extract_latex_commands', 'extract_commands_from_nodes', 'custom_commands',
            'regex_pattern_detecting_command', 'regex_pattern_detecting_space_separated_command',
-           'detect_incorrect_latex_commands', 'check_unescaped_dollar', 'math_mode_string_is_syntactically_valid']
+           'detect_incorrect_latex_commands', 'check_unescaped_dollar', 'math_mode_string_is_syntactically_valid',
+           'math_mode_string_has_soft_or_hard_syntax_errors']
 
 # %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 2
 import re
@@ -17,7 +18,7 @@ import regex
 from .comments import remove_comments
 from ..regex import latex_indices
 from .core import (
-    detect_unbalanced_environments, _detect_backslash_space_curly, _does_not_end_with_script, _has_invalid_left_right_bracket, _has_double_script, _has_unescaped_dollar, _has_double_script_literal, _is_balanced_braces, _is_left_right_balanced)
+    detect_unbalanced_environments, latex_math_mode_has_soft_syntax_oddities, _detect_backslash_space_curly, _does_not_end_with_script, _has_invalid_left_right_bracket, _has_double_script, _has_unescaped_dollar, _has_double_script_literal, _is_balanced_braces, _is_left_right_balanced)
 
 # %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 5
 def extract_latex_commands(
@@ -517,3 +518,9 @@ def math_mode_string_is_syntactically_valid(
 #     """
 #     if r'\\' in text:
 #         return False
+
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb 45
+def math_mode_string_has_soft_or_hard_syntax_errors(text: str) -> bool:
+    return (
+        not math_mode_string_is_syntactically_valid(text) or 
+        latex_math_mode_has_soft_syntax_oddities(text))

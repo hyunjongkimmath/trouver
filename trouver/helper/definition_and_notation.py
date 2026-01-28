@@ -234,7 +234,7 @@ def definition_asterisk_indices(
         if not _is_notation(text, start, end)
     ]
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 23
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb 24
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:
