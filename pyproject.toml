@@ -7,12 +7,12 @@ name = "trouver"
 dynamic = ["version"]
 description = "Create and maintain mathematical Obsidian.md notes, and gather data from them to train ML models"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = {text = "Apache-2.0"}
 authors = [{name = "Hyun Jong Kim", email = "hyunjongkim96@gmail.com"}]
 keywords = ['nbdev', 'jupyter', 'notebook', 'python']
 classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
-dependencies = ['arxiv', 'bs4', 'datasets', 'deprecated', 'fastai', 'fastcore', 'fuzzywuzzy', 'instructor', 'jarowinkler', 'natsort', 'numpy>=1.26.0,<2.0.0', 'Levenshtein', 'multiset', 'nbdev_ignore', 'openai', 'pandas', 'pydantic', 'pyyaml', 'pylatexenc', 'PyQt6', 'regex', 'scipy', 'sentence-transformers', 'strsimpy', 'thefuzz', 'transformers', 'pathvalidate', 'toml']
+dependencies = ['arxiv', 'bs4', 'datasets', 'deprecated', 'fastai', 'fastcore', 'fuzzywuzzy', 'instructor', 'jarowinkler', 'natsort', 'numpy>=1.26.0,<2.0.0', 'Levenshtein', 'lmstudio', 'multiset', 'nbdev_ignore', 'openai', 'pandas', 'pydantic', 'pyyaml', 'pylatexenc', 'PyQt6', 'regex', 'scipy', 'sentence-transformers', 'strsimpy', 'thefuzz', 'transformers', 'pathvalidate', 'toml']
 
 [project.urls]
 Repository = "https://github.com/hyunjongkimmath/trouver"
@@ -30,5 +30,3 @@ version = {attr = "trouver.__version__"}
 [tool.setuptools.packages.find]
 include = ["trouver"]
 
-[tool.nbdev]
-tst_flags = 'notest ignore'

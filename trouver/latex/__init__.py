@@ -54,4 +54,3 @@ def find_main_latex_file(
 #     print(f"The main LaTeX file is: {main_latex_file}")
 # except FileNotFoundError as e:
 #     print(e)
-

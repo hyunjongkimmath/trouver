@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['ALPHABETICAL_SUBDIRECTORIES', 'ALPHABET_TO_ALPHABET_GROUP_DICT']
 
-# %% ../../nbs/01_helper_00.constants.ipynb 1
+# %% ../../nbs/01_helper_00.constants.ipynb 2
 # Define the standard alphabetical subdirectories for reference/template organization
 ALPHABETICAL_SUBDIRECTORIES = ["A-E", "F-J", "K-O", "P-T", "U-Z"]
 
