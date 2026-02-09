@@ -33,14 +33,19 @@ jobs:
       - name: Install Project & nbdev
         run: |
           pip install -U pip
-          # Explicitly install nbdev because it's not in your requirements.txt/settings.ini
+          # 1. Install nbdev explicitly so we have the code
           pip install nbdev
-          # Install your library and torch
+          # 2. Install your library (and dependencies like PyQt6/Torch)
           pip install -e ".[dev]" --extra-index-url https://download.pytorch.org/whl/cpu
 
-      - name: Run nbdev commands
+      - name: Check for notebook export synchronization
         run: |
-          # Now that nbdev is installed, these commands will exist.
-          nbdev_export
-          # --n_workers 0 fixes the "BrokenProcessPool" error by disabling multiprocessing
-          xvfb-run nbdev_test --timing --n_workers 0
+          # Bypass PATH entirely by running the module directly
+          # This is the code behind 'nbdev_export'
+          python -m nbdev.doclinks
+
+      - name: Run nbdev tests
+        run: |
+          # This is the code behind 'nbdev_test'
+          # --n_workers 0 is CRITICAL to prevent the 'BrokenProcessPool' error you saw earlier
+          xvfb-run python -m nbdev.test --timing --n_workers 0
