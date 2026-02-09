@@ -8,6 +8,7 @@
 
 # I am looking at this for how to update the python version.
 # https://forums.fast.ai/t/python-version-error-while-running-ci-operations-in-github/98482/3
+
 name: CI
 on: [workflow_dispatch, pull_request, push]
 
@@ -22,27 +23,24 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'
+          # Removed the cache line to prevent the error you just saw
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1 libglx-mesa0 libegl1 libxkbcommon-x11-0 libdbus-1-3
+          sudo apt-get install -y libgl1 libglx-mesa0 libegl1 libxkbcommon-x11-0 libdbus-1-3 xvfb
 
-      - name: Install nbdev and build tools
+      - name: Install build tools
         run: |
-          pip install -U "nbdev<3" setuptools wheel
+          python -m pip install --upgrade pip
+          pip install setuptools wheel "nbdev<3"
 
       - name: Install Library and Dependencies
         run: |
-          # This replicates the nbdev-ci install logic but stays in your 3.10 env
+          # This will read your settings.ini requirements
           pip install -e ".[dev]" --extra-index-url https://download.pytorch.org/whl/cpu
-
-      - name: Check for notebook export synchronization
-        run: nbdev_export
 
       - name: Run nbdev tests
         run: |
-          # Use xvfb-run because PyQt6 requires a display buffer to even initialize
-          sudo apt-get install -y xvfb
+          # xvfb-run provides the virtual display for PyQt6
           xvfb-run nbdev_test --timing
