@@ -17,4 +17,4 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgl1-mesa-glx libegl1-mesa libxkbcommon-x11-0 libdbus-1-3
       # Use fastai's workflow for deploying to GitHub Pages
-      - uses: fastai/workflows/quarto-ghp@master
+      - uses: fastai/workflows/quarto-ghp3@master
