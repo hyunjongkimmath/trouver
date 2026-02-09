@@ -6,7 +6,7 @@
 __all__ = ['notes_linked_in_note', 'notes_linked_in_notes_linked_in_note', 'note_has_tag']
 
 # %% ../../nbs/05_personal_vault_10.notes.ipynb 2
-from typing import Union
+from typing import Optional, Union
 
 from trouver.obsidian.file import(
     MarkdownFile

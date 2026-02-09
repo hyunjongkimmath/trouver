@@ -10,8 +10,7 @@ __all__ = ['LABEL_TAGS', 'note_is_labeled_with_tag', 'note_labels', 'labels_and_
            'predict_note_types', 'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
 
 # %% ../../nbs/07_machine_learning_10.information_note_types.ipynb 3
-LABEL_TAGS = [
-    '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta/example', 
+LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta/example', 
     '#_meta/narrative', '#_meta/notation', '#_meta/proof', '#_meta/remark',
     '#_meta/TODO/split', '#_meta/TODO/merge', '#_meta/TODO/delete', '#_meta/hint',
     '#_meta/how_to', '#_meta/conjecture', '#_meta/convention',

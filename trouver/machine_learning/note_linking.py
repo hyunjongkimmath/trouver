@@ -9,7 +9,7 @@ __all__ = ['NotePairData', 'link_types_for_note_pair_data', 'sieve_note_data_pai
            'parse_link_cache_note', 'write_link_cache_note', 'consolidate_note_linking_predictions_into_cache',
            'consolidate_caches', 'remove_blank_or_no_link_data_from_cache', 'remove_nonexistent_note_names_from_cache',
            'sieve_potential_relied_notes', 'predict_on_relied_note_and_related_notat_notes',
-           'similar_notat_notes_in_note', 'locate_footnote_embedded_notation_link',
+           'get_all_linked_info_notes', 'similar_notat_notes_in_note', 'locate_footnote_embedded_notation_link',
            'add_notation_note_embedded_footnotes_to_info_note', 'SummarizationDataPoint', 'summarization_data',
            'augment_notat_note_data_for_summarization', 'notat_note_data_admissible_for_summarization_data',
            'summarization_dataset_from_note_data']
@@ -942,6 +942,134 @@ def predict_on_relied_note_and_related_notat_notes(
 
 
 # %% ../../nbs/07_machine_learning_40.note_linking.ipynb 65
+from pathlib import Path
+from typing import List, Dict, Any, Set
+
+# --- Assumed Imports ---
+# from trouver.obsidian.vault import VaultNote
+# from trouver.obsidian.markdown.file import MarkdownFile
+
+# From 03_obsidian_15.links.ipynb
+# from trouver.obsidian.links import links_from_text, ObsidianLink
+
+# From 05_personal_vault_19.note_type.ipynb
+# from trouver.obsidian.personal.note_type import note_is_of_type, PersonalNoteTypeEnum
+
+# From 05_personal_vault_25.note_processing.ipynb
+# from trouver.obsidian.markdown.processing import process_standard_information_note
+
+# From 06_notation...
+# from trouver.notation.info import main_of_notation
+
+# From 07_machine_learning_40.note_linking.ipynb
+# from trouver.machine_learning.note_linking import (
+#     link_cache_note, 
+#     parse_link_cache_note, 
+#     NoteLinkEnum
+# )
+
+#| export
+def get_all_linked_info_notes(info_note: VaultNote, reference: str) -> List[VaultNote]:
+    """
+    Retrieves all info notes linked to the given info note.
+    
+    Aggregates dependencies from:
+    1. The Link Cache (using `link_cache_note` and `parse_link_cache_note`).
+    2. Dynamic content processing (using `links_from_text` and `ObsidianLink`).
+    
+    Args:
+        info_note: The VaultNote to analyze.
+        reference: The reference string (e.g., 'Algebra') used to locate the 
+                   subvault and link cache.
+        
+    Returns:
+        A list of unique VaultNote objects representing the dependencies.
+    """
+    # Use a dictionary keyed by note name to ensure uniqueness.
+    # This handles cases where VaultNote equality is based on object identity.
+    found_notes_map: Dict[str, VaultNote] = {}
+    vault = info_note.vault
+    
+    # ---------------------------------------------------------
+    # 1. Retrieve from Link Cache
+    # ---------------------------------------------------------
+    # Resolve subvault path using the index note anchor
+    index_note = VaultNote(vault, name=f'_index_{reference}')
+    
+    if index_note.exists():
+        subvault_path = index_note.path(relative=False).parent
+        
+        cache_note_obj = link_cache_note(subvault_path, reference, create_if_does_not_exist=False)
+        
+        if cache_note_obj.exists():
+            link_types_cache = parse_link_cache_note(cache_note_obj)
+            
+            if info_note.name in link_types_cache:
+                targets_dict = link_types_cache[info_note.name]
+                
+                valid_types = {
+                    NoteLinkEnum.INFO_TO_INFO_IN_CONTENT, 
+                    NoteLinkEnum.INFO_TO_INFO_VIA_NOTAT
+                }
+                
+                for target_name, link_types_list in targets_dict.items():
+                    if any(lt in valid_types for lt in link_types_list):
+                        # Only create/add if not already found
+                        if target_name not in found_notes_map:
+                            target_note = VaultNote(vault, name=target_name)
+                            if target_note.exists():
+                                found_notes_map[target_name] = target_note
+    else:
+        # print(f"Debug: Index note '_index_{reference}' not found. Skipping cache lookup.")
+        pass
+
+    # ---------------------------------------------------------
+    # 2. Retrieve from Processed Content (Dynamic Scan)
+    # ---------------------------------------------------------
+    mf = MarkdownFile.from_vault_note(info_note)
+    
+    processed_output = process_standard_information_note(
+        mf, 
+        vault, 
+        remove_links=False, 
+        remove_footnotes_to_embedded=False
+    )
+    
+    processed_text = str(processed_output)
+    
+    links: List[ObsidianLink] = links_from_text(processed_text)
+    
+    for link in links:
+        name = link.file_name
+        
+        # Optimization: Skip if we already have this note
+        if name in found_notes_map:
+            continue
+
+        linked_note = VaultNote(vault, name=name)
+        
+        if not linked_note.exists():
+            continue
+            
+        # Case A: Direct link to a Standard Info Note
+        if note_is_of_type(linked_note, PersonalNoteTypeEnum.STANDARD_INFORMATION_NOTE):
+            found_notes_map[name] = linked_note
+            
+        # Case B: Link to a Notation Note -> Get its Main Info Note
+        elif note_is_of_type(linked_note, PersonalNoteTypeEnum.NOTATION_NOTE):
+            main_info = main_of_notation(linked_note, as_note=True)
+            if main_info and main_info.exists():
+                # Use main_info.name as key to avoid duplicates
+                found_notes_map[main_info.name] = main_info
+
+    # Remove self-reference if present
+    if info_note.name in found_notes_map:
+        del found_notes_map[info_note.name]
+
+    return list(found_notes_map.values())
+
+
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 67
 def similar_notat_notes_in_note(
         origin_note: VaultNote, # Either an info or a notat note
         notation_notes: VaultNote | list[VaultNote], # The notation notes that are considered to be 
@@ -975,7 +1103,7 @@ def similar_notat_notes_in_note(
     return matching_notat_notes
         
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 67
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 69
 def locate_footnote_embedded_notation_link(
         origin_note: VaultNote, # An info note 
         notation_note: VaultNote, # The notation notes that are considered to be 
@@ -1007,7 +1135,7 @@ def locate_footnote_embedded_notation_link(
     max_key = max(scores, key=scores.get)
     return max_key
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 70
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 72
 def _where_to_add_notation_links(
         origin_note: VaultNote,
         relied_notes: list[VaultNote],
@@ -1028,7 +1156,7 @@ def _where_to_add_notation_links(
         where_to_add[location].append(relied_note)
     return where_to_add
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 71
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 73
 def _add_notation_note_embedded_footnotes(
         text: str,
         where_to_add: dict[int, list[VaultNote]],
@@ -1066,7 +1194,7 @@ def _add_notation_note_embedded_footnotes(
     return text
     
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 73
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 75
 def add_notation_note_embedded_footnotes_to_info_note(
         origin_note: VaultNote, # An info note
         relied_notes: Optional[VaultNote | list[VaultNote]] = None, # notation notes to add embedded footnotes for.
@@ -1111,13 +1239,13 @@ def add_notation_note_embedded_footnotes_to_info_note(
     origin_note.write(new_text)
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 78
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 80
 class SummarizationDataPoint(TypedDict):
     input: str
     output: str
     notat_note_name: str
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 79
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 81
 def summarization_data(
         notat_note_data_point: NotatNoteData,
         info_note_data: dict[str, InfoNoteData], # For getting data from the linked notes.
@@ -1184,7 +1312,7 @@ def summarization_data(
 
 
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 80
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 82
 def augment_notat_note_data_for_summarization(
         notat_note_data_point: NotatNoteData,
         augmentation: Literal['high', 'mid' ,'low'],
@@ -1232,7 +1360,7 @@ def augment_notat_note_data_for_summarization(
                 NoteLinkEnum.NOTAT_TO_INFO_VIA_NOTAT)
     return notat_note_data_copy
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 81
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 83
 def notat_note_data_admissible_for_summarization_data(
         notat_note_data_point: NotatNoteData
         ) -> bool:  # `True` if the notation note data does not have the `_auto/notation_summary` tag, and the content of the notation note is essentially note blank.
@@ -1242,7 +1370,7 @@ def notat_note_data_admissible_for_summarization_data(
         return False 
     return bool(notat_note_data_point.note_content.strip())
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 84
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 86
 def _add_augmented_data_points(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -1263,7 +1391,7 @@ def _add_augmented_data_points(
                 aug_data_point, info_note_data, notat_note_data, format, augmentation))
     
 
-# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 85
+# %% ../../nbs/07_machine_learning_40.note_linking.ipynb 87
 def summarization_dataset_from_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],

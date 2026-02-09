@@ -21,7 +21,127 @@ from trouver.personal_vault.notes import (
 from ..personal_vault.note_type import note_is_of_type, PersonalNoteTypeEnum
 
 # %% ../../nbs/06_notation_15.glossary.ipynb 3
-from typing import List, Any
+# from typing import List, Any
+# from bs4.element import Tag
+
+# # --- Assumed Imports from Your Library ---
+# # from trouver.obsidian.vault import VaultNote
+# # from trouver.helper.html import remove_html_tags_in_text
+# # from trouver.obsidian.links import notation_notes_linked_in_see_also_section
+# # from trouver.notation.parse import parse_notation_note 
+
+# #| export
+# def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
+#     """
+#     Generates a Markdown-formatted glossary from a list of info notes,
+#     only including notes that contain at least one definition or notation.
+
+#     Args:
+#         info_notes: A list of VaultNote objects to process.
+        
+#     Returns:
+#         A single string containing the formatted Markdown glossary.
+#     """
+#     glossary_lines = []
+    
+#     for note in info_notes:
+#         # Temporary list to hold items for the current note
+#         note_items = []
+        
+#         # 1. Extract Definitions from HTML tags
+#         _, tags_and_locs = remove_html_tags_in_text(note.text())
+        
+#         for tag, _, _ in tags_and_locs:
+#             if isinstance(tag, Tag) and tag.has_attr('definition'):
+#                 definition_name = tag['definition']
+#                 if definition_name:
+#                     note_items.append(f"    - {definition_name}")
+        
+#         # 2. Extract Notations from linked notation notes
+#         linked_notation_notes = notation_notes_linked_in_see_also_section(note, note.vault)
+        
+#         for notation_note in linked_notation_notes:
+#             parsed_data = parse_notation_note(notation_note)
+            
+#             latex_str = None
+#             latex_str = parsed_data.notation_str.strip('$')
+            
+#             if latex_str:
+#                 note_items.append(f"    - ${latex_str}$")
+                
+#         # 3. CRITICAL CHANGE: Only add the note to the glossary if it has items.
+#         if note_items:
+#             # Add the note's header first
+#             glossary_lines.append(f"- [[{note.name}]]")
+#             # Then add all the collected items
+#             glossary_lines.extend(note_items)
+                
+#     return "\n".join(glossary_lines)
+
+
+# # def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
+# #     """
+# #     Generates a Markdown-formatted glossary from a list of info notes.
+
+# #     For each note, it lists:
+# #     - Definitions extracted from `definition` attributes in HTML tags.
+# #     - Notations from associated notation notes, parsed using the existing library function.
+    
+# #     Args:
+# #         info_notes: A list of VaultNote objects to process.
+        
+# #     Returns:
+# #         A single string containing the formatted Markdown glossary.
+# #     """
+# #     markdown_lines = []
+    
+# #     for note in info_notes:
+# #         # Add the main info note link as a top-level list item
+# #         markdown_lines.append(f"- [[{note.name}]]")
+        
+# #         # 1. Extract Definitions from HTML tags
+# #         _, tags_and_locs = remove_html_tags_in_text(note.text())
+        
+# #         for tag, _, _ in tags_and_locs:
+# #             if isinstance(tag, Tag) and tag.has_attr('definition'):
+# #                 definition_name = tag['definition']
+# #                 if definition_name:
+# #                     markdown_lines.append(f"    - {definition_name}")
+        
+# #         # 2. Extract Notations from linked notation notes
+# #         linked_notation_notes = notation_notes_linked_in_see_also_section(
+# #             note, note.vault)
+        
+# #         for notation_note in linked_notation_notes:
+# #             # Call the existing parser. 
+# #             # This returns a structured object (dict or class), NOT a string.
+# #             parsed_data = parse_notation_note(notation_note)
+            
+# #             # Extract the LaTeX string from the parsed data.
+# #             # ADJUST THIS KEY based on your actual return structure.
+# #             # Based on previous context, it might be 'notation', 'latex_in_original', or similar.
+# #             latex_str = None
+            
+# #             # Example: if the parser returns a dict with a 'notation' key
+# #             latex_str = parsed_data.notation_str.strip('$')
+            
+# #             # Fallback: if it uses 'latex_in_original' (list or str)
+# #             # if not latex_str
+# #             #     val = parsed_data.yaml_frontmatter['latex_in_original']
+# #             #     latex_str = val[0] if isinstance(val, list) and val else str(val)
+            
+# #             # If parse_notation_note returns an object, access the attribute:
+# #             # elif hasattr(parsed_data, 'notation'):
+# #             #     latex_str = parsed_data.notation
+
+# #             if latex_str:
+# #                 markdown_lines.append(f"    - ${latex_str}$")
+                        
+# #     return "\n".join(markdown_lines)
+
+
+# %% ../../nbs/06_notation_15.glossary.ipynb 4
+from typing import List, Any, Optional
 from bs4.element import Tag
 
 # --- Assumed Imports from Your Library ---
@@ -29,15 +149,23 @@ from bs4.element import Tag
 # from trouver.helper.html import remove_html_tags_in_text
 # from trouver.obsidian.links import notation_notes_linked_in_see_also_section
 # from trouver.notation.parse import parse_notation_note 
+from ..obsidian.file import MarkdownFile
 
 #| export
-def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
+def generate_glossary_markdown(
+    info_notes: List[VaultNote],
+    check_auto_tag: bool = False
+) -> str:
     """
     Generates a Markdown-formatted glossary from a list of info notes,
     only including notes that contain at least one definition or notation.
 
     Args:
         info_notes: A list of VaultNote objects to process.
+        check_auto_tag: If True, checks if the note has the tag 
+            `_auto/def_and_notat_names_added`. If present, the HTML tag's 
+            underlying text is used as the definition name. Otherwise (or if False),
+            the `definition` attribute is used (falling back to text if the attribute is blank).
         
     Returns:
         A single string containing the formatted Markdown glossary.
@@ -51,9 +179,27 @@ def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
         # 1. Extract Definitions from HTML tags
         _, tags_and_locs = remove_html_tags_in_text(note.text())
         
+        # Determine if we should prioritize text based on the note's tags
+        prioritize_text = False
+        if check_auto_tag:
+            mf = MarkdownFile.from_vault_note(note)
+            if mf.has_tag('_auto/def_and_notat_names_added'):
+                prioritize_text = True
+        
         for tag, _, _ in tags_and_locs:
             if isinstance(tag, Tag) and tag.has_attr('definition'):
-                definition_name = tag['definition']
+                definition_name = None
+                
+                if prioritize_text:
+                    # Mode 2 (Tag present): Use underlying text
+                    definition_name = tag.get_text(strip=True)
+                else:
+                    # Mode 1 (Default) or Mode 2 (Tag absent): 
+                    # Use attribute, fallback to text if blank
+                    definition_name = tag['definition']
+                    if not definition_name:
+                        definition_name = tag.get_text(strip=True)
+                
                 if definition_name:
                     note_items.append(f"    - {definition_name}")
         
@@ -64,12 +210,14 @@ def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
             parsed_data = parse_notation_note(notation_note)
             
             latex_str = None
-            latex_str = parsed_data.notation_str.strip('$')
+            # Assuming parsed_data is an object with a notation_str attribute
+            if parsed_data:
+                latex_str = parsed_data.notation_str.strip('$')
             
             if latex_str:
                 note_items.append(f"    - ${latex_str}$")
                 
-        # 3. CRITICAL CHANGE: Only add the note to the glossary if it has items.
+        # 3. Only add the note to the glossary if it has items.
         if note_items:
             # Add the note's header first
             glossary_lines.append(f"- [[{note.name}]]")
@@ -79,68 +227,7 @@ def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
     return "\n".join(glossary_lines)
 
 
-# def generate_glossary_markdown(info_notes: List[VaultNote]) -> str:
-#     """
-#     Generates a Markdown-formatted glossary from a list of info notes.
-
-#     For each note, it lists:
-#     - Definitions extracted from `definition` attributes in HTML tags.
-#     - Notations from associated notation notes, parsed using the existing library function.
-    
-#     Args:
-#         info_notes: A list of VaultNote objects to process.
-        
-#     Returns:
-#         A single string containing the formatted Markdown glossary.
-#     """
-#     markdown_lines = []
-    
-#     for note in info_notes:
-#         # Add the main info note link as a top-level list item
-#         markdown_lines.append(f"- [[{note.name}]]")
-        
-#         # 1. Extract Definitions from HTML tags
-#         _, tags_and_locs = remove_html_tags_in_text(note.text())
-        
-#         for tag, _, _ in tags_and_locs:
-#             if isinstance(tag, Tag) and tag.has_attr('definition'):
-#                 definition_name = tag['definition']
-#                 if definition_name:
-#                     markdown_lines.append(f"    - {definition_name}")
-        
-#         # 2. Extract Notations from linked notation notes
-#         linked_notation_notes = notation_notes_linked_in_see_also_section(
-#             note, note.vault)
-        
-#         for notation_note in linked_notation_notes:
-#             # Call the existing parser. 
-#             # This returns a structured object (dict or class), NOT a string.
-#             parsed_data = parse_notation_note(notation_note)
-            
-#             # Extract the LaTeX string from the parsed data.
-#             # ADJUST THIS KEY based on your actual return structure.
-#             # Based on previous context, it might be 'notation', 'latex_in_original', or similar.
-#             latex_str = None
-            
-#             # Example: if the parser returns a dict with a 'notation' key
-#             latex_str = parsed_data.notation_str.strip('$')
-            
-#             # Fallback: if it uses 'latex_in_original' (list or str)
-#             # if not latex_str
-#             #     val = parsed_data.yaml_frontmatter['latex_in_original']
-#             #     latex_str = val[0] if isinstance(val, list) and val else str(val)
-            
-#             # If parse_notation_note returns an object, access the attribute:
-#             # elif hasattr(parsed_data, 'notation'):
-#             #     latex_str = parsed_data.notation
-
-#             if latex_str:
-#                 markdown_lines.append(f"    - ${latex_str}$")
-                        
-#     return "\n".join(markdown_lines)
-
-
-# %% ../../nbs/06_notation_15.glossary.ipynb 6
+# %% ../../nbs/06_notation_15.glossary.ipynb 9
 from typing import List, Optional
 from pathlib import Path
 
@@ -172,10 +259,12 @@ def _resolve_info_notes_for_index(index_note: VaultNote) -> List[VaultNote]:
 
     return []
 
-#| export
+
+# %% ../../nbs/06_notation_15.glossary.ipynb 10
 def create_glossary_for_index_note(
     index_note: VaultNote,
-    info_notes: Optional[List[VaultNote]] = None
+    info_notes: Optional[List[VaultNote]] = None,
+    check_auto_tag: bool = False
 ) -> None:
     """
     Generates and saves a glossary file for a given index note.
@@ -189,6 +278,9 @@ def create_glossary_for_index_note(
         info_notes: An optional list of `VaultNote` objects to be included in the
             glossary. If not provided, this function will automatically resolve
             the relevant notes based on the project's linking conventions.
+        check_auto_tag: Passed to `generate_glossary_markdown`. If True, alters
+            how definition names are retrieved based on the presence of the
+            `_auto/def_and_notat_names_added` tag.
     """
     # 1. Determine the list of info notes to process.
     if info_notes is None:
@@ -202,7 +294,10 @@ def create_glossary_for_index_note(
 
     # 2. Generate the glossary markdown.
     print(f"Generating glossary for {len(info_notes_to_process)} info note(s)...")
-    glossary_content = generate_glossary_markdown(info_notes_to_process)
+    glossary_content = generate_glossary_markdown(
+        info_notes_to_process, 
+        check_auto_tag=check_auto_tag
+    )
 
     # 3. Determine the new note's name and path.
     # Parse the "actually interesting name" using the prefix "_index_"
@@ -215,17 +310,13 @@ def create_glossary_for_index_note(
     glossary_name = f"_glossary_{interesting_name}"
     
     # Determine the relative path for the new note.
-    # We assume index_note.rel_path is available and is a Path object (or string).
-    # The glossary should reside in the same directory.
     parent_dir = Path(index_note.rel_path).parent
     glossary_rel_path = parent_dir / f"{glossary_name}.md"
 
     # 4. Create the VaultNote object.
-    # We assume the VaultNote constructor takes the vault instance and the relative path.
     glossary_note = VaultNote(index_note.vault, rel_path=str(glossary_rel_path))
 
     # 5. Create the file and write content using VaultNote methods.
-    # This ensures proper cache management.
     if not glossary_note.exists():
         glossary_note.create()
     
