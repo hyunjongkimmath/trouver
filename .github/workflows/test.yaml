@@ -38,9 +38,9 @@ jobs:
           pip install -e ".[dev]" --extra-index-url https://download.pytorch.org/whl/cpu
 
       - name: Check for notebook export synchronization
-        run: nbdev_export
+        run: python -m nbdev.export
 
       - name: Run nbdev tests
         run: |
-          # Use xvfb-run for your PyQt6 requirements
-          xvfb-run nbdev_test --timing
+          # Use the module call here too for consistency
+          xvfb-run python -m nbdev.test --timing
