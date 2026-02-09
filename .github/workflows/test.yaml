@@ -8,6 +8,7 @@
 
 # I am looking at this for how to update the python version.
 # https://forums.fast.ai/t/python-version-error-while-running-ci-operations-in-github/98482/3
+
 name: CI
 on: [workflow_dispatch, pull_request, push]
 
@@ -22,20 +23,24 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libgl1 libglx-mesa0 libegl1 libxkbcommon-x11-0 libdbus-1-3 xvfb
 
-      - name: Install Project
+      - name: Install Project & nbdev
         run: |
           pip install -U pip
-          # We install nbdev and your package together
+          # Explicitly install nbdev because it's not in your requirements.txt/settings.ini
+          pip install nbdev
+          # Install your library and torch
           pip install -e ".[dev]" --extra-index-url https://download.pytorch.org/whl/cpu
 
-      - name: Run nbdev
+      - name: Run nbdev commands
         run: |
-          # Use 'python -m nbdev.cli' to be 100% sure the shell finds it
-          python -m nbdev.cli export
-          xvfb-run python -m nbdev.cli test --timing --n_workers 0
+          # Now that nbdev is installed, these commands will exist.
+          nbdev_export
+          # --n_workers 0 fixes the "BrokenProcessPool" error by disabling multiprocessing
+          xvfb-run nbdev_test --timing --n_workers 0
