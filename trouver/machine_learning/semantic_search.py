@@ -16,8 +16,31 @@ import os
 import re
 from typing import List, Union, Optional, Type, Iterable, Callable
 
+import os
+import re
+import fnmatch
+import weaviate
+import hashlib
+from typing import List, Union, Optional, Iterable, Callable
+from weaviate.classes.config import Configure, Property, DataType, VectorDistances
+from weaviate.classes.query import Filter # Added missing import
+from weaviate.util import generate_uuid5
+from tqdm import tqdm
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 3
+
+
+import os
+import re
+import fnmatch
+import weaviate
+import hashlib
+from typing import List, Union, Optional, Iterable, Callable
+from weaviate.classes.config import Configure, Property, DataType, VectorDistances
+from weaviate.classes.query import Filter
+from weaviate.util import generate_uuid5
+from tqdm import tqdm
+
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 4
 def latex_comment_stripping_processor(path: Union[str, os.PathLike]) -> str:
     r"""
     Opens a file and removes LaTeX comments while ignoring escaped percents (\%).
@@ -40,18 +63,7 @@ def latex_comment_stripping_processor(path: Union[str, os.PathLike]) -> str:
         print(f"Error reading {path}: {e}")
         return ""
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 4
-import os
-import re
-import fnmatch
-import weaviate
-import hashlib
-from typing import List, Union, Optional, Iterable, Callable
-from weaviate.classes.config import Configure, Property, DataType, VectorDistances
-from weaviate.classes.query import Filter # Added missing import
-from weaviate.util import generate_uuid5
-from tqdm import tqdm
-
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 5
 PathType = Union[str, os.PathLike]
 FileProcessor = Callable[[PathType], str]
 
@@ -60,9 +72,9 @@ class MathBrainClient:
         self, 
         host: str = "localhost", 
         port: int = 8080,
-        chunk_size: int = 800,
-        overlap: int = 150,
-        batch_size: int = 1
+        chunk_size: int = 2000, 
+        overlap: int = 200,
+        batch_size: int = 100    
     ) -> None:
         self.client = weaviate.connect_to_local(host=host, port=port)
         self.CHUNK_SIZE = chunk_size
@@ -70,62 +82,67 @@ class MathBrainClient:
         self.BATCH_SIZE = batch_size
 
     def setup_collection(self, collection_name: str, force_recycle: bool = False) -> None:
-        exists = self.client.collections.exists(collection_name)
-        if force_recycle and exists:
-            print(f"Force Recycle: Deleting existing collection {collection_name}...")
-            self.client.collections.delete(collection_name)
-            exists = False
+        track_name = f"{collection_name}_tracking"
+        
+        if force_recycle:
+            for name in [collection_name, track_name]:
+                if self.client.collections.exists(name):
+                    print(f"Force Recycle: Deleting {name}...")
+                    self.client.collections.delete(name)
 
-        if not exists:
+        # Main Collection
+        if not self.client.collections.exists(collection_name):
             self.client.collections.create(
                 name=collection_name,
-                vector_config=Configure.Vectors.text2vec_ollama(
-                    name="default",
+                vectorizer_config=Configure.Vectorizer.text2vec_ollama(
                     api_endpoint="http://ollama:11434",
                     model="nomic-embed-text",
-                    vector_index_config=Configure.VectorIndex.hnsw(
-                        distance_metric=VectorDistances.COSINE
-                    ),
                 ),
+                vector_index_config=Configure.VectorIndex.hnsw(distance_metric=VectorDistances.COSINE),
                 properties=[
                     Property(name="content", data_type=DataType.TEXT),
-                    Property(name="fileName", data_type=DataType.TEXT),
-                    Property(name="filePath", data_type=DataType.TEXT),
-                    Property(name="contentHash", data_type=DataType.TEXT), # Added property
+                    Property(name="fileName", data_type=DataType.TEXT, skip_vectorization=True),
+                    Property(name="filePath", data_type=DataType.TEXT, skip_vectorization=True),
+                    Property(name="contentHash", data_type=DataType.TEXT, skip_vectorization=True),
                 ]
             )
-            print(f"Collection `{collection_name}` initialized.")
+        
+        # Tracking Collection (No vectors, just metadata for resume-logic)
+        if not self.client.collections.exists(track_name):
+            self.client.collections.create(
+                name=track_name,
+                vectorizer_config=None, 
+                properties=[
+                    Property(name="filePath", data_type=DataType.TEXT),
+                    Property(name="contentHash", data_type=DataType.TEXT),
+                    Property(name="status", data_type=DataType.TEXT),
+                ]
+            )
+        print(f"Collections initialized: {collection_name}")
 
     def _split_text(self, text: str) -> List[str]:
-        text = re.sub(r'\n{3,}', '\n\n', text)
-        paragraphs = text.split('\n\n')
-        chunks: List[str] = []
-        current_chunk = ""
+        """LaTeX-aware chunking."""
+        env_pattern = r'(\\begin\{.*?\}.*?\\end\{.*?\})'
+        parts = re.split(env_pattern, text, flags=re.DOTALL)
+        chunks, current_chunk = [], ""
 
-        for para in paragraphs:
-            para = para.strip()
-            if not para: continue
-
-            if len(para) > self.CHUNK_SIZE:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
+        for part in parts:
+            part = part.strip()
+            if not part: continue
+            if len(current_chunk) + len(part) > self.CHUNK_SIZE:
+                if current_chunk: chunks.append(current_chunk.strip())
+                if len(part) > self.CHUNK_SIZE:
+                    step = self.CHUNK_SIZE - self.OVERLAP
+                    for i in range(0, len(part), step):
+                        chunks.append(part[i : i + self.CHUNK_SIZE])
                     current_chunk = ""
-                step = self.CHUNK_SIZE - self.OVERLAP
-                for i in range(0, len(para), step):
-                    chunks.append(para[i : i + self.CHUNK_SIZE])
-                continue
-
-            if len(current_chunk) + len(para) <= self.CHUNK_SIZE:
-                current_chunk += (para + "\n\n")
+                else:
+                    overlap_text = current_chunk[-self.OVERLAP:] if len(current_chunk) > self.OVERLAP else ""
+                    current_chunk = overlap_text + part + "\n\n"
             else:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-                overlap_text = current_chunk[-self.OVERLAP:] if len(current_chunk) > self.OVERLAP else ""
-                current_chunk = overlap_text + para + "\n\n"
-
-        if current_chunk:
-            chunks.append(current_chunk.strip())
-        return [c[:self.CHUNK_SIZE].strip() for c in chunks if len(c) > 10]
+                current_chunk += part + "\n\n"
+        if current_chunk: chunks.append(current_chunk.strip())
+        return [c for c in chunks if len(c) > 20]
 
     def _get_file_hash(self, text: str) -> str:
         return hashlib.md5(text.encode('utf-8')).hexdigest()
@@ -139,32 +156,39 @@ class MathBrainClient:
         exclude_patterns: Optional[List[str]] = None
     ) -> None:
         self.setup_collection(collection_name, force_recycle)
-        collection = self.client.collections.get(collection_name)
+        main_coll = self.client.collections.get(collection_name)
+        track_coll = self.client.collections.get(f"{collection_name}_tracking")
         
-        # Setup Processor
         def default_proc(p):
             with open(os.fspath(p), "r", encoding="utf-8") as f: return f.read()
         active_processor = processor or default_proc
         ignores = exclude_patterns or []
 
-        # 1. Gather Files
+        # 1. Gather Paths
         all_paths = []
         if isinstance(input_source, (str, os.PathLike)) and os.path.isdir(input_source):
             for root, _, files in os.walk(input_source):
                 for f in files:
-                    full_p = os.path.join(root, f)
+                    full_p = os.path.normpath(os.path.join(root, f))
                     if f.lower().endswith((".tex", ".md", ".txt")):
                         if not any(fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(full_p, pat) for pat in ignores):
                             all_paths.append(full_p)
         else:
-            all_paths = [os.fspath(p) for p in input_source]
+            all_paths = [os.path.normpath(os.fspath(p)) for p in input_source]
 
-        print(f"Syncing {len(all_paths)} files...")
+        # 2. FAST SYNC: Load completed files from Tracking Collection
+        print(f"Checking tracking database for resume point...")
+        completed_files = {}
+        for obj in track_coll.iterator(return_properties=["filePath", "contentHash", "status"]):
+            if obj.properties.get("status") == "COMPLETED":
+                completed_files[obj.properties["filePath"]] = obj.properties["contentHash"]
 
         pbar = tqdm(all_paths, desc="MathBrain Sync")
-        with collection.batch.fixed_size(batch_size=self.BATCH_SIZE) as batch:
+        
+        with main_coll.batch.dynamic() as batch:
             for path in pbar:
-                file_name = os.path.basename(path)
+                path_str = str(path)
+                file_name = os.path.basename(path_str)
                 pbar.set_postfix({"file": file_name[:20]})
                 
                 try:
@@ -172,55 +196,54 @@ class MathBrainClient:
                     if not text.strip(): continue
                     current_hash = self._get_file_hash(text)
 
-                    # 2. SMART SKIP: Check if file + hash already exists
-                    existing = collection.query.fetch_objects(
-                        filters=(
-                            Filter.by_property("filePath").equal(str(path)) & 
-                            Filter.by_property("contentHash").equal(current_hash)
-                        ),
-                        limit=1,
-                        return_properties=[]
-                    )
-                    
-                    if len(existing.objects) > 0 and not force_recycle:
-                        continue # File is unchanged, skip it!
+                    # Resume Logic: Skip if file is marked COMPLETED and hash matches
+                    if path_str in completed_files and completed_files[path_str] == current_hash:
+                        continue 
 
-                    # 3. CLEANUP: Delete old chunks for this file
-                    collection.data.delete_many(
-                        where=Filter.by_property("filePath").equal(str(path))
-                    )
-                    
-                    # 4. INDEX: Add new chunks
+                    # If we are here, file is new, changed, or was interrupted. 
+                    # Clean up any partial data first.
+                    main_coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
+                    track_coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
+
                     chunks = self._split_text(text)
                     for i, chunk in enumerate(chunks):
                         batch.add_object(
                             properties={
                                 "content": chunk,
                                 "fileName": file_name,
-                                "filePath": str(path),
+                                "filePath": path_str,
                                 "contentHash": current_hash 
                             },
-                            uuid=generate_uuid5(f"{path}_{i}")
+                            uuid=generate_uuid5(f"{path_str}_{i}")
                         )
+                    
+                    # Atomic Mark: Save to tracking collection after sending to batch
+                    track_coll.data.insert(
+                        properties={
+                            "filePath": path_str,
+                            "contentHash": current_hash,
+                            "status": "COMPLETED"
+                        },
+                        uuid=generate_uuid5(f"track_{path_str}")
+                    )
+
                 except Exception as e:
                     print(f"\n[Error] {file_name}: {e}")
 
-        final_count = collection.aggregate.over_all(total_count=True).total_count
-        print(f"\nSync Complete. Brain contains {final_count} objects.")
+        final_count = main_coll.aggregate.over_all(total_count=True).total_count
+        print(f"\n✅ Sync Complete. Collection total: {final_count} objects.")
 
     def close(self): self.client.close()
     def __enter__(self): return self
     def __exit__(self, *args): self.close()
 
     def delete_collection(self, collection_name: str):
-        """Permanent deletion of a collection and all its vectors."""
-        if self.client.collections.exists(collection_name):
-            self.client.collections.delete(collection_name)
-            print(f"Collection '{collection_name}' has been deleted.")
-        else:
-            print(f"Deletion skipped: '{collection_name}' does not exist.")
+        for name in [collection_name, f"{collection_name}_tracking"]:
+            if self.client.collections.exists(name):
+                self.client.collections.delete(name)
+        print(f"Collection and Tracking deleted.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 9
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 11
 # import weaviate
 # import weaviate.classes.query as wvc
 # import weaviate
@@ -271,7 +294,7 @@ class MathBrainClient:
 #     def close(self):
 #         self.client.close()
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 10
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 12
 import weaviate
 import weaviate.classes.query as wvc
 import time
