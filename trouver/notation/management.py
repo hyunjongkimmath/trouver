@@ -14,7 +14,9 @@ from pathlib import Path
 from typing import Any, Optional, Union
 import warnings
 
+import difflib
 from bs4 import BeautifulSoup, Tag
+from bs4.element import Tag
 from multiset import Multiset
 from pylatexenc.latexwalker import LatexNode, LatexMacroNode, LatexWalker, LatexGroupNode, LatexCharsNode
 
@@ -38,6 +40,8 @@ from trouver.personal_vault.note_type import (
 from ..obsidian.vault import VaultNote
 from ..obsidian.vault_and_links import all_links_in_vault
 # import trouver.obsidian.vault_and_links
+
+
 
 # %% ../../nbs/06_notation_10_management.ipynb 5
 def notations_to_add_in_index(
@@ -958,45 +962,59 @@ def _get_best_match_span(source_text: str, predicted_text: str) -> tuple[int, in
     return match.a, match.a + match.size
 
 # %% ../../nbs/06_notation_10_management.ipynb 72
-def find_best_notation_substring(source_text: str, predicted_text: str, min_match_ratio: float = 0.4) -> str:
-    """
-    Finds the minimal syntactically valid substring in source_text that contains
-    the best match for predicted_text.
-    
-    Args:
-        source_text: The text to search in.
-        predicted_text: The prediction to anchor.
-        min_match_ratio: The fraction of predicted_text length that must be matched 
-                         to consider it a valid hit. Prevents matching random single letters.
-    """
-    if not source_text or not predicted_text:
-        return predicted_text
+def find_best_notation_substring(source: str, pred: str) -> str:
+    if not source or not pred:
+        return pred
 
-    # 1. Find the best raw substring match
-    matcher = difflib.SequenceMatcher(None, source_text, predicted_text)
-    match = matcher.find_longest_match(0, len(source_text), 0, len(predicted_text))
-    
-    if match.size == 0:
-        return predicted_text
-        
-    # 2. Validate Match Quality
-    # Calculate how much of the prediction was actually found in the source.
-    ratio = match.size / len(predicted_text)
-    
-    # Heuristic to reject noise:
-    # - If prediction is tiny (e.g. "x"), we require an exact match (ratio 1.0).
-    # - Otherwise, we require the match to cover at least `min_match_ratio` (default 40%) of the prediction.
-    if len(predicted_text) < 3:
-        if match.size < len(predicted_text):
-            return predicted_text # Reject partial matches for tiny predictions
-    elif ratio < min_match_ratio:
-        return predicted_text # Reject weak matches (likely noise like matching 'h' in '\alpha')
+    # 1. Normalize mapping
+    def get_norm_data(s):
+        chars, indices = [], []
+        # Standardize for comparison
+        s_clean = s.replace('\\\\', '\\')
+        for i, char in enumerate(s_clean):
+            if not char.isspace():
+                chars.append(char)
+                indices.append(i)
+        return "".join(chars), indices
 
-    start = match.a
-    end = match.a + match.size
+    norm_source, source_map = get_norm_data(source)
+    norm_pred, _ = get_norm_data(pred.replace('\\\\', '\\'))
+
+    # 2. Find matching blocks
+    matcher = difflib.SequenceMatcher(None, norm_source, norm_pred)
+    blocks = [b for b in matcher.get_matching_blocks() if b.size > 0]
+
+    if not blocks:
+        return pred
+
+    # 3. STRICT Hallucination Guard
+    # Calculate the total number of characters that actually matched
+    total_matched = sum(b.size for b in blocks)
     
-    # 3. Expand to valid LaTeX
-    return _expand_to_valid_latex(source_text, start, end)
+    # Identify if we have any 'substantial' chunks (length > 1)
+    # This prevents matching just the 'a' in 'variable'
+    has_substantial_chunk = any(b.size > 1 for b in blocks)
+    
+    # If the match is just scattered single characters, and the prediction 
+    # is much longer, it's a hallucination.
+    if not has_substantial_chunk and len(norm_pred) > 2:
+        return pred
+    
+    # If the total match covers less than 25% of the prediction, it's garbage.
+    if total_matched / len(norm_pred) < 0.25:
+        return pred
+
+    # 4. Define Span from First to Last Match
+    # This connects the 'j_!' island and the '\mathcal{L}' island.
+    start_orig = source_map[blocks[0].a]
+    last_block = blocks[-1]
+    # We must be careful: last_block.a + last_block.size - 1 is the last matched index
+    end_orig = source_map[last_block.a + last_block.size - 1] + 1
+
+    # 5. Expand
+    # Phase 0 of your expand function will now receive the anchor 'j_! \\mathcal{L}'
+    # and properly ignore 'variable' because it won't even be called for '\alpha'
+    return _expand_to_valid_latex(source, start_orig, end_orig)
 
 # %% ../../nbs/06_notation_10_management.ipynb 74
 def extract_valid_notation_from_source(
@@ -1035,33 +1053,7 @@ def extract_valid_notation_from_source(
         
     return find_best_notation_substring(clean_source, predicted_name)
 
-
-# def _correct_syntax(
-#         predicted_name: str, 
-#         tag: Tag,
-#         ) -> str:
-#     """
-#     Corrects the syntax of a predicted name by finding the best matching
-#     valid substring within the source text of the HTML tag.
-#     """
-#     source_text_in_tag: str = tag.text
-#     if not source_text_in_tag:
-#         return predicted_name
-
-#     # 1. Clean the source text (remove display math delimiters if present)
-#     # We want to search inside "$$ ... $$", not include the dollars in the result.
-#     clean_source = source_text_in_tag.strip()
-#     if clean_source.startswith('$$') and clean_source.endswith('$$'):
-#         clean_source = clean_source[2:-2].strip()
-#     elif clean_source.startswith('$') and clean_source.endswith('$'):
-#         clean_source = clean_source[1:-1].strip()
-        
-#     # 2. Find the best valid substring using your robust logic
-#     return find_best_notation_substring(clean_source, predicted_name)
-
-# %% ../../nbs/06_notation_10_management.ipynb 77
-from bs4 import BeautifulSoup
-from bs4.element import Tag
+# %% ../../nbs/06_notation_10_management.ipynb 78
 # from trouver.helper.html import remove_html_tags_in_text
 # from trouver.notation.management import (
 #     math_mode_string_has_soft_or_hard_syntax_errors, 
@@ -1136,7 +1128,7 @@ def correct_notation_names_in_HTML_tags(text: str) -> str:
 
 
 
-# %% ../../nbs/06_notation_10_management.ipynb 80
+# %% ../../nbs/06_notation_10_management.ipynb 81
 # from trouver.obsidian.vault import VaultNote # Adjust import path as needed
 
 def fix_notation_name_syntax_in_HTML_tags(
@@ -1159,7 +1151,7 @@ def fix_notation_name_syntax_in_HTML_tags(
     if new_text != original_text:
         note.write(new_text)
 
-# %% ../../nbs/06_notation_10_management.ipynb 82
+# %% ../../nbs/06_notation_10_management.ipynb 83
 import re
 import yaml
 # from trouver.obsidian.vault import VaultNote

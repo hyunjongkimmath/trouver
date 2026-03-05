@@ -3,7 +3,7 @@
 # %% ../../nbs/01_helper_02.init.ipynb 2
 from __future__ import annotations
 import random
-from typing import Callable, Hashable, TypeVar
+from typing import Callable, Hashable, Optional, TypeVar
 from itertools import zip_longest
 import string
 
@@ -48,7 +48,12 @@ def split_string_at_indices(s: str, indices: list[int]) -> list[str]:
     return [s[i:j] for i, j in zip([0] + indices, indices + [None])]
 
 # %% ../../nbs/01_helper_02.init.ipynb 11
-def split_list_into_chunks(original_list, split_ratio=0.75):
+def split_list_into_chunks(
+        original_list: list, 
+        split_ratio: float = 0.75, 
+        seed: Optional[int] = None,
+        ) -> tuple[list, list]:
+    random.seed(seed)
     total_length = len(original_list)
     target_length = int(total_length * split_ratio)
     
@@ -97,17 +102,6 @@ def get_top_counted_items(
         return [item[0] for item in sorted_items[:num_items]]
 
 # %% ../../nbs/01_helper_02.init.ipynb 18
-# def char_substitution_cost(c1: str, c2: str) -> float:
-#     if c1 == c2 or c1 is None or c2 is None:
-#         return 0
-    
-#     if c1 not in string.ascii_letters or c2 not in string.ascii_letters:
-#         return 1.0
-    
-#     c1, c2 = c1.lower(), c2.lower()
-#     letter_dist = abs(ord(c1) - ord(c2)) / 25
-#     return min(letter_dist * 0.8, 0.8)
-
 def char_substitution_cost(c1: str, c2: str) -> float:
     if c1 == c2 or c1 is None or c2 is None:
         return 0

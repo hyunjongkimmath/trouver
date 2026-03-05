@@ -303,13 +303,38 @@ def _inline_mathmode_to_own_paragraph(
     parts = _separate_inline_latex(text)
     for i in range(len(parts)-1):
         part, next_part = parts[i], parts[i+1]
-        if part.endswith('$$') and _starts_with_less_than_two_newlines(next_part):
-            next_part = _remove_one_blank_space_if_exists(next_part, 'start')
-            parts[i+1] = _make_start_with_two_newlines(next_part)
-        if next_part.startswith('$$') and _ends_with_less_than_two_newlines(part):
-            part = _remove_one_blank_space_if_exists(part, 'end')
-            parts[i] = _make_end_with_two_newlines(part)
+        
+        # 1. Handle the end of a math block: $$ -> text
+        if part.endswith('$$'):
+            # Logic: If the next part starts with an HTML closing tag (</span>), don't insert newlines.
+            if next_part.strip().startswith('</'):
+                continue
+                
+            if _starts_with_less_than_two_newlines(next_part):
+                next_part = _remove_one_blank_space_if_exists(next_part, 'start')
+                parts[i+1] = _make_start_with_two_newlines(next_part)
+        
+        # 2. Handle the start of a math block: text -> $$
+        if next_part.startswith('$$'):
+            # Logic: If the preceding part ends with an HTML opening tag (>), don't insert newlines.
+            if part.strip().endswith('>'):
+                continue
+                
+            if _ends_with_less_than_two_newlines(part):
+                part = _remove_one_blank_space_if_exists(part, 'end')
+                parts[i] = _make_end_with_two_newlines(part)
+                
     return ''.join(parts)
+    # parts = _separate_inline_latex(text)
+    # for i in range(len(parts)-1):
+    #     part, next_part = parts[i], parts[i+1]
+    #     if part.endswith('$$') and _starts_with_less_than_two_newlines(next_part):
+    #         next_part = _remove_one_blank_space_if_exists(next_part, 'start')
+    #         parts[i+1] = _make_start_with_two_newlines(next_part)
+    #     if next_part.startswith('$$') and _ends_with_less_than_two_newlines(part):
+    #         part = _remove_one_blank_space_if_exists(part, 'end')
+    #         parts[i] = _make_end_with_two_newlines(part)
+    # return ''.join(parts)
 
 
 def _separate_inline_latex(
@@ -372,7 +397,7 @@ def _remove_one_blank_space_if_exists(
             return text[:-1]
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 34
+# %% ../../nbs/04_latex_15.formatting.ipynb 35
 def _is_special_line(line: str):
     """Helper function to `_merge_multilines."""
     stripped = line.strip()
@@ -384,7 +409,7 @@ def _is_special_line(line: str):
             # or line.strip().startswith('$$')
             )
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 36
+# %% ../../nbs/04_latex_15.formatting.ipynb 37
 def _strip_and_return_whitespaces(
         text: str) -> tuple[str, str, str]: # The leading whitespaces, the sripped string, and the trailing whitespaces 
     """
@@ -398,7 +423,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 38
+# %% ../../nbs/04_latex_15.formatting.ipynb 39
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -431,7 +456,7 @@ def _merge_multilines_for_non_mathmode_part(text: str):
     main = "\n\n".join(new_lines)
     return f'{leading_whitespaces}{main.strip()}{trailing_whitespaces}'
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 40
+# %% ../../nbs/04_latex_15.formatting.ipynb 41
 def _remove_xspace(
         text: str) -> str:
     r"""
@@ -462,7 +487,7 @@ def _replace_ensuremath(match):
     content = match.group(1)
     return content
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 42
+# %% ../../nbs/04_latex_15.formatting.ipynb 43
 def _remove_starting_blank_space(text):
     """
     Removes leading whitespace from each line in the input text.
@@ -474,7 +499,7 @@ def _remove_starting_blank_space(text):
     )
  
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 44
+# %% ../../nbs/04_latex_15.formatting.ipynb 45
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -567,7 +592,7 @@ def adjust_common_syntax_to_markdown(
         text = _remove_starting_blank_space(text)
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 50
+# %% ../../nbs/04_latex_15.formatting.ipynb 52
 def adjust_common_formatting_while_editing(
         text: str) -> str:
     r"""
@@ -579,7 +604,7 @@ def adjust_common_formatting_while_editing(
         text,
         options=[INLINE_MATHMODE_TO_OWN_PARAGRAPH, MERGE_MULTILINE_PARAGRAPH])
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 57
+# %% ../../nbs/04_latex_15.formatting.ipynb 59
 def replace_input_and_include(
         document: str,
         dir: PathLike, # The directory containing the `.tex` files which are to be included.
@@ -644,7 +669,7 @@ def replace_input_and_include(
     processed_chunks = [process_chunk(chunk) for chunk in chunks]
     return ''.join(processed_chunks)
 
-# %% ../../nbs/04_latex_15.formatting.ipynb 63
+# %% ../../nbs/04_latex_15.formatting.ipynb 65
 def remove_dollar_signs_around_equationlike_envs(text: str):
     """
     Remove dollar signs preceding and following displaymath/equation-like environments.

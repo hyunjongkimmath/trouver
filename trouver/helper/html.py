@@ -120,22 +120,50 @@ def _init_replace_with_attributes(
     return set(replace_with_attributes)
 
 
+# def _select_replacement_text(
+#         content: bs4.element.Tag,
+#         replace_with_attributes: set[str],
+#         definitely_replace: bool) -> str:
+#     if not replace_with_attributes:
+#         return content.string
+#     selection_pool = []    
+#     if not definitely_replace:
+#         selection_pool.append(content.string)
+#     for attribute, value in content.attrs.items():
+#         if attribute not in replace_with_attributes:
+#             continue
+#         selection_pool.append(value)
+#     return random.choice(selection_pool)
+
+
 def _select_replacement_text(
         content: bs4.element.Tag,
         replace_with_attributes: set[str],
         definitely_replace: bool) -> str:
+    
+    # Use .get_text() instead of .string to safely get inner content
+    # content_text will be "Outer Inner" for <div>Outer <span>Inner</span></div>
+    content_text = content.get_text() 
+
     if not replace_with_attributes:
-        return content.string
+        return content_text
+        
     selection_pool = []    
     if not definitely_replace:
-        selection_pool.append(content.string)
+        selection_pool.append(content_text)
+        
     for attribute, value in content.attrs.items():
         if attribute not in replace_with_attributes:
             continue
         selection_pool.append(value)
-    return random.choice(selection_pool)
+    
+    # Handle the case where the pool might be empty (e.g. no string and no matching attrs)
+    if not selection_pool: return ""
+    
+    selected = random.choice(selection_pool)
+    return selected if selected is not None else ""
 
-
+# %% ../../nbs/01_helper_08.html.ipynb 22
 def _process_content(
         parsed_soup: BeautifulSoup,
         replace_with_attributes: set[str],
@@ -149,6 +177,9 @@ def _process_content(
         return position + len(content)
     replacement_text = _select_replacement_text(
         content, replace_with_attributes, definitely_replace)
+
+    if replacement_text is None:
+        replacement_text = ""
     
     try:
         replaced_content = content.replace_with(
@@ -165,7 +196,7 @@ def _process_content(
     return position + len(replacement_text)
     
 
-# %% ../../nbs/01_helper_08.html.ipynb 38
+# %% ../../nbs/01_helper_08.html.ipynb 41
 def add_HTML_tag_data_to_raw_text(
         text: str, # The text onto which to add HTML tags. This is assumed to contain no HTML tags.
         tags_and_locations: list[tuple[bs4.element.Tag, int, int]] # Each tuple consists of the tag object to add as well as the indices within `text` to. The ranges specified by the tuples are assumed to not overlap with one another.

@@ -1115,6 +1115,32 @@ def replace_links_with_display_text(
 
 # %% ../../nbs/03_obsidian_10.file.ipynb 214
 @patch
+def remove_block_identifiers(
+        self: MarkdownFile,
+        ) -> None:
+    r"""
+    Remove block identifiers.
+    
+    These are the carat symbols `^` followed by an alphnumeric string
+    (usually of length 6 by default, e.g. `^7f0244`) that is supposed
+    to mark a unique spot in a Markdown file.
+    """
+    for part in self.parts:
+        # We only care about types that can actually contain text IDs
+        # Headers, Lists, and Default paragraphs are the most common.
+        if part['type'] in [
+            MarkdownLineEnum.DEFAULT, 
+            MarkdownLineEnum.HEADING, 
+            MarkdownLineEnum.UNORDERED_LIST, 
+            MarkdownLineEnum.ORDERED_LIST,
+            MarkdownLineEnum.BLOCKQUOTE,
+            MarkdownLineEnum.DISPLAY_LATEX_END, # IDs often follow the closing $$
+            MarkdownLineEnum.DISPLAY_LATEX_SINGLE
+        ]:
+            part['line'] = _remove_text_id(part['line'])
+
+# %% ../../nbs/03_obsidian_10.file.ipynb 217
+@patch
 def remove_footnotes_to_embedded_links(
         self: MarkdownFile,
         remove_footnote_mentions: bool = True # If `True`, removes the mentions to the footnote to the embedded links in the text.
@@ -1141,7 +1167,7 @@ def remove_footnotes_to_embedded_links(
     for part, label in product(self.parts, footnote_labels_to_remove):
         part['line'] = part['line'].replace(f'[^{label}]', '')
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 221
+# %% ../../nbs/03_obsidian_10.file.ipynb 224
 @patch
 def remove_headers(
         self: MarkdownFile) -> None:
@@ -1152,7 +1178,7 @@ def remove_headers(
     for line in reversed(heading_lines):
         self.remove_line(line)
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 225
+# %% ../../nbs/03_obsidian_10.file.ipynb 228
 @patch
 def remove_double_blank_lines(
         self: MarkdownFile) -> None:
@@ -1165,7 +1191,7 @@ def remove_double_blank_lines(
     for i in reversed(parts_to_remove):
         self.remove_line(i)
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 229
+# %% ../../nbs/03_obsidian_10.file.ipynb 233
 @patch
 def _text_of_embedded_link_of_id(
         self: MarkdownFile,
@@ -1239,7 +1265,7 @@ def _text_of_lines_of_embedded_links(
         vault, recursive, remove_paragraph_id)
     return str(new_mf)
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 230
+# %% ../../nbs/03_obsidian_10.file.ipynb 234
 @patch
 def _replace_embedded_links_one_line(
         self: MarkdownFile,
@@ -1278,7 +1304,7 @@ def _replace_embedded_links_one_line(
         text = text[:start] + replace + text[end:]
     return text
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 231
+# %% ../../nbs/03_obsidian_10.file.ipynb 235
 @patch
 def replace_embedded_links_with_text(
         self: MarkdownFile,
@@ -1303,7 +1329,7 @@ def replace_embedded_links_with_text(
         part['line'] = self._replace_embedded_links_one_line(
             part['line'], vault, recursive, remove_paragraph_id)
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 233
+# %% ../../nbs/03_obsidian_10.file.ipynb 237
 @patch
 def _include_previous_line_as_id_text(
     self: MarkdownFile,
@@ -1339,7 +1365,7 @@ def _include_previous_line_as_id_text(
             return True, False
     return True, True
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 234
+# %% ../../nbs/03_obsidian_10.file.ipynb 238
 @patch
 def parts_of_id(
             self: MarkdownFile,
@@ -1370,7 +1396,7 @@ def parts_of_id(
         return i, end_of_text+1
         # self.parts[i:end_of_text+1]
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 238
+# %% ../../nbs/03_obsidian_10.file.ipynb 242
 @patch
 def remove_html_tags(
         self: MarkdownFile) -> None:
@@ -1383,7 +1409,7 @@ def remove_html_tags(
         part['line'], _ = remove_html_tags_in_text(part['line'])
         # self.parts[i-1]['']
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 241
+# %% ../../nbs/03_obsidian_10.file.ipynb 245
 @patch
 def _merge_one_display_math_mode_latex_chunk(
         self: MarkdownFile,
@@ -1403,7 +1429,7 @@ def _merge_one_display_math_mode_latex_chunk(
         start, {'type': MarkdownLineEnum.DISPLAY_LATEX_SINGLE,
                 'line': merged})
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 242
+# %% ../../nbs/03_obsidian_10.file.ipynb 246
 @patch
 def merge_display_math_mode(
         self: MarkdownFile
@@ -1416,7 +1442,7 @@ def merge_display_math_mode(
             self._merge_one_display_math_mode_latex_chunk(i)
         i += 1
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 246
+# %% ../../nbs/03_obsidian_10.file.ipynb 250
 @patch
 def _merge_latex_into_text(
         self: MarkdownFile,
@@ -1442,7 +1468,7 @@ def _merge_latex_into_text(
     #     self.parts[j]['type'] = MarkdownLineEnum.DISPLAY_LATEX_SINGLE
     return j
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 247
+# %% ../../nbs/03_obsidian_10.file.ipynb 251
 @patch
 def merge_display_math_mode_into_preceding_text(
         self: MarkdownFile,
@@ -1466,7 +1492,7 @@ def merge_display_math_mode_into_preceding_text(
     self.reset_parts()
     # return cls.from_list(text.splitlines(keepends=False))
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 259
+# %% ../../nbs/03_obsidian_10.file.ipynb 263
 @patch
 def _insert_blank_lines_around_math_mode_latex_lines(
         self: MarkdownFile,
@@ -1486,7 +1512,7 @@ def _insert_blank_lines_around_math_mode_latex_lines(
             and self.parts[index-1]['type'] != MarkdownLineEnum.BLANK_LINE):
         self.insert_line(index, {'line': '', 'type': MarkdownLineEnum.BLANK_LINE})
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 261
+# %% ../../nbs/03_obsidian_10.file.ipynb 265
 @patch
 def reformat_display_math_mode(
         self: MarkdownFile,
@@ -1506,7 +1532,7 @@ def reformat_display_math_mode(
     for i in reversed(display_math_mode_latex_lines):
         self._insert_blank_lines_around_math_mode_latex_lines(i)
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 266
+# %% ../../nbs/03_obsidian_10.file.ipynb 271
 @patch
 def _separate_consecutive_default_lines(
         self: MarkdownFile) -> None:
@@ -1523,7 +1549,7 @@ def _separate_consecutive_default_lines(
             {'line': '',
              'type': MarkdownLineEnum.BLANK_LINE})
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 269
+# %% ../../nbs/03_obsidian_10.file.ipynb 275
 @patch
 def cleanup_formatting(
         self: MarkdownFile,
@@ -1542,7 +1568,7 @@ def cleanup_formatting(
     self._separate_consecutive_default_lines()
     self.remove_double_blank_lines()
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 282
+# %% ../../nbs/03_obsidian_10.file.ipynb 289
 @patch
 def write(
     self: MarkdownFile,
@@ -1593,5 +1619,5 @@ The following is the MarkdownFile object's str representation:
     #     file.write(str(self))
     #     file.close()
 
-# %% ../../nbs/03_obsidian_10.file.ipynb 288
+# %% ../../nbs/03_obsidian_10.file.ipynb 295
 # @patch

@@ -12,7 +12,7 @@ license = {text = "Apache-2.0"}
 authors = [{name = "Hyun Jong Kim", email = "hyunjongkim96@gmail.com"}]
 keywords = ['nbdev', 'jupyter', 'notebook', 'python']
 classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
-dependencies = ['arxiv', 'bs4', 'datasets', 'deprecated', 'fastai', 'fastcore', 'fuzzywuzzy', 'instructor', 'jarowinkler', 'natsort', 'numpy>=1.26.0,<2.0.0', 'Levenshtein', 'lmstudio', 'multiset', 'nbdev_ignore', 'openai', 'pandas', 'pydantic', 'pyyaml', 'pylatexenc', 'PyQt6', 'regex', 'scipy', 'sentence-transformers', 'strsimpy', 'thefuzz', 'transformers', 'pathvalidate', 'toml']
+dependencies = ['arxiv', 'bs4', 'datasets', 'deprecated', 'fastai', 'fastcore', 'fuzzywuzzy', 'instructor', 'jarowinkler', 'natsort', 'numpy>=1.26.0,<2.0.0', 'Levenshtein', 'lmstudio', 'multiset', 'nbdev_ignore', 'openai', 'pandas', 'pydantic', 'pyyaml', 'pylatexenc', 'PyQt6', 'regex', 'scipy', 'sentence-transformers', 'strsimpy', 'thefuzz', 'transformers', 'pathvalidate', 'tiktoken', 'toml', 'tqdm', 'weaviate-client']
 
 [project.urls]
 Repository = "https://github.com/hyunjongkimmath/trouver"
@@ -22,7 +22,7 @@ Documentation = "https://hyunjongkimmath.github.io/trouver"
 trouver = "trouver._modidx:d"
 
 [project.optional-dependencies]
-dev = ['torch', 'pyinstaller', 'pyqt6']
+dev = ['bert_score', 'nltk', 'torch', 'pyinstaller', 'pyqt6', 'rouge_score']
 
 [tool.setuptools.dynamic]
 version = {attr = "trouver.__version__"}

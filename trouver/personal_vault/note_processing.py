@@ -55,7 +55,7 @@ def process_standard_information_note(
         remove_in_line_tags: bool = True, # If `True`, removes in-line tags (the lines that start with a tag).  Defaults to `True`.
         remove_footnotes_to_embedded: bool = True, # If `True`, removes footnotes to embedded notes. Defaults to `True`.
         remove_headers: bool = True, # If `True`, removes headers. Defaults to `True`.
-        remove_citation_footnotes: bool = True, # If `True`, removes the citation footnote. Defaults to `True`.
+        remove_block_identifiers: bool = True, # If `True`, removes the block identifiers. Defaults to `True`.
         replace_embedded_links_with_content: bool = True, # If `True`, replaces embedded links with their content.  Defaults to `True`.
         merge_display_math_mode: bool = True, # If `True`, merge each group of display math mode latex lines into single lines.  Defaults to `True`.
         merge_display_math_mode_into_text: Optional[str] = None, # If not `None`, merge each group of display math mode latex lines into single lines and merge those groups into the text that precedes them with the specified str. Defaults to `None`.  The blank character ` ` and the new-line character `\n` are recommended as arguments.
@@ -72,12 +72,12 @@ def process_standard_information_note(
         markdown_file = MarkdownFile.from_string(markdown_file)
     if remove_frontmatter_meta:
         markdown_file.remove_metadata()
-    # if not remove_citation_footnote:
-    #     return
     if remove_footnotes_to_embedded:
         markdown_file.remove_footnotes_to_embedded_links()
     if replace_embedded_links_with_content:
         markdown_file.replace_embedded_links_with_text(vault)
+    if remove_block_identifiers:
+        markdown_file.remove_block_identifiers()
     if remove_see_also_section:
         markdown_file.remove_section('See Also')
     if remove_meta_section:
