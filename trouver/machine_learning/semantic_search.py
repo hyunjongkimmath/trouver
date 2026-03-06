@@ -20,45 +20,6 @@ from weaviate.util import generate_uuid5
 from fastcore.basics import patch
 from tqdm import tqdm
 
-# import os
-# import pathlib
-# import time  # Add this at the very top of your file
-
-# from typing import Dict, Any
-
-# from fastcore.basics import patch
-
-# import weaviate
-# from weaviate.classes.config import Configure, DataType, Property
-# from weaviate.util import generate_uuid5
-
-# import os
-# import re
-# from typing import List, Union, Optional, Type, Iterable, Callable
-
-# import os
-# import re
-# import fnmatch
-# import weaviate
-# import hashlib
-# from typing import List, Union, Optional, Iterable, Callable
-# from weaviate.classes.config import Configure, Property, DataType, VectorDistances
-# from weaviate.classes.query import Filter # Added missing import
-# from weaviate.util import generate_uuid5
-# from tqdm import tqdm
-
-
-
-# import os
-# import re
-# import fnmatch
-# import weaviate
-# import hashlib
-# from typing import List, Union, Optional, Iterable, Callable
-# from weaviate.classes.config import Configure, Property, DataType, VectorDistances
-# from weaviate.classes.query import Filter
-# from weaviate.util import generate_uuid5
-# from tqdm import tqdm
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 4
 def latex_comment_stripping_processor(path: Union[str, os.PathLike]) -> str:
@@ -221,41 +182,6 @@ def _get_completed_files(
     return completed
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 13
-@patch
-def _process_single_file(
-    self: MathBrainClient,
-    path: PathType,
-    processor: Callable,
-    completed_files: Dict[str, str],
-    main_coll: weaviate.collections.Collection,
-    track_coll: weaviate.collections.Collection,
-    batch: Any
-) -> None:
-    """Hash, chunk, and upload. Manual flush used for heavy file stability."""
-    path_str, text = str(path), processor(path)
-    if not text.strip(): return
-    curr_hash = self._get_file_hash(text)
-
-    if path_str in completed_files and completed_files[path_str] == curr_hash: return
-
-    for coll in [main_coll, track_coll]:
-        coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
-
-    chunks = self._split_text(text)
-    for i, chunk in enumerate(chunks):
-        batch.add_object(
-            properties={"content": chunk, "fileName": os.path.basename(path_str), 
-                        "filePath": path_str, "contentHash": curr_hash},
-            uuid=generate_uuid5(f"{path_str}_{i}"))
-    
-    # If using fixed batching, a flush here ensures the file is 'sent' 
-    # before we write to the tracking collection.
-    if hasattr(batch, 'flush'): batch.flush()
-
-    track_coll.data.insert(
-        properties={"filePath": path_str, "contentHash": curr_hash, "status": "COMPLETED"},
-        uuid=generate_uuid5(f"track_{path_str}"))
-
 # @patch
 # def _process_single_file(
 #     self: MathBrainClient,
@@ -266,9 +192,8 @@ def _process_single_file(
 #     track_coll: weaviate.collections.Collection,
 #     batch: Any
 # ) -> None:
-#     """Hash, chunk, and upload a single file if it has changed."""
-#     path_str = str(path)
-#     text = processor(path)
+#     """Hash, chunk, and upload. Manual flush used for heavy file stability."""
+#     path_str, text = str(path), processor(path)
 #     if not text.strip(): return
 #     curr_hash = self._get_file_hash(text)
 
@@ -284,9 +209,51 @@ def _process_single_file(
 #                         "filePath": path_str, "contentHash": curr_hash},
 #             uuid=generate_uuid5(f"{path_str}_{i}"))
     
+#     # If using fixed batching, a flush here ensures the file is 'sent' 
+#     # before we write to the tracking collection.
+#     if hasattr(batch, 'flush'): batch.flush()
+
 #     track_coll.data.insert(
 #         properties={"filePath": path_str, "contentHash": curr_hash, "status": "COMPLETED"},
 #         uuid=generate_uuid5(f"track_{path_str}"))
+
+#| export
+@patch
+def _process_single_file(
+    self: MathBrainClient,
+    path: PathType,
+    processor: Callable,
+    completed_files: Dict[str, str],
+    main_coll: weaviate.collections.Collection,
+    track_coll: weaviate.collections.Collection,
+    batch: Any,
+    pos: int = 1 # Position of the sub-bar
+) -> None:
+    """Process a file and display a progress bar for its chunks."""
+    path_str, text = str(path), processor(path)
+    if not text.strip(): return
+    curr_hash = self._get_file_hash(text)
+
+    if path_str in completed_files and completed_files[path_str] == curr_hash: return
+
+    for coll in [main_coll, track_coll]:
+        coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
+
+    chunks = self._split_text(text)
+    # Inner progress bar for chunks
+    fname = os.path.basename(path_str)
+    chunk_pbar = tqdm(chunks, desc=f"  └ {fname[:15]}", position=pos, leave=False)
+    
+    for i, chunk in enumerate(chunk_pbar):
+        batch.add_object(
+            properties={"content": chunk, "fileName": fname, 
+                        "filePath": path_str, "contentHash": curr_hash},
+            uuid=generate_uuid5(f"{path_str}_{i}"))
+    
+    if hasattr(batch, 'flush'): batch.flush()
+    track_coll.data.insert(
+        properties={"filePath": path_str, "contentHash": curr_hash, "status": "COMPLETED"},
+        uuid=generate_uuid5(f"track_{path_str}"))
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
 # @patch
@@ -317,6 +284,41 @@ def _process_single_file(
 #     print(f"\n✅ Sync Complete. Collection total: {final_count} objects.")
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 15
+# @patch
+# def ingest_files(
+#     self: MathBrainClient, 
+#     input_source: Union[PathType, Iterable[PathType]], 
+#     collection_name: str = "MathDocument", 
+#     force_recycle: bool = False, 
+#     processor: Optional[FileProcessor] = None,
+#     exclude_patterns: Optional[List[str]] = None,
+#     batch_size: Optional[int] = None # Overrides dynamic if set
+# ) -> None:
+#     """Ingest files with configurable batching: dynamic or fixed-size."""
+#     self.setup_collection(collection_name, force_recycle)
+#     main_coll = self.client.collections.get(collection_name)
+#     track_coll = self.client.collections.get(f"{collection_name}_tracking")
+    
+#     proc = processor or (lambda p: open(p, "r", encoding="utf-8").read())
+#     paths = self._get_all_paths(input_source, exclude_patterns or [])
+#     completed = self._get_completed_files(track_coll)
+    
+#     # Choose between dynamic auto-scaling or fixed-size batching
+#     batch_mgr = main_coll.batch.dynamic() if batch_size is None else \
+#                 main_coll.batch.fixed_size(batch_size=batch_size)
+    
+#     with batch_mgr as batch:
+#         pbar = tqdm(paths, desc="MathBrain Sync")
+#         for p in pbar:
+#             pbar.set_postfix({"file": os.path.basename(str(p))[:20]})
+#             try: 
+#                 self._process_single_file(p, proc, completed, main_coll, track_coll, batch)
+#             except Exception as e: print(f"\n[Error] {p}: {e}")
+
+#     count = main_coll.aggregate.over_all(total_count=True).total_count
+#     print(f"\n✅ Sync Complete. Total: {count} objects.")
+
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 16
 @patch
 def ingest_files(
     self: MathBrainClient, 
@@ -325,9 +327,9 @@ def ingest_files(
     force_recycle: bool = False, 
     processor: Optional[FileProcessor] = None,
     exclude_patterns: Optional[List[str]] = None,
-    batch_size: Optional[int] = None # Overrides dynamic if set
+    batch_size: Optional[int] = None
 ) -> None:
-    """Ingest files with configurable batching: dynamic or fixed-size."""
+    """Ingest files with nested progress bars for file and chunk tracking."""
     self.setup_collection(collection_name, force_recycle)
     main_coll = self.client.collections.get(collection_name)
     track_coll = self.client.collections.get(f"{collection_name}_tracking")
@@ -336,20 +338,21 @@ def ingest_files(
     paths = self._get_all_paths(input_source, exclude_patterns or [])
     completed = self._get_completed_files(track_coll)
     
-    # Choose between dynamic auto-scaling or fixed-size batching
     batch_mgr = main_coll.batch.dynamic() if batch_size is None else \
                 main_coll.batch.fixed_size(batch_size=batch_size)
     
     with batch_mgr as batch:
-        pbar = tqdm(paths, desc="MathBrain Sync")
+        # Position 0 is the top bar (Files)
+        pbar = tqdm(paths, desc="Files", position=0)
         for p in pbar:
-            pbar.set_postfix({"file": os.path.basename(str(p))[:20]})
+            fname = os.path.basename(str(p))
+            pbar.set_postfix({"current": fname[:20]})
             try: 
-                self._process_single_file(p, proc, completed, main_coll, track_coll, batch)
+                # Pass position 1 to create the sub-bar
+                self._process_single_file(p, proc, completed, main_coll, track_coll, batch, pos=1)
             except Exception as e: print(f"\n[Error] {p}: {e}")
 
-    count = main_coll.aggregate.over_all(total_count=True).total_count
-    print(f"\n✅ Sync Complete. Total: {count} objects.")
+    print(f"\n✅ Sync Complete. Total: {main_coll.aggregate.over_all(total_count=True).total_count} objects.")
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 18
 @patch
