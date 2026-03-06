@@ -218,21 +218,25 @@ def _get_completed_files(
 #         uuid=generate_uuid5(f"track_{path_str}"))
 
 #| export
+
+#| export
 @patch
 def _process_single_file(
     self: MathBrainClient,
     path: PathType,
     processor: Callable,
     completed_files: Dict[str, str],
-    main_coll: weaviate.collections.Collection,
-    track_coll: weaviate.collections.Collection,
+    main_coll: Any,
+    track_coll: Any,
     batch: Any,
-    pos: int = 1 # Position of the sub-bar
+    batch_size: Optional[int] = None,
+    pos: int = 1
 ) -> None:
-    """Process a file and display a progress bar for its chunks."""
+    """Process a file with a progress bar that tracks actual upload progress."""
     path_str, text = str(path), processor(path)
     if not text.strip(): return
     curr_hash = self._get_file_hash(text)
+    fname = os.path.basename(path_str) # Define fname early
 
     if path_str in completed_files and completed_files[path_str] == curr_hash: return
 
@@ -240,20 +244,25 @@ def _process_single_file(
         coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
 
     chunks = self._split_text(text)
-    # Inner progress bar for chunks
-    fname = os.path.basename(path_str)
-    chunk_pbar = tqdm(chunks, desc=f"  └ {fname[:15]}", position=pos, leave=False)
+    chunk_pbar = tqdm(chunks, desc=f"  └ {fname[:15]}", position=pos, leave=True)
     
     for i, chunk in enumerate(chunk_pbar):
         batch.add_object(
             properties={"content": chunk, "fileName": fname, 
                         "filePath": path_str, "contentHash": curr_hash},
             uuid=generate_uuid5(f"{path_str}_{i}"))
+        
+        if batch_size and hasattr(batch, 'flush') and (i + 1) % batch_size == 0:
+            chunk_pbar.set_postfix_str("Embedding...")
+            batch.flush()
     
     if hasattr(batch, 'flush'): batch.flush()
+        
     track_coll.data.insert(
         properties={"filePath": path_str, "contentHash": curr_hash, "status": "COMPLETED"},
         uuid=generate_uuid5(f"track_{path_str}"))
+    
+    chunk_pbar.close()
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
 # @patch
@@ -375,7 +384,7 @@ def delete_collection(
             self.client.collections.delete(name)
     print(f"Collection and Tracking deleted.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 27
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 29
 # import weaviate
 # import weaviate.classes.query as wvc
 # import weaviate
@@ -426,7 +435,7 @@ def delete_collection(
 #     def close(self):
 #         self.client.close()
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 28
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 30
 import weaviate
 import weaviate.classes.query as wvc
 import time
