@@ -113,36 +113,72 @@ def setup_collection(
     print(f"Collections initialized: {collection_name}")
 
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 9
+# @patch
+# def _split_text(
+#         self: MathBrainClient,
+#         text: str
+#         ) -> List[str]:
+#     """LaTeX-aware chunking."""
+#     env_pattern = r'(\\begin\{.*?\}.*?\\end\{.*?\})'
+#     parts = re.split(env_pattern, text, flags=re.DOTALL)
+#     chunks, current_chunk = [], ""
+
+#     for part in parts:
+#         part = part.strip()
+#         if not part: continue
+#         if len(current_chunk) + len(part) > self.CHUNK_SIZE:
+#             if current_chunk: chunks.append(current_chunk.strip())
+#             if len(part) > self.CHUNK_SIZE:
+#                 step = self.CHUNK_SIZE - self.OVERLAP
+#                 for i in range(0, len(part), step):
+#                     chunks.append(part[i : i + self.CHUNK_SIZE])
+#                 current_chunk = ""
+#             else:
+#                 overlap_text = current_chunk[-self.OVERLAP:] if len(current_chunk) > self.OVERLAP else ""
+#                 current_chunk = overlap_text + part + "\n\n"
+#         else:
+#             current_chunk += part + "\n\n"
+#     if current_chunk: chunks.append(current_chunk.strip())
+#     return [c for c in chunks if len(c) > 20]
+
 @patch
 def _split_text(
         self: MathBrainClient,
         text: str
-        ) -> List[str]:
-    """LaTeX-aware chunking."""
-    env_pattern = r'(\\begin\{.*?\}.*?\\end\{.*?\})'
-    parts = re.split(env_pattern, text, flags=re.DOTALL)
-    chunks, current_chunk = [], ""
+    ) -> List[str]:
+    """
+    Strict character-based chunking with a guaranteed window.
+    Each chunk is at most CHUNK_SIZE.
+    Each chunk (except the first) starts with roughly OVERLAP characters from the previous.
+    """
+    if not text or len(text) < 20: 
+        return []
 
-    for part in parts:
-        part = part.strip()
-        if not part: continue
-        if len(current_chunk) + len(part) > self.CHUNK_SIZE:
-            if current_chunk: chunks.append(current_chunk.strip())
-            if len(part) > self.CHUNK_SIZE:
-                step = self.CHUNK_SIZE - self.OVERLAP
-                for i in range(0, len(part), step):
-                    chunks.append(part[i : i + self.CHUNK_SIZE])
-                current_chunk = ""
-            else:
-                overlap_text = current_chunk[-self.OVERLAP:] if len(current_chunk) > self.OVERLAP else ""
-                current_chunk = overlap_text + part + "\n\n"
-        else:
-            current_chunk += part + "\n\n"
-    if current_chunk: chunks.append(current_chunk.strip())
-    return [c for c in chunks if len(c) > 20]
+    chunks = []
+    
+    # The 'step' is how much NEW text we add to each chunk.
+    # To maintain an overlap of OVERLAP, we move forward by (CHUNK_SIZE - OVERLAP).
+    step = self.CHUNK_SIZE - self.OVERLAP
+    
+    # Edge case: If overlap is larger than chunk size, the logic fails. 
+    # Ensure step is at least 1.
+    step = max(1, step)
 
+    for i in range(0, len(text), step):
+        # Slice a fixed window of CHUNK_SIZE
+        chunk = text[i : i + self.CHUNK_SIZE]
+        
+        # Only keep chunks that meet your minimum length requirement (20)
+        if len(chunk) >= 20:
+            chunks.append(chunk)
+            
+        # If the slice reached the end of the text, stop.
+        if i + self.CHUNK_SIZE >= len(text):
+            break
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 10
+    return chunks
+
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 11
 @patch
 def _get_file_hash(
         self: MathBrainClient,
@@ -151,7 +187,7 @@ def _get_file_hash(
     return hashlib.md5(text.encode('utf-8')).hexdigest()
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 12
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 13
 @patch
 def _get_all_paths(
     self: MathBrainClient, 
@@ -171,7 +207,7 @@ def _get_all_paths(
                     paths.append(full_p)
     return paths
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 13
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
 @patch
 def _get_completed_files(
     self: MathBrainClient, 
@@ -185,7 +221,7 @@ def _get_completed_files(
             completed[obj.properties["filePath"]] = obj.properties["contentHash"]
     return completed
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 15
 @patch
 def _process_single_file(
     self: MathBrainClient,
@@ -230,7 +266,7 @@ def _process_single_file(
     
     chunk_pbar.close()
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 15
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 16
 @patch
 def ingest_files(
     self: MathBrainClient, 
@@ -266,7 +302,7 @@ def ingest_files(
 
     print(f"\n✅ Sync Complete. Total: {main_coll.aggregate.over_all(total_count=True).total_count} objects.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 17
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 18
 @patch
 def close(self: MathBrainClient): self.client.close()
 
@@ -287,7 +323,7 @@ def delete_collection(
             self.client.collections.delete(name)
     print(f"Collection and Tracking deleted.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 24
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 25
 @patch
 def _normalize_path_pair(
         self: MathBrainClient, 
@@ -307,7 +343,7 @@ def _get_updated_path(
     """Converts a stored path to POSIX and performs the base replacement."""
     return Path(current_path).as_posix().replace(old_b, new_b)
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 25
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 26
 # @patch
 # def _update_main_collection(
 #         self: MathBrainClient, 
@@ -351,7 +387,7 @@ def _update_main_collection(self: MathBrainClient, coll: Any, old_b: str, new_b:
             
     return len(objs)
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 26
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 27
 @patch
 def _migrate_tracking_data(
         self: MathBrainClient, 
@@ -376,7 +412,7 @@ def _migrate_tracking_data(
             }
         )
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 27
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 28
 @patch
 def rebase_vault_path(
     self: MathBrainClient, 
@@ -396,7 +432,7 @@ def rebase_vault_path(
     
     print(f"✅ Rebase complete. Updated {count} objects.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 34
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 35
 class MathBrainSearcher:
     def __init__(
             self,
@@ -407,7 +443,7 @@ class MathBrainSearcher:
         self.collection = self.client.collections.get(collection_name)
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 35
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 36
 @patch
 def search(
         self: MathBrainSearcher,
@@ -436,7 +472,7 @@ def search(
     self._display_results(results)
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 36
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 37
 @patch
 def _display_summary(
         self: MathBrainSearcher,
@@ -455,7 +491,7 @@ def _display_results(
     for i, obj in enumerate(objects):
         self._print_single_object(i + 1, obj)
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 37
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 38
 @patch
 def _print_single_object(
         self: MathBrainSearcher,
