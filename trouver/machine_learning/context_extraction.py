@@ -16,7 +16,13 @@ from ..obsidian.vault import VaultNote
 from ..obsidian.file import MarkdownFile
 from ..personal_vault.note_processing import process_standard_information_note
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 3
+from ..llm_core.call_llm import call_llm, process_llm_response, smart_truncate, SupportedLLM
+
+import re
+from typing import List, Optional, Dict, Callable, Tuple, Any
+from pathlib import Path
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 4
 # Assuming the client is imported from your established lmstudio module
 # from lmstudio.client import LMStudio 
 
@@ -60,55 +66,18 @@ Only include a bullet point if there is information to populate it. If a specifi
 * Property Mapping: Treat adjectives (e.g., "compact," "Noetherian," "flat") as Global Constraints or Defined Relations, never as Primary Objects.
 """
 
-# def extract_context_with_lm(
-#         model: LLM,
-#         excerpt_text: str,
-#         # max_context: int = 4096,
-#         system_prompt: str = CONTEXT_EXTRACTION_SYSTEM_PROMPT,
-#         ) -> Optional[str]:
-#     """
-#     Uses a local LM Studio model to extract contextual information from text.
-#     This implementation uses the project's specific `lmstudio.client.LMStudio` class.
 
-#     Args:
-#         text: The mathematical text to analyze.
-#         model_name: The specific model to use for the completion (e.g., 'local-model').
-
-#     Returns:
-#         The string output from the model, or None if an error occurs.
-#     """
-#     messages=[
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": excerpt_text},
-#     ]
-
-#     try:
-#         # Initialize the client as per the pattern in your project
-#         result = model.respond(
-#             {"messages": messages}, 
-#             config={"temperature": 0.1}
-#         )
-        
-#         # 3. Access .content, don't just stringify the object
-#         if hasattr(result, 'content'):
-#             return result.content.strip()
-#         return str(result).strip()
-#     except Exception as e:
-#         # This generic exception can be refined if your lmstudio client has specific errors
-#         print(f"An error occurred while communicating with LM Studio: {e}")
-#         return None
-
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 4
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 5
 # In context_extraction module
-from ..llm_core.call_llm import call_llm, process_llm_response, smart_truncate, SupportedLLM
 def extract_context_with_lm(
     model: SupportedLLM,
     excerpt_text: str,
     max_context: int = 4096,
     system_prompt: str = CONTEXT_EXTRACTION_SYSTEM_PROMPT,
     config: Optional[dict] = None,
-    verbose: bool = True
-) -> Optional[str]:
+    verbose: bool = True,
+    return_usage: bool = False  # <-- Add this parameter
+) -> Optional[str] | Tuple[Optional[str], Any]: # <-- Update return hint
     
     # Context extraction usually needs more 'room' for the input text
     reserved = 1200 
@@ -119,11 +88,23 @@ def extract_context_with_lm(
         {"role": "user", "content": truncated_text}
     ]
 
-    raw_output = call_llm(model, messages, config, verbose)
-    # We use the 'clean' version in case the model starts thinking
-    return process_llm_response(raw_output, return_thoughts=False)
+    raw_res = call_llm(
+        model, messages, config, verbose,
+        return_usage=return_usage)
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 6
+    # if return_usage:
+    #     raw_output, usage = raw_res
+    #     clean_content = process_llm_response(raw_output, return_thoughts=False)
+    #     return clean_content, usage
+
+    if return_usage:
+        raw_output, usage = raw_res
+        clean_content = process_llm_response(raw_output, return_thoughts=False)
+        return clean_content, usage # This is 2 values.
+    # We use the 'clean' version in case the model starts thinking
+    return process_llm_response(raw_res, return_thoughts=False)
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 8
 from typing import List, Optional
 from pathlib import Path
 
@@ -135,7 +116,7 @@ from pathlib import Path
 
 def _generate_context_extraction_markdown(
         info_notes: List[VaultNote],
-        model: LLM,
+        model: SupportedLLM,
         system_prompt: str,
         ) -> str:
     """
@@ -162,7 +143,7 @@ def _generate_context_extraction_markdown(
                 
     return "\n".join(markdown_lines)
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 7
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 9
 import re
 from typing import List, Optional, Dict
 from pathlib import Path
@@ -215,6 +196,8 @@ def _parse_existing_context_note(note_text: str) -> Dict[str, str]:
         
     return data
 
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 10
 def _format_context_extraction(
     info_notes: List[VaultNote], 
     context_data: Dict[str, str]
@@ -238,19 +221,14 @@ def _format_context_extraction(
                     markdown_lines.append(f"      {line}")
     return "\n".join(markdown_lines)
 
-
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 8
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 12
 def _format_llm_input(previous_context: str, new_passage: str) -> str:
     """Formats the input for the LLM with previous context and new text."""
     # If there is no previous context, we can indicate that or leave it empty.
     context_str = previous_context if previous_context.strip() else "None."
     return f"PREVIOUS CONTEXT:\n{context_str}\n\nNEW PASSAGE:\n{new_passage}"
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 9
-import re
-from typing import List, Optional, Dict, Callable
-from pathlib import Path
-
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 13
 # --- Assumed Imports ---
 # from trouver.obsidian.vault import VaultNote
 # from trouver.obsidian.markdown.file import MarkdownFile
@@ -291,111 +269,203 @@ def _default_context_selector(
     return available_predecessors[-5:]
 
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 10
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 16
+def _get_context_note_for_index(index_note: VaultNote) -> VaultNote:
+    """Determines path and initializes the context extraction note."""
+    prefix = "_index_"
+    name = index_note.name
+    interesting_name = name[len(prefix):] if name.startswith(prefix) else name
+    context_note_name = f"_context_extraction_{interesting_name}"
+    
+    parent_dir = Path(index_note.rel_path).parent
+    context_rel_path = parent_dir / f"{context_note_name}.md"
+    
+    context_note = VaultNote(index_note.vault, rel_path=str(context_rel_path))
+    if not context_note.exists():
+        context_note.create()
+    return context_note
+
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 17
+# def _process_single_note_context(
+#     note: VaultNote,
+#     model: 'SupportedLLM',
+#     current_data: Dict[str, str],
+#     all_note_names: List[str],
+#     context_selector: ContextSelector,
+#     **kwargs
+# ) -> Optional[str]:
+#     """Handles the LLM logic and context assembly for a single note."""
+#     mf = MarkdownFile.from_vault_note(note)
+#     note_text = str(process_standard_information_note(mf, note.vault))
+    
+#     relevant_names = context_selector(note, current_data, all_note_names)
+#     selected_strings = [current_data[n] for n in relevant_names if n in current_data]
+    
+#     llm_input = _format_llm_input("\n".join(selected_strings), note_text)
+#     return extract_context_with_lm(
+#         model, 
+#         llm_input, 
+#         max_context=kwargs.get('max_context', 4096), 
+#         system_prompt=kwargs.get('system_prompt'), 
+#         config=kwargs.get('config'),
+#         verbose=kwargs.get('verbose', False)
+#     )
+
+#| export
+def _process_single_note_context(
+    note: VaultNote,
+    model: 'SupportedLLM',
+    current_data: Dict[str, str],
+    all_note_names: List[str],
+    context_selector: ContextSelector,
+    **kwargs
+) -> Optional[str] | Tuple[Optional[str], Any]: # Updated hint
+    """Handles the LLM logic and context assembly for a single note."""
+    mf = MarkdownFile.from_vault_note(note)
+    note_text = str(process_standard_information_note(mf, note.vault))
+    
+    relevant_names = context_selector(note, current_data, all_note_names)
+    selected_strings = [current_data[n] for n in relevant_names if n in current_data]
+    
+    llm_input = _format_llm_input("\n".join(selected_strings), note_text)
+    
+    # We must explicitly pass return_usage into extract_context_with_lm
+    # and return whatever it gives us (either a string or a tuple)
+    return extract_context_with_lm(
+        model, 
+        llm_input, 
+        max_context=kwargs.get('max_context', 4096), 
+        system_prompt=kwargs.get('system_prompt'), 
+        config=kwargs.get('config'),
+        verbose=kwargs.get('verbose', False),
+        return_usage=kwargs.get('return_usage', False) # Ensure this is passed!
+    )
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 18
+import time
+import re
+
+
+
+def _parse_reset_time(val) -> float:
+    """Parses various rate limit reset formats into seconds."""
+    if val is None: return 0.0
+    s_val = str(val).strip()
+    
+    # Case A: Unix Timestamp (common in Anthropic)
+    if s_val.replace('.', '').isdigit() and float(s_val) > 1700000000:
+        return max(0.0, float(s_val) - time.time())
+    
+    # Case B: Duration string like "6m0s" or "1.5s" (OpenAI/Groq)
+    if any(u in s_val for u in ['h', 'm', 's']):
+        times = re.findall(r'(\d+(?:\.\d+)?)([hms])', s_val)
+        total = 0.0
+        for amt, unit in times:
+            mult = {'h': 3600, 'm': 60, 's': 1}[unit]
+            total += float(amt) * mult
+        return total
+        
+    # Case C: Simple integer/float seconds
+    try: return float(s_val)
+    except: return 0.0
+
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 19
+def _get_sleep_time_from_usage(usage: dict, threshold_pct: float = 0.1, default_sleep: float = 0.0) -> float:
+    """Calculates sleep time, prioritizing default_sleep unless limits are low."""
+    wait_time = default_sleep
+    if not usage or not isinstance(usage, dict): return wait_time
+
+    # Normalize keys to lowercase for robustness
+    u = {str(k).lower(): v for k, v in usage.items()}
+
+    # 1. Determine Remaining and Limit (TPM then RPM)
+    rem = u.get('x-ratelimit-remaining-tokens') or u.get('anthropic-ratelimit-tokens-remaining') or u.get('x-ratelimit-remaining')
+    lim = u.get('x-ratelimit-limit-tokens') or u.get('anthropic-ratelimit-tokens-limit') or u.get('x-ratelimit-limit')
+    
+    # 2. Determine Reset (Crucial: matching the specific anthropic key from test)
+    res = (u.get('anthropic-ratelimit-tokens-reset') or 
+           u.get('x-ratelimit-reset-tokens') or 
+           u.get('anthropic-ratelimit-requests-reset') or
+           u.get('x-ratelimit-reset'))
+
+    try:
+        if rem is not None and lim is not None:
+            rem_val, lim_val = float(rem), float(lim)
+            if (rem_val / lim_val) < threshold_pct:
+                dynamic_wait = _parse_reset_time(res)
+                # Ensure we add the buffer to the dynamic wait, then take max against default
+                wait_time = max(wait_time, dynamic_wait + 0.5)
+    except (ValueError, TypeError):
+        pass
+
+    return wait_time
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 20
 def create_context_extraction_for_index_note(
     index_note: VaultNote,
-    model: 'LLM',
+    model: 'SupportedLLM',
     info_notes: Optional[List[VaultNote]] = None,
     max_context: int = 4096,
     system_prompt: Optional[str] = CONTEXT_EXTRACTION_SYSTEM_PROMPT,
     config: Optional[dict] = None,
     verbose: bool = False,
     context_selector: Optional[ContextSelector] = None,
+    sleep_threshold: float = 0.1,
+    default_sleep: float = 1.0
 ) -> None:
     """
-    Generates and saves a context extraction file for a given index note.
-    
-    Args:
-        index_note: The index note to process.
-        model: The LLM model object.
-        info_notes: Optional list of specific notes to process.
-        system_prompt: Optional system prompt override.
-        context_selector: A function that determines which previous contexts 
-                          should be included. Defaults to a sliding window of 5.
+    Creates/updates a context-extraction note for a given index note.
+    Includes rate-limit aware throttling and default sleep pacing.
     """
-    # 0. Set default selector if None
-    if context_selector is None:
-        context_selector = _default_context_selector
-
-    # 1. Resolve the Master List (File Structure)
-    all_associated_notes = _resolve_info_notes_for_index(index_note)
+    context_selector = context_selector or _default_context_selector
+    all_associated = _resolve_info_notes_for_index(index_note)
     
-    # Create the ordered list of names for the selector
-    all_note_names = [n.name for n in all_associated_notes]
-    
-    # 2. Determine the Work Queue
-    target_notes_set = set(info_notes) if info_notes else set(all_associated_notes)
-
-    if not all_associated_notes:
+    if not all_associated:
         print(f"Warning: No info notes found for '{index_note.name}'.")
         return
 
-    # 3. Determine Context Note Path
-    prefix = "_index_"
-    interesting_name = index_note.name[len(prefix):] if index_note.name.startswith(prefix) else index_note.name
-    context_note_name = f"_context_extraction_{interesting_name}"
-    parent_dir = Path(index_note.rel_path).parent
-    context_rel_path = parent_dir / f"{context_note_name}.md"
+    # Filter to specific notes if requested, otherwise process all associated
+    target_set = set(info_notes) if info_notes else set(all_associated)
     
-    context_note = VaultNote(index_note.vault, rel_path=str(context_rel_path))
+    context_note = _get_context_note_for_index(index_note)
+    current_data = _parse_existing_context_note(context_note.text()) if context_note.exists() else {}
+    all_names = [n.name for n in all_associated]
 
-    # 4. Load Existing Data
-    existing_data = {}
-    if context_note.exists():
-        print(f"Found existing context note: {context_note.name}. Parsing...")
-        existing_data = _parse_existing_context_note(context_note.text())
-    else:
-        context_note.create()
-
-    # 5. Process Notes Sequentially
-    print(f"Processing sequence of {len(all_associated_notes)} info note(s)...")
-    
-    current_data = existing_data.copy()
-    
-    for i, note in enumerate(all_associated_notes):
-        # Determine if we should run the LLM for this note
-        should_run_llm = (note in target_notes_set) and (note.name not in current_data)
-        
-        if should_run_llm:
-            print(f"[{i+1}/{len(all_associated_notes)}] Extracting context for '{note.name}'...")
+    for i, note in enumerate(all_associated):
+        # Only process if it's in our target list and not already extracted
+        if (note in target_set) and (note.name not in current_data):
+            print(f"[{i+1}/{len(all_associated)}] Extracting: {note.name}...")
             
-            # Prepare Text
-            mf = MarkdownFile.from_vault_note(note)
-            note_text = str(process_standard_information_note(mf, note.vault))
+            # Extract context and capture usage metadata
+            res, usage = _process_single_note_context(
+                note, model, current_data, all_names, context_selector,
+                max_context=max_context, 
+                system_prompt=system_prompt, 
+                config=config, 
+                verbose=verbose,
+                return_usage=True # Crucial for the sleep logic
+            )
             
-            # --- NEW LOGIC: Select Context ---
-            # Pass the ordered list of names to the selector
-            relevant_note_names = context_selector(note, current_data, all_note_names)
-            
-            selected_context_strings = []
-            for name in relevant_note_names:
-                # Double check existence, though selector should handle it
-                if name in current_data:
-                    selected_context_strings.append(current_data[name])
-            
-            prev_context_str = "\n".join(selected_context_strings)
-            # ---------------------------------
-            
-            # Format Input
-            llm_input = _format_llm_input(prev_context_str, note_text)
-            
-            # Run Prediction
-            context_info = extract_context_with_lm(
-                model, llm_input, max_context=max_context, system_prompt=system_prompt, config=config,verbose=verbose)
-            
-            if context_info:
-                # Update Data
-                current_data[note.name] = context_info
+            if res:
+                # Update data and write to disk immediately (checkpointing)
+                current_data[note.name] = res
+                context_note.write(_format_context_extraction(all_associated, current_data))
                 
-                # Write to file immediately
-                full_content = _format_context_extraction(all_associated_notes, current_data)
-                context_note.write(full_content)
+                # --- Throttling Logic ---
+                wait = _get_sleep_time_from_usage(usage, sleep_threshold, default_sleep)
+                if wait > 0:
+                    if verbose or wait > default_sleep:
+                        status = "Rate limit low" if wait > default_sleep else "Pacing"
+                        print(f"  ({status}) Sleeping {wait:.2f}s...")
+                    time.sleep(wait)
             else:
-                print(f"  -> No context returned for '{note.name}'.")
+                print(f"  -> Skipping '{note.name}' (no response).")
 
-    print(f"Context extraction completed: {context_note.name}")
+    print(f"Successfully processed context for: {index_note.name}")
 
-# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 12
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 24
 def get_context_extraction_map(vault, reference: str) -> Dict[str, str]:
     """
     Locates and parses the context extraction note for a given reference.
@@ -421,6 +491,8 @@ def get_context_extraction_map(vault, reference: str) -> Dict[str, str]:
     # Use the existing helper to parse the markdown content
     return _parse_existing_context_note(context_note.text())
 
+
+# %% ../../nbs/08_machine_learning_50.context_extraction.ipynb 25
 def get_accumulated_context_for_notes(
     info_notes: List[VaultNote], 
     reference: str

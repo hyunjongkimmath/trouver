@@ -12,6 +12,9 @@ from openai import OpenAI
 import lmstudio
 
 
+import time
+from typing import List, Optional, Any, Tuple
+
 # %% ../../nbs/07_llm_core_05.call_llm.ipynb 6
 def separate_thoughts(
         raw_content: str
@@ -79,31 +82,77 @@ def smart_truncate(
     return text
 
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 20
-import time
-from typing import List, Optional, Any, Tuple
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 19
+def _parse_groq_limits(headers: Any) -> dict:
+    """Extracts Groq-specific rate limit info from response headers."""
+    return {
+        "remaining_requests": headers.get("x-ratelimit-remaining-requests"),
+        "remaining_tokens": headers.get("x-ratelimit-remaining-tokens"),
+        "reset_requests": headers.get("x-ratelimit-reset-requests"),
+        "reset_tokens": headers.get("x-ratelimit-reset-tokens"),
+        "retry_after": headers.get("retry-after")
+    }
 
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 20
+def _extract_headers(headers: Any) -> dict:
+    """Safely extracts rate limits; returns empty dict if not present."""
+    if not headers: return {}
+    # Use .get() to avoid KeyErrors if these aren't Groq headers
+    return {
+        "rem_req": headers.get("x-ratelimit-remaining-requests"),
+        "rem_tok": headers.get("x-ratelimit-remaining-tokens"),
+        "reset": headers.get("x-ratelimit-reset-requests")
+    }
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 22
 def _get_input_metrics(messages: List[dict]) -> Tuple[float, str, int]:
     """Returns (perf_counter, timestamp_string, character_count)."""
     return time.perf_counter(), time.strftime("%H:%M:%S"), sum(len(m['content']) for m in messages)
 
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 23
 def _handle_openai_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
-    """Handles OpenAI streaming with a safe fallback to standard calls."""
-    full_content, ttft, start_perf = "", None, time.perf_counter()
+    """Handles OpenAI streaming with fallback and safe limit extraction."""
+    full_content, ttft, start_perf, usage = "", None, time.perf_counter(), None
     try:
-        response = model.chat.completions.create(messages=messages, stream=True, 
-                                                 stream_options={"include_usage": True}, **config)
-        for chunk in response:
+        # We use with_raw_response to wrap the stream so we can peek at headers
+        raw = model.chat.completions.with_raw_response.create(
+            messages=messages, stream=True, stream_options={"include_usage": True}, **config
+        )
+        limits = _extract_headers(raw.headers) # Capture headers immediately
+        for chunk in raw.parse():
             if not ttft and chunk.choices and chunk.choices[0].delta.content:
                 ttft = time.perf_counter() - start_perf
             if chunk.choices and chunk.choices[0].delta.content:
                 full_content += chunk.choices[0].delta.content
-            if chunk.usage: return full_content, ttft, chunk.usage
+            if chunk.usage: usage = chunk.usage
+        if usage: usage.limits = limits # Attach limits to usage
+        return full_content, ttft, usage
     except Exception:
-        res = model.chat.completions.create(messages=messages, stream=False, **config)
+        raw_fallback = model.chat.completions.with_raw_response.create(
+            messages=messages, stream=False, **config
+        )
+        res = raw_fallback.parse()
+        res.usage.limits = _extract_headers(raw_fallback.headers)
         return res.choices[0].message.content, None, res.usage
-    return full_content, ttft, None
 
+# def _handle_openai_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
+#     """Handles OpenAI streaming with a safe fallback to standard calls."""
+#     full_content, ttft, start_perf = "", None, time.perf_counter()
+#     try:
+#         response = model.chat.completions.create(messages=messages, stream=True, 
+#                                                  stream_options={"include_usage": True}, **config)
+#         for chunk in response:
+#             if not ttft and chunk.choices and chunk.choices[0].delta.content:
+#                 ttft = time.perf_counter() - start_perf
+#             if chunk.choices and chunk.choices[0].delta.content:
+#                 full_content += chunk.choices[0].delta.content
+#             if chunk.usage: return full_content, ttft, chunk.usage
+#     except Exception:
+#         res = model.chat.completions.create(messages=messages, stream=False, **config)
+#         return res.choices[0].message.content, None, res.usage
+#     return full_content, ttft, None
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 24
 def _handle_lms_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
     """Handles LM Studio streaming with a safe fallback."""
     full_content, ttft, start_perf = "", None, time.perf_counter()
@@ -122,11 +171,59 @@ def _handle_lms_call(model: Any, messages: List[dict], config: dict) -> Tuple[st
         res = model.respond({"messages": messages}, config=lms_config)
         return getattr(res, 'content', str(res)), None, getattr(res, 'usage', {})
 
+# def call_llm(
+#         model: SupportedLLM,
+#         messages: List[dict],
+#         config: Optional[dict] = None,
+#         verbose: bool = False) -> str:
+#     conf = {"temperature": 0.1, "max_tokens": 1024, **(config or {})}
+#     start_p, start_t, in_chars = _get_input_metrics(messages)
+    
+#     if hasattr(model, 'respond'):
+#         out, ttft, usage = _handle_lms_call(model, messages, conf)
+#     elif hasattr(model, 'chat'):
+#         m_name = conf.pop("model_name", "gpt-4o")
+#         out, ttft, usage = _handle_openai_call(model, messages, {"model": m_name, **conf})
+#     else:
+#         raise ValueError("Unsupported model interface.")
+
+#     dur = time.perf_counter() - start_p
+#     if verbose:
+#         u = usage if isinstance(usage, dict) else getattr(usage, '__dict__', {})
+#         tps = (u.get('completion_tokens', 0) or getattr(usage, 'completion_tokens', 0)) / dur if dur > 0 else 0
+#         print(f"\n[Verbose] In: {in_chars}c | Out: {len(out)}c | Start: {start_t} | End: {time.strftime('%H:%M:%S')}")
+#         print(f"[Verbose] Total: {dur:.2f}s | TTFT: {f'{ttft:.2f}s' if ttft else 'N/A'} | TPS: {tps:.2f}\n")
+    
+#     return out.strip()
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 25
+def _log_llm_stats(
+        out: str,
+        in_c: int,
+        dur: float,
+        ttft: float,
+        usage: Any,
+        start_t: str):
+    """Prints performance and usage metrics."""
+    u = usage if isinstance(usage, dict) else getattr(usage, '__dict__', {})
+    comp_tokens = u.get('completion_tokens', 0) or getattr(usage, 'completion_tokens', 0)
+    tps = comp_tokens / dur if dur > 0 else 0
+    
+    print(f"\n[LLM] In: {in_c}c | Out: {len(out)}c | Time: {start_t} -> {time.strftime('%H:%M:%S')}")
+    print(f"[LLM] Dur: {dur:.2f}s | TTFT: {f'{ttft:.2f}s' if ttft else 'N/A'} | TPS: {tps:.2f}")
+    
+    if hasattr(usage, 'limits') and usage.limits.get('rem_tok'):
+        print(f"[Limits] Remaining Tokens: {usage.limits['rem_tok']} | Reset: {usage.limits['reset']}")
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 26
 def call_llm(
-        model: SupportedLLM,
-        messages: List[dict],
-        config: Optional[dict] = None,
-        verbose: bool = False) -> str:
+    model: 'SupportedLLM',
+    messages: List[dict],
+    config: Optional[dict] = None,
+    verbose: bool = False,
+    return_usage: bool = False
+) -> str | Tuple[str, Any]:
+    """Calls the LLM and optionally returns usage metadata."""
     conf = {"temperature": 0.1, "max_tokens": 1024, **(config or {})}
     start_p, start_t, in_chars = _get_input_metrics(messages)
     
@@ -140,14 +237,11 @@ def call_llm(
 
     dur = time.perf_counter() - start_p
     if verbose:
-        u = usage if isinstance(usage, dict) else getattr(usage, '__dict__', {})
-        tps = (u.get('completion_tokens', 0) or getattr(usage, 'completion_tokens', 0)) / dur if dur > 0 else 0
-        print(f"\n[Verbose] In: {in_chars}c | Out: {len(out)}c | Start: {start_t} | End: {time.strftime('%H:%M:%S')}")
-        print(f"[Verbose] Total: {dur:.2f}s | TTFT: {f'{ttft:.2f}s' if ttft else 'N/A'} | TPS: {tps:.2f}\n")
+        _log_llm_stats(out, in_chars, dur, ttft, usage, start_t)
     
-    return out.strip()
+    return (out.strip(), usage) if return_usage else out.strip()
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 24
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 33
 class LLMResponse(TypedDict):
     r"""
     A `TypedDict` representing a processed response with separate logic and final output.
@@ -157,7 +251,7 @@ class LLMResponse(TypedDict):
     thoughts: str
     output: str
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 25
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 34
 # Overload 1: If return_thoughts is True, return a dict
 @overload
 def process_llm_response(raw_text: str, return_thoughts: Literal[True]) -> LLMResponse: ...
@@ -172,6 +266,9 @@ def process_llm_response(
     return_thoughts: bool = False
 ) -> str | LLMResponse:
     """Separates thoughts and returns either a string or an `LLMResponse` dict."""
+    if not raw_text: 
+        return {"thoughts": "", "output": ""} if return_thoughts else ""
+        
     thoughts, clean_answer = separate_thoughts(raw_text)
     
     if return_thoughts:

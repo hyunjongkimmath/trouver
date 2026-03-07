@@ -10,18 +10,22 @@ import time
 import hashlib
 import fnmatch
 import pathlib
-from typing import List, Union, Optional, Dict, Any, Iterable, Callable, Type
+from pathlib import Path
+from typing import List, Union, Optional, Dict, Any, Iterable, Callable, Type, Tuple
 
 import weaviate
 from weaviate.classes.config import Configure, DataType, Property, VectorDistances
 from weaviate.classes.query import Filter
 from weaviate.util import generate_uuid5
+import weaviate
+import weaviate.classes.query as wvc
 
 from fastcore.basics import patch
 from tqdm import tqdm
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 4
+
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 5
 def latex_comment_stripping_processor(path: Union[str, os.PathLike]) -> str:
     r"""
     Opens a file and removes LaTeX comments while ignoring escaped percents (\%).
@@ -44,7 +48,7 @@ def latex_comment_stripping_processor(path: Union[str, os.PathLike]) -> str:
         print(f"Error reading {path}: {e}")
         return ""
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 5
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 6
 PathType = Union[str, os.PathLike]
 FileProcessor = Callable[[PathType], str]
 
@@ -63,7 +67,7 @@ class MathBrainClient:
         # self.BATCH_SIZE = batch_size
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 7
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 8
 @patch
 def setup_collection(
         self: MathBrainClient,
@@ -108,7 +112,7 @@ def setup_collection(
         )
     print(f"Collections initialized: {collection_name}")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 8
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 9
 @patch
 def _split_text(
         self: MathBrainClient,
@@ -138,7 +142,7 @@ def _split_text(
     return [c for c in chunks if len(c) > 20]
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 9
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 10
 @patch
 def _get_file_hash(
         self: MathBrainClient,
@@ -147,7 +151,7 @@ def _get_file_hash(
     return hashlib.md5(text.encode('utf-8')).hexdigest()
 
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 11
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 12
 @patch
 def _get_all_paths(
     self: MathBrainClient, 
@@ -167,7 +171,7 @@ def _get_all_paths(
                     paths.append(full_p)
     return paths
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 12
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 13
 @patch
 def _get_completed_files(
     self: MathBrainClient, 
@@ -181,45 +185,7 @@ def _get_completed_files(
             completed[obj.properties["filePath"]] = obj.properties["contentHash"]
     return completed
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 13
-# @patch
-# def _process_single_file(
-#     self: MathBrainClient,
-#     path: PathType,
-#     processor: Callable,
-#     completed_files: Dict[str, str],
-#     main_coll: weaviate.collections.Collection,
-#     track_coll: weaviate.collections.Collection,
-#     batch: Any
-# ) -> None:
-#     """Hash, chunk, and upload. Manual flush used for heavy file stability."""
-#     path_str, text = str(path), processor(path)
-#     if not text.strip(): return
-#     curr_hash = self._get_file_hash(text)
-
-#     if path_str in completed_files and completed_files[path_str] == curr_hash: return
-
-#     for coll in [main_coll, track_coll]:
-#         coll.data.delete_many(where=Filter.by_property("filePath").equal(path_str))
-
-#     chunks = self._split_text(text)
-#     for i, chunk in enumerate(chunks):
-#         batch.add_object(
-#             properties={"content": chunk, "fileName": os.path.basename(path_str), 
-#                         "filePath": path_str, "contentHash": curr_hash},
-#             uuid=generate_uuid5(f"{path_str}_{i}"))
-    
-#     # If using fixed batching, a flush here ensures the file is 'sent' 
-#     # before we write to the tracking collection.
-#     if hasattr(batch, 'flush'): batch.flush()
-
-#     track_coll.data.insert(
-#         properties={"filePath": path_str, "contentHash": curr_hash, "status": "COMPLETED"},
-#         uuid=generate_uuid5(f"track_{path_str}"))
-
-#| export
-
-#| export
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
 @patch
 def _process_single_file(
     self: MathBrainClient,
@@ -264,70 +230,7 @@ def _process_single_file(
     
     chunk_pbar.close()
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 14
-# @patch
-# def ingest_files(
-#     self: MathBrainClient, 
-#     input_source: Union[PathType, Iterable[PathType]], 
-#     collection_name: str = "MathDocument", 
-#     force_recycle: bool = False, 
-#     processor: Optional[FileProcessor] = None,
-#     exclude_patterns: Optional[List[str]] = None
-# ) -> None:
-#     """Ingest files into Weaviate with resume capability and LaTeX-aware chunking."""
-#     self.setup_collection(collection_name, force_recycle)
-#     main_coll, track_coll = self.client.collections.get(collection_name), self.client.collections.get(f"{collection_name}_tracking")
-    
-#     proc = processor or (lambda p: open(p, "r", encoding="utf-8").read())
-#     all_paths = self._get_all_paths(input_source, exclude_patterns or [])
-#     completed = self._get_completed_files(track_coll)
-    
-#     pbar = tqdm(all_paths, desc="MathBrain Sync")
-#     with main_coll.batch.dynamic() as batch:
-#         for path in pbar:
-#             pbar.set_postfix({"file": os.path.basename(str(path))[:20]})
-#             try: self._process_single_file(path, proc, completed, main_coll, track_coll, batch)
-#             except Exception as e: print(f"\n[Error] {path}: {e}")
-
-#     final_count = main_coll.aggregate.over_all(total_count=True).total_count
-#     print(f"\n✅ Sync Complete. Collection total: {final_count} objects.")
-
 # %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 15
-# @patch
-# def ingest_files(
-#     self: MathBrainClient, 
-#     input_source: Union[PathType, Iterable[PathType]], 
-#     collection_name: str = "MathDocument", 
-#     force_recycle: bool = False, 
-#     processor: Optional[FileProcessor] = None,
-#     exclude_patterns: Optional[List[str]] = None,
-#     batch_size: Optional[int] = None # Overrides dynamic if set
-# ) -> None:
-#     """Ingest files with configurable batching: dynamic or fixed-size."""
-#     self.setup_collection(collection_name, force_recycle)
-#     main_coll = self.client.collections.get(collection_name)
-#     track_coll = self.client.collections.get(f"{collection_name}_tracking")
-    
-#     proc = processor or (lambda p: open(p, "r", encoding="utf-8").read())
-#     paths = self._get_all_paths(input_source, exclude_patterns or [])
-#     completed = self._get_completed_files(track_coll)
-    
-#     # Choose between dynamic auto-scaling or fixed-size batching
-#     batch_mgr = main_coll.batch.dynamic() if batch_size is None else \
-#                 main_coll.batch.fixed_size(batch_size=batch_size)
-    
-#     with batch_mgr as batch:
-#         pbar = tqdm(paths, desc="MathBrain Sync")
-#         for p in pbar:
-#             pbar.set_postfix({"file": os.path.basename(str(p))[:20]})
-#             try: 
-#                 self._process_single_file(p, proc, completed, main_coll, track_coll, batch)
-#             except Exception as e: print(f"\n[Error] {p}: {e}")
-
-#     count = main_coll.aggregate.over_all(total_count=True).total_count
-#     print(f"\n✅ Sync Complete. Total: {count} objects.")
-
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 16
 @patch
 def ingest_files(
     self: MathBrainClient, 
@@ -363,7 +266,7 @@ def ingest_files(
 
     print(f"\n✅ Sync Complete. Total: {main_coll.aggregate.over_all(total_count=True).total_count} objects.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 18
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 17
 @patch
 def close(self: MathBrainClient): self.client.close()
 
@@ -384,174 +287,208 @@ def delete_collection(
             self.client.collections.delete(name)
     print(f"Collection and Tracking deleted.")
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 29
-# import weaviate
-# import weaviate.classes.query as wvc
-# import weaviate
-# from weaviate.classes.query import MetadataQuery
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 24
+@patch
+def _normalize_path_pair(
+        self: MathBrainClient, 
+        old_base: str,
+        new_base: str) -> Tuple[str, str]:
+    """Standardizes input bases to POSIX format for string replacement."""
+    old_b = Path(old_base).as_posix()
+    new_b = Path(new_base).as_posix()
+    return old_b, new_b
 
-# class MathBrainSearcher:
-#     def __init__(
-#             self,
-#             collection_name: str,
-#             host: str = "localhost",
-#             port: int = 8080
-#             ) -> None:
-#         self.client = weaviate.connect_to_local(host=host, port=port)
-#         self.collection_name = collection_name
-#         self.collection = self.client.collections.get(self.collection_name)
-        
-#         # Check if we are ready immediately
-#         count = self.collection.aggregate.over_all(total_count=True).total_count
-#         if count == 0:
-#             print("Wait... Brain reports 0 objects. Checking again in 2 seconds...")
-#             import time
-#             time.sleep(2)
+@patch
+def _get_updated_path(
+        self: MathBrainClient, 
+        current_path: str,
+        old_b: str,
+        new_b: str) -> str:
+    """Converts a stored path to POSIX and performs the base replacement."""
+    return Path(current_path).as_posix().replace(old_b, new_b)
 
-#     def search(self, query_text, limit=3):
-#         """Perform a semantic/vector search."""
-#         print(f"\nSearching for: '{query_text}'...")
-        
-#         response = self.collection.query.near_text(
-#             query=query_text,
-#             limit=limit,
-#             return_metadata=wvc.MetadataQuery(distance=True)
-#         )
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 25
+# @patch
+# def _update_main_collection(
+#         self: MathBrainClient, 
+#         coll: Any,
+#         old_b: str,
+#         new_b: str) -> int:
+#     """Finds and updates filePath for all chunks in the main collection."""
+#     objs = coll.query.fetch_objects(
+#         filters=Filter.by_property("filePath").like(f"{old_b}*"),
+#         return_properties=["filePath"], limit=10000
+#     ).objects
+    
+#     with coll.batch.dynamic() as batch:
+#         for obj in objs:
+#             new_p = self._get_updated_path(obj.properties["filePath"], old_b, new_b)
+#             batch.update_object(uuid=obj.uuid, properties={"filePath": new_p})
+#     return len(objs)
 
-#         if not response.objects:
-#             print("No matches found. Is the brain empty?")
-#             return
+#| export
+#| export
 
-#         for i, obj in enumerate(response.objects):
-#             print(f"\n--- Result #{i+1} (Distance: {obj.metadata.distance:.4f}) ---")
-#             print(f"File: {obj.properties['fileName']}")
-#             print(f"Path: {obj.properties['filePath']}")
-#             print("-" * 30)
-#             # Print first 500 chars of the content
-#             content = obj.properties['content']
-#             preview = (content[:500] + '...') if len(content) > 500 else content
-#             print(preview)
+#| export
+#| export
+@patch
+def _update_main_collection(self: MathBrainClient, coll: Any, old_b: str, new_b: str) -> int:
+    """Finds and updates filePath for all chunks in the main collection."""
+    objs = coll.query.fetch_objects(
+        filters=Filter.by_property("filePath").like(f"{old_b}*"),
+        return_properties=["filePath"], 
+        limit=10000
+    ).objects
+    
+    # Weaviate v4 batches do not support updates. 
+    # We must use coll.data.update for existing objects.
+    for obj in objs:
+        new_p = self._get_updated_path(obj.properties["filePath"], old_b, new_b)
+        coll.data.update(
+            uuid=obj.uuid,
+            properties={"filePath": new_p}
+        )
+            
+    return len(objs)
 
-#     def close(self):
-#         self.client.close()
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 26
+@patch
+def _migrate_tracking_data(
+        self: MathBrainClient, 
+        track_coll: Any,
+        old_b: str,
+        new_b: str) -> None:
+    """Re-keys tracking entries by deleting old and inserting new path-based UUIDs."""
+    t_objs = track_coll.query.fetch_objects(
+        filters=Filter.by_property("filePath").like(f"{old_b}*"),
+        return_properties=["filePath", "contentHash"]
+    ).objects
+    
+    for t_obj in t_objs:
+        new_p = self._get_updated_path(t_obj.properties["filePath"], old_b, new_b)
+        track_coll.data.delete_by_id(t_obj.uuid)
+        track_coll.data.insert(
+            uuid=generate_uuid5(f"track_{new_p}"),
+            properties={
+                "filePath": new_p,
+                "contentHash": t_obj.properties["contentHash"],
+                "status": "COMPLETED"
+            }
+        )
 
-# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 30
-import weaviate
-import weaviate.classes.query as wvc
-import time
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 27
+@patch
+def rebase_vault_path(
+    self: MathBrainClient, 
+    old_base: str, 
+    new_base: str, 
+    collection_name: str
+) -> None:
+    """Orchestrates the OS-agnostic base path migration across collections."""
+    old_b, new_b = self._normalize_path_pair(old_base, new_base)
+    print(f"🔄 Rebasing {old_b} to {new_b}...")
+    
+    main_coll = self.client.collections.get(collection_name)
+    track_coll = self.client.collections.get(f"{collection_name}_tracking")
+    
+    count = self._update_main_collection(main_coll, old_b, new_b)
+    self._migrate_tracking_data(track_coll, old_b, new_b)
+    
+    print(f"✅ Rebase complete. Updated {count} objects.")
 
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 34
 class MathBrainSearcher:
-    def __init__(self, collection_name: str, host: str = "localhost", port: int = 8080):
+    def __init__(
+            self,
+            collection_name: str,
+            host: str = "localhost",
+            port: int = 8080):
         self.client = weaviate.connect_to_local(host=host, port=port)
         self.collection = self.client.collections.get(collection_name)
 
-    def search(self, query: str, alpha: float = 0.5, limit: int = 3, top_k: int = 20, rerank: bool = False):
-        """Unified search with score and vector distance tracking."""
-        start_time = time.time()
-        fetch_count = max(top_k, limit) if rerank else limit
 
-        response = self.collection.query.hybrid(
-            query=query,
-            alpha=alpha,
-            limit=fetch_count,
-            rerank=wvc.Rerank(prop="content", query=query) if rerank else None,
-            # We now request both Score (Blended) and Distance (Vector Only)
-            return_metadata=wvc.MetadataQuery(score=True, distance=True)
-        )
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 35
+@patch
+def search(
+        self: MathBrainSearcher,
+        query: str,
+        alpha: float = 0.5,
+        limit: int = 3,
+        top_k: int = 20,
+        rerank: bool = False
+        ):
+    """Unified search with score and vector distance tracking."""
+    start_time = time.time()
+    fetch_count = max(top_k, limit) if rerank else limit
 
-        results = response.objects[:limit]
-        self._display_summary(len(results), time.time() - start_time)
-        self._display_results(results)
+    # TODO: implement rerank correctly.
+    response = self.collection.query.hybrid(
+        query=query,
+        alpha=alpha,
+        limit=fetch_count,
+        rerank=wvc.Rerank(prop="content", query=query) if rerank else None,
+        # We now request both Score (Blended) and Distance (Vector Only)
+        return_metadata=wvc.MetadataQuery(score=True, distance=True)
+    )
 
-    def _display_summary(self, count: int, duration: float):
-        print(f"\nFound {count} matches in {duration:.3f} seconds.")
-        print("=" * 60)
+    results = response.objects[:limit]
+    self._display_summary(len(results), time.time() - start_time)
+    self._display_results(results)
 
-    def _display_results(self, objects):
-        if not objects:
-            print("No matches found.")
-            return
-        for i, obj in enumerate(objects):
-            self._print_single_object(i + 1, obj)
 
-    def _print_single_object(self, rank: int, obj):
-        props = obj.properties
-        # Score: Higher is better | Distance: Lower is better
-        score = obj.metadata.score or 0.0
-        dist = f"{obj.metadata.distance:.4f}" if obj.metadata.distance is not None else "N/A (Keyword match)"
-        
-        print(f"Result #{rank}")
-        print(f" > Hybrid Score: {score:.4f} (Higher is better)")
-        print(f" > Vector Dist:  {dist} (Lower is better)")
-        print(f"File: {props.get('fileName')}")
-        print("-" * 30)
-        
-        content = props.get('content', "")
-        preview = (content[:500] + '...') if len(content) > 500 else content
-        print(f"{preview}\n")
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 36
+@patch
+def _display_summary(
+        self: MathBrainSearcher,
+        count: int,
+        duration: float):
+    print(f"\nFound {count} matches in {duration:.3f} seconds.")
+    print("=" * 60)
 
-    def close(self):
-        self.client.close()
+@patch
+def _display_results(
+        self: MathBrainSearcher,
+        objects):
+    if not objects:
+        print("No matches found.")
+        return
+    for i, obj in enumerate(objects):
+        self._print_single_object(i + 1, obj)
 
-    def __enter__(self): return self
-    def __exit__(self, *args): self.close()
+# %% ../../nbs/08_machine_learning_60.semantic_search.ipynb 37
+@patch
+def _print_single_object(
+        self: MathBrainSearcher,
+        rank: int,
+        obj
+        ):
+    props = obj.properties
+    # Score: Higher is better | Distance: Lower is better
+    score = obj.metadata.score or 0.0
+    dist = f"{obj.metadata.distance:.4f}" if obj.metadata.distance is not None else "N/A (Keyword match)"
+    
+    print(f"Result #{rank}")
+    print(f" > Hybrid Score: {score:.4f} (Higher is better)")
+    print(f" > Vector Dist:  {dist} (Lower is better)")
+    print(f"File_name: {props.get('fileName')}")
+    print(f"File_path: {props.get('filePath')}")
+    print("-" * 30)
+    
+    content = props.get('content', "")
+    preview = (content[:500] + '...') if len(content) > 500 else content
+    print(f"{preview}\n")
 
-# import weaviate
-# import weaviate.classes.query as wvc
-# import time
+@patch
+def close(
+        self: MathBrainSearcher,
+        ):
+    self.client.close()
 
-# class MathBrainSearcher:
-#     def __init__(self, collection_name: str, host: str = "localhost", port: int = 8080):
-#         self.client = weaviate.connect_to_local(host=host, port=port)
-#         self.collection = self.client.collections.get(collection_name)
+@patch
+def __enter__(self: MathBrainSearcher): return self
 
-#     def search(self, query: str, alpha: float = 0.5, limit: int = 3, top_k: int = 20, rerank: bool = False):
-#         """Unified search with score and vector distance tracking."""
-#         start_time = time.time()
-#         fetch_count = max(top_k, limit) if rerank else limit
-
-#         response = self.collection.query.hybrid(
-#             query=query,
-#             alpha=alpha,
-#             limit=fetch_count,
-#             rerank=wvc.Rerank(prop="content", query=query) if rerank else None,
-#             # We now request both Score (Blended) and Distance (Vector Only)
-#             return_metadata=wvc.MetadataQuery(score=True, distance=True)
-#         )
-
-#         results = response.objects[:limit]
-#         self._display_summary(len(results), time.time() - start_time)
-#         self._display_results(results)
-
-#     def _display_summary(self, count: int, duration: float):
-#         print(f"\nFound {count} matches in {duration:.3f} seconds.")
-#         print("=" * 60)
-
-#     def _display_results(self, objects):
-#         if not objects:
-#             print("No matches found.")
-#             return
-#         for i, obj in enumerate(objects):
-#             self._print_single_object(i + 1, obj)
-
-#     def _print_single_object(self, rank: int, obj):
-#         props = obj.properties
-#         # Score: Higher is better | Distance: Lower is better
-#         score = obj.metadata.score or 0.0
-#         dist = f"{obj.metadata.distance:.4f}" if obj.metadata.distance is not None else "N/A (Keyword match)"
-        
-#         print(f"Result #{rank}")
-#         print(f" > Hybrid Score: {score:.4f} (Higher is better)")
-#         print(f" > Vector Dist:  {dist} (Lower is better)")
-#         print(f"File: {props.get('fileName')}")
-#         print("-" * 30)
-        
-#         content = props.get('content', "")
-#         preview = (content[:500] + '...') if len(content) > 500 else content
-#         print(f"{preview}\n")
-
-#     def close(self):
-#         self.client.close()
-
-#     def __enter__(self): return self
-#     def __exit__(self, *args): self.close()
+@patch
+def __exit__(
+        self: MathBrainSearcher, *args
+        ):
+    self.close()
