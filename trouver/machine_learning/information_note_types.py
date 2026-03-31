@@ -15,14 +15,9 @@ LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta
 import os
 from os import PathLike
 from pathlib import Path
-# import shutil
-# from typing import Callable, Literal, Optional
-# import warnings
 
 from deprecated import deprecated
-# from fastai.text.learner import TextLearner
 import pandas as pd
-# import torch
 from datasets import Dataset
 
 from ..helper.date_and_time import current_time_formatted_to_minutes

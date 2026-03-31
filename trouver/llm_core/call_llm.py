@@ -15,38 +15,107 @@ import lmstudio
 import time
 from typing import List, Optional, Any, Tuple
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 6
-def separate_thoughts(
-        raw_content: str
-        ) -> tuple[Optional[str], str]:
-    """
-    Separates model 'reasoning' from the actual answer.
-    Handles <think>, <thought>, and [THOUGHT] tags.
-    """
-    # 1. Define common patterns for thinking blocks
-    # This regex looks for <think>...</think> or  (case insensitive)
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 7
+# --- Helper Parsers ---
+
+# def _parse_xml_tags(text: str) -> Optional[Tuple[str, str]]:
+#     """Handles <think> or <thought> tags."""
+#     tag_pattern = r"<(think|thought)>([\s\S]*?)<\/\1>"
+#     match = re.search(tag_pattern, text, re.IGNORECASE)
+#     if match:
+#         thoughts = match.group(2).strip()
+#         answer = re.sub(tag_pattern, "", text, flags=re.IGNORECASE).strip()
+#         return thoughts, answer
+#     return None
+
+def _parse_xml_tags(text: str) -> Optional[Tuple[str, str]]:
+    """Handles <think> or <thought> tags. Returns ONLY the first match as thoughts."""
     tag_pattern = r"<(think|thought)>([\s\S]*?)<\/\1>"
     
-    match = re.search(tag_pattern, raw_content, re.IGNORECASE)
+    # 1. Get ONLY the first match for thoughts to satisfy test_eq(multi[0], "first")
+    match = re.search(tag_pattern, text, re.IGNORECASE)
     
     if match:
         thoughts = match.group(2).strip()
-        # Remove the thinking block from the main content
-        answer = re.sub(tag_pattern, "", raw_content, flags=re.IGNORECASE).strip()
+        # 2. Remove ALL tags from the answer to satisfy test_eq(multi[1], "text")
+        answer = re.sub(tag_pattern, "", text, flags=re.IGNORECASE).strip()
         return thoughts, answer
+    return None
+
+# def _parse_qwen_prose(text: str) -> Optional[Tuple[str, str]]:
+#     """Handles Qwen 3.5 / LM Studio 'Thinking Process:' format (case-insensitive)."""
+#     marker = "Thinking Process:"
+#     # Use .lower() to find the starting index regardless of case
+#     start_idx = text.lower().find(marker.lower())
     
-    # 2. Fallback for models that don't use tags but use a header
-    if "THOUGHTS:" in raw_content.upper():
-        parts = re.split(r"THOUGHTS:", raw_content, flags=re.IGNORECASE)
-        # Assuming format: THOUGHTS: [logic] ANSWER: [result]
-        if "ANSWER:" in parts[1].upper():
-            sub_parts = re.split(r"ANSWER:", parts[1], flags=re.IGNORECASE)
+#     if start_idx != -1:
+#         # Extract everything AFTER the "Thinking Process:" string
+#         content_after_marker = text[start_idx + len(marker):].strip()
+        
+#         # Look for the last double-newline to separate reasoning from result
+#         if "\n\n" in content_after_marker:
+#             sub_parts = content_after_marker.rsplit("\n\n", 1)
+#             return sub_parts[0].strip(), sub_parts[1].strip()
+        
+#         # If no double-newline, the whole thing is currently thoughts
+#         return content_after_marker, ""
+    
+#     return None
+
+def _parse_qwen_prose(text: str) -> Optional[Tuple[str, str]]:
+    """Handles Qwen 3.5 / LM Studio 'Thinking Process:' format."""
+    marker = "Thinking Process:"
+    start_idx = text.lower().find(marker.lower())
+    
+    if start_idx != -1:
+        content_after = text[start_idx + len(marker):].strip()
+        # Qwen separates the final answer with a double newline
+        if "\n\n" in content_after:
+            sub_parts = content_after.rsplit("\n\n", 1)
             return sub_parts[0].strip(), sub_parts[1].strip()
-            
-    # 3. If no markers found, return everything as the answer
+        # Truncated case: everything is thoughts, answer is empty
+        return content_after, ""
+    return None
+
+def _parse_header_structure(text: str) -> Optional[Tuple[str, str]]:
+    """Handles explicit THOUGHTS: / ANSWER: headers."""
+    if "THOUGHTS:" in text.upper() and "ANSWER:" in text.upper():
+        parts = re.split(r"THOUGHTS:", text, flags=re.IGNORECASE)
+        # parts[1] is everything after "THOUGHTS:"
+        sub_parts = re.split(r"ANSWER:", parts[1], flags=re.IGNORECASE)
+        return sub_parts[0].strip(), sub_parts[1].strip()
+    return None
+
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 8
+import re
+from typing import Optional, Tuple, Callable, List
+
+def separate_thoughts(raw_content: str) -> Tuple[Optional[str], str]:
+    """
+    Orchestrates the separation of reasoning from content using 
+    specialized helper parsers.
+    """
+    if not raw_content:
+        return None, ""
+
+    # List of parser functions to try in order of specificity
+    parsers: List[Callable[[str], Optional[Tuple[str, str]]]] = [
+        _parse_xml_tags,           # <think>...</think>
+        _parse_qwen_prose,         # Thinking Process: ... [Answer]
+        _parse_header_structure    # THOUGHTS: ... ANSWER: ...
+    ]
+
+    for parser in parsers:
+        result = parser(raw_content)
+        if result:
+            return result
+
+    # Final fallback: Everything is the answer
     return None, raw_content.strip()
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 13
+
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 20
 @runtime_checkable
 class LLMProvider(Protocol):
     """Structural requirement for a model to be used in this script."""
@@ -58,7 +127,7 @@ class LLMProvider(Protocol):
 # It explicitly lists the intended classes + our generic Protocol.
 SupportedLLM = Union[lmstudio.LLM, OpenAI, LLMProvider]
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 14
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 21
 def smart_truncate(
     text: str, 
     model: SupportedLLM,  # Using the alias here
@@ -82,7 +151,7 @@ def smart_truncate(
     return text
 
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 19
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 26
 def _parse_groq_limits(headers: Any) -> dict:
     """Extracts Groq-specific rate limit info from response headers."""
     return {
@@ -93,7 +162,7 @@ def _parse_groq_limits(headers: Any) -> dict:
         "retry_after": headers.get("retry-after")
     }
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 20
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 27
 def _extract_headers(headers: Any) -> dict:
     """Safely extracts rate limits; returns empty dict if not present."""
     if not headers: return {}
@@ -104,12 +173,12 @@ def _extract_headers(headers: Any) -> dict:
         "reset": headers.get("x-ratelimit-reset-requests")
     }
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 22
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 29
 def _get_input_metrics(messages: List[dict]) -> Tuple[float, str, int]:
     """Returns (perf_counter, timestamp_string, character_count)."""
     return time.perf_counter(), time.strftime("%H:%M:%S"), sum(len(m['content']) for m in messages)
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 23
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 30
 def _handle_openai_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
     """Handles OpenAI streaming with fallback and safe limit extraction."""
     full_content, ttft, start_perf, usage = "", None, time.perf_counter(), None
@@ -135,28 +204,11 @@ def _handle_openai_call(model: Any, messages: List[dict], config: dict) -> Tuple
         res.usage.limits = _extract_headers(raw_fallback.headers)
         return res.choices[0].message.content, None, res.usage
 
-# def _handle_openai_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
-#     """Handles OpenAI streaming with a safe fallback to standard calls."""
-#     full_content, ttft, start_perf = "", None, time.perf_counter()
-#     try:
-#         response = model.chat.completions.create(messages=messages, stream=True, 
-#                                                  stream_options={"include_usage": True}, **config)
-#         for chunk in response:
-#             if not ttft and chunk.choices and chunk.choices[0].delta.content:
-#                 ttft = time.perf_counter() - start_perf
-#             if chunk.choices and chunk.choices[0].delta.content:
-#                 full_content += chunk.choices[0].delta.content
-#             if chunk.usage: return full_content, ttft, chunk.usage
-#     except Exception:
-#         res = model.chat.completions.create(messages=messages, stream=False, **config)
-#         return res.choices[0].message.content, None, res.usage
-#     return full_content, ttft, None
-
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 24
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 31
 def _handle_lms_call(model: Any, messages: List[dict], config: dict) -> Tuple[str, Optional[float], Any]:
     """Handles LM Studio streaming with a safe fallback."""
     full_content, ttft, start_perf = "", None, time.perf_counter()
-    lms_config = {**config, "maxTokens": config.get("max_tokens", 1024)}
+    lms_config = {**config, "maxTokens": config.get("max_tokens", 8192)}
     try:
         stream = model.respond({"messages": messages}, config=lms_config, stream=True)
         for chunk in stream:
@@ -171,32 +223,8 @@ def _handle_lms_call(model: Any, messages: List[dict], config: dict) -> Tuple[st
         res = model.respond({"messages": messages}, config=lms_config)
         return getattr(res, 'content', str(res)), None, getattr(res, 'usage', {})
 
-# def call_llm(
-#         model: SupportedLLM,
-#         messages: List[dict],
-#         config: Optional[dict] = None,
-#         verbose: bool = False) -> str:
-#     conf = {"temperature": 0.1, "max_tokens": 1024, **(config or {})}
-#     start_p, start_t, in_chars = _get_input_metrics(messages)
-    
-#     if hasattr(model, 'respond'):
-#         out, ttft, usage = _handle_lms_call(model, messages, conf)
-#     elif hasattr(model, 'chat'):
-#         m_name = conf.pop("model_name", "gpt-4o")
-#         out, ttft, usage = _handle_openai_call(model, messages, {"model": m_name, **conf})
-#     else:
-#         raise ValueError("Unsupported model interface.")
 
-#     dur = time.perf_counter() - start_p
-#     if verbose:
-#         u = usage if isinstance(usage, dict) else getattr(usage, '__dict__', {})
-#         tps = (u.get('completion_tokens', 0) or getattr(usage, 'completion_tokens', 0)) / dur if dur > 0 else 0
-#         print(f"\n[Verbose] In: {in_chars}c | Out: {len(out)}c | Start: {start_t} | End: {time.strftime('%H:%M:%S')}")
-#         print(f"[Verbose] Total: {dur:.2f}s | TTFT: {f'{ttft:.2f}s' if ttft else 'N/A'} | TPS: {tps:.2f}\n")
-    
-#     return out.strip()
-
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 25
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 32
 def _log_llm_stats(
         out: str,
         in_c: int,
@@ -215,7 +243,7 @@ def _log_llm_stats(
     if hasattr(usage, 'limits') and usage.limits.get('rem_tok'):
         print(f"[Limits] Remaining Tokens: {usage.limits['rem_tok']} | Reset: {usage.limits['reset']}")
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 26
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 33
 def call_llm(
     model: 'SupportedLLM',
     messages: List[dict],
@@ -224,7 +252,7 @@ def call_llm(
     return_usage: bool = False
 ) -> str | Tuple[str, Any]:
     """Calls the LLM and optionally returns usage metadata."""
-    conf = {"temperature": 0.1, "max_tokens": 1024, **(config or {})}
+    conf = {"temperature": 0.1, "max_tokens": 8192, **(config or {})}
     start_p, start_t, in_chars = _get_input_metrics(messages)
     
     if hasattr(model, 'respond'):
@@ -241,7 +269,7 @@ def call_llm(
     
     return (out.strip(), usage) if return_usage else out.strip()
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 33
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 40
 class LLMResponse(TypedDict):
     r"""
     A `TypedDict` representing a processed response with separate logic and final output.
@@ -251,7 +279,7 @@ class LLMResponse(TypedDict):
     thoughts: str
     output: str
 
-# %% ../../nbs/07_llm_core_05.call_llm.ipynb 34
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb 41
 # Overload 1: If return_thoughts is True, return a dict
 @overload
 def process_llm_response(raw_text: str, return_thoughts: Literal[True]) -> LLMResponse: ...
