@@ -1600,6 +1600,14 @@ def latex_highlight_formatter(text: str, pred: HTMLTagWithIndices) -> str:
     # User requirement: "if $blah$, then \hl{$blah$}"
     return f"\\hl{{{text}}}"
 
+# %% ../../../nbs/08_machine_learning_24.tokenize.def_and_notat_token_classification_llm_verification.ipynb 1
+from typing import TypedDict
+
+from openai import OpenAI
+from pydantic import BaseModel
+
+
+
 # %% ../../../nbs/08_machine_learning_24.tokenize.def_and_notat_token_classification_llm_verification.ipynb 6
 DEF_NOTAT_VERIFY_SYSTEM_PROMPT = r"""
 You are an expert auditor of mathematical texts. Your task is to validate semantic HTML markings (attributes: "definition" or "notation") within an excerpt. You must determine if the current markings correctly identify **newly introduced** terms while ignoring **contextual** objects.
@@ -1753,15 +1761,6 @@ def run_strict_audit(
             ],
             temperature=temperature,  # Low temperature = more deterministic structure
             max_tokens=1024,
-            # --- THE FIX: NEW STRUCTURED OUTPUT FORMAT ---
-            # response_format={
-            #     "type": "json_schema",
-            #     "json_schema": {
-            #         "name": "audit_result", # Identifying name for the schema
-            #         "schema": AuditResult.model_json_schema(), # Auto-generates the schema
-            #         "strict": True # Forces the model to adhere exactly
-            #     }
-            # }
             response_format={
                 "type": "json_schema",
                 "json_schema": {
@@ -1782,60 +1781,23 @@ def run_strict_audit(
             }
         )
 
-        # 1. Get the raw string (The server GUARANTEES this is valid JSON matching schema)
-        raw_content = response.choices[0].message.content
-        
+        # # 1. Get the raw string (The server GUARANTEES this is valid JSON matching schema)
+        # raw_content = response.choices[0].message.content
+
+        # 1. Get the raw string 
+        message = response.choices[0].message
+
+        # Check standard content first, fall back to reasoning_content
+        raw_content = message.content or getattr(message, 'reasoning_content', "")
+
         # 2. Parse directly into Pydantic
         result = AuditResult.model_validate_json(raw_content)
         
         return result
 
-    # except Exception as e:
-    #     # Attempt to extract what was generated before the crash
-    #     # raw_content might be partially populated depending on your client's state
-    #     partial_reasoning = raw_content if 'raw_content' in locals() else str(e)
-    #     if verbose:
-    #         print(f"Audit Failed: {e}")
-    #     return AuditResult(
-    #         reasoning=f"{INITIAL_ERROR_MESSAGE}: {partial_reasoning}",
-    #         has_incorrect_markings=False,
-    #         has_missing_markings=False
-    #     )
 
     except Exception as e:
-        # if verbose: print(f"Audit Failed: {e}")
-        # Invoke the factored-out salvage logic
         return salvage_audit_result(raw_content, str(e))
-    # except Exception as e:
-    #     if 'raw_content' in locals() and raw_content:
-    #         # Normalize content for easier searching
-    #         clean_content = raw_content.lower().replace(" ", "")
-            
-    #         # Helper to find boolean values in truncated JSON
-    #         def extract_bool(key):
-    #             if f'"{key}":true' in clean_content: return True
-    #             if f'"{key}":false' in clean_content: return False
-    #             return None # Not generated yet
-
-    #         salvaged_inc = extract_bool("has_incorrect_markings")
-    #         salvaged_mis = extract_bool("has_missing_markings")
-
-    #         # Only count this as a "Success" if we got both booleans.
-    #         # Otherwise, the reasoning is likely so short the logic hasn't started.
-    #         if salvaged_inc is not None and salvaged_mis is not None:
-    #             return AuditResult(
-    #                 reasoning=f"TRUNCATED SALVAGE: {raw_content[:200]}...",
-    #                 has_incorrect_markings=salvaged_inc,
-    #                 has_missing_markings=salvaged_mis
-    #             )
-                
-    #     # If we couldn't even get the booleans, return the error so the 
-    #     # voting logic knows to ignore this attempt and try again.
-    #     return AuditResult(
-    #         reasoning=f"{INITIAL_ERROR_MESSAGE}: {str(e)}",
-    #         has_incorrect_markings=False,
-    #         has_missing_markings=False
-    #     )
 
 # %% ../../../nbs/08_machine_learning_24.tokenize.def_and_notat_token_classification_llm_verification.ipynb 17
 ALL_AUDITS_FAILED_STRING = "All audit attempts failed due to system errors."
@@ -1943,8 +1905,13 @@ def run_audit_voting_maker(
         system_prompt: str = DEF_NOTAT_VERIFY_SYSTEM_PROMPT,
         user_prompt: str = DEF_NOTAT_VERIFY_USER_PROMPT,
         temperature: float = 0.7,
+        callback: callable = None, # <--- NEW: Accepts a function
         ) -> AuditVoteResult:
     
+    def log(msg):
+        if verbose: print(msg)
+        if callback: callback(msg)
+
     audits: list[AuditResult] = []
     
     # Leads for independent categories
@@ -1960,8 +1927,13 @@ def run_audit_voting_maker(
     successful_count = 0
     total_attempts = 0
 
-    if verbose:
-        print(f"--- Starting Independent MAKER Audit (K={K}) ---")
+    if verbose or callback:
+        log(f"--- Starting Independent MAKER Audit (K={K}) ---")
+        log("LEGEND:")
+        log(f"  INC_LEAD: Net difference for 'Incorrect Markings' (+ means 'is incorrect and needs manual checking', - means 'is correct')")
+        log(f"  MIS_LEAD: Net difference for 'Missing Markings'   (+ means 'is missing and needs manual checking',   - means 'is not missing')")
+        log(f"  Target: Lead must reach +{K} or -{K} to settle.")
+        log("---")
 
     while total_attempts < max_samples:
         # Check if both types have reached confidence
@@ -1989,7 +1961,7 @@ def run_audit_voting_maker(
             
             if abs(inc_diff) >= K:
                 inc_settled = True
-                if verbose: print(f"-> Incorrect Markings SETTLED at lead {inc_diff}")
+                if verbose or callback: log(f"-> Incorrect Markings SETTLED at lead {inc_diff}")
 
         # Update Missing Markings Tally ONLY if not yet settled
         if not mis_settled:
@@ -2001,10 +1973,10 @@ def run_audit_voting_maker(
             
             if abs(mis_diff) >= K:
                 mis_settled = True
-                if verbose: print(f"-> Missing Markings SETTLED at lead {mis_diff}")
+                if verbose or callback: log(f"-> Missing Markings SETTLED at lead {mis_diff}")
 
-        if verbose:
-            print(f"Sample {total_attempts}: INC_LEAD={inc_diff} (S:{inc_settled}), MIS_LEAD={mis_diff} (S:{mis_settled})")
+        if verbose or callback:
+            log(f"Sample {total_attempts}: INC_LEAD={inc_diff} (S:{inc_settled}), MIS_LEAD={mis_diff} (S:{mis_settled})")
 
     # Determine final results based on locked leads
     should_remove = inc_diff >= K

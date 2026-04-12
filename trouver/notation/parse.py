@@ -53,6 +53,34 @@ def _main_of_notation_from_text(
     return main_note_name
 
 # %% ../../nbs/06_notation_00_parse.ipynb 13
+def _part_is_unordered_list_and_is_of_markdownstyle_link(
+        part: dict[str, Union[str, MarkdownLineEnum]]
+        ) -> bool:
+    """
+    
+    Helper function for `_divide_bulleted_list_mf_at_end`
+    """
+    if part['type'] != MarkdownLineEnum.UNORDERED_LIST:
+        return False
+    if not part['line'].startswith('- '):
+        return False
+    if not re.match(MARKDOWNLINK_PATTERN, part['line'][2:]):
+        return False
+    return True
+    
+
+def _notat_str_and_linked_notat_note_name_from_bullet_point_part(
+        part: dict[str, Union[str, MarkdownLineEnum]],
+        remove_file_extension_from_note_names: bool
+        ) -> tuple[str, str]:
+    match = re.match(MARKDOWNLINK_CAPTURE_PATTERN, part['line'][2:])
+    notat_str = match[1]
+    linked_notat_note_name = match[2]
+    if remove_file_extension_from_note_names and linked_notat_note_name.endswith('.md'):
+        linked_notat_note_name = linked_notat_note_name[:-3]
+    return notat_str, linked_notat_note_name
+
+# %% ../../nbs/06_notation_00_parse.ipynb 14
 def _divide_bulleted_list_mf_at_end(
         mf: MarkdownFile, 
         remove_file_extension_from_note_names: bool,
@@ -85,34 +113,8 @@ def _divide_bulleted_list_mf_at_end(
     return MarkdownFile(main_parts), bulleted_list
     
 
-def _part_is_unordered_list_and_is_of_markdownstyle_link(
-        part: dict[str, Union[str, MarkdownLineEnum]]
-        ) -> bool:
-    """
-    
-    Helper function for `_divide_bulleted_list_mf_at_end`
-    """
-    if part['type'] != MarkdownLineEnum.UNORDERED_LIST:
-        return False
-    if not part['line'].startswith('- '):
-        return False
-    if not re.match(MARKDOWNLINK_PATTERN, part['line'][2:]):
-        return False
-    return True
-    
 
-def _notat_str_and_linked_notat_note_name_from_bullet_point_part(
-        part: dict[str, Union[str, MarkdownLineEnum]],
-        remove_file_extension_from_note_names: bool
-        ) -> tuple[str, str]:
-    match = re.match(MARKDOWNLINK_CAPTURE_PATTERN, part['line'][2:])
-    notat_str = match[1]
-    linked_notat_note_name = match[2]
-    if remove_file_extension_from_note_names and linked_notat_note_name.endswith('.md'):
-        linked_notat_note_name = linked_notat_note_name[:-3]
-    return notat_str, linked_notat_note_name
-
-# %% ../../nbs/06_notation_00_parse.ipynb 16
+# %% ../../nbs/06_notation_00_parse.ipynb 17
 class NotationNoteParsed(NamedTuple):
     """
     A `NamedTuple` class encapsulating an output of the `parse_notation_note` function.
@@ -136,7 +138,7 @@ class NotationNoteParsed(NamedTuple):
     main_content_markdown_file: MarkdownFile
     linked_notation_notes: list[tuple[str, str]]
 
-# %% ../../nbs/06_notation_00_parse.ipynb 17
+# %% ../../nbs/06_notation_00_parse.ipynb 18
 def _notat_str(
         meta: Union[dict, None],
         notat_str: str
@@ -155,7 +157,112 @@ def _notat_str(
     else:
         return notat_str
 
-# %% ../../nbs/06_notation_00_parse.ipynb 18
+# %% ../../nbs/06_notation_00_parse.ipynb 19
+def _get_notation_string(
+        file_text: str,
+        notation_note: VaultNote
+        ) -> str:
+    """Return the notation string from the text of the notation note..
+
+    Assumes that the notation string exists and is well formatted.
+
+    Helper function for `parse_notation_note`.
+    """
+    try:
+        return re.search(r'\$.+?\$', file_text).group()
+    except AttributeError as e:
+        raise ValueError(
+            'There seems to be a formatting error in a notation note'
+            ' and the notation has not been identified. The following is the'
+            f' name of the notation note: {notation_note.name}')
+    
+
+
+# %% ../../nbs/06_notation_00_parse.ipynb 20
+# def _remove_the_notation_str_and_denotes_in_main_mf(
+#         main_mf: MarkdownFile,
+#         notation_note: VaultNote):
+#     """Remove the text `<notation> denotes ` which starts the
+#     notation description.
+
+#     Helper function of `parse_notation_note`.
+#     """
+#     for part in main_mf.parts:
+#         if part['type'] == MarkdownLineEnum.BLANK_LINE:
+#             continue
+#         match = re.match(fr'^\$.+?\$ ({WIKILINK_PATTERN}|denotes)\s*', part['line']) 
+#         if match is None:
+#             raise ValueError(
+#                 'There seems to be a formatting error in a notation note'
+#                 ' and the notation has not been identified. The following is the'
+#                 f' name of the notation note: {notation_note.name}')
+#         else:
+#             start, end = match.span()
+#             part['line'] = part['line'][end:]
+#             break
+    
+
+# %% ../../nbs/06_notation_00_parse.ipynb 21
+# def _remove_the_notation_str_and_denotes_in_main_mf(
+#         main_mf: MarkdownFile,
+#         notation_note: VaultNote):
+#     """Remove the text `<notation> denotes ` which starts the
+#     notation description.
+
+#     Helper function of `parse_notation_note`.
+#     """
+#     # Debug Fix 1: We must skip metadata and horizontal rules (YAML block) 
+#     # otherwise the function raises ValueError on the first '---'
+#     ignore_types = {
+#         MarkdownLineEnum.BLANK_LINE, 
+#         MarkdownLineEnum.META, 
+#         MarkdownLineEnum.HORIZONTAL_RULE
+#     }
+    
+#     for part in main_mf.parts:
+#         if part['type'] in ignore_types:
+#             continue
+            
+#         # Debug Fix 2: Wrap the OR group in (?:...) 
+#         # Without this, the | inside '[[link|denotes]]' breaks the ^ start anchor.
+#         pattern = fr'^\$.+?\$ (?:{WIKILINK_PATTERN}|denotes)\s*'
+#         match = re.match(pattern, part['line']) 
+        
+#         if match is None:
+#             raise ValueError(
+#                 'There seems to be a formatting error in a notation note'
+#                 ' and the notation has not been identified. The following is the'
+#                 f' name of the notation note: {notation_note.name}')
+#         else:
+#             _, end = match.span()
+#             part['line'] = part['line'][end:]
+#             break
+
+# %% ../../nbs/06_notation_00_parse.ipynb 23
+def _remove_the_notation_str_and_denotes_in_main_mf(
+        main_mf: MarkdownFile,
+        notation_note: VaultNote):
+    # Skip front-matter and blank lines
+    ignore = {MarkdownLineEnum.BLANK_LINE, MarkdownLineEnum.META, MarkdownLineEnum.HORIZONTAL_RULE}
+    
+    for part in main_mf.parts:
+        if part['type'] in ignore: continue
+        
+        # FIX: Wrap the OR in (?: ... ) to shield the pipes inside the wikilink
+        pattern = fr'^\$.+?\$ (?:{WIKILINK_PATTERN}|denotes)\s*'
+        match = re.match(pattern, part['line']) 
+        
+        if match is None:
+            raise ValueError(
+                'There seems to be a formatting error in a notation note'
+                ' and the notation has not been identified. The following is the'
+                f' name of the notation note: {notation_note.name}')
+        else:
+            _, end = match.span()
+            part['line'] = part['line'][end:]
+            break
+
+# %% ../../nbs/06_notation_00_parse.ipynb 31
 def parse_notation_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None, # The vault If `None`, then uses `notation_note.vault`
@@ -211,49 +318,8 @@ def parse_notation_note(
             linked_notations_list)
 
 
-def _get_notation_string(
-        file_text: str,
-        notation_note: VaultNote
-        ) -> str:
-    """Return the notation string from the text of the notation note..
 
-    Assumes that the notation string exists and is well formatted.
-
-    Helper function for `parse_notation_note`.
-    """
-    try:
-        return re.search(r'\$.+?\$', file_text).group()
-    except AttributeError as e:
-        raise ValueError(
-            'There seems to be a formatting error in a notation note'
-            ' and the notation has not been identified. The following is the'
-            f' name of the notation note: {notation_note.name}')
-    
-
-def _remove_the_notation_str_and_denotes_in_main_mf(
-        main_mf: MarkdownFile,
-        notation_note: VaultNote):
-    """Remove the text `<notation> denotes ` which starts the
-    notation description.
-
-    Helper function of `parse_notation_note`.
-    """
-    for part in main_mf.parts:
-        if part['type'] == MarkdownLineEnum.BLANK_LINE:
-            continue
-        match = re.match(fr'^\$.+?\$ ({WIKILINK_PATTERN}|denotes)\s*', part['line']) 
-        if match is None:
-            raise ValueError(
-                'There seems to be a formatting error in a notation note'
-                ' and the notation has not been identified. The following is the'
-                f' name of the notation note: {notation_note.name}')
-        else:
-            start, end = match.span()
-            part['line'] = part['line'][end:]
-            break
-    
-
-# %% ../../nbs/06_notation_00_parse.ipynb 25
+# %% ../../nbs/06_notation_00_parse.ipynb 38
 def notation_in_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None,
@@ -292,7 +358,7 @@ def notation_in_note(
         notation_in_note = notation_in_note.strip(' $')
     return notation_in_note
 
-# %% ../../nbs/06_notation_00_parse.ipynb 28
+# %% ../../nbs/06_notation_00_parse.ipynb 41
 def main_of_notation(
         notation_note: VaultNote, # The VaultNote object representing the notation note.
         as_note: bool = False # If `False`, then returns the name of the note, and returns a VaultNote object with the same vault as `notation_note` otherwise. The vault used to get the `VaultNote` is the vault of `notation_note`.
@@ -314,7 +380,7 @@ def main_of_notation(
     else:
         return main_note_name
 
-# %% ../../nbs/06_notation_00_parse.ipynb 35
+# %% ../../nbs/06_notation_00_parse.ipynb 48
 def latex_in_original(
         parsed: Optional[NotationNoteParsed] = None,
         notation_note: Optional[VaultNote] = None,

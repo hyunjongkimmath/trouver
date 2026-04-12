@@ -18,18 +18,26 @@ __all__ = ['WIKILINK_PATTERN', 'EMBEDDED_WIKILINK_PATTERN', 'WIKILINK_CAPTURE_PA
 
 # %% ../../nbs/03_obsidian_50.links.ipynb 5
 # TODO Make it so that these patterns don't capture latex code
-WIKILINK_PATTERN = r'!?\[\[[^\]]+\]\]'
-EMBEDDED_WIKILINK_PATTERN = r'!\[\[[^\]]+\]\]'
+# WIKILINK_PATTERN = r'!?\[\[[^\]]+\]\]'
+WIKILINK_PATTERN = r'!?\[\[.*?\]\]'
+# EMBEDDED_WIKILINK_PATTERN = r'!\[\[[^\]]+\]\]'
+EMBEDDED_WIKILINK_PATTERN = r'!\[\[.*?\]\]'
 WIKILINK_CAPTURE_PATTERN = r'!?\[\[([^#\|]*?)(#(.*?))?(\|(.*?))?\]\]'
 
 # Note that MARKDOWNLINK_PATTERN captures whitespace characters in its link, even though Obsidian
 # does not. This is implmeneted to find if any misformats in the Obsidian Markdown files.
-MARKDOWNLINK_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)]+)\)'
-EMBEDDED_MARKDOWNLINK_PATERN = r'!\[[^\]]+\]\([^)]+\)'
-MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)#]+)(#([^)]+))?\)'
+# MARKDOWNLINK_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)]+)\)'
+# MARKDOWNLINK_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\((.*?)\)'
+# Updated to use * instead of + for the bracket content
+MARKDOWNLINK_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])*)\]\((.*?)\)'
+# EMBEDDED_MARKDOWNLINK_PATERN = r'!\[[^\]]+\]\([^)]+\)'
+EMBEDDED_MARKDOWNLINK_PATERN = r'!\[.*?\]\(.*?\)'
+# MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\(([^)#]+)(#([^)]+))?\)'
+# MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\((.*?)(#(.*?))?\)'
+MARKDOWNLINK_CAPTURE_PATTERN = r'!?\[((?:[^\[\]]|\[[^\[\]]*\])*)\]\((.*?)(#(.*?))?\)'
 EMBEDDED_PATTERN = f'{EMBEDDED_WIKILINK_PATTERN}|{EMBEDDED_MARKDOWNLINK_PATERN}'
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 9
+# %% ../../nbs/03_obsidian_50.links.ipynb 11
 def link_ranges_in_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is an obsidian internal link.
@@ -43,7 +51,7 @@ def link_ranges_in_text(
     regex = f'{WIKILINK_PATTERN}|{MARKDOWNLINK_PATTERN}'
     return find_regex_in_text(text, pattern=regex)
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 13
+# %% ../../nbs/03_obsidian_50.links.ipynb 15
 class LinkFormatError(Exception):
     """Error that is raised when a string cannot be parsed as an
     `ObsidianLink` object.
@@ -56,7 +64,7 @@ class LinkFormatError(Exception):
         self.text = text
         super().__init__(f'Obsidian Markdown link is not formatted properly: {text}')
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 14
+# %% ../../nbs/03_obsidian_50.links.ipynb 16
 class LinkType(Enum):
     r"""An Enumeration indicating whether an `ObsidianLink` object is a
     Wikilink or a Markdown-style link.
@@ -72,7 +80,7 @@ class LinkType(Enum):
     # localization_of_a_module
 
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 15
+# %% ../../nbs/03_obsidian_50.links.ipynb 17
 class ObsidianLink:
     """Object representing an obsidian link
     
@@ -160,7 +168,7 @@ class ObsidianLink:
         return
     
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 16
+# %% ../../nbs/03_obsidian_50.links.ipynb 18
 @patch
 def __str__(
         self: ObsidianLink
@@ -223,7 +231,7 @@ def to_string(
         anchoring = anchoring.replace(' ', '%20')
         return fr'{embedding}[{customing}]({file_name}{anchoring})'
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 22
+# %% ../../nbs/03_obsidian_50.links.ipynb 24
 @patch
 def displayed_text(
         self: ObsidianLink
@@ -242,7 +250,7 @@ def displayed_text(
         else:
             return f'{self.file_name} > {self.anchor}'
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 24
+# %% ../../nbs/03_obsidian_50.links.ipynb 26
 @patch
 def is_abstract(
         self: ObsidianLink
@@ -253,7 +261,7 @@ def is_abstract(
     """
     return self.anchor == -1 or self.file_name == -1 or self.anchor == -1
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 26
+# %% ../../nbs/03_obsidian_50.links.ipynb 28
 @patch
 def __copy__(
         self: ObsidianLink):
@@ -265,7 +273,7 @@ def __copy__(
         self.link_type)
     return new_instance
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 28
+# %% ../../nbs/03_obsidian_50.links.ipynb 30
 @patch
 def __eq__(
         self: ObsidianLink,
@@ -279,7 +287,7 @@ def __eq__(
         and self.custom_text == other.custom_text
         and self.link_type == other.link_type)
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 31
+# %% ../../nbs/03_obsidian_50.links.ipynb 33
 @staticmethod
 @patch(cls_method=True)
 def from_text(
@@ -292,7 +300,7 @@ def from_text(
             
     **Raises**
 
-    - InteralLinkFormatError
+    - LinkFormatError
         - If `text` is not properly formatted as an Obsidian internal link.
     """
     is_embedded = text.startswith("!")
@@ -320,7 +328,7 @@ def from_text(
         custom_text = 0
     return ObsidianLink(is_embedded, file_name, anchor, custom_text, link_type)
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 55
+# %% ../../nbs/03_obsidian_50.links.ipynb 57
 @patch
 def to_regex(
     self: ObsidianLink
@@ -376,7 +384,7 @@ def to_regex(
         anchoring = anchoring.replace(' ', '%20')
         return fr'{embedding}\[{customing}\]\({filing}{anchoring}\)'
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 70
+# %% ../../nbs/03_obsidian_50.links.ipynb 72
 def links_from_text(
         text: str,
         link_to_search: Optional[ObsidianLink] = None,
@@ -393,7 +401,7 @@ def links_from_text(
     link_strs = [text[start:end] for start, end in ranges]
     return [ObsidianLink.from_text(link_str) for link_str in link_strs]
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 75
+# %% ../../nbs/03_obsidian_50.links.ipynb 77
 def remove_links_from_text(
         text: str,
         exclude: list[ObsidianLink] = None, # A list of `ObsidianLink` objects of links to not be removed.
@@ -432,7 +440,7 @@ def _do_not_remove_link(text: str, exclude_patterns: list[re.Pattern]) -> bool:
             return True
     return False
 
-# %% ../../nbs/03_obsidian_50.links.ipynb 84
+# %% ../../nbs/03_obsidian_50.links.ipynb 86
 def replace_links_in_text(
         text: str,
         links_to_replace: ObsidianLink,

@@ -13,12 +13,15 @@ import pathlib
 from pathlib import Path
 from typing import List, Union, Optional, Dict, Any, Iterable, Callable, Type, Tuple
 
+# from sentence_transformers import CrossEncoder
 import weaviate
+from weaviate.collections.classes.internal import Object
 from weaviate.classes.config import Configure, DataType, Property, VectorDistances
 from weaviate.classes.query import Filter
 from weaviate.util import generate_uuid5
 import weaviate
 import weaviate.classes.query as wvc
+
 
 from fastcore.basics import patch
 from tqdm import tqdm
@@ -475,7 +478,7 @@ class MathBrainSearcher:
 #     self._display_results(results)
 
 
-# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 37
+# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 39
 @patch
 def search(
         self: 'MathBrainSearcher',
@@ -483,31 +486,77 @@ def search(
         alpha: float = 0.5,
         limit: int = 3,
         top_k: int = 20,
-        rerank: bool = False,
-        filters: Optional[wvc.Filter] = None  # Robust, general filter parameter
-        ):
-    """
-    Unified search with support for arbitrary Weaviate v4 filters.
-    """
+        filters: Optional[wvc.Filter] = None,
+        reranker: Optional[Any] = None  #I can't type hint CrossEncoder
+        ) -> list[Object[dict, Any]]:
+    
     start_time = time.time()
-    fetch_count = max(top_k, limit) if rerank else limit
+    fetch_count = top_k if reranker is not None else limit
 
-    # The hybrid query accepts the Filter object directly
     response = self.collection.query.hybrid(
         query=query,
         alpha=alpha,
         limit=fetch_count,
-        filters=filters,  # Injected here
-        rerank=wvc.Rerank(prop="content", query=query) if rerank else None,
+        filters=filters,
         return_metadata=wvc.MetadataQuery(score=True, distance=True)
     )
 
-    results = response.objects[:limit]
+    results = response.objects
+    if not results: return []
+
+    if reranker is not None:
+        valid_results = []
+        for obj in results:
+            content = obj.properties.get('content', '')
+            # 1. Basic type/empty check
+            if not isinstance(content, str) or not content.strip():
+                continue
+            
+            # 2. Tokenization Check: The "Qwen3 Reshape" Killer
+            # Ensure the content actually produces tokens. 
+            # If it's just whitespace or symbols the tokenizer ignores, skip it.
+            tokens = reranker.tokenizer.encode(content, add_special_tokens=False)
+            if len(tokens) > 0:
+                valid_results.append(obj)
+
+        if not valid_results:
+            return results[:limit]
+
+        pairs = [[query, obj.properties['content']] for obj in valid_results]
+        
+        try:
+            # 3. Model Configuration Guard
+            # Ensure the model has a pad token, otherwise Qwen3 crashes on any batch
+            if reranker.model.config.pad_token_id is None:
+                reranker.model.config.pad_token_id = reranker.tokenizer.eos_token_id
+
+            scores = reranker.predict(pairs, batch_size=1, convert_to_numpy=True)
+            
+            if len(scores.shape) > 1 and scores.shape[1] == 1:
+                scores = scores.flatten()
+
+            for i, obj in enumerate(valid_results):
+                obj.metadata.rerank_score = float(scores[i])
+                
+            results = sorted(
+                valid_results, 
+                key=lambda x: getattr(x.metadata, 'rerank_score', -99), 
+                reverse=True
+            )[:limit]
+
+        except Exception as e:
+            # This is where your current error was caught.
+            # With the token check above, this should now be rare.
+            print(f"Reranking failed: {e}. Falling back to hybrid results.")
+            results = results[:limit]
+    else:
+        results = results[:limit]
+
     self._display_summary(len(results), time.time() - start_time)
     self._display_results(results)
     return results
 
-# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 38
+# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 41
 @patch
 def _display_summary(
         self: MathBrainSearcher,
@@ -526,7 +575,7 @@ def _display_results(
     for i, obj in enumerate(objects):
         self._print_single_object(i + 1, obj)
 
-# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 39
+# %% ../../nbs/08_machine_learning_90.semantic_search.ipynb 42
 @patch
 def _print_single_object(
         self: MathBrainSearcher,
