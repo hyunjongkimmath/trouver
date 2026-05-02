@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm}
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newenvironment{remark}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Remark~\theequation.}
+}{}
+\newenvironment{example}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Example~\theequation.}
+}{}
+\begin{document}
+\section{Introduction}
+\begin{remark}
+This should be Remark 1.1.
+\end{remark}
+\section{Main Results}
+\begin{example}
+This should be Example 2.1.
+\end{example}
+\end{document}

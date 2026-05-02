@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm}
+
+\newtheorem{theorem}{Theorem}[section]
+\numberwithin{theorem}{subsection}
+
+\begin{document}
+
+\section{Introduction}
+\subsection{Basics}
+
+\begin{theorem}
+First theorem of the first subsection. (1.1.1)
+\end{theorem}
+
+\section{Conclusion}
+\subsection{Summary}
+
+\begin{theorem}
+This must reset to 2.1.1, not 2.1.2 or 2.0.1.
+\end{theorem}
+
+\end{document}

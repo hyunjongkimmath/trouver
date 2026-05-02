@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm}
+
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+\newtheorem{lemma}[equation]{Lemma}
+
+\newenvironment{remark}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Remark~\theequation.}
+}{}
+
+\begin{document}
+\section{Interleaved Numbering}
+
+\begin{lemma}
+A Lemma that starts the count at 1.1.
+\begin{equation}
+e^{i\pi} + 1 = 0
+\end{equation}
+\end{lemma}
+
+\begin{remark}
+This remark should be 1.3 because the equation above took the 1.2 slot.
+\end{remark}
+
+\begin{eqnarray}
+   asdf
+\end{eqnarray}
+
+\begin{lemma}
+   This lemma should be 1.5
+\end{lemma}
+
+\end{document}

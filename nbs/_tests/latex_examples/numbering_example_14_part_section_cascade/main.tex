@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{amsmath}
+\makeatletter
+\@addtoreset{section}{part}
+\@addtoreset{equation}{section}
+\makeatother
+\renewcommand{\thesection}{\thepart.\arabic{section}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newenvironment{remark}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Remark~\theequation.}
+}{}
+\begin{document}
+\part{Algebra}
+\section{Modules}
+\begin{remark}
+This should be Remark 1.1.1.
+\end{remark}
+\end{document}

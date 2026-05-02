@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm}
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+\theoremstyle{plain}
+% \newtheorem{remark}{Remark}
+\newtheorem{theorem}[equation]{Theorem}
+\newenvironment{remark}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Remark~\theequation.}
+}{}
+\begin{document}
+\section{Logic Check}
+\begin{theorem}
+Theorem 1.1.
+\end{theorem}
+\begin{remark}
+Remark 1.2.
+\end{remark}
+\end{document}

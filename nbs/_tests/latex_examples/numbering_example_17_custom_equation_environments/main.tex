@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm}
+
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+\newtheorem{theorem}[equation]{Theorem}
+
+\newenvironment{remark}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Remark~\theequation.}
+}{}
+
+\newenvironment{warning}[1][]{
+   \refstepcounter{equation}
+   \noindent\textbf{Warning~\theequation.}
+}{}
+
+\begin{document}
+\section{Master Counter Test}
+
+\begin{theorem}
+This is the first item.
+\end{theorem}
+
+\begin{remark}
+This is the second item, using the same counter.
+\end{remark}
+
+\begin{warning}
+This is the third item.
+\end{warning}
+
+\end{document}

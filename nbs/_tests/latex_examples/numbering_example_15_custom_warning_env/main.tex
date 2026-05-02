@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{amsmath}
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newenvironment{warning}[1][]{
+    \refstepcounter{equation}
+    \noindent\textbf{Warning~\theequation.}
+}{}
+\begin{document}
+\section{Safety}
+\begin{warning}
+This should be Warning 1.1.
+\end{warning}
+\end{document}
