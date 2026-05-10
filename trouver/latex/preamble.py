@@ -3,13 +3,13 @@
 # %% auto #0
 __all__ = ['divide_preamble', 'replace_inclusion_of_style_file_with_code']
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #ccfd0480
+# %% ../../nbs/04_latex_10.preamble.ipynb #60063fec
 import re
 from os import PathLike
 from pathlib import Path
 import warnings
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #8383443c
+# %% ../../nbs/04_latex_10.preamble.ipynb #8d18b06f
 def divide_preamble(
         text: str, # LaTeX document
         document_environment_name: str = "document"
@@ -24,7 +24,7 @@ def divide_preamble(
 
     
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #59c7c52c
+# %% ../../nbs/04_latex_10.preamble.ipynb #41125759
 # def replace_inclusion_of_style_file_with_code(
 #         document: str,
 #         dir: PathLike # The directory containing the style file.

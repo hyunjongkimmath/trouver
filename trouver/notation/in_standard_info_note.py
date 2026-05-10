@@ -5,7 +5,7 @@ __all__ = ['notat_str_from_doub_asts_in_std_info_note', 'notat_str_from_html_tag
            'notations_and_main_notes', 'notation_note_is_linked_in_see_also_section', 'add_notation_note_to_see_also',
            'add_missing_notation_links_to_information_notes']
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #d7285097
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #fdab21eb
 import warnings
 import os
 from os import PathLike
@@ -22,7 +22,7 @@ from ..personal_vault.note_type import note_is_of_type, PersonalNoteTypeEnum
 from .parse import main_of_notation
 from ..obsidian.vault import VaultNote, NoteDoesNotExistError
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #44889418
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #0e1459e2
 def notat_str_from_doub_asts_in_std_info_note(
         info_note: VaultNote
         ) -> list[str]: # Each str is a LaTeX str, beginning and trailing dollar signs `$` (single or double) included.
@@ -40,7 +40,7 @@ def notat_str_from_doub_asts_in_std_info_note(
             part['line'][start+2:end-2] for start, end in indices])
     return notations
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #1339844d
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #8675d0b7
 def notat_str_from_html_tags(
         info_note: VaultNote
         ) -> list[tuple[str, str]]: # Each str is a LaTeX str, the first of which is the text of and surrounded by the HTML tag and the second of which is a string (without surrounding dollar signs) specifying the actual notation introduced in the first text.
@@ -80,7 +80,7 @@ def notat_str_from_html_tags(
                 recognized as a pure LaTeX math mode string""")
     return pairs
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #97139c01
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #535a0996
 def notation_notes_linked_in_see_also_section(
         info_note: VaultNote,
         vault: PathLike, # Path to the vault directory.
@@ -102,7 +102,7 @@ def notation_notes_linked_in_see_also_section(
     else:
         return note_names
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #34946acc
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #c5acba6f
 def notations_and_main_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note parameter is used to determined the subdirectory. If `subdirectory` is the empty str, then all notation notes in the vault are searched. Defaults to `None`. 
@@ -135,7 +135,7 @@ def notations_and_main_notes(
     return {vn.name: main_of_notation(vn) for vn in vn_objects
             if note_is_of_type(vn, PersonalNoteTypeEnum.NOTATION_NOTE)}
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #df667825
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #c3b7596e
 def notation_note_is_linked_in_see_also_section(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None # The note in which to find the link to `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -149,7 +149,7 @@ def notation_note_is_linked_in_see_also_section(
         info_note, vault=notation_note.vault, as_vault_notes=False)
     return notation_note.name in notes
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #a223cc54
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #1a761015
 def add_notation_note_to_see_also(
         notation_note: VaultNote,
         info_note: Optional[VaultNote] = None, # The note in which to link `notation_note`. Defaults to `None`, in which case the main note is determined to be the first linked note of `notation_note`.
@@ -179,7 +179,7 @@ def add_notation_note_to_see_also(
     mf.write(info_note)
 
 
-# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #97cae650
+# %% ../../nbs/06_notation_05_in_standard_info_note.ipynb #f699bad1
 def add_missing_notation_links_to_information_notes(
         vault: PathLike, # Path to the vault directory.
         subdirectory: Optional[PathLike] = None, # Path to the subdirectory, relative to `vault`, to find the notation notes and their main notes. Searches for all notation notes here and in subdirectories of this subdirectory. If `None`, then the `note` parameter is used to determine `subdirectory`. Defaults to `None`. 

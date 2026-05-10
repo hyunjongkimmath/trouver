@@ -4,7 +4,7 @@
 __all__ = ['add_one_double_asts_to_line', 'notation_data_from_text', 'notation_data_from_note',
            'append_notation_data_to_database', 'automatically_mark_notations']
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #676d5cbb
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #3674bdd7
 import os
 from os import PathLike
 from pathlib import Path
@@ -25,7 +25,7 @@ from trouver.obsidian.vault import(
     VaultNote
 )
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #005c6dbf
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #9076f824
 def add_one_double_asts_to_line(
         line: str, # The text to which to add the double asterisks `**`
         start: int, # The first double asterisks are added in between `line[start-1]` and `line[start]`.
@@ -40,7 +40,7 @@ def add_one_double_asts_to_line(
     """
     return f'{line[:start]}**{line[start:end]}**{line[end:]}'
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #bc33731c
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #0caa552f
 def notation_data_from_text(
         with_double_asts: str # May or may not have double asterisks to signify definitions and notations
         ) -> tuple[str, list[tuple[int, int, bool]]]:
@@ -90,7 +90,7 @@ def notation_data_from_text(
     
     return no_double_asts, notation_indices + non_notat_indices
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #77eaf8a1
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #d96e634e
 def _notation_data_with_indices(
         note: VaultNote, vault: PathLike) -> tuple[
             MarkdownFile, list[tuple[int, int, bool]]]:
@@ -122,7 +122,7 @@ def _notation_data_with_indices(
     no_double_asts, data = notation_data_from_text(with_double_asts)
     return no_double_asts, data
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #1ad5485b
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #85c01171
 def notation_data_from_note(
         note: VaultNote, vault: PathLike
         ) -> list[tuple[str, str, bool]]:
@@ -150,7 +150,7 @@ def notation_data_from_note(
          add_one_double_asts_to_line(no_double_asts, start, end),
          is_notat) for start, end, is_notat in data]
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #64c874ea
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #7a53296f
 def append_notation_data_to_database(
         vault: PathLike, # The vault from which the data is drawn
         file: PathLike,  # The path to a CSV file
@@ -181,7 +181,7 @@ def append_notation_data_to_database(
     
     
 
-# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #8621e850
+# %% ../../nbs/24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb #cb54992f
 def automatically_mark_notations(
         vn: VaultNote, # The information note to which to mark notations.
         learn: TextLearner, # The ML model which predicts where notation notes should occur.  This is a classifier which takes as input a str with double asterisks surrounding LaTeX text. The model outputs whether or not the single double asterisk pair surrounds a LaTeX text with notation.

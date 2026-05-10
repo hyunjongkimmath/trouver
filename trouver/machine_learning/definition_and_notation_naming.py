@@ -7,7 +7,7 @@ __all__ = ['DEFINITION_NAMING_SYSTEM_PROPT', 'DefNotatNamingData', 'def_notat_na
            'autogen_name_from_notation_note', 'sanitize_autogen_name', 'add_autogen_name_to_notation_note',
            'predict_name_and_add_to_notation_note']
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #3f5feac2
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #23df5209
 import copy
 import random
 from typing import Literal, Optional, TypedDict
@@ -47,14 +47,14 @@ from trouver.machine_learning.notation_summarization import (
     format_classical, format_training_tokens
 )
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #5a63d464
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #0e2b8b0d
 class DefNotatNamingData(TypedDict):
     def_or_notat: Literal["definition", "notation"] # Whether HTML tag marks an introduced definition or notation.
     name: str # The "name" of the definition or notation.
     text: str # The text in which the definition or notation is introduced. The introduced definition/notation is marked with an HTML tag.
     note_name: str # The name of the VaultNote that `text` comes from.
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #7a0d3bc1
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #b7b6ae61
 # TODO: test
 # TODO: change return type to `DefNotatNamingData`
 def def_notat_naming_data_from_information_note(
@@ -123,7 +123,7 @@ def def_notat_naming_data_from_information_note(
 
     return list_of_dicts
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #6a71d56a
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #9b24e9c1
 def _split_text_by_html_data_parts(
         datapoint: DefNotatNamingData
         ) -> tuple[str, str, str, bs4.element.Tag]: # The text before the HTML tag, the text of the HTML tag, and the text after the HTML tag
@@ -138,7 +138,7 @@ def _split_text_by_html_data_parts(
     
     return (raw_text[:start], raw_text[start:end], raw_text[end:], tags[0].tag)
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #be2d5a7e
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #429452a8
 def augment_def_and_notat_naming_data(
         datapoint: DefNotatNamingData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -205,7 +205,7 @@ def _augment_def_and_notat_naming_data_once(
         text=accumulated_text
         )
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #3ca00e25
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #fe8d12d2
 # TODO: mark the note with and `_auto` tag and make it so that 
 def predict_names(
         info_note: VaultNote,
@@ -247,7 +247,7 @@ def _name_prediction_for_data_point(
         summarizer_output = summarizer(data_point['text'], max_length=20, min_length=0)
     return summarizer_output[0]['summary_text']
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #ec64e2ec
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #1b6467fb
 from typing import List, Optional, Protocol, Any, Union
 import warnings
 
@@ -430,7 +430,7 @@ class LLMNamingStrategy:
         #     print(f"LLM Error: {e}")
         #     return ""
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #ec1c51b3
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #02965b1b
 from typing import List, Optional, Any, Callable, Dict
 import warnings
 from ..llm_core.call_llm import LLMProvider, call_llm, process_llm_response
@@ -665,7 +665,7 @@ class UnifiedNamingStrategy:
             return output[0]['summary_text']
         return t5_predict
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #5a30d9fb
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #cafd6fbd
 def add_names_to_html_tags_in_info_note(
         info_note: 'VaultNote',
         # Strategy Args
@@ -757,7 +757,7 @@ def add_names_to_html_tags_in_info_note(
         mf.add_tags('_auto/def_and_notat_names_added')
     mf.write(info_note)
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #7bef9edb
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #b9c4dbab
 # TODO: test
 def autogen_name_from_notation_note(
         notation_note: VaultNote, pipeline):
@@ -800,7 +800,7 @@ def add_autogen_name_to_notation_note(
     # mf.metadata
 
 
-# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #e53f60d3
+# %% ../../nbs/08_machine_learning_35.definition_and_notation_naming.ipynb #aec8b807
 # TODO: test
 def predict_name_and_add_to_notation_note(
         notation_note: VaultNote,

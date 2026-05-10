@@ -6,7 +6,7 @@
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'COMMON_SECTION_TITLES', 'setup_reference_from_latex_parts',
            'convert_notes_to_latex_code']
 
-# %% ../../nbs/04_latex_20.convert.ipynb #c01870e6
+# %% ../../nbs/04_latex_20.convert.ipynb #fb54d78e
 import os
 from os import PathLike
 from pathlib import Path
@@ -46,12 +46,12 @@ from ..personal_vault.note_processing import process_standard_information_note
 from ..personal_vault.reference import setup_folder_for_new_reference
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/04_latex_20.convert.ipynb #58ea942e
+# %% ../../nbs/04_latex_20.convert.ipynb #639f9518
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/04_latex_20.convert.ipynb #34f5550a
+# %% ../../nbs/04_latex_20.convert.ipynb #982e4099
 def _replace_custom_commands_in_parts(
         parts: list[DividedLatexPart],
         custom_commands: list[tuple[str, int, Union[str, None], str]],
@@ -88,7 +88,7 @@ def _replace_custom_commands_in_parts(
 #         for part in parts]
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #132e3181
+# %% ../../nbs/04_latex_20.convert.ipynb #8b1fdfe6
 def _adjust_common_section_titles_in_parts(
         parts: list[DividedLatexPart],
         reference_name: str) -> list[DividedLatexPart]:
@@ -131,10 +131,10 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #47da0c49
+# %% ../../nbs/04_latex_20.convert.ipynb #f2127252
 # def _create_links_for_ref_commands(parts: list[tuple[str, str]])
 
-# %% ../../nbs/04_latex_20.convert.ipynb #54969321
+# %% ../../nbs/04_latex_20.convert.ipynb #93507950
 def _make_links_in_index_notes(
         links_to_make: dict[str, dict[str, list[str]]],
         title_numbering_folder_map: dict[str, tuple[str, str]],
@@ -169,7 +169,7 @@ def _make_links_in_index_note_for_section(
     mf.write(section_index_note)
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #b52c6832
+# %% ../../nbs/04_latex_20.convert.ipynb #4cc05286
 def _note_names_from_part(
         parts: list[DividedLatexPart],
         vault: Path,
@@ -188,7 +188,7 @@ def _note_names_from_part(
         note_names.append(unique_note_name)
     return note_names
 
-# %% ../../nbs/04_latex_20.convert.ipynb #74fc429f
+# %% ../../nbs/04_latex_20.convert.ipynb #e68378ad
 def _create_part_or_update(
         part: DividedLatexPart,
         title_numbering_folder_map: dict[str, tuple[str, str]],
@@ -294,7 +294,7 @@ def _update_links_to_make(
     
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #f4fb4289
+# %% ../../nbs/04_latex_20.convert.ipynb #7a61febc
 def _create_notes_from_parts(
         parts: list[DividedLatexPart],
         chapters: list[list[str]],
@@ -327,7 +327,7 @@ def _create_notes_from_parts(
         links_to_make, title_numbering_folder_map, vault,
         reference_folder, reference_name)
 
-# %% ../../nbs/04_latex_20.convert.ipynb #3c615493
+# %% ../../nbs/04_latex_20.convert.ipynb #b748411f
 def _extract_latex_labels(text):
     """
     Helper function to `_find_labels`.
@@ -341,7 +341,7 @@ def _extract_latex_labels(text):
     return [label.strip() for label in labels]  # Strip any remaining whitespace
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #6d26f028
+# %% ../../nbs/04_latex_20.convert.ipynb #9ab1332a
 def _find_labels(
         parts: list[DividedLatexPart],
         note_names: list[str],
@@ -359,7 +359,7 @@ def _find_labels(
     return labels_and_note_names
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #4e11cec9
+# %% ../../nbs/04_latex_20.convert.ipynb #52efb6bc
 def _add_links_to_refs(
         parts: list[DividedLatexPart],
         labels_and_note_names: dict[str, str]
@@ -381,7 +381,7 @@ def _add_links_to_refs(
     return modified_parts
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #547bc970
+# %% ../../nbs/04_latex_20.convert.ipynb #6df233cc
 def _create_images_folder(
         image_path: PathLike,
         new_vault: PathLike,
@@ -395,7 +395,7 @@ def _create_images_folder(
         elif item.is_dir():
             shutil.copytree(item, new_images_folder / item.name)
 
-# %% ../../nbs/04_latex_20.convert.ipynb #7a770cd2
+# %% ../../nbs/04_latex_20.convert.ipynb #469059f3
 def _replace_includegraphics_with_embedded_links_in_parts(
         parts: list[DividedLatexPart],
         image_path: PathLike,
@@ -440,7 +440,7 @@ def _replace_includegraphics_with_embedded_links_in_parts(
     return new_parts
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #4cb7423f
+# %% ../../nbs/04_latex_20.convert.ipynb #9165625c
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
@@ -559,7 +559,7 @@ def setup_reference_from_latex_parts(
     
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #43a13be1
+# %% ../../nbs/04_latex_20.convert.ipynb #11cdc315
 def _highlight_latex_math(latex_str):
     # Case 2: Double dollar signs
     if latex_str.startswith('$$') and latex_str.endswith('$$'):
@@ -585,7 +585,7 @@ def _highlight_latex_math(latex_str):
     # If none of the above cases match, return the original string
     return latex_str
 
-# %% ../../nbs/04_latex_20.convert.ipynb #549f89fb
+# %% ../../nbs/04_latex_20.convert.ipynb #0ac6a823
 def convert_notes_to_latex_code(
         notes: list[VaultNote],
         vault: PathLike,

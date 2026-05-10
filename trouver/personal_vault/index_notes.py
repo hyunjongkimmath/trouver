@@ -7,7 +7,7 @@ __all__ = ['subsections_listed_in_index_note', 'subsection_folders', 'get_alphan
            'convert_heading_to_folder_name', 'make_folders_from_index_note_headers', 'get_notes_from_index_note',
            'add_link_in_index_note_after_note_link']
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #43fbc072
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #3e1eb5a5
 import glob
 import os
 from os import PathLike
@@ -30,7 +30,7 @@ from trouver.obsidian.vault import (
     VaultNote, note_name_unique, note_path_by_name
 )
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #f84ca4d8
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #1616675c
 def subsections_listed_in_index_note(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike
@@ -48,7 +48,7 @@ def subsections_listed_in_index_note(
     mf_file = MarkdownFile.from_vault_note(index_note)
     return mf_file.get_headings_tree()
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #cdd20f5a
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #977450d1
 def subsection_folders(
         index_note: Union[VaultNote, str], # The index note
         vault: PathLike,
@@ -73,7 +73,7 @@ def subsection_folders(
     elif output_type == 'name':
         return [Path(dir).name for dir in glob_result]
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #c964b563
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #1c43f9fd
 def get_alphanumeric(
         title: str, # The title of either a folder or a heading. Must start with an alphanumeric.
         title_type: Literal['folder', 'heading'], 
@@ -93,7 +93,7 @@ def get_alphanumeric(
         return re.sub(r'(.*?)\. .*', r'\1', title)
     
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #095f26ae
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #8855b6cd
 def correspond_headings_with_folder(
         index_note: VaultNote,
         vault: PathLike,
@@ -136,7 +136,7 @@ def correspond_headings_with_folder(
     return correspond_dict
     
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #1a1ecd4b
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #fab34c8a
 def information_notes_linked_in_index_note(
         index_note: VaultNote, # The note indexing the information notes.
         vault: PathLike,
@@ -174,7 +174,7 @@ def information_notes_linked_in_index_note(
     return notes_by_headings
     
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #9c061b00
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #7cb1f7bb
 def move_information_notes_to_correct_folder(
         index_note: VaultNote,
         vault: PathLike,
@@ -203,7 +203,7 @@ def _move_notes_under_heading(
             continue
         note.move_to_folder(Path(parent_folder) / destination_folder)
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #37bd66d7
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #92e4e2d2
 def move_information_notes_to_correct_folder_for_all_indices(
         index_of_index_notes: VaultNote, # The index note indexing other index notes; `index_of_index_notes` is intended to be an index note for an entire reference whereas the index notes are intended to correspond to chapters/sections in the reference.
         vault: PathLike,
@@ -224,7 +224,7 @@ def move_information_notes_to_correct_folder_for_all_indices(
         move_information_notes_to_correct_folder(
             index_note, vault, hints=hints+[index_note.rel_path])
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #52834889
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #935416c9
 def convert_title_to_folder_name(title: str) -> str:
     # TODO: remove left/right
     """
@@ -251,7 +251,7 @@ def convert_title_to_folder_name(title: str) -> str:
     title = sanitize_filename(title)
     return title
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #bd8fbc84
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #530d0691
 def convert_heading_to_folder_name(
         heading: str # Matches regex `\# (\w+?)\. (.*?)`
         ) -> str:
@@ -274,7 +274,7 @@ def convert_heading_to_folder_name(
         #print(heading)
     return f'{alphanumeric}_{convert_title_to_folder_name(title)}'    
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #c8202bca
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #f3a353fb
 def make_folders_from_index_note_headers(
         index_note: VaultNote
         ) -> None:
@@ -296,7 +296,7 @@ def make_folders_from_index_note_headers(
         except OSError as error:
             pass
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #5bd26c26
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #16d2dc1c
 # TODO: do an example of the `include_embedded_notes` paramtere.
 def get_notes_from_index_note(
         vault: PathLike, # The path to the Obsidian vault directory
@@ -324,7 +324,7 @@ def get_notes_from_index_note(
                        for index_note in index_notes]
     return index_notes
 
-# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #b2dffa0c
+# %% ../../nbs/05_personal_vault_05.index_notes.ipynb #a64c1746
 def add_link_in_index_note_after_note_link(
         index_note: VaultNote,
         note_to_add_link_after: VaultNote,

@@ -87,6 +87,44 @@ def _parse_header_structure(text: str) -> Optional[Tuple[str, str]]:
     return None
 
 
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb #ac82c07f
+import re
+
+def _parse_channel_structure(raw_content: str) -> Optional[Tuple[str, str]]:
+    """
+    Parses <|channel|>analysis...<|channel|>final structure, 
+    cleaning out injected 'assistant' labels and control tags.
+    """
+    # The marker usually looks like <|end|><|start|>assistant<|channel|>final<|message|>
+    # We use a regex that identifies the transition to the final message.
+    marker_pattern = r"<\|end\|>\s*<\|start\|>\s*(?:assistant)?\s*<\|channel\|>final<\|message\|>"
+    
+    # If the standard marker isn't there, check for just the final channel tag
+    if not re.search(marker_pattern, raw_content):
+        marker_pattern = r"<\|channel\|>final<\|message\|>"
+
+    parts = re.split(marker_pattern, raw_content, maxsplit=1)
+    
+    if len(parts) < 2:
+        # Check for truncated analysis
+        if "<|channel|>analysis<|message|>" in raw_content:
+            thoughts = raw_content.split("<|channel|>analysis<|message|>")[-1]
+            return re.sub(r"<\|.*?\|>", "", thoughts).strip(), ""
+        return None
+
+    raw_thoughts, raw_answer = parts[0], parts[1]
+
+    # Clean Thoughts: Remove the opening analysis tag and any leading <|start|>
+    # We also remove the literal word 'assistant' if it leaked in at the start
+    clean_thoughts = re.sub(r"<\|channel\|>analysis<\|message\|>", "", raw_thoughts)
+    clean_thoughts = re.sub(r"<\|.*?\|>", "", clean_thoughts)
+    clean_thoughts = re.sub(r"^assistant", "", clean_thoughts.strip()).strip()
+
+    # Clean Answer: Just remove trailing control tags
+    clean_answer = re.sub(r"<\|.*?\|>", "", raw_answer).strip()
+
+    return clean_thoughts, clean_answer
+
 # %% ../../nbs/07_llm_core_05.call_llm.ipynb #129a5afd
 import re
 from typing import Optional, Tuple, Callable, List
@@ -101,6 +139,7 @@ def separate_thoughts(raw_content: str) -> Tuple[Optional[str], str]:
 
     # List of parser functions to try in order of specificity
     parsers: List[Callable[[str], Optional[Tuple[str, str]]]] = [
+        _parse_channel_structure,
         _parse_xml_tags,           # <think>...</think>
         _parse_qwen_prose,         # Thinking Process: ... [Answer]
         _parse_header_structure    # THOUGHTS: ... ANSWER: ...
