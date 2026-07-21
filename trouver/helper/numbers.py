@@ -3,11 +3,11 @@
 # %% auto #0
 __all__ = ['is_number', 'modify_int_by_at_most_at_most_offset', 'modify_int_by_at_most_at_most_value']
 
-# %% ../../nbs/01_helper_09.numbers.ipynb #00ecdc35
+# %% ../../nbs/01_helper_09.numbers.ipynb #87e3af10
 import random
 from typing import Optional, Union
 
-# %% ../../nbs/01_helper_09.numbers.ipynb #996b0a24
+# %% ../../nbs/01_helper_09.numbers.ipynb #c2bfb142
 def is_number(
         x: Union[float, int, complex, str]
         ) -> bool:
@@ -25,7 +25,7 @@ def is_number(
     if x and x[0] == '-': x = x[1:]
     return x.replace(".", "1", 1).isdigit()
 
-# %% ../../nbs/01_helper_09.numbers.ipynb #658917d3
+# %% ../../nbs/01_helper_09.numbers.ipynb #4cdfa452
 def modify_int_by_at_most_at_most_offset(
         n: int,
         offset: float, # 1.0 means 100%
@@ -40,7 +40,7 @@ def modify_int_by_at_most_at_most_offset(
         new_value = max(lower_bound, new_value)
     return new_value
 
-# %% ../../nbs/01_helper_09.numbers.ipynb #b9178a62
+# %% ../../nbs/01_helper_09.numbers.ipynb #686ce9d1
 def modify_int_by_at_most_at_most_value(
         n: int,
         value: int, 

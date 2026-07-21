@@ -212,3 +212,6 @@ ENV/
 *.hdf5
 *.pkl
 *.pickle
+
+# Claude code
+claude_code.settings.json

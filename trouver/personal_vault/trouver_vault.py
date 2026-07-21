@@ -3,14 +3,14 @@
 # %% auto #0
 __all__ = ['setup_obsidian_vault_for_trouver']
 
-# %% ../../nbs/05_personal_vault_30.trouver_vault.ipynb #dd6bdc77
+# %% ../../nbs/05_personal_vault_30.trouver_vault.ipynb #ac81a25b
 from pathlib import Path
 import os
 from os import PathLike
 
 from ..helper.constants import ALPHABETICAL_SUBDIRECTORIES
 
-# %% ../../nbs/05_personal_vault_30.trouver_vault.ipynb #75f621f2
+# %% ../../nbs/05_personal_vault_30.trouver_vault.ipynb #0503e71f
 def setup_obsidian_vault_for_trouver(
         vault: PathLike, # The path to the vault to setup.
         verbose: bool = True, # If true, print messages explaining what is created

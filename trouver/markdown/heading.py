@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['heading_level', 'heading_title']
 
-# %% ../../nbs/02_markdown_00.heading.ipynb #d02fa380
+# %% ../../nbs/02_markdown_00.heading.ipynb #1424acf8
 def heading_level(
         heading_str: str # A str representing a markdown heading. Starts with 1 to 6 sharps `'#'`.
         ) -> int: # Between 1 and 6, inclusive.
@@ -11,7 +11,7 @@ def heading_level(
     without_sharps = heading_str.lstrip('#')
     return len(heading_str) - len(without_sharps)
 
-# %% ../../nbs/02_markdown_00.heading.ipynb #4b5e43c3
+# %% ../../nbs/02_markdown_00.heading.ipynb #cbebd03f
 def heading_title(
         heading_str: str # A str representing a markdown heading. Starts with 1 to 6 sharps `'#'`.
         ) -> str:

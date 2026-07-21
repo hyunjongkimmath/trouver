@@ -17,66 +17,81 @@ from typing import List, Optional, Any, Tuple
 
 # %% ../../nbs/07_llm_core_05.call_llm.ipynb #0857ccbe
 # --- Helper Parsers ---
-
-# def _parse_xml_tags(text: str) -> Optional[Tuple[str, str]]:
-#     """Handles <think> or <thought> tags."""
-#     tag_pattern = r"<(think|thought)>([\s\S]*?)<\/\1>"
-#     match = re.search(tag_pattern, text, re.IGNORECASE)
-#     if match:
-#         thoughts = match.group(2).strip()
-#         answer = re.sub(tag_pattern, "", text, flags=re.IGNORECASE).strip()
-#         return thoughts, answer
-#     return None
-
+#| export
 def _parse_xml_tags(text: str) -> Optional[Tuple[str, str]]:
-    """Handles <think> or <thought> tags. Returns ONLY the first match as thoughts."""
+    """
+    Handles <think> or <thought> tags.
+    Resilient enough to catch truncated thoughts at the start of a string
+    without misidentifying internal malformed tags as thoughts.
+    """
     tag_pattern = r"<(think|thought)>([\s\S]*?)<\/\1>"
     
-    # 1. Get ONLY the first match for thoughts to satisfy test_eq(multi[0], "first")
+    # 1. Standard Case: Perfect pairs
     match = re.search(tag_pattern, text, re.IGNORECASE)
-    
     if match:
         thoughts = match.group(2).strip()
-        # 2. Remove ALL tags from the answer to satisfy test_eq(multi[1], "text")
         answer = re.sub(tag_pattern, "", text, flags=re.IGNORECASE).strip()
         return thoughts, answer
+
+    # 2. Orphaned closing tag (The "Leak" Fix)
+    close_pattern = r"<\/(think|thought)>"
+    close_match = re.search(close_pattern, text, re.IGNORECASE)
+    if close_match:
+        split_idx = close_match.start()
+        thoughts = text[:split_idx].strip()
+        # Clean out any stray opening tag if it exists
+        thoughts = re.sub(r"<(think|thought)>", "", thoughts, flags=re.IGNORECASE).strip()
+        answer = text[close_match.end():].strip()
+        return thoughts, answer
+
+    # 3. Smart Truncation: Catch unclosed <think> ONLY if it starts the message
+    # This satisfies ex_truncated_xml while allowing internal malformed tags to be ignored
+    if text.strip().lower().startswith(("<think>", "<thought>")):
+        opening_tag_len = text.find(">") + 1
+        return text[opening_tag_len:].strip(), ""
+
     return None
 
-# def _parse_qwen_prose(text: str) -> Optional[Tuple[str, str]]:
-#     """Handles Qwen 3.5 / LM Studio 'Thinking Process:' format (case-insensitive)."""
-#     marker = "Thinking Process:"
-#     # Use .lower() to find the starting index regardless of case
-#     start_idx = text.lower().find(marker.lower())
-    
-#     if start_idx != -1:
-#         # Extract everything AFTER the "Thinking Process:" string
-#         content_after_marker = text[start_idx + len(marker):].strip()
-        
-#         # Look for the last double-newline to separate reasoning from result
-#         if "\n\n" in content_after_marker:
-#             sub_parts = content_after_marker.rsplit("\n\n", 1)
-#             return sub_parts[0].strip(), sub_parts[1].strip()
-        
-#         # If no double-newline, the whole thing is currently thoughts
-#         return content_after_marker, ""
-    
-#     return None
-
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb #0d6569af
 def _parse_qwen_prose(text: str) -> Optional[Tuple[str, str]]:
-    """Handles Qwen 3.5 / LM Studio 'Thinking Process:' format."""
     marker = "Thinking Process:"
-    start_idx = text.lower().find(marker.lower())
+    lowered_text = text.lower()
+    start_idx = lowered_text.find(marker.lower())
     
-    if start_idx != -1:
-        content_after = text[start_idx + len(marker):].strip()
-        # Qwen separates the final answer with a double newline
-        if "\n\n" in content_after:
-            sub_parts = content_after.rsplit("\n\n", 1)
-            return sub_parts[0].strip(), sub_parts[1].strip()
-        # Truncated case: everything is thoughts, answer is empty
-        return content_after, ""
+    has_marker = start_idx != -1
+    content = text[start_idx + len(marker):] if has_marker else text
+
+    # We make the colon optional by adding :? 
+    # This ensures it catches **Header**: and **Header**
+    struct_patterns = [
+        r"\s+#{1,3}\s",        
+        r"\s+\*{2}.+\*{2}:?",   
+        r"\s+-{3,}"            
+    ]
+    
+    combined_regex = "|".join(struct_patterns)
+    match = re.search(combined_regex, content)
+    
+    if match:
+        split_idx = match.start()
+        thoughts = content[:split_idx].strip()
+        answer = content[split_idx:].strip()
+        
+        if not thoughts and not has_marker:
+            return None
+        return (thoughts or None), answer
+
+    # Fallback to double-newline only if marker exists
+    if has_marker:
+        trimmed = content.strip()
+        if "\n\n" in trimmed:
+            parts = trimmed.rsplit("\n\n", 1)
+            return parts[0].strip(), parts[1].strip()
+        return trimmed, ""
+
     return None
 
+# %% ../../nbs/07_llm_core_05.call_llm.ipynb #164d980f
 def _parse_header_structure(text: str) -> Optional[Tuple[str, str]]:
     """Handles explicit THOUGHTS: / ANSWER: headers."""
     if "THOUGHTS:" in text.upper() and "ANSWER:" in text.upper():
@@ -85,7 +100,6 @@ def _parse_header_structure(text: str) -> Optional[Tuple[str, str]]:
         sub_parts = re.split(r"ANSWER:", parts[1], flags=re.IGNORECASE)
         return sub_parts[0].strip(), sub_parts[1].strip()
     return None
-
 
 # %% ../../nbs/07_llm_core_05.call_llm.ipynb #ac82c07f
 import re
@@ -141,8 +155,8 @@ def separate_thoughts(raw_content: str) -> Tuple[Optional[str], str]:
     parsers: List[Callable[[str], Optional[Tuple[str, str]]]] = [
         _parse_channel_structure,
         _parse_xml_tags,           # <think>...</think>
-        _parse_qwen_prose,         # Thinking Process: ... [Answer]
-        _parse_header_structure    # THOUGHTS: ... ANSWER: ...
+        _parse_header_structure,    # THOUGHTS: ... ANSWER: ...
+        _parse_qwen_prose,         # Fuzzy/Prose logic (now acts as a catch-all)
     ]
 
     for parser in parsers:
@@ -152,6 +166,7 @@ def separate_thoughts(raw_content: str) -> Tuple[Optional[str], str]:
 
     # Final fallback: Everything is the answer
     return None, raw_content.strip()
+
 
 
 # %% ../../nbs/07_llm_core_05.call_llm.ipynb #e3d26bb5

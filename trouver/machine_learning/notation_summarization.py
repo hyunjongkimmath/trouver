@@ -7,7 +7,7 @@ __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'NotationSumm
            'format_for_gemma_instruct', 'single_input_for_notation_summarization', 'append_column_for_single_text',
            'augment_notation_summarization_data', 'summarize_notation', 'append_summary_to_notation_note']
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #b74031ee
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #b1611061
 from deprecated import deprecated
 import os
 from os import PathLike
@@ -36,7 +36,7 @@ from ..notation.parse import main_of_notation, parse_notation_note
 from ..personal_vault.note_type import note_is_of_type
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #8a84e5c2
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #d3c0bcb0
 # TODO: there are several other places in other notes that also implement their own functions for getting latex_in_original; factor them out.
 
 def get_latex_in_original_from_parsed_notation_note_data(
@@ -63,7 +63,7 @@ def get_latex_in_original_from_parsed_notation_note_data(
         latex_in_original = notation_str
     return latex_in_original
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #4f311afa
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #9bc448a5
 def _notation_note_has_auto_summary_tag(
         metadata: Union[dict[str], None]
         ) -> bool:
@@ -75,7 +75,7 @@ def _notation_note_has_auto_summary_tag(
     """
     return metadata and 'tags' in metadata and '_auto/notation_summary' in metadata['tags']
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #81acb72e
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #6bf28528
 class NotationSummaryData(TypedDict):
     """
     Encapsulates the data for a notation summary; is an output of `notation_summarization_data_from_note`.
@@ -87,7 +87,7 @@ class NotationSummaryData(TypedDict):
     main_note_name: str
     processed_main_note_content: str
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #24cd7a3c
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #89877295
 def notation_summarization_data_from_note(
         notation_note: VaultNote,
         vault: PathLike,
@@ -197,7 +197,7 @@ def _notation_has_been_summarized(
 
 # TODO: Test the case of `check_for_actual_summarization` is `False`
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #6aad6881
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #94f743c3
 @deprecated(reason="`gather_notation_note_summaries` is deprecated. Use `gather_notation_note_summary_data` instead.")
 def gather_notation_note_summaries(
         vault: PathLike,
@@ -223,7 +223,7 @@ def gather_notation_note_summaries(
     return pd.DataFrame(summary_data)
     
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #63ee9dcb
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #668a99ae
 def gather_notation_note_summary_data(
         vault: PathLike,
         notes: list[VaultNote]
@@ -241,7 +241,7 @@ def gather_notation_note_summary_data(
     summary_data = [row for row in summary_data if row is not None]
     return summary_data
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #7a3850fa
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #e1dd4f9c
 @deprecated(reason="`append_to_notation_note_summarization_database` is deprecated.")
 def append_to_notation_note_summarization_database(
         vault: PathLike, # The vault freom which the data is drawn
@@ -307,7 +307,7 @@ def append_to_notation_note_summarization_database(
 # TODO: think about whether the 'Notation note name' column would make for an
 # appropriate pivot.
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #cf9cd939
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #bd281578
 def format_classical(
         data: NotationSummaryData,
         latex_in_original_comes_first: bool = True
@@ -325,7 +325,7 @@ def format_classical(
     else:
         return f"{main_text}\n\nlatex_in_original: {latex}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #4f9fb169
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #379bb3c8
 def format_training_tokens(
     data: NotationSummaryData, 
     sep_token: str = "</s>", 
@@ -353,7 +353,7 @@ def format_training_tokens(
         
     return f"{parts[0]}\n\n{sep_token}\n\n{parts[1]}\n\n{sep_token}\n\n{parts[2]}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #64e5cb07
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #134d2e6f
 def format_for_gemma_instruct(data: NotationSummaryData) -> str:
     """
     Formats input for modern instruction-tuned LLMs (Gemma/Llama).
@@ -368,7 +368,7 @@ def format_for_gemma_instruct(data: NotationSummaryData) -> str:
     
     return f"Target: {target_symbol}\nText: {main_text}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #f70f9fb0
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #3397afe4
 def single_input_for_notation_summarization(
         notation_summary_data: NotationSummaryData, 
         input_formatter: Callable[..., str] = format_training_tokens, 
@@ -390,7 +390,7 @@ def single_input_for_notation_summarization(
     """
     return input_formatter(notation_summary_data, **input_formatter_kwargs)
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #86c97792
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #59bc9006
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 
@@ -410,7 +410,7 @@ def append_column_for_single_text(
         axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #c841a850
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #35162ef8
 def augment_notation_summarization_data(
         datapoint: NotationSummaryData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -462,7 +462,7 @@ def _augment_notation_summarization_data_once(
     return augmented_datapoint
     
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #94c8d9f5
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #b7822ed8
 def summarize_notation(
         notation_summarization_data: NotationSummaryData, # This does not actually to have 'notation_note_name', 'summary', or 'main_note_name'
         # main_content: Union[str, MarkdownFile],
@@ -515,7 +515,7 @@ def summarize_notation(
         summary = fix_autogen_formatting(summary)
     return summary
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #6e25377c
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #1b13a991
 def _metadata_dict_has_auto_notation_summary_tag(
         metadata: dict[str] | None) -> bool:
     """
@@ -528,7 +528,7 @@ def _metadata_dict_has_auto_notation_summary_tag(
             and isinstance(metadata['tags'], (list, set, tuple))
             and '_auto/notation_summary' in metadata['tags'])
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #64aa5a8b
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #12202057
 def _summary_should_be_generated(
         main_note: Union[VaultNote, None],
         main_note_name: str,
@@ -565,7 +565,7 @@ def _summary_should_be_generated(
         return False, main_mf
     return True, main_mf
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #9894b4f5
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #fc3611b4
 def _get_summary(
         metadata: dict[str],
         notation_str: str,
@@ -598,7 +598,7 @@ def _get_summary(
         )
     return summary
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #ef75670b
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #85aedab9
 def _write_summary_to_notation_note(
         notation_note: VaultNote, summary: str) -> None:
     """
@@ -624,7 +624,7 @@ def _write_summary_to_notation_note(
         enquote_entries_in_metadata_fields=['latex_in_original'])
     notation_note_mf.write(notation_note)
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #e55bb254
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #3daf98b3
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
