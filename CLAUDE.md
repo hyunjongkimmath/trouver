@@ -26,3 +26,4 @@ LaTeX → Obsidian math-note pipeline, built with nbdev. **Notebooks in `nbs/` a
 2. `../../_nbdev_development/specs/CODING_STANDARDS.md` is the spec: 20-line limit, docstrings, type hints, assert-only tests. When in doubt, the spec wins over local habit.
 3. State lives only in `PROGRESS.md`; method only in `CONTEXT.md`. Never record progress in a method file.
 4. Keep this map ≤1 screen. If a rule needs paragraphs, it belongs in `CONTEXT.md`.
+5. **Python environment.** trouver needs an interpreter where its dependencies (`fastcore`, `nbdev`, …) import — verify before running anything. This workspace keeps one in a venv at `../trouver_py312_venv` (sibling of `trouver/`); if it's absent, any environment with the project deps installed works.
