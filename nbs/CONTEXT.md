@@ -54,7 +54,7 @@ Well-maintained notebooks follow a consistent 5-part pattern:
 
 4. **Alternating documentation → implementation → test blocks** — The heart of each notebook:
    - A markdown cell explaining the concept or problem being solved
-   - One or more `#| export` cells containing functions/classes with docstrings (parameter tables using `| param | type | description |` format)
+   - One or more `#| export` cells containing functions/classes with docstrings (canonical form: summary + `**Parameters**` bullets — see §Docstring Format)
    - Test cells that exercise the exported code, often with `#| hide` to suppress output in docs
    - `show_doc()` calls to display function signatures and docstrings for reference
 
@@ -69,7 +69,7 @@ The notebooks range from fully adhering to the ideal down to bare-bones code dum
 | Deviation | Description | Examples |
 |-----------|-------------|----------|
 | **Missing tests** | Functions marked `# TODO: test` or `# TODO: examples` — implemented but not verified | `01_helper_03.files_and_folders.ipynb`, `05_personal_vault_20.information_notes.ipynb` |
-| **Sparse documentation** | Export cells with no preceding markdown explanation; docstrings missing parameter tables | `04_latex_20.convert.ipynb` (many helpers documented only by variable names) |
+| **Sparse documentation** | Export cells with no preceding markdown explanation; docstrings missing `**Parameters**` sections | `04_latex_20.convert.ipynb` (many helpers documented only by variable names) |
 | **Commented-out code** | Alternative implementations or deprecated code left as comments instead of removed | `01_helper_03.files_and_folders.ipynb` (`uncompress_file`), `04_latex_20.convert.ipynb` |
 | **Incomplete functions** | Export cells containing bare `return` statements or partial function signatures | `05_personal_vault_20.information_notes.ipynb` (`reference_of_information_note`) |
 | **Misused cell types** | Raw markdown cells used as code cells (e.g., `#| export` in a raw cell followed by incomplete code) | `04_latex_20.convert.ipynb` (cell-18), `star.ipynb` (cell-8) |
@@ -98,16 +98,22 @@ When tests are present, they follow these conventions:
 
 ## Docstring Format
 
-Docstrings use a custom format with parameter tables rather than standard Google/NumPy/Sphinx style:
+Docstrings use a custom bullet format rather than standard Google/NumPy/Sphinx style (and not parameter tables — those appear nowhere in this codebase):
 
 ```
-| param | type | description |
-|-------|------|-------------|
-| x     | str  | The input   |
+One-line summary.
+
+Optional: More details if necessary.
+
+**Parameters**
+- `x` (*str*) — The input.
+
+**Returns**
+... (only when the return is non-obvious).
 ```
 
-This is what `show_doc()` renders in the generated documentation.
+This is what `show_doc()` renders in the generated documentation. Full rules: [`CODING_STANDARDS/documentation.md`](../../../_nbdev_development/specs/CODING_STANDARDS/documentation.md).
 
 ## Coding Standards
 
-See [`CODING_STANDARDS.md`](CODING_STANDARDS.md) — function length limits, naming conventions, testing expectations, and practices distilled from the well-maintained vs. degraded notebooks in this codebase.
+See [`CODING_STANDARDS.md`](../../../_nbdev_development/specs/CODING_STANDARDS.md) (index) and the per-topic files in `../../_nbdev_development/specs/CODING_STANDARDS/` — function shape, documentation, testing, and lifecycle rules distilled from the well-maintained vs. degraded notebooks in this codebase.
