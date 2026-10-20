@@ -3,20 +3,20 @@
 # %% auto #0
 __all__ = ['just_last_name', 'find_author_file']
 
-# %% ../../nbs/05_personal_vault_00.authors.ipynb #7e66c215
+# %% ../../nbs/05_personal_vault_00.authors.ipynb #6092d9fe
 import os 
 from os import PathLike
 from pathlib import Path
 from typing import Union
 
-# %% ../../nbs/05_personal_vault_00.authors.ipynb #65723b05
+# %% ../../nbs/05_personal_vault_00.authors.ipynb #ec4771b9
 def just_last_name(author_name) -> bool:
     """Return `True` if the author's name is formatted to only
     have the last name.
     """
     return '_' not in author_name
 
-# %% ../../nbs/05_personal_vault_00.authors.ipynb #478960ee
+# %% ../../nbs/05_personal_vault_00.authors.ipynb #ba3bec01
 # TODO: This method seems redundant because the `all_note_paths_by_name` and `note_name_from_path` functions in `
 def find_author_file(
         vault: PathLike,

@@ -3,14 +3,14 @@
 # %% auto #0
 __all__ = ['find_main_latex_file']
 
-# %% ../../nbs/04_latex_00.__init__.ipynb #26117cc1
+# %% ../../nbs/04_latex_00.__init__.ipynb #bc962393
 import os
 from os import PathLike
 import re
 from pathlib import Path
 from typing import Union
 
-# %% ../../nbs/04_latex_00.__init__.ipynb #16ce9600
+# %% ../../nbs/04_latex_00.__init__.ipynb #12e98258
 def find_main_latex_file(
         directory: PathLike
         ) -> Path: # The full path to the main LaTeX file if found; otherwise, raises an error.

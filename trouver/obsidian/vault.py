@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NoteNotFoundInCacheError', 'NotePathIsNotIdentifiedError', 'path_to_obs_id', 'all_paths_to_notes_in_vault', 'all_note_paths_by_name', 'note_path_by_name', 'note_name_unique', 'note_name_from_path', 'VaultNote', 'test_function']
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #f2489f29
+# %% ../../nbs/03_obsidian_01.vault.ipynb #48e4b226
 from pathlib import Path
 import os
 from os import PathLike
@@ -16,7 +16,7 @@ from trouver.helper.files_and_folders import (
 )
 from .links import ObsidianLink, LinkType, replace_links_in_text
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #ab0eb571
+# %% ../../nbs/03_obsidian_01.vault.ipynb #9a48c47d
 class NoteNotUniqueError(FileNotFoundError):
     """
     A `NoteNotUniqueError` is raised when a `VaultNote` is specified
@@ -41,7 +41,7 @@ class NoteNotUniqueError(FileNotFoundError):
             f'The name points to the following files: {notes}')
 
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #79de3c97
+# %% ../../nbs/03_obsidian_01.vault.ipynb #9571b819
 class NoteDoesNotExistError(FileNotFoundError):
     """
     A `NoteDoesNotExistError` is raised when a `VaultNote` is specified
@@ -62,7 +62,7 @@ class NoteDoesNotExistError(FileNotFoundError):
             f' erroneously end with `.md`, e.g. pass `this_is_a_note`'
             f' instead of `this_is_a_note.md`.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #beb20c2e
+# %% ../../nbs/03_obsidian_01.vault.ipynb #194f8b90
 class NoteNotFoundInCacheError(RuntimeError):
     """
     A `NoteNotFoundInCacheError` is raised when a path corresponding to a
@@ -83,7 +83,7 @@ class NoteNotFoundInCacheError(RuntimeError):
             f' instead of `this_is_a_note.md`.')
     
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #4a1f516e
+# %% ../../nbs/03_obsidian_01.vault.ipynb #e35906cc
 class NotePathIsNotIdentifiedError(RuntimeError):
     """
     A `NotePathIsNotIdentifiedError` is raised when the `rel_path` attribute of a
@@ -103,7 +103,7 @@ class NotePathIsNotIdentifiedError(RuntimeError):
                    f' `VaultNote` object is {note.vault} and the name of the object'
                    f' is {note.name}.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #d9da2fc1
+# %% ../../nbs/03_obsidian_01.vault.ipynb #ff5212d2
 def path_to_obs_id(
         rel_path: PathLike # A path representation the path of an Obsidian note relative to its vault. This does not have to be an existing path.
         ) -> str: # The obsidian url of the hypothetical note within its vault. Note that this does not end with the file extension `.md`.
@@ -117,7 +117,7 @@ def path_to_obs_id(
     path_without_extension = path_no_ext(rel_path)
     return path_without_extension.replace('\\', '/')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #a0b95577
+# %% ../../nbs/03_obsidian_01.vault.ipynb #936a3508
 def all_paths_to_notes_in_vault(
         vault: PathLike,
         as_dict: bool = False
@@ -154,7 +154,7 @@ def all_paths_to_notes_in_vault(
     # else:
     #     return paths
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #1f0390c9
+# %% ../../nbs/03_obsidian_01.vault.ipynb #d65bcd65
 def all_note_paths_by_name(
         name: str,  # Name of the note(s) to find
         vault: PathLike,  # The path to the Obsidian vault directory
@@ -175,7 +175,7 @@ def all_note_paths_by_name(
     all_notes_of_name = list(all_notes_of_name)
     return [note_path.relative_to(vault) for note_path in all_notes_of_name]
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #e74ce9c7
+# %% ../../nbs/03_obsidian_01.vault.ipynb #6c703924
 # TODO: include examples of `hints` parameter.
 def note_path_by_name(
         name: str, # The path to the Obsidian vault directory.
@@ -216,7 +216,7 @@ def note_path_by_name(
             return search_results[0]
     raise NoteDoesNotExistError.from_note_name(name)
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #be4e203f
+# %% ../../nbs/03_obsidian_01.vault.ipynb #ba69b14c
 def note_name_unique(
         name: str, # Name of the note.
         vault: PathLike # Path to the vault.
@@ -226,7 +226,7 @@ def note_name_unique(
     """
     return len(all_note_paths_by_name(name, vault)) == 1
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #98cd9df7
+# %% ../../nbs/03_obsidian_01.vault.ipynb #962c28d8
 def note_name_from_path(
         note_path: str # The path of the note. The note does not need to exist.
         ) -> str: # The name of the note.
@@ -690,49 +690,79 @@ def move_to_folder(self: VaultNote,
     self.move_to(Path(rel_dir) / f'{self.name}.md')
 
 # %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #8830213c
+def _replace_links_all_styles(
+        text: str, # The text in which to replace links.
+        old_name: str, # The name that linked-to notes referred to before the rename.
+        new_name: str, # The new name to point links at.
+        ) -> str:
+    r"""Return `text` with all wikilink- and markdown-style links to
+    `old_name` retargeted to `new_name`.
+
+    Every pattern matches on the literal `old_name`, so callers may skip
+    this function whenever `old_name` is not a substring of `text`.
+    """
+    patterns_and_new_names = [
+        (ObsidianLink(
+            is_embedded=-1, file_name=old_name, anchor=-1, custom_text=-1),
+         new_name),
+        (ObsidianLink(
+            is_embedded=-1, file_name=f'{old_name}.md', anchor=-1,
+            custom_text=-1, link_type=LinkType.MARKDOWN),
+         f'{new_name}.md'),
+        (ObsidianLink(
+            is_embedded=-1, file_name=old_name, anchor=-1,
+            custom_text=-1, link_type=LinkType.MARKDOWN),
+         new_name)]
+    for pattern, replacement in patterns_and_new_names:
+        text = replace_links_in_text(
+            text, pattern, new_link_name=replacement)
+    return text
+
 @patch
 def rename(
         self: VaultNote,
         new_name: str,  # The new name to give the note('s file). Should not include the `.md` extension.`
         replace_links_in_vault: bool = True  # If `True`, then replace the links in the vault pointing to `note` to reflect the new name.
-        ):
+        ) -> None:
 
     # TODO: consider using _check_name_exists_and_unique_in_vault_cache method.
     r"""
     Rename the file underlying `self` to `new_name`. The directory that the file is in remains unchanged.
 
     Assumes that
-    
+
     1. the name of `self` is unique among note names in `self.vault`s
     2. No pre-existing note in `vault` has `new_name` as its name. Use the `note_name_unique`
         function to check whether or not this is the case.
     3. the class' `.cache` accurately reflects the files in `vault`
 
+    Every note in the vault must be read (references can be anywhere), but
+    the regex replacement passes are skipped for notes that do not contain
+    `old_name` as a substring -- no link pattern can match without it.
+
     """
+    old_name = self.name
     parent_dir = Path(os.path.dirname(self.rel_path))
-    old_wikilink_pattern_by_name = ObsidianLink(
-        is_embedded=-1, file_name=self.name, anchor=-1, custom_text=-1)
-    old_markdownlink_pattern_by_name_1 = ObsidianLink(
-        is_embedded=-1, file_name=f'{self.name}.md', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
-    old_markdownlink_pattern_by_name_2 = ObsidianLink(
-        is_embedded=-1, file_name=f'{self.name}', anchor=-1, custom_text=-1, link_type=LinkType.MARKDOWN)
     self.move_to(parent_dir / f'{new_name}.md')
     if not replace_links_in_vault:
         return
-    for name, paths in self.__class__.cache[str(self.vault)].items():
+    for paths in self.__class__.cache[str(self.vault)].values():
         for path in paths:
             other_note = VaultNote(vault=self.vault, rel_path=path)
             if not other_note.exists():
                 continue
             original_text = other_note.text()
-            text = original_text
-            text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
-            text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, new_link_name=f'{new_name}.md')
-            text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, new_link_name=f'{new_name}')
-            if text != original_text:
-                with open(other_note.path(), 'w', encoding='utf-8') as file:
-                    file.write(text)
-                    file.close()
+            # Every link pattern contains `old_name` literally, so a note
+            # without the substring cannot reference the renamed note and
+            # needs no regex passes. (See `_replace_links_all_styles`.)
+            if old_name not in original_text:
+                continue
+            text = _replace_links_all_styles(original_text, old_name, new_name)
+            if text == original_text:
+                continue
+            with open(other_note.path(), 'w', encoding='utf-8') as file:
+                file.write(text)
+
 
 # %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #5dd06e7f
 @patch(cls_method=True)

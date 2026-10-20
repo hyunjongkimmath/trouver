@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile', 'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'extract_html_tag_indices_from_marked_text', 'html_data_from_marked_text', 'latex_highlight_parser', 'augment_html_data', 'latex_commands_to_avoid', 'def_and_notat_preds_by_model', 'get_def_and_notat_predictions', 'mark_def_and_notat_predictions', 'predict_and_mark_def_and_notats', 'auto_mark_def_and_notats', 'latex_highlight_formatter', 'DEF_NOTAT_VERIFY_SYSTEM_PROMPT', 'DEF_NOTAT_VERIFY_USER_PROMPT', 'INITIAL_ERROR_MESSAGE', 'ALL_AUDITS_FAILED_STRING', 'AuditResult', 'AuditVoteResult', 'salvage_audit_result', 'run_strict_audit', 'run_audit_voting', 'run_audit_voting_maker']
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #fd83f574
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #fdc6f9f8
 from collections.abc import Callable
 import copy
 from itertools import pairwise
@@ -36,7 +36,7 @@ from ...obsidian.vault import VaultNote
 
 
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #bea54570
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #f846d96e
 def convert_double_asterisks_to_html_tags(
         text: str
         ) -> str:
@@ -67,7 +67,7 @@ def _html_tag_from_double_ast(
     else:
         return f'<b definition="">{no_asts}</b>'
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #4e4a91e5
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #dfa54415
 def raw_text_with_html_tags_from_markdownfile(
         mf: MarkdownFile,
         vault: PathLike
@@ -82,14 +82,14 @@ def raw_text_with_html_tags_from_markdownfile(
     return convert_double_asterisks_to_html_tags(str(mf))
 
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #5cab7f85
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #b51f72f2
 class HTMLData(TypedDict):
     note_name: str
     raw_text: str
     tags: list[HTMLTagWithIndices]
     # list[bs4.element.Tag]
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #3cc2adb2
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #6fd940ed
 def html_data_from_note(
         note_or_mf: Union[VaultNote, MarkdownFile], # Either a `VaultNote`` object to a note or a `MarkdownFile` object from which to extra html data.
         vault: Optional[PathLike] = None, # If vault to use when processing the `MarkdownFile` objects (if `note_of_mf` is a `VaultNote`, then this `MarkdownFile` object is created from the text of the note), cf. the `process_standard_information_note` function.
@@ -134,7 +134,7 @@ def html_data_from_note(
 
     return HTMLData(note_name=note_name, raw_text=raw_text, tags=tags_and_locations)
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #df2c021f
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #506a8bc9
 def tokenize_html_data(
         html_locus: HTMLData, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -298,7 +298,7 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #83f09d1d
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #23778481
 def _calculate_clean_indices_and_create_tags(
         original_text: str,
         markings: list[tuple[str, int, int, dict]]
@@ -339,7 +339,7 @@ def _calculate_clean_indices_and_create_tags(
     
     return "".join(clean_text_parts), results
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #c186062a
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #9f86eedf
 def extract_html_tag_indices_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -352,7 +352,7 @@ def extract_html_tag_indices_from_marked_text(
     _, tags = _calculate_clean_indices_and_create_tags(text, markings)
     return tags
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #37cfe1df
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #3e7c9a95
 def html_data_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -366,7 +366,7 @@ def html_data_from_marked_text(
     
     return StrAndHTMLTagsWithIndices(clean_text, tags)
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #7b8aca5d
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #532d771f
 def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
     """
     Parses LaTeX highlighting commands (\\hldef, \\hl, \\hlin, \\hlalign) to identify
@@ -589,7 +589,7 @@ def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
         
     # return results
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #fcd91d56
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #d1fdfd68
 def _split_text_by_html_data_parts(
         # text_tags_and_locations = StrAndHTMLTagsWithIndices
         datapoint: HTMLData
@@ -610,7 +610,7 @@ def _split_text_by_html_data_parts(
             to_return.append((piece, datapoint['tags'][int(i/2)].tag))
     return to_return
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #1039ba16
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #433e4981
 def augment_html_data(
         datapoint: HTMLData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.

@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet', 'alphabet_or_latex_command_to_alphabet_group']
 
-# %% ../../nbs/01_helper_05.alphabet.ipynb #02fcca81
+# %% ../../nbs/01_helper_05.alphabet.ipynb #46e41de8
 from .constants import ALPHABET_TO_ALPHABET_GROUP_DICT
 
-# %% ../../nbs/01_helper_05.alphabet.ipynb #3dbdd4db
+# %% ../../nbs/01_helper_05.alphabet.ipynb #f60c2efe
 def alphabet_to_alphabet_group(character: str) -> str:
     """
     Returns the alphabet group for a given character based on the vault configuration.

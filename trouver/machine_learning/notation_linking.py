@@ -6,7 +6,7 @@ __all__ = ['NotationNoteInitData', 'notat_linking_data_from_notation_notes', 'da
            'rank_notat_notes_to_potentially_link_to', 'add_links_to_notation_note_via_data_point',
            'count_notat_note_links', 'sieve_then_add_links_to_notation_notes']
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #81239106
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #e7ba4a7b
 import ast
 from os import PathLike
 from pathlib import Path
@@ -41,7 +41,7 @@ from .notation import (
 from .notation_summarization import _notation_note_has_auto_summary_tag
 from ..obsidian.vault import VaultNote, NotePathIsNotIdentifiedError
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #2eccf7a7
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #23b79a90
 class NotationNoteInitData(NamedTuple):
     """
     A type of cached data for datapoints involving a notation note.
@@ -51,7 +51,7 @@ class NotationNoteInitData(NamedTuple):
     main_note_content: Union[str, None] # The content of the main note of `notation_note`, i.e. the output of `process_standard_information_note`(MarkdownFile.from_vault_note(main_of_notation_note))`. If `None`, then this needs to be computed "on-the-fly".`
     linked_notat_notes: set[str] # The names of the notation notes that `notation_note` links to.
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #1d1030cd
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #5d2a8355
 def _linked_note_names_from_content(
         content: str) -> list[str]:
     linked_note_names = []
@@ -63,7 +63,7 @@ def _linked_note_names_from_content(
     return linked_note_names
         
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #23974795
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #3c5f0146
 def _linked_notat_note_names_from_content(
         content: str, vault: PathLike) -> list[str]:
     linked_note_names = _linked_note_names_from_content(content)
@@ -75,7 +75,7 @@ def _linked_notat_note_names_from_content(
     return linked_notation_note_names
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #5bd35bfb
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #98f3fd0c
 def _linked_notat_note_names_from_parsed(
         notat_note_parsed: NotationNoteParsed,
         vault: PathLike
@@ -101,7 +101,7 @@ def _linked_notat_note_names_from_parsed(
             str(notat_note_parsed.main_content_markdown_file), vault))
     return linked_notat_note_names
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #1cd1d3e4
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #db110753
 # TODO: test
 def _init_args_for_data_from_notation_notes(
         vault: PathLike,
@@ -142,7 +142,7 @@ def _init_args_for_data_from_notation_notes(
         information_notes_of_reference)
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #46ac8bae
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #13616039
 # TODO: test
 def _origin_links_to_relied(
         linked_notat_notes: list[tuple], # One of the outputs of `parse_notation_note`
@@ -191,7 +191,7 @@ def _adjust_content(
     return content
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #616ac3a0
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #0aea285e
 # TODO: test
 
 def notat_linking_data_from_notation_notes(
@@ -271,7 +271,7 @@ def notat_linking_data_from_notation_notes(
         )
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #9774729c
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #43e12b88
 def _positive_pairs_of_notation_notes(
         confirmed_summary_notat_note_names: list[str],
         notat_notes_and_linked_notat_notes: dict[str, set[str]],
@@ -295,7 +295,7 @@ def _positive_pairs_of_notation_notes(
     return positive_linked_notat_note_pairs
     
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #6335d188
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #5bc75b79
 def _positive_data_points(
         reference_index_note: VaultNote,
         positive_linked_notat_note_pairs: list[tuple[str, str]],
@@ -354,7 +354,7 @@ def _positive_data_points(
     return data_points
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #a2a0f60f
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #d3a64559
 def _sample_data_points(
         reference_index_note: VaultNote,
         num_samples: int, 
@@ -403,7 +403,7 @@ def _sample_data_points(
                 ))
     return data_points
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #ce1f377b
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #fcf6cf54
 def data_points_for_reference(
         reference_index_note: VaultNote, # The index note for the reference from which to draw the data.
         return_notation_note_parsings: bool = False, # If `True`, return the outputs of `parse_notation_note` applied to the notation notes in the reference folder 
@@ -492,7 +492,7 @@ def _filter_notat_notes_with_auto_generated_notat_links(
 
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #600d800d
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #05f32af7
 def text_from_note_data(
         note_data: NotationNoteData,
         separation_token: str = '[SEP]',
@@ -526,7 +526,7 @@ def _content_relied(
     else:
         return f"Content for main note of relied_notation_note: {main_of_relied_content}"
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #806d0fe8
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #9afa5e84
 def augment_notation_linking_data(
         datapoint: NotationLinkingDataPoint,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -584,7 +584,7 @@ def _augment_notation_linking_data_once(
     return augmented_datapoint
     
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #b90760a5
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #82c3fa3d
 def prediction_by_model(
         origin_data: NotationNoteData,
         relied_data: NotationNoteData,
@@ -629,7 +629,7 @@ def prediction_by_model(
         else:
             return {'label': similarity >= threshold, 'score': similarity}
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #cebe3f2a
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #51796bb3
 # TODO: test
 def rank_notat_notes_to_potentially_link_to(
         origin_data: NotationNoteData,
@@ -652,7 +652,7 @@ def rank_notat_notes_to_potentially_link_to(
             ranked_data_list.append((relied_data, relevance_score))
     return sorted(ranked_data_list, key=lambda x: x[1], reverse=True)
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #bdc232bf
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #f6987e6b
 def _origin_notation_note_already_has_link_to_relied(
         relied_notation_note: VaultNote,
         origin_parsed: Union[tuple, None],
@@ -693,7 +693,7 @@ def _add_notation_link(
          'type': MarkdownLineEnum.UNORDERED_LIST})
     mf.write(origin_notation_note)
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #2821cdca
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #c9f03e53
 def _add_link_to_notation_note_in_mf(
         mf: MarkdownFile,
         relied_data: NotationNoteData,
@@ -720,7 +720,7 @@ def _add_link_to_notation_note_in_mf(
         'type': MarkdownLineEnum.UNORDERED_LIST})
     return True
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #c331ad17
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #81b04215
 def add_links_to_notation_note_via_data_point(
         origin_data: NotationNoteData,
         relied_data_list: list[NotationNoteData],
@@ -756,7 +756,7 @@ def add_links_to_notation_note_via_data_point(
     mf.write(origin_notat_note)
     return names_of_notation_notes_added
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #6da74595
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #d8ee286b
 def _identify_note_type_and_setup(
         vault: PathLike,
         current_note: VaultNote
@@ -787,7 +787,7 @@ The note path was {rel_path}.''')
         sys.exit(0)
 
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #d18e7a95
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #67b1b716
 def _info_notes_for_reference(
         reference_index_note: VaultNote,
         vault: PathLike) -> list[VaultNote]:
@@ -806,7 +806,7 @@ def _notat_notes_introduced_by_info_notes(
                 info_note, info_note.vault))
     return notat_notes
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #ac056b82
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #7becf395
 def _get_processed_content_of_info_notes(
         info_notes: list[VaultNote],
         vault: PathLike,
@@ -843,7 +843,7 @@ def _get_notation_note_data(
             print(e)
     return notation_note_data
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #cb4ca20f
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #6908fe91
 def count_notat_note_links(
         notation_notes_and_parsed: dict[str, NotationNoteData]
         ) -> dict[str, int]:
@@ -859,7 +859,7 @@ def count_notat_note_links(
                 link_counts[linked_notat_note_name] += 1
     return link_counts
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #270e8ae4
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #7374ec7a
 def _notat_note_names_linked_by_notat_notes_in_info_note(
         info_note: VaultNote,
         notation_notes_and_parsed: dict[str, NotationNoteParsed],
@@ -877,7 +877,7 @@ def _notat_note_names_linked_by_notat_notes_in_info_note(
             notat_notes_linked_by_notat_notes_in_info_notes.add(linked_notat_note_name)
     return list(notat_notes_linked_by_notat_notes_in_info_notes)
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #9b1c5665
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #08c5ad45
 def _get_preceding_info_notes_in_section(
         index_note_for_section: VaultNote,
         info_note_name: str, # The name of the info note for which the preceding info notes in `index_note_for_section` should be found,
@@ -906,7 +906,7 @@ def _get_preceding_info_notes_in_section(
                 preceding_info_notes.append(other_info_note)
     return preceding_info_notes
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #6f5546c9
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #58ac7cbc
 def _get_preceding_notation_note_names(
         preceding_info_notes: list[VaultNote],
         vault: PathLike,
@@ -925,7 +925,7 @@ def _get_preceding_notation_note_names(
             preceding_notation_notes.extend([note.name for note in notat_notes_in_info_note])
     return preceding_notation_notes
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #e37dc594
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #1c616f4e
 def _filter_preceding_notation_notes(
         preceding_notation_notes: list[str],
         notation_notes_and_parsed: dict[str, NotationNoteParsed],
@@ -942,7 +942,7 @@ def _filter_preceding_notation_notes(
 
     return get_top_counted_items(preceding_notation_note_link_counts, 0.2)
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #adbc3e07
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #d6e76ac3
 def _get_most_recent_preceding_notation_notes(
         preceding_info_notes: list[VaultNote]
         ) -> list[str]:
@@ -953,7 +953,7 @@ def _get_most_recent_preceding_notation_notes(
         most_recent_preceding_notation_notes.extend([note.name for note in notat_notes_in_info_note])
     return most_recent_preceding_notation_notes
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #8038c893
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #5eca14ae
 def _get_notat_notes_embedded_in_info_note(
         info_note: VaultNote,
         notation_note_data: dict[str, NotationNoteData],
@@ -969,7 +969,7 @@ def _get_notat_notes_embedded_in_info_note(
                 notation_notes_embedded_in_info_note.append(link.file_name)
     return notation_notes_embedded_in_info_note
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #dbf8782b
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #7d756c3f
 def _get_relied_data_to_consider(
         vault: PathLike,
         reference: str,
@@ -999,7 +999,7 @@ def _get_relied_data_to_consider(
         relied_data_to_consider.append(notation_note_data[note_name])
     return relied_data_to_consider
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #66a851f5
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #faa9b233
 def _get_notat_note_names_to_add_links_to(
         current_note: VaultNote,
         current_note_is_info_note: bool,
@@ -1024,7 +1024,7 @@ def _get_notat_note_names_to_add_links_to(
         notat_note_names_to_add_links_to: list[str] = [current_note.name]
     return notat_note_names_to_add_links_to
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #08b312e0
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #c050f5dd
 def _add_links_to_sieved_notat_notes(
         vault: PathLike,
         notat_note_names_to_add_links_to: list[str],
@@ -1096,7 +1096,7 @@ def _add_links_to_sieved_notat_notes(
             print(e)
             raise(e)
 
-# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #821dc690
+# %% ../../nbs/08_machine_learning_70.notation_linking.ipynb #b0636619
 def sieve_then_add_links_to_notation_notes(
         vault: PathLike,
         current_note: VaultNote, # Either an info note that introduces the notation notes in which to add links to other notation notes or a notation note in which to add links to.
