@@ -5,6 +5,7 @@ Usage:  python bench_vault_cache.py [--size N [N ...]]   (default: 100)
 
 Prints one line per target per size: median of 3 timed runs after 1 warmup,
 each timed run on a fresh deterministic vault. Targets:
+  rebuild     — clear_cache + update_cache (full walk; md_files_in_dir)
   link_pass   — all_links_in_vault (full-vault read pass; audit §2.2)
   delete      — cold-cache VaultNote(name=...).delete() (lazy rebuild + single-entry remove)
   rename      — cold-cache VaultNote(name=...).rename(...) (audit §2.3, full-cache sweep)
@@ -30,6 +31,11 @@ def make_sized_vault(dest: Path, n: int) -> Path:
         link = f"[[note_{i + 1}]]" if i + 1 < n else ""
         (dest / f"note_{i}.md").write_text(f"# note {i}\n\n{link}\n", encoding="utf-8")
     return dest
+
+
+def _target_rebuild(vault: Path) -> None:
+    VaultNote.clear_cache()
+    VaultNote.update_cache(vault)  # full walk via md_files_in_dir (os.walk rewrite)
 
 
 def _target_link_pass(vault: Path) -> None:
@@ -63,6 +69,7 @@ def _target_link_thread(vault: Path) -> None:
 
 
 TARGETS = {
+    "rebuild": _target_rebuild,
     "link_pass": _target_link_pass,
     "delete": _target_delete,
     "rename": _target_rename,
