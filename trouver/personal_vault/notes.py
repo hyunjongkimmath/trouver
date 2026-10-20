@@ -19,28 +19,46 @@ from trouver.obsidian.vault import (
 # %% ../../nbs/05_personal_vault_10.notes.ipynb #e4f7df4e-f160-4cf9-bcb1-94666ae6e6ad
 def notes_linked_in_note(
         list_note: VaultNote, # The `VaultNote` in which to find the links.
-        as_dict: bool = True # If `True`, returns a dict. Returns a list otherwise.
+        as_dict: bool = True, # If `True`, returns a dict. Returns a list otherwise.
+        link_map: Optional[dict[str, list[str]]] = None # Precomputed note-name → linked-names map (e.g. from `all_links_in_vault`); skips re-reading the note's text.
         ) -> Union[dict[str, VaultNote], list[VaultNote]]: # If dict, the keys are the names of the vault notes and the values are the `VaultNote` objects. If list, then the entries are the `VaultNote` objects.
-    """Returns a list or dict of VaultNotes of notes linked by 
-    a specified note.
+    """Returns a list or dict of `VaultNote`s linked by a specified note.
+
+    **Parameters**
+    - `list_note` - VaultNote: The note whose outgoing links to collect.
+    - `as_dict` - bool: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
+    - `link_map` - dict[str, list[str]] | None: Precomputed map of note name → linked note names (e.g. from `all_links_in_vault()`); when given, the note's text is not re-read. Building one reads the whole vault, so only pass it when you already have it or will query many notes. In list form, order follows the map (which keeps none), not the text order. Default `None`.
+
+    **Returns**
+    Dict of note name → `VaultNote`, or a list of `VaultNote`s (see `as_dict`).
     """
-    text = list_note.text()
-    links = links_from_text(text)
-    if as_dict:
-        return {link.file_name: VaultNote(list_note.vault, name=link.file_name) for link in links}
+    if link_map is None:
+        links = [link.file_name for link in links_from_text(list_note.text())]
     else:
-        return [VaultNote(list_note.vault, name=link.file_name, update_cache=False) for link in links]
+        links = link_map.get(list_note.name, [])
+    if as_dict:
+        return {name: VaultNote(list_note.vault, name=name) for name in links}
+    else:
+        return [VaultNote(list_note.vault, name=name, update_cache=False) for name in links]
 
 
 def notes_linked_in_notes_linked_in_note(
     list_note: VaultNote, # The `VaultNote` with links to notes containing the links to obtain.
-    as_dict: bool = True # If `True`, returns a dict. Returns a list otherwise. 
+    as_dict: bool = True, # If `True`, returns a dict. Returns a list otherwise.
+    link_map: Optional[dict[str, list[str]]] = None # Precomputed note-name → linked-names map; skips re-reading note texts.
     ) -> Union[dict[str, VaultNote], list[VaultNote]]: # If dict, the keys are the names of the vault notes and the values are the `VaultNote` objects. If list, then the entries are the `VaultNote` objects.
-    """Returns a list or dict of VaultNotes of notes 
-    linked by notes which are linked by a specified note.
+    """Returns the `VaultNote`s linked by the notes linked by a given note.
+
+    **Parameters**
+    - `list_note` - VaultNote: The note whose second-degree links to collect.
+    - `as_dict` - bool: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
+    - `link_map` - dict[str, list[str]] | None: Precomputed map of note name → linked note names; when given, no note text is re-read (see `notes_linked_in_note` for when that pays off and for the ordering caveat). Default `None`.
+
+    **Returns**
+    Dict of note name → `VaultNote`, or a list of `VaultNote`s (see `as_dict`).
     """
-    linked_in_list_note = notes_linked_in_note(list_note, as_dict=False)
-    notes_for_each_note = [notes_linked_in_note(note, as_dict=True) 
+    linked_in_list_note = notes_linked_in_note(list_note, as_dict=False, link_map=link_map)
+    notes_for_each_note = [notes_linked_in_note(note, as_dict=True, link_map=link_map)
                            for note in linked_in_list_note]
     all_notes = {}
     for notes_for_note in notes_for_each_note:
@@ -49,7 +67,8 @@ def notes_linked_in_notes_linked_in_note(
     if as_dict:
         return all_notes
     else:
-        return [note for _, note in all_notes.items()]     
+        return [note for _, note in all_notes.items()]
+
 
 # %% ../../nbs/05_personal_vault_10.notes.ipynb #a951bf36-83b1-45a6-83c0-7aa093a8427d
 def note_has_tag(
