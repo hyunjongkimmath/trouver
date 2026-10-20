@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['PersonalNoteTypeEnum', 'type_of_note', 'note_is_of_type', 'NoteTypeError', 'assert_note_is_of_type']
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #49096884
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #5e512c07
 from enum import Enum, auto
 from typing import Optional
 import warnings
@@ -12,7 +12,7 @@ from trouver.obsidian.vault import (
     VaultNote, NoteDoesNotExistError
 )
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #d1e76e1a
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #32795aa2
 def _is_index_note(vault_note: VaultNote) -> bool:
     """Returns `True` if the markdown file is determined to
     be an index note.
@@ -203,7 +203,7 @@ def _is_reference_note(vault_note: VaultNote):
 def _is_glossary_note(vault_note: VaultNote):
     return vault_note.name.startswith('_glossary')
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #ab963ca0
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #412e8287
 class PersonalNoteTypeEnum(Enum):
     """
     An Enum class for note types in my Obsidian math vault
@@ -242,7 +242,7 @@ PersonalNoteTypeEnum._type_method_dict = {
     PersonalNoteTypeEnum.GLOSSARY_NOTE: _is_glossary_note
 }
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #716c7dc6
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #e7970141
 def type_of_note(
         vault_note: VaultNote
         ) -> PersonalNoteTypeEnum:
@@ -265,7 +265,7 @@ def type_of_note(
         if type_function(vault_note):
             return note_type
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #18d37c70
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #9e8a65e8
 def note_is_of_type(
         vault_note: VaultNote,
         note_type: Optional[PersonalNoteTypeEnum] # The type of note. If `None`, then any type of note; in this case, returns whether or not the note exists.
@@ -287,7 +287,7 @@ def note_is_of_type(
         return False
     return type_of_note(vault_note) == note_type if note_type else True
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #f9b26e28
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #c487a47b
 class NoteTypeError(ValueError):
     """Exception raised when the type of note is not of the expected type.
     

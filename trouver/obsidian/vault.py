@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NoteNotFoundInCacheError', 'NotePathIsNotIdentifiedError', 'path_to_obs_id', 'all_paths_to_notes_in_vault', 'all_note_paths_by_name', 'note_path_by_name', 'note_name_unique', 'note_name_from_path', 'VaultNote', 'test_function']
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #48e4b226
+# %% ../../nbs/03_obsidian_01.vault.ipynb #e5d88454
 from pathlib import Path
 import os
 from os import PathLike
@@ -16,7 +16,7 @@ from trouver.helper.files_and_folders import (
 )
 from .links import ObsidianLink, LinkType, replace_links_in_text
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #9a48c47d
+# %% ../../nbs/03_obsidian_01.vault.ipynb #3bad89db
 class NoteNotUniqueError(FileNotFoundError):
     """
     A `NoteNotUniqueError` is raised when a `VaultNote` is specified
@@ -41,7 +41,7 @@ class NoteNotUniqueError(FileNotFoundError):
             f'The name points to the following files: {notes}')
 
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #9571b819
+# %% ../../nbs/03_obsidian_01.vault.ipynb #46138343
 class NoteDoesNotExistError(FileNotFoundError):
     """
     A `NoteDoesNotExistError` is raised when a `VaultNote` is specified
@@ -62,7 +62,7 @@ class NoteDoesNotExistError(FileNotFoundError):
             f' erroneously end with `.md`, e.g. pass `this_is_a_note`'
             f' instead of `this_is_a_note.md`.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #194f8b90
+# %% ../../nbs/03_obsidian_01.vault.ipynb #fdd61e77
 class NoteNotFoundInCacheError(RuntimeError):
     """
     A `NoteNotFoundInCacheError` is raised when a path corresponding to a
@@ -83,7 +83,7 @@ class NoteNotFoundInCacheError(RuntimeError):
             f' instead of `this_is_a_note.md`.')
     
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #e35906cc
+# %% ../../nbs/03_obsidian_01.vault.ipynb #d4c81c9a
 class NotePathIsNotIdentifiedError(RuntimeError):
     """
     A `NotePathIsNotIdentifiedError` is raised when the `rel_path` attribute of a
@@ -103,7 +103,7 @@ class NotePathIsNotIdentifiedError(RuntimeError):
                    f' `VaultNote` object is {note.vault} and the name of the object'
                    f' is {note.name}.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #ff5212d2
+# %% ../../nbs/03_obsidian_01.vault.ipynb #db6c4d55
 def path_to_obs_id(
         rel_path: PathLike # A path representation the path of an Obsidian note relative to its vault. This does not have to be an existing path.
         ) -> str: # The obsidian url of the hypothetical note within its vault. Note that this does not end with the file extension `.md`.
@@ -117,7 +117,7 @@ def path_to_obs_id(
     path_without_extension = path_no_ext(rel_path)
     return path_without_extension.replace('\\', '/')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #936a3508
+# %% ../../nbs/03_obsidian_01.vault.ipynb #4214f859
 def all_paths_to_notes_in_vault(
         vault: PathLike,
         as_dict: bool = False
@@ -154,7 +154,7 @@ def all_paths_to_notes_in_vault(
     # else:
     #     return paths
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #d65bcd65
+# %% ../../nbs/03_obsidian_01.vault.ipynb #4ec1d591
 def all_note_paths_by_name(
         name: str,  # Name of the note(s) to find
         vault: PathLike,  # The path to the Obsidian vault directory
@@ -175,7 +175,7 @@ def all_note_paths_by_name(
     all_notes_of_name = list(all_notes_of_name)
     return [note_path.relative_to(vault) for note_path in all_notes_of_name]
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #6c703924
+# %% ../../nbs/03_obsidian_01.vault.ipynb #980c30ec
 # TODO: include examples of `hints` parameter.
 def note_path_by_name(
         name: str, # The path to the Obsidian vault directory.
@@ -216,7 +216,7 @@ def note_path_by_name(
             return search_results[0]
     raise NoteDoesNotExistError.from_note_name(name)
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #ba69b14c
+# %% ../../nbs/03_obsidian_01.vault.ipynb #cc633d50
 def note_name_unique(
         name: str, # Name of the note.
         vault: PathLike # Path to the vault.
@@ -226,7 +226,7 @@ def note_name_unique(
     """
     return len(all_note_paths_by_name(name, vault)) == 1
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #962c28d8
+# %% ../../nbs/03_obsidian_01.vault.ipynb #2afded4f
 def note_name_from_path(
         note_path: str # The path of the note. The note does not need to exist.
         ) -> str: # The name of the note.

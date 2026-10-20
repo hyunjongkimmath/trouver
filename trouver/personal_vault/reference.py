@@ -7,7 +7,7 @@ __all__ = ['index_note_for_reference', 'reference_directory', 'all_paths_to_note
            'get_index_notes_from_subdirectory', 'get_index_notes_from_index_note', 'reference_folders_in_vault',
            'files_in_reference_folder']
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #5134800f
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #bd68db9e
 import glob
 import itertools
 import json
@@ -47,7 +47,7 @@ from trouver.obsidian.vault import(
     NoteDoesNotExistError, NoteNotUniqueError, NotePathIsNotIdentifiedError
 )
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #31720cf6
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #1fe7a835
 def index_note_for_reference(
         vault: PathLike, # The vault in which the reference folder resides.
         reference: Union[PathLike], # - The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name `_index_{reference}.md`, - or a `Path` object (not just a pathlike!) relative to `vault`, in which case the path will be the path to the reference folder. 
@@ -85,7 +85,7 @@ def index_note_for_reference(
     return index_note
 
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #ac3f479d
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #b251ff55
 def reference_directory(
         vault: PathLike, # The vault in which the reference folder resides.
         reference: PathLike, # - The reference. Is either - a str, in which case the reference folder will be the folder containing the (unique) note of the name `_index_{reference}.md`, - or a `Path` object (not just a pathlike!) relative to `vault`, in which case the path will be the path to the reference folder. 
@@ -112,7 +112,7 @@ def reference_directory(
     else:
         raise NoteDoesNotExistError.from_note_name(index_note.name)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #60810d9b
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #a78135a7
 def all_paths_to_notes_in_reference_folder(
         vault: PathLike, # The path to the Obsidian vault directory
         reference: str,
@@ -135,7 +135,7 @@ def all_paths_to_notes_in_reference_folder(
     # else:
     #     return paths
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #6952696e
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #64a4a896
 def delete_reference_folder(
         vault: PathLike, # The vault in which the reference folder resides.
         reference: Union[str, PathLike], # The reference to delete. Is either a str, in which case the folder to delete will be the folder containing the (unique) note of the name `_index_{reference}.md`, or a path relative to `vault`. 
@@ -276,7 +276,7 @@ def _execute_deletion(
 
 
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #359ecf93
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #2683967c
 def _make_reference_folder(
         vault: Path, location: PathLike, reference_name: str,
         reference_directory: PathLike, overwrite: Union[str, None], verbose: bool) -> None:
@@ -337,7 +337,7 @@ def _make_reference_folder(
     else:
         os.mkdir(vault / reference_directory)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #73e9d0b2
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #a1247433
 def _chapter_titles(chapters: list[Union[str, list[str]]]) -> list[str]:
     """
     Return the list of chapters of a reference from a formatted list of chapters
@@ -355,7 +355,7 @@ def _chapter_titles(chapters: list[Union[str, list[str]]]) -> list[str]:
     """
     return [chapter if isinstance(chapter, str) else chapter[0] for chapter in chapters]
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #70257164
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #5dc61980
 def _make_index_file(
         vault: PathLike, reference_directory: PathLike, reference_name: str,
         chapters: list[Union[str, list[str]]]) -> None:
@@ -386,7 +386,7 @@ def _make_index_file(
     mf = MarkdownFile.from_list(chapter_bullets)
     mf.write(index_note)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #86086eee
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #d2a6ecf2
 def _make_chapter_folders_and_indices(
         chapters: list[Union[str, list[str]]],
         vault: PathLike,
@@ -429,7 +429,7 @@ def _make_single_chapter_index(
     mf = MarkdownFile.from_list(headings)
     mf.write(chapter_index_note)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #6dfcce5f
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #f5b0fc3e
 def _make_reference_file(
         reference_name: str,
         references_folder: PathLike,
@@ -461,7 +461,7 @@ def _make_reference_file(
     VaultNote(vault, rel_path=reference_file_path).create()
     # TODO author stuff
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #6c2a5d6b
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #f2e1df35
 def _manifest_template_file(
         template_file_name: str,
         reference_name: str,
@@ -534,7 +534,7 @@ tags: [_meta/literature_note]
     template_file.add_tags([f'#_reference/{reference_name}'])
     return template_file
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #77f9d1c0
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #540bd11a
 def _make_template_file(
         template_file_name,
         reference_name,
@@ -578,7 +578,7 @@ def _create_template_note_at(
     template_note.create()
     template_file.write(template_note)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #061c69c7
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #281a182d
 def _make_notation_index_file(
         reference_directory: PathLike,
         reference_name: str,
@@ -614,7 +614,7 @@ def _make_notation_index_file(
     notation_index_note.create()
     template_file.write(notation_index_note)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #0b1c98d7
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #3bc494ac
 # TODO: change "file" in these helper methods and their respective doccstrings to "note"
 def _make_glossary_file(
         reference_directory: PathLike, reference_name: str, vault: PathLike,
@@ -644,7 +644,7 @@ def _make_glossary_file(
     except NotePathIsNotIdentifiedError:
         return
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #2d7db137
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #ded9d442
 def _make_temp_folder(
         reference_directory: PathLike, reference_name: str,
         vault: PathLike) -> None:
@@ -665,7 +665,7 @@ def _make_temp_folder(
     temp_note = VaultNote(vault, rel_path = temp_file_path)
     temp_note.create()
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #d7cb6211
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #e7ba13ca
 def copy_obsidian_vault_configs(
         vault: PathLike,
         reference_directory: PathLike, # The folder into which to copy the Obsidian configs. Relative to `vault`.
@@ -693,7 +693,7 @@ def copy_obsidian_vault_configs(
         configs_folder, vault / reference_directory / '.obsidian',
         dirs_exist_ok=dirs_exist_ok, ignore=ignore)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #3eb09ad5
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #2dbf7a66
 def _obsidian_vault_plugin_configs_file(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found either in the `.obsidian` directory or in the `.obsidian/plugins` directory in the vault .
@@ -704,7 +704,7 @@ def _obsidian_vault_plugin_configs_file(
     else:
         return Path(vault) / '.obsidian' / 'plugins' / plugin_name / 'data.json'
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #d40a8f96
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #945acbbc
 def get_obsidian_vault_plugin_configs(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found in the `.obsidian` directory in the vault.
@@ -720,7 +720,7 @@ def get_obsidian_vault_plugin_configs(
         return json.load(file)
     
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #2eddfc2a
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #b4cc9d1c
 def modify_obsidian_vault_plugin_configs(
         vault: PathLike,
         plugin_name: str, # The folder name of the Obsidian plugin. This can be found in the `.obsidian` directory in the vault.
@@ -740,7 +740,7 @@ def modify_obsidian_vault_plugin_configs(
     with open(_obsidian_vault_plugin_configs_file(vault, plugin_name, plugin_is_core), 'w') as file:
         json.dump(configs, file, indent=2)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #7698fd61
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #9463f61e
 def _modify_fast_link_edit_and_templates(
         vault: PathLike,
         reference_name: str, # The value to change the `referenceName` field in the `fast-link-edit` plugin into.
@@ -766,7 +766,7 @@ def _modify_fast_link_edit_and_templates(
             " for the `templates` plugin, but the file does not exist.",
             UserWarning)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #14dbf6ca
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #f7ea5b07
 def copy_obsidian_vault_configs_with_nice_modifications(
         vault: PathLike,
         reference_directory: PathLike, # The folder into which to copy the Obsidian configs. Relative to `vault`.
@@ -796,7 +796,7 @@ def copy_obsidian_vault_configs_with_nice_modifications(
     # i.e. the reference folder.
     _modify_fast_link_edit_and_templates(vault / reference_directory, reference_name, template_location)
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #e2bc5fb4
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #cf73cf39
 # TODO: add reference link in index note of parent folder
 # TODO: Make another template file in the reference folder
 # TODO: When copying over configs, change some things.
@@ -922,7 +922,7 @@ def setup_folder_for_new_reference(
             ' Make sure to update the reference file and'\
             ' The files for new mathematicians!')
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #7b53b1c2
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #73d9dcc6
 def get_index_notes_from_subdirectory(
         vault: PathLike, # The path to the Obsidian vault directory.
         subdirectory: PathLike, # The path, relative to `vault` of the subdirectory of of the vault for the reference.
@@ -944,7 +944,7 @@ def get_index_notes_from_subdirectory(
         index_notes = [VaultNote(vault, rel_path=index_note) for index_note in index_notes]
     return index_notes
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #7cdcb412
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #524c6229
 # TODO: reformat
 def get_index_notes_from_index_note(
         vault: PathLike, reference_name: str,
@@ -991,7 +991,7 @@ def get_index_notes_from_index_note(
                        for index_note in index_notes]
     return index_notes
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #22d6ca66
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #06b151e6
 def reference_folders_in_vault(vault: PathLike) -> dict[str, str]:
     """Returns a dict of reference folders in vault.
     
@@ -1029,7 +1029,7 @@ def reference_folders_in_vault(vault: PathLike) -> dict[str, str]:
                               seems misnamed: {reference_name}''')
     return reference_folders
 
-# %% ../../nbs/05_personal_vault_15.reference.ipynb #5f0a481e
+# %% ../../nbs/05_personal_vault_15.reference.ipynb #5cc1540e
 # TODO: reformat
 def files_in_reference_folder(
         vault: PathLike, reference: str, as_list: bool = False,

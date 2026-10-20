@@ -4,7 +4,7 @@
 __all__ = ['redact_md_extension', 'NotationNoteParsed', 'parse_notation_note', 'notation_in_note', 'main_of_notation',
            'latex_in_original']
 
-# %% ../../nbs/06_notation_00_parse.ipynb #438e2c67
+# %% ../../nbs/06_notation_00_parse.ipynb #74762737
 from os import PathLike, remove
 import re
 from typing import NamedTuple, Optional, Union
@@ -16,13 +16,13 @@ from ..personal_vault.note_processing import process_standard_information_note
 from ..personal_vault.note_type import assert_note_is_of_type, PersonalNoteTypeEnum
 
 
-# %% ../../nbs/06_notation_00_parse.ipynb #af2e9594
+# %% ../../nbs/06_notation_00_parse.ipynb #fc234aae
 def redact_md_extension(note_name: str) -> str:
     if note_name.endswith('.md'):
         return note_name[:-3]
     return note_name
 
-# %% ../../nbs/06_notation_00_parse.ipynb #fd8a0b36
+# %% ../../nbs/06_notation_00_parse.ipynb #5c7cea51
 def _main_of_notation_from_text(
         file_text: str # Text of notation note
         ) -> Union[str, VaultNote, None]: # The name main information note that `notation_note` comes from. Returns `None` if `notation_note` does not come from such a note.
@@ -52,7 +52,7 @@ def _main_of_notation_from_text(
     main_note_name = link_parse.file_name
     return main_note_name
 
-# %% ../../nbs/06_notation_00_parse.ipynb #6bf0f4d1
+# %% ../../nbs/06_notation_00_parse.ipynb #4ff1343a
 def _part_is_unordered_list_and_is_of_markdownstyle_link(
         part: dict[str, Union[str, MarkdownLineEnum]]
         ) -> bool:
@@ -80,7 +80,7 @@ def _notat_str_and_linked_notat_note_name_from_bullet_point_part(
         linked_notat_note_name = linked_notat_note_name[:-3]
     return notat_str, linked_notat_note_name
 
-# %% ../../nbs/06_notation_00_parse.ipynb #b90cd7a8
+# %% ../../nbs/06_notation_00_parse.ipynb #98aaf06c
 def _divide_bulleted_list_mf_at_end(
         mf: MarkdownFile, 
         remove_file_extension_from_note_names: bool,
@@ -114,7 +114,7 @@ def _divide_bulleted_list_mf_at_end(
     
 
 
-# %% ../../nbs/06_notation_00_parse.ipynb #d2a67b02
+# %% ../../nbs/06_notation_00_parse.ipynb #0d5720ce
 class NotationNoteParsed(NamedTuple):
     """
     A `NamedTuple` class encapsulating an output of the `parse_notation_note` function.
@@ -138,7 +138,7 @@ class NotationNoteParsed(NamedTuple):
     main_content_markdown_file: MarkdownFile
     linked_notation_notes: list[tuple[str, str]]
 
-# %% ../../nbs/06_notation_00_parse.ipynb #dff97bbd
+# %% ../../nbs/06_notation_00_parse.ipynb #aab11a12
 def _notat_str(
         meta: Union[dict, None],
         notat_str: str
@@ -157,7 +157,7 @@ def _notat_str(
     else:
         return notat_str
 
-# %% ../../nbs/06_notation_00_parse.ipynb #4c1c44d1
+# %% ../../nbs/06_notation_00_parse.ipynb #923fd936
 def _get_notation_string(
         file_text: str,
         notation_note: VaultNote
@@ -178,7 +178,7 @@ def _get_notation_string(
     
 
 
-# %% ../../nbs/06_notation_00_parse.ipynb #efd38d52
+# %% ../../nbs/06_notation_00_parse.ipynb #d8c1b197
 # def _remove_the_notation_str_and_denotes_in_main_mf(
 #         main_mf: MarkdownFile,
 #         notation_note: VaultNote):
@@ -202,7 +202,7 @@ def _get_notation_string(
 #             break
     
 
-# %% ../../nbs/06_notation_00_parse.ipynb #b044d7a5
+# %% ../../nbs/06_notation_00_parse.ipynb #51e3be1a
 # def _remove_the_notation_str_and_denotes_in_main_mf(
 #         main_mf: MarkdownFile,
 #         notation_note: VaultNote):
@@ -238,7 +238,7 @@ def _get_notation_string(
 #             part['line'] = part['line'][end:]
 #             break
 
-# %% ../../nbs/06_notation_00_parse.ipynb #e3afe394
+# %% ../../nbs/06_notation_00_parse.ipynb #272a485e
 def _remove_the_notation_str_and_denotes_in_main_mf(
         main_mf: MarkdownFile,
         notation_note: VaultNote):
@@ -262,7 +262,7 @@ def _remove_the_notation_str_and_denotes_in_main_mf(
             part['line'] = part['line'][end:]
             break
 
-# %% ../../nbs/06_notation_00_parse.ipynb #6143661e
+# %% ../../nbs/06_notation_00_parse.ipynb #c4dd3126
 def parse_notation_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None, # The vault If `None`, then uses `notation_note.vault`
@@ -319,7 +319,7 @@ def parse_notation_note(
 
 
 
-# %% ../../nbs/06_notation_00_parse.ipynb #26fccbc3
+# %% ../../nbs/06_notation_00_parse.ipynb #2ea189b5
 def notation_in_note(
         notation_note: Union[str, VaultNote],
         vault: Optional[PathLike] = None,
@@ -358,7 +358,7 @@ def notation_in_note(
         notation_in_note = notation_in_note.strip(' $')
     return notation_in_note
 
-# %% ../../nbs/06_notation_00_parse.ipynb #e8bcf05c
+# %% ../../nbs/06_notation_00_parse.ipynb #78fe87c7
 def main_of_notation(
         notation_note: VaultNote, # The VaultNote object representing the notation note.
         as_note: bool = False # If `False`, then returns the name of the note, and returns a VaultNote object with the same vault as `notation_note` otherwise. The vault used to get the `VaultNote` is the vault of `notation_note`.
@@ -380,7 +380,7 @@ def main_of_notation(
     else:
         return main_note_name
 
-# %% ../../nbs/06_notation_00_parse.ipynb #e9b4d3e9
+# %% ../../nbs/06_notation_00_parse.ipynb #858dff4c
 def latex_in_original(
         parsed: Optional[NotationNoteParsed] = None,
         notation_note: Optional[VaultNote] = None,

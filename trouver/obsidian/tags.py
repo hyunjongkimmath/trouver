@@ -3,20 +3,20 @@
 # %% auto #0
 __all__ = ['to_tag_str', 'tag_without_hashtag', 'tag_is_auto_tag', 'strip_auto_from_tag']
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #92703218
+# %% ../../nbs/03_obsidian_30.tags.ipynb #58768395
 def to_tag_str(tag_name):
     return f'#{tag_name}'
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #727fffc2
+# %% ../../nbs/03_obsidian_30.tags.ipynb #ca57d42f
 def tag_without_hashtag(tag):
     return tag[1:] if tag.startswith('#') else tag
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #295f53a9
+# %% ../../nbs/03_obsidian_30.tags.ipynb #ae0426ad
 def tag_is_auto_tag(tag):
     tag = tag_without_hashtag(tag)
     return tag.startswith('_auto/')
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #66ec6fd2
+# %% ../../nbs/03_obsidian_30.tags.ipynb #7bee8d52
 def strip_auto_from_tag(tag, with_hash_tag: bool = True) -> str:
     """Returns the tag without the `'_auto/'` prefix.
     
