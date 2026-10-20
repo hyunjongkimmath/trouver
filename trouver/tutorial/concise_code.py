@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = []
 
-# %% ../../nbs/tutorial.concise_code.ipynb #916ccf00
+# %% ../../nbs/tutorial.concise_code.ipynb #dd6a1785
 import pathlib
 from pathlib import Path
 import platform

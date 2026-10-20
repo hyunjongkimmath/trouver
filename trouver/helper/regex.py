@@ -4,11 +4,11 @@
 __all__ = ['find_regex_in_text', 'separate_indices_from_str', 'replace_string_by_indices', 'latex_indices',
            'inline_latex_indices']
 
-# %% ../../nbs/01_helper_04.regex.ipynb #1a556761
+# %% ../../nbs/01_helper_04.regex.ipynb #7238dbf7
 import re
 from typing import Pattern, Sequence, Union
 
-# %% ../../nbs/01_helper_04.regex.ipynb #6ab41264
+# %% ../../nbs/01_helper_04.regex.ipynb #b014f9cc
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
         pattern: str | Pattern[str] # The regex pattern
@@ -22,7 +22,7 @@ def find_regex_in_text(
     # print(matches)
     return [match.span() for match in matches]
 
-# %% ../../nbs/01_helper_04.regex.ipynb #66e8c66d
+# %% ../../nbs/01_helper_04.regex.ipynb #52bd8c53
 def separate_indices_from_str(
         text: str,
         indices: list[tuple[int, int]] # The indices for substrings in `text` to separate.
@@ -45,7 +45,7 @@ def separate_indices_from_str(
     parts.append(text[last_pair[1]:])
     return parts
 
-# %% ../../nbs/01_helper_04.regex.ipynb #a0a1a10c
+# %% ../../nbs/01_helper_04.regex.ipynb #3a074d70
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -110,7 +110,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../../nbs/01_helper_04.regex.ipynb #7e455770
+# %% ../../nbs/01_helper_04.regex.ipynb #dddfe82b
 def latex_indices(
         text: str,
         ) -> list[tuple[int, int]]:
@@ -174,5 +174,5 @@ def inline_latex_indices(
 #     pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$|(?<!\\)\$.*?(?<!\\)\$", re.DOTALL)
 #     return find_regex_in_text(text, pattern)
 
-# %% ../../nbs/01_helper_04.regex.ipynb #bc7e21e9
+# %% ../../nbs/01_helper_04.regex.ipynb #100c49c4
 #| export

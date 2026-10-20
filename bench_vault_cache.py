@@ -8,6 +8,8 @@ each timed run on a fresh deterministic vault. Targets:
   rebuild     — clear_cache + update_cache (full walk; md_files_in_dir)
   link_pass   — all_links_in_vault (full-vault read pass; audit §2.2)
   delete      — cold-cache VaultNote(name=...).delete() (lazy rebuild + single-entry remove)
+  probe_missing — warm cache, delete 5 nonexistent names (fix #2: pre-guard each miss
+                  re-walked the vault, constructor + exists = 10 walks; post-guard 0)
   rename      — cold-cache VaultNote(name=...).rename(...) (audit §2.3, full-cache sweep)
   link_reads  — notes_linked_in_note on every note, no map (one file read per call)
   link_thread — same workload with a prebuilt link_map (map build + dict lookups)
@@ -47,6 +49,12 @@ def _target_delete(vault: Path) -> None:
     VaultNote(vault=vault, name="note_0").delete()
 
 
+def _target_probe_missing(vault: Path) -> None:
+    VaultNote.update_cache(vault)  # warm and unmutated: no walk can find anything new
+    for i in range(5):
+        VaultNote(vault=vault, name=f"missing_{i}").delete()
+
+
 def _target_rename(vault: Path) -> None:
     VaultNote.clear_cache()  # cold start: rename sweeps the (rebuilt) whole cache
     VaultNote(vault=vault, name="note_0").rename("note_0_renamed")
@@ -72,6 +80,7 @@ TARGETS = {
     "rebuild": _target_rebuild,
     "link_pass": _target_link_pass,
     "delete": _target_delete,
+    "probe_missing": _target_probe_missing,
     "rename": _target_rename,
     "link_reads": _target_link_reads,
     "link_thread": _target_link_thread,
