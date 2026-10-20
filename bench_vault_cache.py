@@ -5,9 +5,11 @@ Usage:  python bench_vault_cache.py [--size N [N ...]]   (default: 100)
 
 Prints one line per target per size: median of 3 timed runs after 1 warmup,
 each timed run on a fresh deterministic vault. Targets:
-  link_pass  — all_links_in_vault (full-vault read pass; audit §2.2)
-  delete     — cold-cache VaultNote(name=...).delete() (lazy rebuild + single-entry remove)
-  rename     — cold-cache VaultNote(name=...).rename(...) (audit §2.3, full-cache sweep)
+  link_pass   — all_links_in_vault (full-vault read pass; audit §2.2)
+  delete      — cold-cache VaultNote(name=...).delete() (lazy rebuild + single-entry remove)
+  rename      — cold-cache VaultNote(name=...).rename(...) (audit §2.3, full-cache sweep)
+  link_reads  — notes_linked_in_note on every note, no map (one file read per call)
+  link_thread — same workload with a prebuilt link_map (map build + dict lookups)
 """
 import argparse
 import shutil
@@ -18,6 +20,7 @@ from pathlib import Path
 
 from trouver.obsidian.vault import VaultNote
 from trouver.obsidian.vault_and_links import all_links_in_vault
+from trouver.personal_vault.notes import notes_linked_in_note
 
 
 def make_sized_vault(dest: Path, n: int) -> Path:
@@ -43,10 +46,28 @@ def _target_rename(vault: Path) -> None:
     VaultNote(vault=vault, name="note_0").rename("note_0_renamed")
 
 
+def n_notes(vault: Path) -> int:
+    return len(list(vault.glob("note_*.md")))
+
+
+def _target_link_reads(vault: Path) -> None:
+    for i in range(n_notes(vault)):
+        notes_linked_in_note(VaultNote(vault=vault, name=f"note_{i}"), as_dict=False)
+
+
+def _target_link_thread(vault: Path) -> None:
+    link_map = all_links_in_vault(vault)  # one full read pass (name → notes it links to)
+    for i in range(n_notes(vault)):
+        notes_linked_in_note(VaultNote(vault=vault, name=f"note_{i}"),
+                             as_dict=False, link_map=link_map)
+
+
 TARGETS = {
     "link_pass": _target_link_pass,
     "delete": _target_delete,
     "rename": _target_rename,
+    "link_reads": _target_link_reads,
+    "link_thread": _target_link_thread,
 }
 
 
