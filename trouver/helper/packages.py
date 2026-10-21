@@ -4,12 +4,12 @@
 __all__ = ['check_package_installed', 'check_package_version_with_version_attribute', 'install_package',
            'ensure_package_installed']
 
-# %% ../../nbs/star.ipynb #2299b29b
+# %% ../../nbs/star.ipynb #a9ee2cba
 import importlib.util
 import subprocess
 import sys
 
-# %% ../../nbs/star.ipynb #6aae7cbe
+# %% ../../nbs/star.ipynb #d5614ac0
 def check_package_installed(
         package_name: str
         ) -> bool:
@@ -20,7 +20,7 @@ def check_package_installed(
         # print(f"{package_name} is not installed.")
         return False
 
-# %% ../../nbs/star.ipynb #2ab8ba26
+# %% ../../nbs/star.ipynb #ef0ef308
 def check_package_version_with_version_attribute(package_name):
     """Checks and returns the version of the specified package if available.
     
@@ -43,7 +43,7 @@ def check_package_version_with_version_attribute(package_name):
     # Attempt to return the version attribute
     return getattr(pkg, '__version__', None)
 
-# %% ../../nbs/star.ipynb #dc100baf
+# %% ../../nbs/star.ipynb #b18b8c83
 def install_package(package_name: str) -> None:
     """Install a package using pip."""
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])

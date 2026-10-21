@@ -7,7 +7,7 @@ __all__ = ['arxiv_id', 'arxiv_search', 'extract_metadata', 'ArxivMetadataEncoder
            'create_acronym', 'file_name_for_pdf', 'analyze_arxiv_tarfile', 'read_gz_file', 'get_tex_filename_from_gz',
            'extract_tex_from_gz', 'download_from_results']
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #51c20fbe
+# %% ../../nbs/01_helper_29.arxiv.ipynb #f037300d
 import datetime
 import gzip
 import json
@@ -26,7 +26,7 @@ from pathvalidate import sanitize_filename
 from .files_and_folders import file_is_compressed, uncompress_file
 
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #7db456ae
+# %% ../../nbs/01_helper_29.arxiv.ipynb #b8a2877d
 def arxiv_id(arxiv_id_or_url: str) -> str:
     """
     Return the arxiv id from a str which is either of the arxiv id itself or the url
@@ -56,7 +56,7 @@ def arxiv_id(arxiv_id_or_url: str) -> str:
         raise ValueError("Invalid input. Please provide a valid arXiv ID or URL.")
 
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #481616f0
+# %% ../../nbs/01_helper_29.arxiv.ipynb #2041061c
 def arxiv_search(
         arxiv_ids: Union[str, list[str]], # The ID of a single arXiv article or multiple arxiv articles
         client: Optional[Client] = None,  # an arxiv API Client. If `None`, create one on the spot.
@@ -71,7 +71,7 @@ def arxiv_search(
         return client.results(search)
     return search
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #2643c0c5
+# %% ../../nbs/01_helper_29.arxiv.ipynb #fa5e6460
 def extract_metadata(
         results: Union[list[Result], Result],
         ) -> list[dict]: # Each dict corresponds to the metadata for each result.
@@ -99,7 +99,7 @@ def extract_metadata(
         metadata_list.append(metadata)
     return metadata_list
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #749bbda0
+# %% ../../nbs/01_helper_29.arxiv.ipynb #d3800bee
 class ArxivMetadataEncoder(json.JSONEncoder):
     """
     `json` encoder to accomapny the `extract_metadta` function when using `json.dump`. 
@@ -111,7 +111,7 @@ class ArxivMetadataEncoder(json.JSONEncoder):
             return obj.href
         return super().default(obj)
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #55c32f79
+# %% ../../nbs/01_helper_29.arxiv.ipynb #ececd476
 def extract_last_names(
         authors: list[str]
         ) -> list[str]:
@@ -131,7 +131,7 @@ def extract_last_names(
     return last_names
 
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #a8130506
+# %% ../../nbs/01_helper_29.arxiv.ipynb #ffb192b7
 def folder_name_for_source(
         result: Result,
         lowercase: bool = True
@@ -174,7 +174,7 @@ def create_acronym(title):
     
     return acronym
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #f63b04df
+# %% ../../nbs/01_helper_29.arxiv.ipynb #88d64488
 def file_name_for_pdf(
         result: Result
         ) -> str:
@@ -187,7 +187,7 @@ def file_name_for_pdf(
     return sanitize_filename(output)
 
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #b4e235ff
+# %% ../../nbs/01_helper_29.arxiv.ipynb #ce4adb5a
 def analyze_arxiv_tarfile(
         filepath: PathLike # The path to the tar file.
         ) -> Literal["nested_archive", "direct_tex", "unknown_tar_structure", "plain_gz", "invalid_file"]:
@@ -267,7 +267,7 @@ def extract_tex_from_gz(filepath):
     
     return tex_filename
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #0e75886d
+# %% ../../nbs/01_helper_29.arxiv.ipynb #a957534d
 def _uncompress_file(
         file_path: PathLike,
         verbose: bool
@@ -337,7 +337,7 @@ def _uncompress_file(
 #     print(f"Error uncompressing file: {e}")
 
 
-# %% ../../nbs/01_helper_29.arxiv.ipynb #c5c7d882
+# %% ../../nbs/01_helper_29.arxiv.ipynb #f8e6ab0f
 def download_from_results(
         results: Result | list[Result],
         dir: PathLike, # The directory into which to download the files

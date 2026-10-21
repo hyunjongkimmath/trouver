@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = []
 
-# %% ../../../nbs/01_helper_21.latex.ipynb #98120535
+# %% ../../../nbs/01_helper_21.latex.ipynb #7625645e
 import random
 import re
 import string

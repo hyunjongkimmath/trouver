@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['max_ID', 'append_to_database']
 
-# %% ../../nbs/08_machine_learning_05.database_update.ipynb #64241489
+# %% ../../nbs/08_machine_learning_05.database_update.ipynb #e18ab4f7
 import os
 from os import PathLike
 from pathlib import Path
@@ -14,12 +14,12 @@ import pandas as pd
 from ..personal_vault.note_processing import process_standard_information_note
 # TODO: import the rest
 
-# %% ../../nbs/08_machine_learning_05.database_update.ipynb #12fef24e
+# %% ../../nbs/08_machine_learning_05.database_update.ipynb #333a4faa
 def max_ID(df: pd.DataFrame):
     "Return the largest value of `ID` in `df`"
     return df['ID'].to_numpy().max()
 
-# %% ../../nbs/08_machine_learning_05.database_update.ipynb #ce21190c
+# %% ../../nbs/08_machine_learning_05.database_update.ipynb #61e25b85
 def append_to_database(
         file: PathLike, # The path to a csv file
         df_to_append: pd.DataFrame, # The DataFrame to append

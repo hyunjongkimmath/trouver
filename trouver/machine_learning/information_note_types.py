@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['LABEL_TAGS', 'note_is_labeled_with_tag', 'note_labels', 'labels_and_identifying_info_from_notes', 'information_note_types_as_dataset', 'gather_information_note_types', 'append_to_information_note_type_database', 'possible_text_type_labels', 'predict_text_types_with_one_learner', 'consolidate_single_text_predictions_by_sum_of_confidence', 'predict_note_types', 'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #6e46ef86
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #e59545b4
 LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta/example', 
     '#_meta/narrative', '#_meta/notation', '#_meta/proof', '#_meta/remark',
     '#_meta/TODO/split', '#_meta/TODO/merge', '#_meta/TODO/delete', '#_meta/hint',
@@ -11,7 +11,7 @@ LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta
     '#_meta/context', '#_meta/permanent_note', '#_meta/question', '#_meta/problem'
 ]
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #14c1a829
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #dbb62429
 import os
 from os import PathLike
 from pathlib import Path
@@ -26,7 +26,7 @@ from .database_update import max_ID, append_to_database
 from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #33c64ffe
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #0add2eff
 def note_is_labeled_with_tag(
         note: VaultNote,
         label_tag: str, # A tag which labels a type that `note` is. Includes the beginning hashtag `#`, e.g. `#_meta/definition`, `#_meta/TODO/split`
@@ -53,7 +53,7 @@ def note_is_labeled_with_tag(
         return label_tag in tags 
 
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #acdd941f
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #900bbc53
 def note_labels(
         note: VaultNote,
         count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection.  
@@ -69,7 +69,7 @@ def note_labels(
             for tag, flag in label_dict.items()}
     
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #c8440a5f
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #3ca7d8a1
 def labels_and_identifying_info_from_notes(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
@@ -116,7 +116,7 @@ def labels_and_identifying_info_from_notes(
                 raise(e)
     return rows
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #86646b22
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #41792d68
 def information_note_types_as_dataset(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
@@ -127,10 +127,10 @@ def information_note_types_as_dataset(
     dataset = Dataset.from_dict({k: [dic[k] for dic in data] for k in data[0]})
     return dataset
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #94dcc751
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #184185c7
 #| export
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #f206d2b6
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #ff435a5c
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def gather_information_note_types(
         vault: PathLike,
@@ -142,7 +142,7 @@ def gather_information_note_types(
     """
     return pd.DataFrame(labels_and_identifying_info_from_notes(vault, notes, raise_error_that_arises))
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #e7edf71d
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #ecc8bc79
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def append_to_information_note_type_database(
         vault: PathLike, # The vault freom which the data is drawn

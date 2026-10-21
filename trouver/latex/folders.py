@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['UNTITLED_SECTION_TITLE', 'section_and_subsection_titles_from_latex_parts']
 
-# %% ../../nbs/04_latex_05.folders.ipynb #dbd425ff
+# %% ../../nbs/04_latex_05.folders.ipynb #21f3d4a6
 from .divide import divide_latex_text, DividedLatexPart
 
-# %% ../../nbs/04_latex_05.folders.ipynb #f691a1c0
+# %% ../../nbs/04_latex_05.folders.ipynb #52ff88f9
 def _part_starts_section(
         part: DividedLatexPart):
     """
@@ -25,7 +25,7 @@ def _part_starts_subsection(
     # node = get_node_from_simple_text(part[1])
     # return _is_subsection_node(node)
 
-# %% ../../nbs/04_latex_05.folders.ipynb #ee60debe
+# %% ../../nbs/04_latex_05.folders.ipynb #5b068d34
 UNTITLED_SECTION_TITLE = 'Untitled Section'
 def section_and_subsection_titles_from_latex_parts(
         parts: list[DividedLatexPart], # An output of `divide_latex_text`
