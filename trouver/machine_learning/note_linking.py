@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['NotePairData', 'link_types_for_note_pair_data', 'sieve_note_data_pairs', 'string_from_note_pair', 'augment_note_pair', 'NoteLinkingDataPoint', 'dict_data_point_from_pair', 'dataset_from_note_data', 'MultiLabelPipeline', 'prediction_by_note_linking_model', 'batch_prediction', 'predict_note_linking', 'link_cache_note', 'separate_blocks', 'parse_link_cache_note', 'write_link_cache_note', 'consolidate_note_linking_predictions_into_cache', 'consolidate_caches', 'remove_blank_or_no_link_data_from_cache', 'remove_nonexistent_note_names_from_cache', 'similar_notat_notes_in_note', 'locate_footnote_embedded_notation_link', 'add_notation_note_embedded_footnotes_to_info_note', 'sieve_potential_relied_notes', 'predict_on_relied_notes_and_related_notat_notes', 'get_all_linked_info_notes', 'SummarizationDataPoint', 'summarization_data', 'augment_notat_note_data_for_summarization', 'notat_note_data_admissible_for_summarization_data', 'summarization_dataset_from_note_data']
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #fb69fb07
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #fb5d4a8f
 from itertools import combinations
 import random
 from typing import TypedDict
@@ -17,13 +17,13 @@ from .note_data import (
 
 
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #3c54f944
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #1f59dbc1
 class NotePairData(TypedDict):
     origin_note: NoteData
     relied_note: NoteData
     # linked_type: NoteLinkEnum
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #3c12830e
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #0790c696
 def link_types_for_note_pair_data(
         pair_data: NotePairData
         ) -> set[NoteLinkEnum]:
@@ -34,7 +34,7 @@ def link_types_for_note_pair_data(
     else:
         return set([NoteLinkEnum.NO_LINK])
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #3ee8d19e
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #8ad0029e
 def _high_count_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -76,7 +76,7 @@ def _mid_count_note_data(
 
     return (mid_count_info_notes, mid_count_notat_notes)
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #417fa011
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #aa985793
 def _positive_instances_from_high_or_mid_count_notes(
         high_count_notes: set[str],
         mid_count_notes: set[str],
@@ -102,7 +102,7 @@ def _positive_instances_from_high_or_mid_count_notes(
                 chosen_pairs.append((mid_count_note_name, other_note))
     return chosen_pairs
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #44fecbf3
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #b5be2e2a
 def _negative_instances_from_high_or_mid_count_notes(
         high_count_notes: set[str],
         mid_count_notes: set[str],
@@ -168,7 +168,7 @@ def _negative_instances_from_high_or_mid_count_notes(
 
     return list(sample_pairs)
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #662b98f5
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #8f6c6b2d
 def _similar_notation_pairs(
         notat_note_data: dict[str, NotatNoteData],
         # ) -> list[tuple[str, str]]:
@@ -195,7 +195,7 @@ def _similar_notation_pairs(
             _update_dict(similar_notation_dict, notat_name_2, notat_name_1)
     return similar_notation_dict
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #b3ef2b29
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #c8c79302
 def _random_pair_replacing_notation_notes_with_similar_notation_notes(
         original_pair: tuple[str, str],
         similar_notation_dict: set[str, set[str]]
@@ -237,7 +237,7 @@ def _pairs_with_notation_notes_replaced_with_similar_notation_notes(
         new_pairs.append(new_pair)
     return new_pairs
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #db5bb33d
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #66807d6c
 def _pair_is_admissible(
         origin_note: str,
         relied_note: str,
@@ -253,7 +253,7 @@ def _pair_is_admissible(
         return False
     return True
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #7e2acf89
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #4a3685c0
 def _classify_anchor_notes(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData]
@@ -298,7 +298,7 @@ def _filter_admissible_pairs(
                 relied_note=note_data[relied]))
     return final_data
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #d5459793
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #340d511f
 def sieve_note_data_pairs(
         info_note_data: dict[str, InfoNoteData], # Data for all standard information notes.
         notat_note_data: dict[str, NotatNoteData] # Data for all notation notes.
@@ -1274,12 +1274,13 @@ def sieve_potential_relied_notes(
         cache: dict[str, dict[str, list[NoteLinkEnum]]],
         notation_similarity_threshold: float = 0.8, # The threshold that the similarity metric of a notion must exceed for the name of a notation note to be included in the output.
         skip_already_made_predictions: bool = True,
+        link_map: Optional[dict[str, list[str]]] = None, # Precomputed note-name -> linked-names map (e.g. from `all_links_in_vault`); forwarded to the two-hop lookup so batch callers can build one map once instead of re-reading every index note per origin note. The sieve is set-based, so the default (deduplicated) map is fine here.
         ) -> set[str]: # Names of potential relied notes that may be good to predict note linking from `origin_note` for.`
     if origin_note.name not in note_data:
         print(f'`origin_note` was not in `note_data`. Perhaps a `origin_note` has been renamed at some point and it may be necessary to reload `note_data`. `origin_note`: {origin_note}.')
         return set()
     index_note: VaultNote = index_note_for_reference(vault, reference, update_cache=True)
-    info_notes: list[VaultNote] = notes_linked_in_notes_linked_in_note(index_note, as_dict=False)
+    info_notes: list[VaultNote] = notes_linked_in_notes_linked_in_note(index_note, as_dict=False, link_map=link_map)
     appendix_note_names: set[str] = set([appendix_note.name for appendix_note in appendix_notes])
 
     relied_note_names = set()
