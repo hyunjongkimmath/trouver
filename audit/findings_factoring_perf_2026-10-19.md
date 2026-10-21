@@ -163,43 +163,20 @@ and `latex_texts_in_origin_note` is re-derived (`origin_note.text()` + `latex_in
 
 **Why:** vault-wide cost is O(#origin notes × #notation notes × #snippets × DP) with zero caching anywhere in the codebase (report §F: no `@lru_cache`/`@cache` in any of the 101 notebooks).
 
-### 2.2 Vault files re-read multiple times per run
+### 2.2 ~~Vault files re-read multiple times per run~~ ✅ RESOLVED 2026-10 (cache-perf cycle)
 
-**Current:**
-- `03_obsidian_70.vault_and_links.ipynb:158` — `all_links_in_vault` reads **every** note: `text = text_from_file(vault / path, encoding='utf8')` inside the loop.
-- `05_personal_vault_10.notes.ipynb:78` — `notes_linked_in_note` does `text = list_note.text()` per call; `notes_linked_in_notes_linked_in_note` (line 86) calls it 1 + N times → 1 + N file reads.
+Shipped as proposed (minimal version): `notes_linked_in_note` and
+`notes_linked_in_notes_linked_in_note` take an optional
+`link_map: dict[str, list[str]] | None` param — callers holding an
+`all_links_in_vault(vault)` result skip all note re-reads; threaded through both
+levels, with tests comparing map-path vs read-path (`05_personal_vault_10.notes`).
 
-So one note-linking run that uses both reads the same files 2–4×.
+### 2.3 ~~`VaultNote.rename` — wasted regex passes + redundant close~~ ✅ RESOLVED 2026-10 (cache-perf cycle)
 
-**Change:** build `link_map = all_links_in_vault(vault)` once per run and thread it as a parameter — the codebase already threads shared state this way (`note_data: dict[str, NoteData]`, `cache: dict[…])` in `sieve_potential_relied_notes`; extend the same pattern. Minimal version: give `notes_linked_in_note` an optional `links: list | None = None` param so callers with a map skip the read.
-
-**Why:** disk + parse cost scales with vault size × number of passes; one pass is enough.
-
-### 2.3 `VaultNote.rename` — wasted regex passes + redundant close
-
-**Current:** `03_obsidian_10.vault_file_crud.ipynb` (cell `8830213c`) inner loop:
-
-```python
-for name, paths in self.__class__.cache[str(self.vault)].items():
-    for path in paths:
-        other_note = VaultNote(vault=self.vault, rel_path=path)
-        if not other_note.exists():
-            continue
-        original_text = other_note.text()
-        text = replace_links_in_text(text, old_wikilink_pattern_by_name, new_link_name=new_name)
-        text = replace_links_in_text(text, old_markdownlink_pattern_by_name_1, …)
-        text = replace_links_in_text(text, old_markdownlink_pattern_by_name_2, …)
-        if text != original_text:
-            with open(other_note.path(), 'w', encoding='utf-8') as file:
-                file.write(text)
-                file.close()
-```
-
-**Change:**
-1. After reading, `if self.name not in original_text: continue` — the three regex passes only matter for notes that mention the old name (most don't).
-2. Drop `file.close()` — the `with` block already closes.
-
-**Why:** rename is O(vault) by nature, but 3 full-text regex scans per note are avoidable; the substring check is ~free after the read that's needed anyway.
+All of it, in `03_obsidian_10.vault_file_crud`: substring guard
+(`if old_name not in original_text: continue`) before any regex work; the three
+`replace_links_in_text` calls consolidated into one `_replace_links_all_styles`
+helper with an early skip when text is unchanged; stray `file.close()` dropped.
 
 ### 2.4 `substring_generator` — dead O(n²) trap
 
@@ -228,9 +205,12 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 1. **A1** (module collision — correctness, not just tidiness).
 2. **§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`).
 3. **A2–A5** pure import swaps (zero behavior change).
-4. **§2.2/§2.3** link-map threading + rename micro-fixes.
+4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
 5. **A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4).
 
 ## State — COMPLETE (all Tier A verified against source)
+
+Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
+(cache-perf cycle); all Tier A items, §2.1, §2.4, §2.5, and Tier B still open.
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
