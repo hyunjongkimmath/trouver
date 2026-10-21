@@ -126,7 +126,13 @@ def make_example_vault(temp_dir: PathLike):
 
 **Why:** test fixture that must stay in sync with what the tests assert about the tree shape.
 
-### A6 — `MockTokenizer`/`MockPipeline` duplicated (test mocks, not production)
+### A6 ~~`MockTokenizer`/`MockPipeline` duplicated (test mocks, not production)~~ ✅ RESOLVED 2026-10-21
+
+> Shipped in 04ef458 as proposed: the byte-identical classes moved to
+> `trouver.helper.tests`; ml_21/ml_22 cells became `#| hide` imports (the
+> copies' unused `MagicMock` import dropped). Tests green.
+
+
 
 **Current:** identical mock classes in test cells of `08_ml_21.…_mark` and `08_ml_22.…_main_workflow`:
 
@@ -144,14 +150,14 @@ class MockPipeline:
 
 **Why:** (initial guess of a production-class split was wrong on verification — these are test doubles; the fix is shared test helpers, cheaper than A4.)
 
-### Tier B — name collisions to eyeball (not verified as dupes)
+### Tier B — name collisions to eyeball ✅ RESOLVED 2026-10-21 (75ced60)
 
-| Name | Locations | Check |
-|---|---|---|
-| `from_note` | `03_obsidian_01.vault`, `08_ml_50.note_data` | same contract? import if so |
-| `_split_text_by_html_data_parts` | `08_ml_15`, `08_ml_35` | private + same name in two ML nbs → likely copy |
-| `make_tag` | `06_notation_10_management`, `06_notation_15.glossary` | compare bodies |
-| `mock_note_data` | `08_ml_60.…sieve`, `08_ml_64.…augmentation` | → `helper.tests` with A6 |
+| Name | Verdict |
+|---|---|
+| `from_note` | **Not dupes** — exception constructor (`NotePathIsNotIdentifiedError`) in `obsidian_01` vs. `InfoNoteData`/`NotatNoteData` factory classmethods in `ml_50`; left alone |
+| `_split_text_by_html_data_parts` | **Not dupes** — ml_15 splits into an alternating `(piece, tag)` list over all tags; ml_35 returns a single-tag 4-tuple and strips tags first; left alone |
+| `make_tag` | **Dupe** — identical bs4 one-liner in both notation notebooks → `_make_bs4_tag` in `helper.tests` (name avoids the production `_make_tag(text, entity_type)` in ml_18/19/20, a different function) |
+| `mock_note_data` | **Diverged** — ml_64's was a superset (pins `data_string`/`deepcopy`); superset moved to `helper.tests` as `_mock_note_data`, both notebooks import it; sieve tests confirm the pins are behavior-neutral |
 
 Excluded false positive: `path`/`exists`/`create` in `08_ml_35` are a test mock class, not a reimplementation of `03_obsidian_08.vault_path`.
 
@@ -214,7 +220,12 @@ All of it, in `03_obsidian_10.vault_file_crud`: substring guard
 `replace_links_in_text` calls consolidated into one `_replace_links_all_styles`
 helper with an early skip when text is unchanged; stray `file.close()` dropped.
 
-### 2.4 `substring_generator` — dead O(n²) trap
+### 2.4 ~~`substring_generator` — dead O(n²) trap~~ ✅ RESOLVED 2026-10-21
+
+> Deleted in 75ced60 (zero references re-confirmed, including the sibling
+> projects); `sublist_generator`, which *is* imported, stays.
+
+
 
 **Current:** `01_helper_02.init.ipynb:66`:
 
@@ -242,7 +253,9 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 2. ~~**§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`)~~ — parts 1+3 done 2026-10-21 (7da7ee0); part 2 (pre-filter) rejected, see §2.1 update.
 3. ~~**A2–A5** pure import swaps (zero behavior change)~~ — done 2026-10-21 (08b780c; A5 went to `helper.tests`, see its deviation note).
 4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
-5. **A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4).
+5. ~~**A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4)~~ — done 2026-10-21 (A6 in 04ef458; Tier B + §2.4 in 75ced60).
+
+Only §2.5 (verify semantic-search re-ingestion) remains from this audit.
 
 ## State — COMPLETE (all Tier A verified against source)
 
@@ -250,7 +263,9 @@ Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
 (cache-perf cycle), A1 resolved (star.ipynb deleted); §2.1 closed 2026-10-21
 (parts 1+3 shipped in 7da7ee0, part 2 rejected — see its update note);
 A2–A5 closed 2026-10-21 (08b780c; A5 follow-up: obsidian_40's private
-fixture copy still pending that session).
-Remaining open: A6 + Tier B, §2.4, §2.5.
+fixture copy still pending that session); A6 closed (04ef458); Tier B and
+§2.4 closed (75ced60 — two verdicts "not dupes", two shared into
+helper.tests).
+Remaining open: only §2.5 (verify before committing to a change).
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
