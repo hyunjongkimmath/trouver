@@ -3,12 +3,16 @@
 # %% auto #0
 __all__ = ['make_example_vault', 'MockTokenizer', 'MockPipeline']
 
-# %% ../../nbs/01_helper_01.tests.ipynb #d750e7dd
+# %% ../../nbs/01_helper_01.tests.ipynb #d0711475
 import os
 from os import PathLike
 from pathlib import Path
+from unittest.mock import MagicMock
 
-# %% ../../nbs/01_helper_01.tests.ipynb #61bbf10c
+from bs4 import BeautifulSoup
+
+
+# %% ../../nbs/01_helper_01.tests.ipynb #3e87d844
 def _test_directory() -> Path:
     """Returns the `nbs/_tests` directory of the `trouver` repository.
     
@@ -104,4 +108,30 @@ class MockPipeline:
 
     def __call__(self, text):
         return self._preds
+
+
+# %% ../../nbs/01_helper_01.tests.ipynb #tbsharedhelpers1
+def _make_bs4_tag(html_str: str):
+    """Return the BeautifulSoup `Tag` parsed from `html_str`; test helper."""
+    return BeautifulSoup(html_str, 'html.parser').find()
+
+
+def _mock_note_data(name, reverse_count=0, direct_links=None, tags=None, notation_str=""):
+    """
+    Return a `MagicMock` shaped like `NoteData` for note-linking tests.
+
+    Superset of the two historical copies in the dataset-sieve and
+    data-augmentation notebooks: `data_string` and `deepcopy` are pinned so
+    augmentation code paths work as well.
+    """
+    m = MagicMock()
+    m.note_name = name
+    m.data_string.return_value = f"Mock Data for {name}"
+    m.deepcopy.return_value = m
+    m.reverse_linked_notes = {f"in_{i}" for i in range(reverse_count)}
+    m.directly_linked_notes = direct_links if direct_links else {}
+    m.tags = tags
+    m.parsed = MagicMock()
+    m.parsed.notation_str = notation_str if notation_str else name
+    return m
 
