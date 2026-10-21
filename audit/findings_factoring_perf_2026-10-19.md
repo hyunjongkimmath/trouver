@@ -8,25 +8,18 @@
 
 ## 1. Factor-out candidates
 
-### A1 — `helper.packages` is exported by TWO notebooks (nbdev module collision) ⚠️ most serious
+### A1 ~~`helper.packages` is exported by TWO notebooks (nbdev module collision)~~ ✅ RESOLVED 2026-10-21
 
-**Current:** both `01_helper_10.packages.ipynb` and `star.ipynb` contain `#| default_exp helper.packages`, and `star.ipynb` re-defines all four functions identically, e.g.:
-
-```python
-# star.ipynb (and 01_helper_10.packages.ipynb), both "#| export"
-def check_package_installed(package_name: str) -> bool:
-    if importlib.util.find_spec(package_name) is not None:
-        return True
-    else:
-        return False
-# + install_package, ensure_package_installed, check_package_version_with_version_attribute
-```
-
-Consumers import the generated module: `09_app_00_gui.ipynb` → `from trouver.helper.packages import ensure_package_installed, …`.
-
-**Change:** retire `star.ipynb`'s function cells (or the whole notebook — `nbs/CONTEXT.md` already flags it as "non-standard naming"); `01_helper_10.packages.ipynb` becomes the sole exporter of `trouver/helper/packages.py`.
-
-**Why:** two notebooks writing one generated file is last-processed-wins nondeterminism, not just duplication — a fix in one copy silently vanishes on the next export.
+`star.ipynb` deleted outright after diffing: its four export cells matched
+`01_helper_10.packages.ipynb` except star's copy had *lost* the type hints on
+`check_package_version_with_version_attribute` — and because `s` sorts after
+`0`, star was winning every full export, so the generated module had carried
+the untyped copy since 2024. Provenance: born in the same 2024-12 GUI commit as
+the real notebook; a scratch sandbox (copied frontmatter, abandoned half-typed
+cell) never edited again. Post-delete export: `packages.py` parent is now
+`01_helper_10.packages.ipynb`, typed signature restored, `_modidx.py` doc links
+moved off `star.html`; notebook test green. Sole exporter =
+`01_helper_10.packages.ipynb`.
 
 ### A2 — `is_number` duplicated verbatim
 
@@ -202,7 +195,7 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 
 ## 3. Action order
 
-1. **A1** (module collision — correctness, not just tidiness).
+1. ~~**A1** (module collision — correctness, not just tidiness)~~ — done 2026-10-21.
 2. **§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`).
 3. **A2–A5** pure import swaps (zero behavior change).
 4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
@@ -211,6 +204,7 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 ## State — COMPLETE (all Tier A verified against source)
 
 Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
-(cache-perf cycle); all Tier A items, §2.1, §2.4, §2.5, and Tier B still open.
+(cache-perf cycle), A1 resolved (star.ipynb deleted); remaining Tier A items,
+§2.1, §2.4, §2.5, and Tier B still open.
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
