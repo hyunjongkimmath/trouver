@@ -4,7 +4,7 @@
 __all__ = ['existing_path', 'file_existence_test', 'path_name_no_ext', 'path_no_ext', 'text_from_file', 'files_of_format_sorted',
            'md_files_in_dir', 'file_is_compressed', 'uncompress_file', 'get_download_path', 'get_huggingface_cache_dir']
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #33685c06
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #e26a1c47
 import bz2
 import errno
 import gzip
@@ -22,13 +22,13 @@ from deprecated import deprecated
 import glob
 from natsort import natsorted
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #15c4990f
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #bb595097
 if sys.platform.startswith('win'):
     import winreg
 else:
     winreg = None
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #40ef8a5f
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #6dd5ec60
 def existing_path(
         path: PathLike,  # A file or directory path. Either absolute or relative to `relative_to`.
         relative_to: Optional[PathLike] = None  # Path to the directory that `file` is relative to.  If `None`, then `path` is an absolute path.
@@ -110,7 +110,7 @@ def file_existence_test(
             errno.ENOENT, os.strerror(errno.ENOENT), path)
     return Path(path)
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #6255496a
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #948fef03
 def path_name_no_ext(
         path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
         ) -> str: # The name of the file or directory without the extension.
@@ -122,7 +122,7 @@ def path_name_no_ext(
     name_with_extension = os.path.basename(path)
     return os.path.splitext(name_with_extension)[0]
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #eb5e7420
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #f914ee08
 def path_no_ext(
     path: PathLike # The path of the file or directory. This may be absolute or relative to any directory.
     ) -> str: # The path of the file or directory without the extension. If `path` is a path to a directory, then the output should be essentially the same as `path`.
@@ -132,7 +132,7 @@ def path_no_ext(
     """
     return os.path.splitext(str(path))[0]
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #919c2c41
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #46b68ac8
 def text_from_file(
         path: PathLike, # The absolute path of the file.
         encoding: str = 'utf8' # The encoding of the file to be read. Defaults to `'utf8'`.
@@ -146,7 +146,7 @@ def text_from_file(
         file.close()
     return text
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #59dbd73c
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #184d75b0
 def files_of_format_sorted(
         directory: PathLike, # The directory in which to find the files
         extension: str = 'txt' # Extension of the files to find. Defaults to 'txt'.
@@ -156,7 +156,7 @@ def files_of_format_sorted(
     """
     return natsorted(glob.glob(str(Path(directory) / f'*.{extension}')))
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #7b518db3
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #786db91f
 def md_files_in_dir(
         dir: PathLike, # The directory in which to find the Markdown files.
         root: PathLike, # The "root" directory for this query. This is assumed to be some ancestor directory to `dir`. The outputed paths are relative to this. 
@@ -178,7 +178,7 @@ def md_files_in_dir(
             dicty.setdefault(os.path.splitext(f)[0], []).append(rel_path)
     return dicty if as_dict else paths
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #c6d45f0e
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #80cb26cb
 def file_is_compressed(
         filename: str
         ):
@@ -202,7 +202,7 @@ def file_is_compressed(
     # Check if the file extension is in the set of compressed extensions
     return file_extension.lower() in compressed_extensions
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #acfec56a
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #12460065
 @deprecated("This function was originally implemented to be used in the `_download_source` function in `49_helper.arxiv.ipynb`, but it seems to be unable to properly handle `tar.gz` files that are actually `.gz` files.")
 def uncompress_file(
         file_path: PathLike,
@@ -336,7 +336,7 @@ def uncompress_file(
 
 #     return uncompressed_files
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #96a16250
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #ab76a47a
 # def is_gzipped(file_path):
 #     with open(file_path, 'rb') as f:
 #         magic_number = f.read(2)
@@ -349,7 +349,7 @@ def uncompress_file(
 #     except (tarfile.TarError, OSError):
 #         return False
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #daf4c2e5
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #2fa894a3
 def get_download_path() -> str:
     """
     Return the user's download folder
@@ -363,7 +363,7 @@ def get_download_path() -> str:
     else:  # For Unix-based systems (Linux, macOS)
         return os.path.join(os.path.expanduser('~'), 'Downloads')
 
-# %% ../../nbs/01_helper_03.files_and_folders.ipynb #a5b7b98a
+# %% ../../nbs/01_helper_03.files_and_folders.ipynb #70d6a3f7
 def get_huggingface_cache_dir():
     # Determine the cache directory
     cache_dir = os.environ.get("HF_HOME") or os.environ.get("XDG_CACHE_HOME")
