@@ -36,5 +36,5 @@ include = ["trouver"]
 lib_name = "trouver"
 nbs_path = "nbs"
 recursive = "True"
-tst_flags = "tst"
+tst_flags = "notest tst"
 user = "hyunjongkim"
