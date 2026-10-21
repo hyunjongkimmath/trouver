@@ -3,11 +3,11 @@
 # %% auto #0
 __all__ = []
 
-# %% ../../nbs/01_helper_01.tests.ipynb #efd203bd
+# %% ../../nbs/01_helper_01.tests.ipynb #7170432d
 import os
 from pathlib import Path
 
-# %% ../../nbs/01_helper_01.tests.ipynb #cbbd85d3
+# %% ../../nbs/01_helper_01.tests.ipynb #240acbdc
 def _test_directory() -> Path:
     """Returns the `nbs/_tests` directory of the `trouver` repository.
     
