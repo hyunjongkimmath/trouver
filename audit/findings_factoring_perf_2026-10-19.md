@@ -126,7 +126,19 @@ Excluded false positive: `path`/`exists`/`create` in `08_ml_35` are a test mock 
 
 ## 2. Performance opportunities
 
-### 2.1 Fuzzy-similarity hot path (biggest runtime win)
+### 2.1 Fuzzy-similarity hot path (biggest runtime win) ✅ RESOLVED 2026-10-21 (parts 1+3 shipped; part 2 rejected)
+
+> **Update 2026-10-21 (7da7ee0):** parts 1 and 3 shipped —
+> `partial_ratio_with_alphabet` is now `@lru_cache(maxsize=4096)` (helper_02,
+> cache-hit test added), and `similar_notat_notes_in_note` takes an optional
+> precomputed `latex_texts` param which `sieve_potential_relied_notes` computes
+> once per origin note and forwards to every call (ml_67; equivalence +
+> forwarding tests). **Part 2 rejected as mathematically wrong:** partial ratio
+> slides the shorter string over the longer, so a perfect window match scores
+> 100 no matter how large the length gap (`\dim M` inside
+> `X: M \rightarrow T M`) — an `abs(len diff)` cutoff drops true positives.
+> The existing quadratic containment penalty in
+> `latex_str_in_latex_str_fuzz_metric` already demotes one-sided matches.
 
 **Current:** `01_helper_02.init.ipynb:371` — slides the shorter string over the longer, full Levenshtein DP per window:
 
@@ -150,9 +162,9 @@ for notation_note in notation_notes:              # every notation note
 and `latex_texts_in_origin_note` is re-derived (`origin_note.text()` + `latex_indices`) on **every call** — `sieve_potential_relied_notes` calls this across many origin notes.
 
 **Change (three parts):**
-1. `@lru_cache(maxsize=4096)` on `partial_ratio_with_alphabet` — pure str→float, and the same (notation, snippet) pairs recur as different origin notes share snippets.
-2. Length pre-filter before the metric in `similar_notat_notes_in_note`: skip a pair when `abs(len(notation) - len(latex_text)) > max_len` (partial ratio can't exceed threshold if lengths differ too much).
-3. Hoist latex extraction: build `{note.name: [latex texts]}` once per run and pass it in, instead of re-parsing each origin note's text inside the loop.
+1. ✅ `@lru_cache(maxsize=4096)` on `partial_ratio_with_alphabet` — done 2026-10-21.
+2. ~~Length pre-filter before the metric in `similar_notat_notes_in_note`: skip a pair when `abs(len(notation) - len(latex_text)) > max_len` (partial ratio can't exceed threshold if lengths differ too much).~~ **REJECTED 2026-10-21** — premise false, see update note above.
+3. ✅ Hoist latex extraction — done 2026-10-21 as an optional `latex_texts` param on `similar_notat_notes_in_note`, forwarded by `sieve_potential_relied_notes` (per-origin-note, not a global map — the sieve only ever parses its current origin note).
 
 **Why:** vault-wide cost is O(#origin notes × #notation notes × #snippets × DP) with zero caching anywhere in the codebase (report §F: no `@lru_cache`/`@cache` in any of the 101 notebooks).
 
@@ -196,7 +208,7 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 ## 3. Action order
 
 1. ~~**A1** (module collision — correctness, not just tidiness)~~ — done 2026-10-21.
-2. **§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`).
+2. ~~**§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`)~~ — parts 1+3 done 2026-10-21 (7da7ee0); part 2 (pre-filter) rejected, see §2.1 update.
 3. **A2–A5** pure import swaps (zero behavior change).
 4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
 5. **A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4).
@@ -204,7 +216,8 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 ## State — COMPLETE (all Tier A verified against source)
 
 Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
-(cache-perf cycle), A1 resolved (star.ipynb deleted); remaining Tier A items,
-§2.1, §2.4, §2.5, and Tier B still open.
+(cache-perf cycle), A1 resolved (star.ipynb deleted); §2.1 closed 2026-10-21
+(parts 1+3 shipped in 7da7ee0, part 2 rejected — see its update note);
+remaining Tier A items, §2.4, §2.5, and Tier B still open.
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
