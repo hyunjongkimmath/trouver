@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['NotePairData', 'link_types_for_note_pair_data', 'sieve_note_data_pairs', 'string_from_note_pair', 'augment_note_pair', 'NoteLinkingDataPoint', 'dict_data_point_from_pair', 'dataset_from_note_data', 'MultiLabelPipeline', 'prediction_by_note_linking_model', 'batch_prediction', 'predict_note_linking', 'link_cache_note', 'separate_blocks', 'parse_link_cache_note', 'write_link_cache_note', 'consolidate_note_linking_predictions_into_cache', 'consolidate_caches', 'remove_blank_or_no_link_data_from_cache', 'remove_nonexistent_note_names_from_cache', 'similar_notat_notes_in_note', 'locate_footnote_embedded_notation_link', 'add_notation_note_embedded_footnotes_to_info_note', 'sieve_potential_relied_notes', 'predict_on_relied_notes_and_related_notat_notes', 'get_all_linked_info_notes', 'SummarizationDataPoint', 'summarization_data', 'augment_notat_note_data_for_summarization', 'notat_note_data_admissible_for_summarization_data', 'summarization_dataset_from_note_data']
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #0c241088
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #24268bd7
 from itertools import combinations
 import random
 from typing import TypedDict
@@ -17,13 +17,13 @@ from .note_data import (
 
 
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #f8391caf
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #4bc0cc70
 class NotePairData(TypedDict):
     origin_note: NoteData
     relied_note: NoteData
     # linked_type: NoteLinkEnum
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #83ab2950
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #32612bba
 def link_types_for_note_pair_data(
         pair_data: NotePairData
         ) -> set[NoteLinkEnum]:
@@ -34,7 +34,7 @@ def link_types_for_note_pair_data(
     else:
         return set([NoteLinkEnum.NO_LINK])
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #d84ae765
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #ddf7d4f3
 def _high_count_note_data(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData],
@@ -76,7 +76,7 @@ def _mid_count_note_data(
 
     return (mid_count_info_notes, mid_count_notat_notes)
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #4933a514
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #dfa1da14
 def _positive_instances_from_high_or_mid_count_notes(
         high_count_notes: set[str],
         mid_count_notes: set[str],
@@ -102,7 +102,7 @@ def _positive_instances_from_high_or_mid_count_notes(
                 chosen_pairs.append((mid_count_note_name, other_note))
     return chosen_pairs
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #3b9005e6
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #57993f15
 def _negative_instances_from_high_or_mid_count_notes(
         high_count_notes: set[str],
         mid_count_notes: set[str],
@@ -168,7 +168,7 @@ def _negative_instances_from_high_or_mid_count_notes(
 
     return list(sample_pairs)
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #f579ae36
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #3dc2851b
 def _similar_notation_pairs(
         notat_note_data: dict[str, NotatNoteData],
         # ) -> list[tuple[str, str]]:
@@ -195,7 +195,7 @@ def _similar_notation_pairs(
             _update_dict(similar_notation_dict, notat_name_2, notat_name_1)
     return similar_notation_dict
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #5ae66b82
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #6d2cbd1d
 def _random_pair_replacing_notation_notes_with_similar_notation_notes(
         original_pair: tuple[str, str],
         similar_notation_dict: set[str, set[str]]
@@ -237,7 +237,7 @@ def _pairs_with_notation_notes_replaced_with_similar_notation_notes(
         new_pairs.append(new_pair)
     return new_pairs
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #df68f35e
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #c1ce2d82
 def _pair_is_admissible(
         origin_note: str,
         relied_note: str,
@@ -253,7 +253,7 @@ def _pair_is_admissible(
         return False
     return True
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #b7a1721b
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #6d2124b0
 def _classify_anchor_notes(
         info_note_data: dict[str, InfoNoteData],
         notat_note_data: dict[str, NotatNoteData]
@@ -298,7 +298,7 @@ def _filter_admissible_pairs(
                 relied_note=note_data[relied]))
     return final_data
 
-# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #86cabd94
+# %% ../../nbs/08_machine_learning_60.note_linking_dataset_sieve.ipynb #38b614a8
 def sieve_note_data_pairs(
         info_note_data: dict[str, InfoNoteData], # Data for all standard information notes.
         notat_note_data: dict[str, NotatNoteData] # Data for all notation notes.
@@ -1099,6 +1099,7 @@ def similar_notat_notes_in_note(
         origin_note: VaultNote, # Either an info or a notat note
         notation_notes: VaultNote | list[VaultNote], # The notation notes that are considered to be 
         threshold: float = 0.8, 
+        latex_texts: Optional[list[str]] = None, # Precomputed `$...$` snippets of `origin_note` in the same form as the internal derivation; batch callers (e.g. `sieve_potential_relied_notes`) compute them once per origin note instead of re-reading/re-parsing its text on every call. When `None`, they are derived from `origin_note`.
         ) -> list[VaultNote]: # The notation notes whose notations are determined to be similar to notations used in `origin_note`.
     """
     Determine which notation notes introduce notations which resemble notations used
@@ -1109,13 +1110,16 @@ def similar_notat_notes_in_note(
     if isinstance(notation_notes, VaultNote):
         notation_notes = [notation_notes]
 
-    text = origin_note.text()
-    indices = latex_indices(text)
-    latex_texts_in_origin_note: list[str] = []
-    for start, end in indices:
-        latex_text = text[start:end]
-        latex_text = latex_text.strip('$ ')
-        latex_texts_in_origin_note.append(latex_text)
+    if latex_texts is None:
+        text = origin_note.text()
+        indices = latex_indices(text)
+        latex_texts_in_origin_note: list[str] = []
+        for start, end in indices:
+            latex_text = text[start:end]
+            latex_text = latex_text.strip('$ ')
+            latex_texts_in_origin_note.append(latex_text)
+    else:
+        latex_texts_in_origin_note = latex_texts
     matching_notat_notes: list[VaultNote] = []
     for notation_note in notation_notes:
         if notation_note.name == origin_note.name:
@@ -1285,6 +1289,13 @@ def sieve_potential_relied_notes(
 
     relied_note_names = set()
 
+    # Parse the origin note's LaTeX snippets once; every per-notation-note
+    # call below would otherwise re-read and re-index the same text.
+    origin_text = origin_note.text()
+    origin_latex_texts = [
+        origin_text[start:end].strip('$ ')
+        for start, end in latex_indices(origin_text)]
+
     # Add an info not if it 
     # 1. is in the appendix or precedes `origin_note`, is a definition/notation note
     # 2. is in the same section and precedes `origin_note` and is a context note.
@@ -1328,7 +1339,9 @@ def sieve_potential_relied_notes(
         notat_note_candidates: list[VaultNote] = []
         for notat_note in notat_notes:
             individual_notat_note: list[VaultNote] = similar_notat_notes_in_note(
-                origin_note, notat_note, threshold=notation_similarity_threshold)
+                origin_note, notat_note,
+                threshold=notation_similarity_threshold,
+                latex_texts=origin_latex_texts)
             if not individual_notat_note:
                 continue
             relied_note_names.add(info_note.name)
