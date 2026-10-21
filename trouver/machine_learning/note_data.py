@@ -2,7 +2,8 @@
 
 # %% auto #0
 __all__ = ['POSITION_DATA_ATTRIBUTES', 'K', 'V', 'NoteLinkEnum', 'NoteData', 'note_data_order_cmp', 'InfoNoteData',
-           'NotatNoteData', 'note_data_from_index_note', 'note_data_from_reference', 'find_reverse_links',
+           'NotatNoteData', 'linked_note_names_from_content', 'linked_notat_note_names_from_content',
+           'note_data_from_index_note', 'note_data_from_reference', 'find_reverse_links',
            'get_main_note_content_of_notat_note_data']
 
 # %% ../../nbs/08_machine_learning_50.note_data.ipynb #078e412a
@@ -563,10 +564,9 @@ class NotatNoteData(NoteData):
         return '\n'.join(parts)
 
 # %% ../../nbs/08_machine_learning_50.note_data.ipynb #c2b2be3e
-# TODO: Maybe import these from `34_markdown.obsidian.personal.machien_learning.notation_linking.ipynb` or delete those functions if deprecating that module.
-
-def _linked_note_names_from_content(
+def linked_note_names_from_content(
         content: str) -> list[str]:
+    """Return the names of notes linked via Markdown-style links in `content`."""
     linked_note_names = []
     for match in re.findall(MARKDOWNLINK_CAPTURE_PATTERN, content):
         link_name = match[1]
@@ -574,17 +574,23 @@ def _linked_note_names_from_content(
             link_name = link_name[:-3]
         linked_note_names.append(link_name)
     return linked_note_names
-        
 
-def _linked_notat_note_names_from_content(
+
+def linked_notat_note_names_from_content(
         content: str, vault: PathLike) -> list[str]:
-    linked_note_names = _linked_note_names_from_content(content)
+    """Return the names of notation notes linked via Markdown-style links in `content`.
+
+    This is the canonical copy; `machine_learning.notation_linking` imports
+    these two extractors instead of keeping its own.
+    """
+    linked_note_names = linked_note_names_from_content(content)
     linked_notation_note_names = []
     for linked_note_name in linked_note_names:
         note = VaultNote(vault, name=linked_note_name, update_cache=False)
         if note_is_of_type(note, PersonalNoteTypeEnum.NOTATION_NOTE):
             linked_notation_note_names.append(note.name)
     return linked_notation_note_names
+
 
 # %% ../../nbs/08_machine_learning_50.note_data.ipynb #0705137b
 def _get_links_to_notat_notes(
@@ -605,7 +611,7 @@ def _get_links_to_notat_notes(
             directly_linked_notes, linked_notat_note_name, NoteLinkEnum.NOTAT_TO_NOTAT)
     # 2. Identify notation notes linked in the content.
     content = str(parsed.main_content_markdown_file)
-    content_linked_notat_notes = _linked_notat_note_names_from_content(
+    content_linked_notat_notes = linked_notat_note_names_from_content(
         content, vault)
     for linked_notat_note_name in content_linked_notat_notes:
         _update_dict(

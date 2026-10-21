@@ -7,7 +7,7 @@ __all__ = ['get_latex_in_original_from_parsed_notation_note_data', 'NotationSumm
            'format_for_gemma_instruct', 'single_input_for_notation_summarization', 'append_column_for_single_text',
            'augment_notation_summarization_data', 'summarize_notation', 'append_summary_to_notation_note']
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #02a5b2d5
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #94c5de19
 from deprecated import deprecated
 import os
 from os import PathLike
@@ -24,7 +24,7 @@ import pandas as pd
 
 from ..helper.date_and_time import current_time_formatted_to_minutes
 from ..helper.latex.augment import (
-    augment_text, change_font_styles_at_random, change_greek_letters_at_random, dollar_sign_manipulation, random_char_modification, remove_math_keywords, random_word_removal, random_latex_command_removal, remove_font_styles_at_random)
+    augment_text, change_font_styles_at_random, change_greek_letters_at_random, dollar_sign_manipulation, random_char_modification, remove_math_keywords, random_word_removal, random_latex_command_removal, remove_font_styles_at_random, _create_method)
 from ..helper.latex.formatting import reduce_unnecessary_spaces, fix_autogen_formatting
 from ..helper.latex.processing import _list_of_candidates_from_math_mode_strings, correct_latex_syntax_error
 from ..obsidian.file import MarkdownFile, MarkdownLineEnum
@@ -36,7 +36,7 @@ from ..notation.parse import main_of_notation, parse_notation_note
 from ..personal_vault.note_type import note_is_of_type
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #cd8e592f
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #43c766d9
 # TODO: there are several other places in other notes that also implement their own functions for getting latex_in_original; factor them out.
 
 def get_latex_in_original_from_parsed_notation_note_data(
@@ -63,7 +63,7 @@ def get_latex_in_original_from_parsed_notation_note_data(
         latex_in_original = notation_str
     return latex_in_original
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #f8ec59d5
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #5689ab57
 def _notation_note_has_auto_summary_tag(
         metadata: Union[dict[str], None]
         ) -> bool:
@@ -75,7 +75,7 @@ def _notation_note_has_auto_summary_tag(
     """
     return metadata and 'tags' in metadata and '_auto/notation_summary' in metadata['tags']
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #35674afd
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #0f790a74
 class NotationSummaryData(TypedDict):
     """
     Encapsulates the data for a notation summary; is an output of `notation_summarization_data_from_note`.
@@ -87,7 +87,7 @@ class NotationSummaryData(TypedDict):
     main_note_name: str
     processed_main_note_content: str
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #d7ab2271
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #c516d239
 def notation_summarization_data_from_note(
         notation_note: VaultNote,
         vault: PathLike,
@@ -197,7 +197,7 @@ def _notation_has_been_summarized(
 
 # TODO: Test the case of `check_for_actual_summarization` is `False`
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #3b85c1e1
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #e9badce0
 @deprecated(reason="`gather_notation_note_summaries` is deprecated. Use `gather_notation_note_summary_data` instead.")
 def gather_notation_note_summaries(
         vault: PathLike,
@@ -223,7 +223,7 @@ def gather_notation_note_summaries(
     return pd.DataFrame(summary_data)
     
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #672a216c
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #efb885f5
 def gather_notation_note_summary_data(
         vault: PathLike,
         notes: list[VaultNote]
@@ -241,7 +241,7 @@ def gather_notation_note_summary_data(
     summary_data = [row for row in summary_data if row is not None]
     return summary_data
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #2085d4df
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #9d01bd25
 @deprecated(reason="`append_to_notation_note_summarization_database` is deprecated.")
 def append_to_notation_note_summarization_database(
         vault: PathLike, # The vault freom which the data is drawn
@@ -307,7 +307,7 @@ def append_to_notation_note_summarization_database(
 # TODO: think about whether the 'Notation note name' column would make for an
 # appropriate pivot.
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #664d1a4a
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #6eb6783c
 def format_classical(
         data: NotationSummaryData,
         latex_in_original_comes_first: bool = True
@@ -325,7 +325,7 @@ def format_classical(
     else:
         return f"{main_text}\n\nlatex_in_original: {latex}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #5ef0f8db
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #986d9dd6
 def format_training_tokens(
     data: NotationSummaryData, 
     sep_token: str = "</s>", 
@@ -353,7 +353,7 @@ def format_training_tokens(
         
     return f"{parts[0]}\n\n{sep_token}\n\n{parts[1]}\n\n{sep_token}\n\n{parts[2]}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #6d05c9b3
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #40b494ed
 def format_for_gemma_instruct(data: NotationSummaryData) -> str:
     """
     Formats input for modern instruction-tuned LLMs (Gemma/Llama).
@@ -368,7 +368,7 @@ def format_for_gemma_instruct(data: NotationSummaryData) -> str:
     
     return f"Target: {target_symbol}\nText: {main_text}"
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #4811f567
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #71a5d885
 def single_input_for_notation_summarization(
         notation_summary_data: NotationSummaryData, 
         input_formatter: Callable[..., str] = format_training_tokens, 
@@ -390,7 +390,7 @@ def single_input_for_notation_summarization(
     """
     return input_formatter(notation_summary_data, **input_formatter_kwargs)
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #4a05093e
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #60306b8b
 # TODO: I wonder if I should also keep text that doesn't take 
 # Latex in original but rather the notation itself.
 
@@ -410,7 +410,7 @@ def append_column_for_single_text(
         axis=1)
     df["Single text"] = single_text_column
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #b1a4d313
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #a0c1d137
 def augment_notation_summarization_data(
         datapoint: NotationSummaryData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -450,11 +450,9 @@ def _augment_notation_summarization_data_once(
         scale = 1.5
     
     random_methods = []
-    def create_method(method, p, scale):
-        return lambda x: method(x, p=p*scale)
     for method, p in methods:
         if random.random() < method_inclusion_chance:
-            random_methods.append(create_method(method, p, scale))
+            random_methods.append(_create_method(method, p, scale))
 
     augmented_datapoint = datapoint.copy()
     for key in ['notation', 'latex_in_original', 'processed_main_note_content']:
@@ -462,7 +460,7 @@ def _augment_notation_summarization_data_once(
     return augmented_datapoint
     
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #e2d125c1
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #dd8ad153
 def summarize_notation(
         notation_summarization_data: NotationSummaryData, # This does not actually to have 'notation_note_name', 'summary', or 'main_note_name'
         # main_content: Union[str, MarkdownFile],
@@ -515,7 +513,7 @@ def summarize_notation(
         summary = fix_autogen_formatting(summary)
     return summary
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #b2def45f
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #09e71ee1
 def _metadata_dict_has_auto_notation_summary_tag(
         metadata: dict[str] | None) -> bool:
     """
@@ -528,7 +526,7 @@ def _metadata_dict_has_auto_notation_summary_tag(
             and isinstance(metadata['tags'], (list, set, tuple))
             and '_auto/notation_summary' in metadata['tags'])
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #de543b16
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #27144bc3
 def _summary_should_be_generated(
         main_note: Union[VaultNote, None],
         main_note_name: str,
@@ -565,7 +563,7 @@ def _summary_should_be_generated(
         return False, main_mf
     return True, main_mf
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #7bcdf185
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #5894fcd7
 def _get_summary(
         metadata: dict[str],
         notation_str: str,
@@ -598,7 +596,7 @@ def _get_summary(
         )
     return summary
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #27b35623
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #4b59deb2
 def _write_summary_to_notation_note(
         notation_note: VaultNote, summary: str) -> None:
     """
@@ -624,7 +622,7 @@ def _write_summary_to_notation_note(
         enquote_entries_in_metadata_fields=['latex_in_original'])
     notation_note_mf.write(notation_note)
 
-# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #34f76067
+# %% ../../nbs/08_machine_learning_25.notation_summarization.ipynb #d0f49a8d
 def append_summary_to_notation_note(
         notation_note: VaultNote,
         vault: PathLike,
