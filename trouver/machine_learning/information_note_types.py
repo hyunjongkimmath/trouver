@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['LABEL_TAGS', 'note_is_labeled_with_tag', 'note_labels', 'labels_and_identifying_info_from_notes', 'information_note_types_as_dataset', 'gather_information_note_types', 'append_to_information_note_type_database', 'possible_text_type_labels', 'predict_text_types_with_one_learner', 'consolidate_single_text_predictions_by_sum_of_confidence', 'predict_note_types', 'automatically_add_note_type_tags', 'convert_auto_tags_to_regular_tags_in_notes']
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #6b9634fb
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #1a88ba43
 LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta/example', 
     '#_meta/narrative', '#_meta/notation', '#_meta/proof', '#_meta/remark',
     '#_meta/TODO/split', '#_meta/TODO/merge', '#_meta/TODO/delete', '#_meta/hint',
@@ -11,7 +11,7 @@ LABEL_TAGS = [ '#_meta/concept', '#_meta/exercise', '#_meta/definition', '#_meta
     '#_meta/context', '#_meta/permanent_note', '#_meta/question', '#_meta/problem'
 ]
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #8975af2b
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #38d579ad
 import os
 from os import PathLike
 from pathlib import Path
@@ -26,7 +26,7 @@ from .database_update import max_ID, append_to_database
 from ..personal_vault.note_processing import process_standard_information_note
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #a4d20009
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #e39f39c0
 def note_is_labeled_with_tag(
         note: VaultNote,
         label_tag: str, # A tag which labels a type that `note` is. Includes the beginning hashtag `#`, e.g. `#_meta/definition`, `#_meta/TODO/split`
@@ -53,7 +53,7 @@ def note_is_labeled_with_tag(
         return label_tag in tags 
 
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #4624c189
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #c67f3e35
 def note_labels(
         note: VaultNote,
         count_auto_tags: bool = False, # If `True`, count `#_auto/_meta/<tag>` notes as `#_meta/<tag>` for the purposes of the data collection.  
@@ -69,7 +69,7 @@ def note_labels(
             for tag, flag in label_dict.items()}
     
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #f51c90da
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #66682b04
 def labels_and_identifying_info_from_notes(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
@@ -116,7 +116,7 @@ def labels_and_identifying_info_from_notes(
                 raise(e)
     return rows
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #1f1d1271
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #f61a7fc3
 def information_note_types_as_dataset(
         vault: PathLike,  # The vault from which the notes come from; this is to invoke `process_standard_information_note`.
         notes: list[VaultNote],  # Assumed to only contain standard information notes from which note type labels are to be gathered.
@@ -127,10 +127,10 @@ def information_note_types_as_dataset(
     dataset = Dataset.from_dict({k: [dic[k] for dic in data] for k in data[0]})
     return dataset
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #4c43a67e
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #a4c22ad4
 #| export
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #802869f8
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #e1f91c13
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def gather_information_note_types(
         vault: PathLike,
@@ -142,7 +142,7 @@ def gather_information_note_types(
     """
     return pd.DataFrame(labels_and_identifying_info_from_notes(vault, notes, raise_error_that_arises))
 
-# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #553116f8
+# %% ../../nbs/08_machine_learning_10.information_note_types.ipynb #b8c2eb0b
 @deprecated(reason="Use Using a pandas `DataFrame` is slow. Use `information_note_types_as_dataset` instead to gather data as a `Dataset`.")
 def append_to_information_note_type_database(
         vault: PathLike, # The vault freom which the data is drawn
@@ -279,13 +279,19 @@ def predict_note_types(
         remove_NO_TAG: bool = True, # If `True`, remove `NO_TAG`, which in theory is supposed to indicate that no types are predicted, but in practice can somehow be predicted along with actual types.
         consolidation: Optional[Callable[[list[tuple[list[str], dict[str, float]]]], list[str]]] = consolidate_single_text_predictions_by_sum_of_confidence, # The method to consolidate between different predictions made by the possibly more-than-one model in `learners`.
         ) -> list[list[str]]: # Each `list[str]`` corresponds to an item in `notes` and contains the predicted note types for that note.
-    """
+    """Predict the note types of `notes` using one or more `learners`.
 
     **Parameters**
 
+    - `learners` - TextLearner | list[TextLearner]: The ML model(s) predicting note types.
+    - `vault` - PathLike: The vault containing `notes`.
+    - `notes` - list[VaultNote]: The notes whose raw contents are classified.
+    - `remove_NO_TAG` - bool: If `True`, drop the special `NO_TAG` label from the results. Default `True`.
+    - `consolidation` - Callable: How to merge the per-learner `(labels, probabilities)` predictions into a single label list when several learners are given. Default `consolidate_single_text_predictions_by_sum_of_confidence`.
+
     **Returns**
 
-
+    One `list[str]` per note in `notes`: the predicted note-type tags for that note.
     """
     if not isinstance(learners, list):
         learners = [learners]
@@ -309,14 +315,8 @@ def predict_note_types(
                 preds.remove('NO_TAG')
     return consolidated_predictions
 
-
-
-
-    # return predict_text_types(learners, raw_note_contents, remove_NO_TAG)
-
 def _transpose_list(original_list: list[list]):
     return list(map(list, zip(*original_list)))
-
 
 # %% ../../nbs/08_machine_learning_11.information_note_types_predict.ipynb #018b3bca
 def automatically_add_note_type_tags(
@@ -351,12 +351,20 @@ def automatically_add_note_type_tags(
     predictions = [[tag[1:] if tag.startswith('#') else tag for tag in tags]
                    for tags in predictions]
     # Add `_auto/`
-    all_label_tags = [*LABEL_TAGS]
-    all_label_tags.extend([f'_auto/{tag}' for tag in LABEL_TAGS])
+    all_label_tags = [*_BARE_LABEL_TAGS]
+    all_label_tags.extend([f'_auto/{tag}' for tag in _BARE_LABEL_TAGS])
     for note, prediction in zip(notes, predictions):
         _change_label_tags_for_single_note(
             note, prediction, overwrite, add_auto_label,
             all_label_tags)
+
+
+# `LABEL_TAGS` entries start with `'#'`, but note frontmatter stores tags
+# without it; comparisons against a note's tags must use the hashtag-free
+# names (a `_auto/` prefix built from a `'#'`-carrying name, e.g.
+# `'_auto/#_meta/proof'`, never matches the stored `'_auto/_meta/proof'`).
+_BARE_LABEL_TAGS = [
+    tag[1:] if tag.startswith('#') else tag for tag in LABEL_TAGS]
 
 
 def _change_label_tags_for_single_note(
@@ -411,25 +419,22 @@ def _append_single_predicted_tag(
 
 def _has_exactly_predicted_tags(
         mf, prediction: list[str]) -> bool:
-    """Return `True` if the MarkdownFile already has the predicted tags
-    (or the corresponding `_auto` tags)"""
-    for tag in LABEL_TAGS:
-        if (mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}')) and tag in prediction:
-            continue
-        else:
-            return False
-    return True
+    """Return `True` if the set of note type tags already in the
+    MarkdownFile (counting each `_auto/` tag as its hashtag-free
+    counterpart) equals the set of predicted tags"""
+    existing = {
+        tag for tag in _BARE_LABEL_TAGS
+        if mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}')}
+    return existing == set(prediction)
 
 
 def _has_any_label_tags(
         mf) -> bool:
-    """Return `True` if the MarkdownFile has any label tags (or correspnoding `_auto` tags)"""
-    for tag in LABEL_TAGS:
-        if mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}'):
-            continue
-        else:
-            return False
-    return True
+    """Return `True` if the MarkdownFile has any note type tags (or
+    corresponding `_auto/` tags)"""
+    return any(
+        mf.has_tag(tag) or mf.has_tag(f'_auto/{tag}')
+        for tag in _BARE_LABEL_TAGS)
 
 # %% ../../nbs/08_machine_learning_11.information_note_types_predict.ipynb #7b3431a1
 def convert_auto_tags_to_regular_tags_in_notes(
