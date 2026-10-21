@@ -36,7 +36,6 @@ Notebooks with double-digit prefixes that don't match the `XX_module_YY.name.ipy
 | `how_to.*.ipynb` | Tutorial/installation guides, not library code |
 | `tutorial.*.ipynb` | Walkthroughs and coding-style references |
 | `using_regex.ipynb` | Reference guide for regex patterns used in the library |
-| `star.ipynb` | `helper.packages` — non-standard naming, minimal testing |
 | `unused.ipynb` | Tutorial content marked `#| notest`; not exported to package |
 | `TODO.ipynb` | Scratch pad and TODO list; exports to `todo.html`, not Python |
 | `_tests/` | Shared test fixtures (sample LaTeX files, mock vault structures) |
@@ -72,7 +71,7 @@ The notebooks range from fully adhering to the ideal down to bare-bones code dum
 | **Sparse documentation** | Export cells with no preceding markdown explanation; docstrings missing `**Parameters**` sections | `04_latex_20.convert.ipynb` (many helpers documented only by variable names) |
 | **Commented-out code** | Alternative implementations or deprecated code left as comments instead of removed | `01_helper_03.files_and_folders.ipynb` (`uncompress_file`), `04_latex_20.convert.ipynb` |
 | **Incomplete functions** | Export cells containing bare `return` statements or partial function signatures | `05_personal_vault_20.information_notes.ipynb` (`reference_of_information_note`) |
-| **Misused cell types** | Raw markdown cells used as code cells (e.g., `#| export` in a raw cell followed by incomplete code) | `04_latex_20.convert.ipynb` (cell-18), `star.ipynb` (cell-8) |
+| **Misused cell types** | Raw markdown cells used as code cells (e.g., `#| export` in a raw cell followed by incomplete code) | `04_latex_20.convert.ipynb` (cell-18) |
 | **Missing frontmatter** | Notebooks that use plain markdown headers instead of raw metadata cells | Several notebooks across modules |
 
 ## Nbdev Cell Flags
