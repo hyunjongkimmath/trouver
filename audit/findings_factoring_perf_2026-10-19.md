@@ -21,7 +21,12 @@ cell) never edited again. Post-delete export: `packages.py` parent is now
 moved off `star.html`; notebook test green. Sole exporter =
 `01_helper_10.packages.ipynb`.
 
-### A2 — `is_number` duplicated verbatim
+### A2 ~~`is_number` duplicated verbatim~~ ✅ RESOLVED 2026-10-21
+
+> Shipped in 08b780c: def deleted from `04_latex_15.formatting`, which now
+> imports `is_number` from `trouver.helper.numbers` (its assert suite stays
+> there). No consumer imported it from `latex.formatting`; notebook tests green.
+
 
 **Current:** identical body in `01_helper_09.numbers.ipynb:58` and `04_latex_15.formatting.ipynb:82`:
 
@@ -39,7 +44,13 @@ def is_number(x: Union[float, int, complex, str]) -> bool:
 
 **Why:** one tested copy (`helper_09` has the assert suite) instead of two that can drift; the `x.replace(".", "1", 1).isdigit()` trick is subtle enough that a second copy invites divergence.
 
-### A3 — `create_method` lambda factory ×3
+### A3 ~~`create_method` lambda factory ×3~~ ✅ RESOLVED 2026-10-21
+
+> Shipped in 08b780c: `01_helper_28.latex.augment` already exported an
+> identical `_create_method`, and all three ML notebooks already imported
+> from that module — so the nested defs were deleted and `_create_method`
+> appended to each existing import. Tests green.
+
 
 **Current:** identical in `08_ml_15.tokenize…classification`, `08_ml_25.notation_summarization`, `08_ml_35.definition_and_notation_naming`:
 
@@ -52,7 +63,16 @@ def create_method(method, p, scale):
 
 **Why:** it's the closure factory for the augmentation pipeline; if the `p=p*scale` scaling rule changes, three copies must change in lockstep.
 
-### A4 — markdown-link extractors duplicated between `note_data` and `notation_linking`
+### A4 ~~markdown-link extractors duplicated between `note_data` and `notation_linking`~~ ✅ RESOLVED 2026-10-21
+
+> Shipped in 08b780c as proposed — signatures verified identical before the
+> merge. `note_data`'s copies are now public (`linked_note_names_from_content`,
+> `linked_notat_note_names_from_content`) with docstrings; `notation_linking`
+> imports them and its two test cells moved to `note_data` (the mock-patch
+> targets `'__main__.VaultNote'`/`'__main__.note_is_of_type'` only resolve
+> where the names are looked up). No import cycle: nothing imported
+> `notation_linking`. Tests green in both notebooks.
+
 
 **Current:** identical in `08_ml_50.note_data.ipynb:1158` and `08_ml_70.notation_linking.ipynb`:
 
@@ -79,7 +99,18 @@ from trouver.machine_learning.note_data import (
 
 **Why:** link-parsing is exactly the logic that changes when Obsidian's link syntax edge cases are discovered; two copies = two bug-fix sites.
 
-### A5 — `make_example_vault` fixture builder ×2
+### A5 ~~`make_example_vault` fixture builder ×2~~ ✅ RESOLVED 2026-10-21 (deviation)
+
+> Shipped in 08b780c, going straight to the audit's longer-term home: the
+> builder (+ its note-text constant) moved to `trouver.helper.tests` next to
+> `_test_directory`, per `testing.md`. Deviation from "keep in
+> `03_obsidian_40.file`": that notebook was mid-edit by another session, and
+> its copy turned out to be unflagged anyway — never exported. So
+> `obsidian_49` now imports from `helper.tests`, and **follow-up: switch
+> `obsidian_40`'s private copy to the same import once that session's work
+> lands.** Tests green in helper_01/obsidian_49.
+
+
 
 **Current:** identical in `03_obsidian_40.file.ipynb` and `03_obsidian_49.file_write.ipynb:207`:
 
@@ -209,7 +240,7 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 
 1. ~~**A1** (module collision — correctness, not just tidiness)~~ — done 2026-10-21.
 2. ~~**§2.1** caching + pre-filter (biggest runtime win, localized to `01_helper_02` + `08_ml_67`)~~ — parts 1+3 done 2026-10-21 (7da7ee0); part 2 (pre-filter) rejected, see §2.1 update.
-3. **A2–A5** pure import swaps (zero behavior change).
+3. ~~**A2–A5** pure import swaps (zero behavior change)~~ — done 2026-10-21 (08b780c; A5 went to `helper.tests`, see its deviation note).
 4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
 5. **A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4).
 
@@ -218,6 +249,8 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
 (cache-perf cycle), A1 resolved (star.ipynb deleted); §2.1 closed 2026-10-21
 (parts 1+3 shipped in 7da7ee0, part 2 rejected — see its update note);
-remaining Tier A items, §2.4, §2.5, and Tier B still open.
+A2–A5 closed 2026-10-21 (08b780c; A5 follow-up: obsidian_40's private
+fixture copy still pending that session).
+Remaining open: A6 + Tier B, §2.4, §2.5.
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
