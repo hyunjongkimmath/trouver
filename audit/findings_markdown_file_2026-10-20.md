@@ -6,6 +6,8 @@
 
 **Companion:** `findings_note_processing_2026-10-20.md` reviews the `process_standard_information_note` pipeline that chains many of these methods (its N3 subsumes C5/P1 for the tail-cleanup trio).
 
+**Status: CLOSED 2026-10-22.** Shipped, in suggested order: C1/C3/C4 (`d1e4692`), P1+C5 (`9bc007a`), C2 (`97e8492`), C6/C7/C8 (`11ee4e4`), P3 (`d022d80`) — each with an assert-only test cell in the nbdev source notebooks and a full-notebook exec-verification pass green. **Deferred, by their own gates:** P2 (only if profiling shows heading lookups in a hot path), P4 (trivial constant hoist; regex precompile explicitly skipped), C9 (three behavioral/API items — duplicate-heading keys + levels-filter bug, dead params, name-collision rename — need deliberate decisions).
+
 ---
 
 ## Part 1 — Correctness issues
