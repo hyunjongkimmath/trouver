@@ -29,66 +29,77 @@ UNCOMMON_FONT_STYLE_COMMANDS = [
     "mathsf",
     "mathtt",
 ]
-# COMMON_FONT_STYLE_TYPOS = {
-#     "mathscr": {"mathcal", "mathfrak"},
-#     "mathcal": {"mathscr"},
-#     "mathrm": {"operatorname"},
-#     "mathrmfrak": {"mathcal", "mathbf"}
-# }
+
+def _resolve_rng(rng=None, seed=None):
+    """
+    Return `rng` if given, else a private `random.Random(seed)`, else the global `random` module.
+
+    Explicit RNGs make augmentation reproducible without touching global
+    state; the old code called `random.seed()`, polluting every other
+    consumer of randomness in the process.
+    """
+    if rng is not None:
+        return rng
+    return random.Random(seed) if seed is not None else random
 
 
 def modify_at_random(
         latex_string: str, # A latex str, surrounded by dollar signs (either single or double) as necessary.
         pattern: Union[str,re.Pattern],
         chance: float, # The chance that each change is performed
-        replace_func: Callable[[re.Match, float], str],
-        seed: Optional[int] = None
+        replace_func: Callable[[re.Match, float], str]
     ) -> str:
-    # Set the random seed if provided
-    if seed is not None:
-        random.seed(seed)
-    result = re.sub(pattern, lambda x: replace_func(x, chance), latex_string)
-    return result
+    """
+    Apply `replace_func` to each match of `pattern` in `latex_string`.
 
+    Randomness lives inside `replace_func`, so callers control determinism
+    by closing over their own RNG (older versions took a `seed` and called
+    `random.seed()` globally).
+    """
+    return re.sub(pattern, lambda x: replace_func(x, chance), latex_string)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #fb1a10b3
 def remove_font_styles_at_random(
         latex_string: str, # A latex str, surrounded by dollar signs (either single or double) as necessary.
         p: float = 0.05, # The chance that each font styling comand is removed
-        seed: Optional[int] = None
+        rng: Optional[random.Random] = None, # Explicit RNG for reproducibility; default uses global `random`
+        seed: Optional[int] = None # Convenience: builds a private `Random(seed)` (no global seeding)
         ) -> str: 
     """Randomly remove font style commands at random from `latex_string`.
     """
+    rng = _resolve_rng(rng, seed)
     # Combine all font style commands
     all_commands = FONT_STYLE_COMMANDS # + UNCOMMON_FONT_STYLE_COMMANDS
     # Create a regex pattern to match all font style commands
     pattern = r'\\(' + '|'.join(all_commands) + r')\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}'
     def replace_func(match, p: float):
         # Randomly decide whether to remove the command
-        if random.random() < p:
+        if rng.random() < p:
             # If removed, return only the content inside the braces
             return match.group(2)
         else:
             # If not removed, return the original match
             return match.group(0)
-    return modify_at_random(latex_string, pattern, p, replace_func, seed)
+    return modify_at_random(latex_string, pattern, p, replace_func)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #68478945
 def change_font_styles_at_random(
         latex_string: str,
         p: float = 0.1,
-        seed: Optional[int] = None
+        rng: Optional[random.Random] = None, # Explicit RNG for reproducibility; default uses global `random`
+        seed: Optional[int] = None # Convenience: builds a private `Random(seed)` (no global seeding)
         ) -> str:
     """Randomly change font style commands in `latex_string`."""
+    rng = _resolve_rng(rng, seed)
     all_commands = FONT_STYLE_COMMANDS # + UNCOMMON_FONT_STYLE_COMMANDS
     pattern = r'\\(' + '|'.join(all_commands) + r')\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}'
     def replace_func(match, p: float):
-            if random.random() < p:
+            if rng.random() < p:
                 current_command = match.group(1)
-                new_command = random.choice([cmd for cmd in all_commands if cmd != current_command])
+                new_command = rng.choice([cmd for cmd in all_commands if cmd != current_command])
                 return f"\\{new_command}{{{match.group(2)}}}"
             return match.group(0)
-    return modify_at_random(latex_string, pattern, p, replace_func, seed)
+    return modify_at_random(latex_string, pattern, p, replace_func)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #3d2098f6
 # List of Greek letters in LaTeX
@@ -100,13 +111,22 @@ GREEK_LETTERS = [
 
 def change_greek_letters_at_random(
         latex_string: str,
-        p: float = 0.05
+        p: float = 0.05,
+        rng: Optional[random.Random] = None, # Explicit RNG for reproducibility; default uses global `random`
+        seed: Optional[int] = None # Convenience: builds a private `Random(seed)` (no global seeding)
 ) -> str:
-    """Randomly change Greek letters in `latex_string`."""
+    """
+    Randomly change Greek letters in `latex_string`.
+
+    Warning: this *renames symbols* — it changes content, not just styling,
+    and leaves other mentions of the same symbol untouched. Use only where
+    labels do not depend on letter identity.
+    """
+    rng = _resolve_rng(rng, seed)
     def replace_func(match, p: float):
-        if random.random() < p:
+        if rng.random() < p:
             current_letter = match.group(1)
-            new_letter = random.choice([l for l in GREEK_LETTERS if l != current_letter])
+            new_letter = rng.choice([l for l in GREEK_LETTERS if l != current_letter])
             return f"\\{new_letter}"
         return match.group(0)
     # Pattern to match Greek letters
@@ -115,106 +135,74 @@ def change_greek_letters_at_random(
     result = re.sub(pattern, lambda x: replace_func(x, p), latex_string)
     return result
 
-# %% ../../../nbs/01_helper_28.latex.augment.ipynb #bedee6ff
-# def push_dollar_signs_surrounding_latex(
-#         latex_string: str, # A latex str, surrounded by dollar signs (either single or double) as necessary.
-#         remove_pushed_out_font_style_command: bool = True
-#         ) -> str:
-#     """
-#     Modify `latex_string` so that in effect, dollar signs are 
-#     """
-#     return ""
-
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #d26acb03
-def random_char_modification(text, p=0.05):
+def random_char_modification(text, p=0.05, rng=None, seed=None):
     """
     Randomly change characters in `text`.
+
+    Warning: mutates arbitrary characters including inside LaTeX commands —
+    strong noise; keep `p` small.
     """
+    rng = _resolve_rng(rng, seed)
     chars = list(text)
     all_chars = string.ascii_letters + string.digits + string.punctuation + ' '
     for i in range(len(chars)):
-        if random.random() < p:
-            action = random.choice(['delete', 'add', 'modify'])
+        if rng.random() < p:
+            action = rng.choice(['delete', 'add', 'modify'])
             if action == 'delete':
                 chars[i] = ''
             elif action == 'add':
-                chars.insert(i, random.choice(all_chars))
+                chars.insert(i, rng.choice(all_chars))
             else:
-                chars[i] = random.choice(all_chars)
+                chars[i] = rng.choice(all_chars)
     return ''.join(chars)
 
-# %% ../../../nbs/01_helper_28.latex.augment.ipynb #485bd95f
-# def dollar_sign_manipulation(text, p=0.05):
-#     """
-#     Either delete or move dollar signs (which are usually there for latex math mode) from `text`,
-#     while preserving all whitespace characters.
-#     """
-#     # Split the text into tokens, preserving whitespace
-#     tokens = re.split(r'(\s+)', text)
-    
-#     # Find indices of non-whitespace tokens containing '$'
-#     dollar_indices = [i for i, token in enumerate(tokens) if '$' in token and not token.isspace()]
-    
-#     for i in dollar_indices:
-#         if random.random() < p:
-#             action = random.choice(['delete', 'move'])
-#             if action == 'delete':
-#                 tokens[i] = tokens[i].replace('$', '')
-#             else:
-#                 if len(dollar_indices) > 1:
-#                     # Find a new position for the dollar sign
-#                     possible_positions = [pos for pos in dollar_indices if pos != i]
-#                     new_pos = random.choice(possible_positions)
-                    
-#                     # Move the dollar sign
-#                     tokens[new_pos] += '$'
-#                     tokens[i] = tokens[i].replace('$', '')
-#                 else:
-#                     # If there's only one dollar sign, we can't move it, so we'll delete it instead
-#                     tokens[i] = tokens[i].replace('$', '')
-
-#     return ''.join(tokens)
-
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #cddfa990
-def dollar_sign_manipulation(text, p=0.05):
+def dollar_sign_manipulation(text, p=0.05, rng=None, seed=None):
     """
     Either delete or move dollar signs from `text` while preserving whitespace.
     """
+    rng = _resolve_rng(rng, seed)
     tokens = re.split(r'(\s+)', text)
     # Tokens with '$' are inherently not whitespace, so we can skip the .isspace() check
     d_idxs = [i for i, t in enumerate(tokens) if '$' in t]
     
     for i in d_idxs:
-        if random.random() < p:
+        if rng.random() < p:
             # Step 1: Always remove '$' from the current token (happens in both 'delete' and 'move')
             tokens[i] = tokens[i].replace('$', '')
             
             # Step 2: If we are "moving" (50% chance) and have a valid target, append '$' there
             # This replicates the original logic: Move = Remove from A + Add to B
-            if len(d_idxs) > 1 and random.choice([True, False]):
-                target = random.choice([j for j in d_idxs if j != i])
+            if len(d_idxs) > 1 and rng.choice([True, False]):
+                target = rng.choice([j for j in d_idxs if j != i])
                 tokens[target] += '$'
 
     return ''.join(tokens)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #7a7b927a
-def remove_math_keywords(text, p=0.05):
+def remove_math_keywords(text, p=0.05, rng=None, seed=None):
     """
     Remove all mentions of Definition/Theorem/Remark, etc.
+
+    Warning: removes exactly the cue words a note-type or definition-locator
+    label may hinge on; keep out of recipes for such tasks.
     """
+    rng = _resolve_rng(rng, seed)
     keywords = r"(Definition|Remark|Proposition|Exercise|Example|Theorem|Lemma|Corollary)\s+\w+(\.\w+){1,3}"
     def random_remove(match):
-        if random.random() < p:
+        if rng.random() < p:
             return ''
         else:
             return match.group(0)
     return re.sub(keywords, random_remove, text)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #10d9f3d8
-def random_word_removal(text, p=0.05):
+def random_word_removal(text, p=0.05, rng=None, seed=None):
     """
     Randomly remove words while preserving all whitespace characters.
     """
+    rng = _resolve_rng(rng, seed)
     # Split the text into tokens, preserving whitespace
     tokens = re.split(r'(\s+)', text)
     
@@ -222,7 +210,7 @@ def random_word_removal(text, p=0.05):
     result = []
     for token in tokens:
         if token.strip():  # If the token is not just whitespace
-            if random.random() > p:
+            if rng.random() > p:
                 result.append(token)
         else:
             result.append(token)  # Always keep whitespace tokens
@@ -230,26 +218,26 @@ def random_word_removal(text, p=0.05):
     return ''.join(result)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #32034d22
-def random_latex_command_removal(text, p=0.1):
+def random_latex_command_removal(text, p=0.1, rng=None, seed=None):
     """
     Randomly remove latex commands
     """
-    return re.sub(r'\\[a-zA-Z]+(\{[^}]*\})?', lambda m: m.group(0) if random.random() > p else '', text)
+    rng = _resolve_rng(rng, seed)
+    return re.sub(r'\\[a-zA-Z]+(\{[^}]*\})?', lambda m: m.group(0) if rng.random() > p else '', text)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #87180843
-# TODO: this function, as implemented, is very buggy
+# TODO: this function, as implemented, is very buggy — kept for reference; excluded from the ml_augmentation recipes.
 def push_dollar_signs(
         latex: str,
         p: float = 0.1, # Push probability
-        seed: int = None,
+        rng: Optional[random.Random] = None, # Explicit RNG; default uses global `random`
+        seed: Optional[int] = None, # Convenience: builds a private `Random(seed)` (no global seeding)
         return_indices_of_math_mode_content: bool = False # If `True`, additionally return a `list[tuple[int, int]]` of indices within the outputted `str` signifiying the location of what was essentially the content of the original math mode.
         ) -> tuple[str, list[tuple[int, int]]]:
     """
     Push dollar signs delimiting math mode into each other at random within a text.
     """
-    
-    if seed is not None:
-        random.seed(seed)
+    rng = _resolve_rng(rng, seed)
 
     font_commands = FONT_STYLE_COMMANDS + UNCOMMON_FONT_STYLE_COMMANDS 
     font_commands = [rf'\{font_command}' for font_command in font_commands]
@@ -264,11 +252,10 @@ def push_dollar_signs(
     new_indices_of_math_mode_content: list[tuple[int, int]] = []
     for i in range(0, len(dollar_positions), 2):
         start, end = dollar_positions[i], dollar_positions[i+1]
-        if random.random() >= p:
+        if rng.random() >= p:
             continue
-        # if random.random() < push_probability:
-            # Decide which dollar sign group to push
-        push_start = random.choice([True, False])
+        # Decide which dollar sign group to push
+        push_start = rng.choice([True, False])
         
         if push_start:
             new_start = push_dollar_sign(latex, start[1], direction='right')
@@ -277,7 +264,6 @@ def push_dollar_signs(
             pushed_out_math_mode_part = remove_split_commands(latex[start[1]:new_start], font_commands).rstrip() + ' ' + '$'*dollar_length
             new_ending_part = latex[new_start:].lstrip()
             latex = new_starting_part + pushed_out_math_mode_part + new_ending_part 
-            # latex = latex[:start[0]] + pushed_out_math_mode_part + latex[new_start:].lstrip()
             new_indices_of_math_mode_content.append(
                 (start[0], start[0] + len(pushed_out_math_mode_part) + new_ending_part.index('$'*dollar_length) + dollar_length))
         else:
@@ -289,7 +275,6 @@ def push_dollar_signs(
             latex = new_starting_part + pushed_out_math_mode_part + new_ending_part
             last_dollar_in_new_starting_part = new_starting_part.rindex('$'*dollar_length)
             new_indices_of_math_mode_content.append(
-                # (start[0], start[0] + len(pushed_out_math_mode_part))
                 (last_dollar_in_new_starting_part, len(new_starting_part) + len(pushed_out_math_mode_part))
                 )
     
@@ -342,30 +327,31 @@ def augment_text(
         text = method(text)
     return text
 
-# %% ../../../nbs/01_helper_28.latex.augment.ipynb #129dc91d
-# def add_typos(
-#         latex_string: str, # A latex str, surrounded by dollar signs (either single or double) as necessary.
-#         seed: Optional[int] = None
-#         ) -> str: # A new str that is a modification of `latex_string` with "typos".
-
-#     return ""
-
-
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #a8c36c6f
-def _create_method(method, p, scale):
+def _create_method(method, p, scale, rng=None):
     """
-    Helper function to `choose_modification_methods_at_random`
+    Helper function to `choose_modification_methods_at_random`: bind `p*scale` (and an optional shared `rng`) into `method`.
     """
-    return lambda x: method(x, p=p*scale)
+    return lambda x: method(x, p=p*scale, rng=rng)
 
 # %% ../../../nbs/01_helper_28.latex.augment.ipynb #afb0fc42
 def choose_modification_methods_at_random(
         methods: list[tuple[Callable, float]],
-        method_inclusion_chance = float, # The chance to include each method
-        scale = float, # The amount by which to "scale" the method's tendency to modify the text.
+        method_inclusion_chance: float = 0.5, # The chance to include each method
+        scale: float = 1.0, # The amount by which to "scale" the method's tendency to modify the text.
+        rng: Optional[random.Random] = None, # Explicit RNG; default uses global `random`
         ) -> list[Callable[[str], str]]:
+    """
+    Include each `(method, p)` pair with probability `method_inclusion_chance`, scaling its `p` by `scale`.
+
+    All chosen methods share one `rng`, so a whole augmentation pass is
+    reproducible from the seed alone. (The old pseudo-annotations defaulted
+    both knobs to the *type* `float`, crashing unless callers passed values
+    explicitly.)
+    """
+    rng = _resolve_rng(rng)
     random_methods: list[Callable[[str], str]] = []
     for method, p in methods:
-        if random.random() < method_inclusion_chance:
-            random_methods.append(_create_method(method, p, scale))
+        if rng.random() < method_inclusion_chance:
+            random_methods.append(_create_method(method, p, scale, rng=rng))
     return random_methods

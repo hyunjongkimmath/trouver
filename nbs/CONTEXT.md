@@ -82,7 +82,7 @@ The notebooks range from fully adhering to the ideal down to bare-bones code dum
 | `#| default_exp module.name` | Sets the target module for all following exported cells |
 | `#| hide` | Suppresses cell output in generated docs; code is still exported |
 | `#| notest` | Skips the cell during `nbdev_test_nbs` |
-| `#| eval_false` | Prevents execution entirely; useful for placeholders or environment-specific code |
+| `#| eval: false` | Skips evaluation (note the colon — `#| eval_false` is silently not recognized and the cell runs anyway); for placeholders or environment-specific code. For doc-only snippets, a fenced block in a markdown cell is safer still |
 
 Cells **without** `#| export` are executed in the notebook session but not included in the package — use for imports, fixtures, one-off examples.
 
