@@ -262,11 +262,11 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 > Windows — ingest keys (`_get_all_paths` → `os.path.normpath`) are native
 > backslash paths, but the rebase re-keys everything to POSIX
 > (`Path(...).as_posix()`), so the next run's lookup never matches and every
-> file silently re-embeds. Proposed fix: normalize to POSIX at the choke
-> point (`_get_all_paths` output + the lookup/UUID keys in
-> `_process_single_file`) so ingest, tracking, rebase, and UUID seeds share
-> one dialect; test = ingest → rebase → re-ingest with mocks, assert zero
-> re-embeds. Not implemented — awaiting approval.
+> file silently re-embeds. Fix shipped in 73c190f: `_get_all_paths` and
+> `_process_single_file` now normalize to POSIX (`Path(...).as_posix()`) so
+> ingest, tracking, rebase, and UUID seeds share one dialect; round-trip
+> test (walk output POSIX; ingest → rebase → re-ingest with mocks asserts
+> zero re-embeds) green.
 
 ## 3. Action order
 
@@ -277,8 +277,8 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 5. ~~**A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4)~~ — done 2026-10-21 (A6 in 04ef458; Tier B + §2.4 in 75ced60).
 
 All items closed 2026-10-21; §2.5 closed as premise-false (see its note —
-the mtime dict was rejected, and a separate POSIX-key normalization fix for
-`semantic_search` is recorded there awaiting approval).
+the mtime dict was rejected; the POSIX-key rebase bug found while verifying
+was fixed in 73c190f).
 
 ## State — COMPLETE (all Tier A verified against source)
 
@@ -289,7 +289,7 @@ A2–A5 closed 2026-10-21 (08b780c; A5 follow-up: obsidian_40's private
 fixture copy still pending that session); A6 closed (04ef458); Tier B and
 §2.4 closed (75ced60 — two verdicts "not dupes", two shared into
 helper.tests); §2.5 closed 2026-10-21 (premise false — hash gate already
-skips re-embedding; mtime dict rejected; see its note for the POSIX-key
-rebase bug recorded as a separate follow-up).
+skips re-embedding; mtime dict rejected; the POSIX-key rebase bug found
+while verifying was fixed in 73c190f).
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
