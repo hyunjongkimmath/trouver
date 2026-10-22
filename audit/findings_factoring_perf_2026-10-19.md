@@ -1,5 +1,9 @@
 # Factoring & Performance Audit — `trouver\nbs`
 
+**Status: CLOSED 2026-10-21** — every item resolved, rejected with evidence,
+or closed as premise-false (§2.1 part 2, §2.5 mtime dict); no further actions
+planned from this document. Record of what shipped and why.
+
 **Purpose:** exact factor-out and performance changes across the 101 notebooks. Each item states the current excerpt, the change, and why.
 
 **Method:** scanner `_nbdev_development/spec_checkers/check_dupes_perf.py` (full report: re-run it); every Tier A item below verified by reading both copies.
