@@ -243,9 +243,30 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 
 **Why:** an exported n²-substring generator invites exactly the misuse §2.1 warns about.
 
-### 2.5 Semantic search re-ingestion (verify)
+### 2.5 ~~Semantic search re-ingestion (verify)~~ ✅ CLOSED 2026-10-21 — premise false, no change
 
-`08_ml_90.semantic_search`: `_get_all_paths` + `ingest_files` rescan the tree on every run. Candidate: path→mtime dict so unchanged files skip embedding. *Not yet read in detail — confirm before committing.*
+> Deep-read done: the expensive part is **already** skipped. `setup_collection`
+> creates a `{collection}_tracking` Weaviate collection; each run
+> `_get_completed_files` loads its filePath→contentHash map and
+> `_process_single_file` early-returns when the md5 of the processed text
+> matches — unchanged files are never re-chunked or re-embedded. What an
+> unchanged file still costs is one `os.walk` entry + read + md5 (sub-second
+> for a vault of text files); embedding, which is the actual cost, is gated.
+> The proposed path→mtime dict would only save the read+hash while adding the
+> classic mtime failure modes (touch-without-change, checkout restoring old
+> content under a new mtime, processor-code changes altering processed text) —
+> **rejected**; the content-hash gate can't lie, mtime can.
+>
+> Bug found while verifying (separate follow-up, not part of this audit's
+> action list): the skip gate is defeated after `rebase_vault_path` on
+> Windows — ingest keys (`_get_all_paths` → `os.path.normpath`) are native
+> backslash paths, but the rebase re-keys everything to POSIX
+> (`Path(...).as_posix()`), so the next run's lookup never matches and every
+> file silently re-embeds. Proposed fix: normalize to POSIX at the choke
+> point (`_get_all_paths` output + the lookup/UUID keys in
+> `_process_single_file`) so ingest, tracking, rebase, and UUID seeds share
+> one dialect; test = ingest → rebase → re-ingest with mocks, assert zero
+> re-embeds. Not implemented — awaiting approval.
 
 ## 3. Action order
 
@@ -255,7 +276,9 @@ Grep evidence: only `sublist_generator` (its sibling) is imported anywhere (`01_
 4. ~~**§2.2/§2.3** link-map threading + rename micro-fixes~~ — done in the cache-perf cycle.
 5. ~~**A6 + Tier B** shared test helpers; delete `substring_generator` (§2.4)~~ — done 2026-10-21 (A6 in 04ef458; Tier B + §2.4 in 75ced60).
 
-Only §2.5 (verify semantic-search re-ingestion) remains from this audit.
+All items closed 2026-10-21; §2.5 closed as premise-false (see its note —
+the mtime dict was rejected, and a separate POSIX-key normalization fix for
+`semantic_search` is recorded there awaiting approval).
 
 ## State — COMPLETE (all Tier A verified against source)
 
@@ -265,7 +288,8 @@ Re-verified 2026-10-21 against current notebooks: §2.2 and §2.3 resolved
 A2–A5 closed 2026-10-21 (08b780c; A5 follow-up: obsidian_40's private
 fixture copy still pending that session); A6 closed (04ef458); Tier B and
 §2.4 closed (75ced60 — two verdicts "not dupes", two shared into
-helper.tests).
-Remaining open: only §2.5 (verify before committing to a change).
+helper.tests); §2.5 closed 2026-10-21 (premise false — hash gate already
+skips re-embedding; mtime dict rejected; see its note for the POSIX-key
+rebase bug recorded as a separate follow-up).
 
 Re-run scanner: `python _nbdev_development/spec_checkers/check_dupes_perf.py Python/trouver/nbs > _tmp/_dupes_perf_report_tmp.txt`.
