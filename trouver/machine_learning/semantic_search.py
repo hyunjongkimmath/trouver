@@ -200,14 +200,19 @@ def _get_all_paths(
     input_source: Union[PathType, Iterable[PathType]],
     ignores: List[str]
 ) -> List[str]:
-    """Gather and filter file paths based on extensions and ignore patterns."""
+    """Gather and filter file paths based on extensions and ignore patterns.
+
+    Paths are returned in POSIX form so ingest keys, tracking rows,
+    `rebase_vault_path` migrations, and UUID seeds all share one dialect
+    (native backslash keys never matched the POSIX keys rebase writes).
+    """
     if not isinstance(input_source, (str, os.PathLike)) or not os.path.isdir(input_source):
-        return [os.path.normpath(os.fspath(p)) for p in input_source]
+        return [Path(os.fspath(p)).as_posix() for p in input_source]
     
     paths = []
     for root, _, files in os.walk(input_source):
         for f in files:
-            full_p = os.path.normpath(os.path.join(root, f))
+            full_p = Path(root, f).as_posix()
             if f.lower().endswith((".tex", ".md", ".txt")):
                 if not any(fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(full_p, pat) for pat in ignores):
                     paths.append(full_p)
@@ -241,7 +246,8 @@ def _process_single_file(
     pos: int = 1
 ) -> None:
     """Process a file with a progress bar that tracks actual upload progress."""
-    path_str, text = str(path), processor(path)
+    path_str = Path(path).as_posix()
+    text = processor(path)
     if not text.strip(): return
     curr_hash = self._get_file_hash(text)
     fname = os.path.basename(path_str) # Define fname early
