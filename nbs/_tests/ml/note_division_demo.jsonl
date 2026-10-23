@@ -1,0 +1,3 @@
+{"task": "note_division", "Note name": "_index_demo_alpha", "text": "Widget notes begin here. Every widget has exactly one sprocket.\nThe sprocket map is injective by construction of the demo corpus.", "spans": [{"start": 63, "end": 63, "label": "split"}]}
+{"task": "note_division", "Note name": "_index_demo_alpha", "text": "The sprocket map is injective by construction of the demo corpus.\nA second demo stream keeps rows short so tests stay fast.", "spans": [{"start": 65, "end": 65, "label": "split"}]}
+{"task": "note_division", "Note name": "_index_demo_beta", "text": "Beta alpha note: gadgets differ from widgets in one trivial way.\nThat difference never matters for division, which only needs seams.", "spans": [{"start": 64, "end": 64, "label": "split"}]}

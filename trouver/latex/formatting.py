@@ -8,7 +8,7 @@ __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'EQUATION_LIKE_ENVS', 'MATH_MODE_DEL
            'adjust_common_syntax_to_markdown', 'adjust_common_formatting_while_editing', 'replace_input_and_include',
            'remove_dollar_signs_around_equationlike_envs']
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #a2eb60ad
+# %% ../../nbs/04_latex_15.formatting.ipynb #3a22b519
 import re
 from typing import Union
 import os
@@ -28,12 +28,12 @@ from ..helper.latex.macros_and_commands import(
 from ..helper.numbers import is_number
 from .preamble import divide_preamble 
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #d0e856b5
+# %% ../../nbs/04_latex_15.formatting.ipynb #758811b2
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #c1854661
+# %% ../../nbs/04_latex_15.formatting.ipynb #4a4304fc
 def _replace_command(
         match: regex.match,
         command_tuple: tuple[str, int, Union[None, str], str],
@@ -54,7 +54,7 @@ def _replace_command(
     else:
         return regex.sub(command_pattern, replace_pattern, matched_string_to_replace)
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #382b952b
+# %% ../../nbs/04_latex_15.formatting.ipynb #fa7d06e8
 # def _replace_spaced_command(
 #         match: regex.Match,
 #         command_tuple: tuple[str, int, Union[None, str], str],
@@ -125,7 +125,7 @@ def _replace_spaced_command(
     
     return regex.sub(r'\\(\d)', repl, replace_pattern).replace(r'\\', '\\')
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #14360ec6
+# %% ../../nbs/04_latex_15.formatting.ipynb #8c74ee53
 def replace_command_in_text(
         text: str,
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -159,7 +159,7 @@ def replace_command_in_text(
         text)
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #4f81e302
+# %% ../../nbs/04_latex_15.formatting.ipynb #cdefea6f
 def replace_commands_in_text(
         text: str, # The text in which to replace the commands. This should not include the preamble of a latex document.
         command_tuples: list[tuple[str, int, Union[None, str], str]], # An output of `custom_commands`. Each tuple Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -188,7 +188,7 @@ def replace_commands_in_text(
             break
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #c6003218
+# %% ../../nbs/04_latex_15.formatting.ipynb #53381733
 def replace_commands_in_latex_document(
         document: str,
         repeat: int = 1, # The number of times to repeat replacing the commands throughout the text; note that some custom commands could be "nested", i.e. the custom commands are defined in terms of other custom commands. Defaults to `1`, in which custom commands are replaced throughout the entire document once. If set to -1, then this function attempts to replace custom commands until no commands to replace are found.  See also `replace_commands_in_text`
@@ -218,7 +218,7 @@ def replace_commands_in_latex_document(
     return document
     
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #9e357a0a
+# %% ../../nbs/04_latex_15.formatting.ipynb #c172f7b5
 # EQUATION_LIKE_ENVS = []
 
 # def _replace_math_mode_delimiters(text: str):
@@ -270,7 +270,7 @@ def _replace_backtick_and_apostrophe_quotes(text: str):
     return text
 
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #00bac9b5
+# %% ../../nbs/04_latex_15.formatting.ipynb #7262eda2
 def _inline_mathmode_to_own_paragraph(
         text: str
         ) -> str:
@@ -380,7 +380,7 @@ def _remove_one_blank_space_if_exists(
             return text[:-1]
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #8eba6f6b
+# %% ../../nbs/04_latex_15.formatting.ipynb #dee75521
 def _is_special_line(line: str):
     """Helper function to `_merge_multilines."""
     stripped = line.strip()
@@ -392,7 +392,7 @@ def _is_special_line(line: str):
             # or line.strip().startswith('$$')
             )
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #79574478
+# %% ../../nbs/04_latex_15.formatting.ipynb #e4eb98a2
 def _strip_and_return_whitespaces(
         text: str) -> tuple[str, str, str]: # The leading whitespaces, the sripped string, and the trailing whitespaces 
     """
@@ -406,7 +406,7 @@ def _strip_and_return_whitespaces(
     trailing_whitespaces = text[len(rstripped):]
     return leading_whitespaces, text.strip(), trailing_whitespaces
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #aab8b979
+# %% ../../nbs/04_latex_15.formatting.ipynb #6c6651ed
 def _merge_multilines(text: str):
     """Helper function to `adjust_common_syntax_to_markdown."""
     # TODO: account for enumerate and itemizes
@@ -439,7 +439,7 @@ def _merge_multilines_for_non_mathmode_part(text: str):
     main = "\n\n".join(new_lines)
     return f'{leading_whitespaces}{main.strip()}{trailing_whitespaces}'
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #7f265fdb
+# %% ../../nbs/04_latex_15.formatting.ipynb #d6d85115
 def _remove_xspace(
         text: str) -> str:
     r"""
@@ -470,7 +470,7 @@ def _replace_ensuremath(match):
     content = match.group(1)
     return content
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #6f9e0c6f
+# %% ../../nbs/04_latex_15.formatting.ipynb #e4f81bdf
 def _remove_starting_blank_space(text):
     """
     Removes leading whitespace from each line in the input text.
@@ -482,7 +482,7 @@ def _remove_starting_blank_space(text):
     )
  
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #c209f5f2
+# %% ../../nbs/04_latex_15.formatting.ipynb #2473469b
 # TODO: give the option to replace emph with `****`, e.g. ``\emph{special}``.
 # TODO: get everything that is tabbed to the left.
 # TODO: merge multi-line text into singular lines.
@@ -575,7 +575,7 @@ def adjust_common_syntax_to_markdown(
         text = _remove_starting_blank_space(text)
     return text
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #c98b18e5
+# %% ../../nbs/04_latex_15.formatting.ipynb #b9a826bd
 def adjust_common_formatting_while_editing(
         text: str) -> str:
     r"""
@@ -587,7 +587,7 @@ def adjust_common_formatting_while_editing(
         text,
         options=[INLINE_MATHMODE_TO_OWN_PARAGRAPH, MERGE_MULTILINE_PARAGRAPH])
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #cf5e9d98
+# %% ../../nbs/04_latex_15.formatting.ipynb #902f4d5a
 def replace_input_and_include(
         document: str,
         dir: PathLike, # The directory containing the `.tex` files which are to be included.
@@ -652,7 +652,7 @@ def replace_input_and_include(
     processed_chunks = [process_chunk(chunk) for chunk in chunks]
     return ''.join(processed_chunks)
 
-# %% ../../nbs/04_latex_15.formatting.ipynb #34beb89c
+# %% ../../nbs/04_latex_15.formatting.ipynb #98b88524
 def remove_dollar_signs_around_equationlike_envs(text: str):
     """
     Remove dollar signs preceding and following displaymath/equation-like environments.

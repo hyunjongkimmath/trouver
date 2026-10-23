@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['make_example_vault', 'MockTokenizer', 'MockPipeline']
 
-# %% ../../nbs/01_helper_01.tests.ipynb #d0711475
+# %% ../../nbs/01_helper_01.tests.ipynb #dc7026da
 import os
 from os import PathLike
 from pathlib import Path
@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 from bs4 import BeautifulSoup
 
 
-# %% ../../nbs/01_helper_01.tests.ipynb #3e87d844
+# %% ../../nbs/01_helper_01.tests.ipynb #f0cf0484
 def _test_directory() -> Path:
     """Returns the `nbs/_tests` directory of the `trouver` repository.
     

@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = []
 
-# %% ../../nbs/08_machine_learning_00.__init__.ipynb #2bb93c45
+# %% ../../nbs/08_machine_learning_00.__init__.ipynb #8121a6a2
 # from huggingface_hub import HfApi, hf_hub_download
 
-# %% ../../nbs/08_machine_learning_00.__init__.ipynb #c18befc8
+# %% ../../nbs/08_machine_learning_00.__init__.ipynb #68607d5c
 # def get_model_size(model_name) -> int:
 #     """
 #     Return the size of the model in bytes.

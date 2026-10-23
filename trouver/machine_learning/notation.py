@@ -4,7 +4,7 @@
 __all__ = ['NotationNoteData', 'notat_note_data_from_parsed_and_main_note_processed', 'NotationLinkingDataPoint',
            'data_point_to_notation_note_data_pair', 'notation_note_data_pair_to_data_point']
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #4e73c106
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #88adad9b
 from pathlib import Path
 from typing import Optional, TypedDict, Union
 
@@ -13,7 +13,7 @@ from ..personal_vault.note_processing import process_standard_information_note
 
 
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #667a6ec9
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #8f787578
 class NotationNoteData(TypedDict):
     """
     A `TypedDict` wrapping the data of a notation note (either the
@@ -28,7 +28,7 @@ class NotationNoteData(TypedDict):
     summarized: str # The notation that is summarized in `notation_note.`
     reference: Union[str, None]
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #d3e14855
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #4231c739
 def notat_note_data_from_parsed_and_main_note_processed(
         notat_note_name: str,
         notat_note_parsed: NotationNoteParsed,
@@ -52,7 +52,7 @@ def notat_note_data_from_parsed_and_main_note_processed(
     )
     
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #df777c52
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #8ebc1da9
 class NotationLinkingDataPoint(TypedDict):
     """
     A `TypedDict` wrapping a single data point representing a pair of notation notes.
@@ -79,7 +79,7 @@ class NotationLinkingDataPoint(TypedDict):
     origin_links_to_relied: Union[bool, None] #  `True` if `origin_notation_note` links to `relied_notation_note`. `False` otherwises
 
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #919083a6
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #a10cce5b
 def data_point_to_notation_note_data_pair(
         data_point: NotationLinkingDataPoint
         ) -> tuple[NotationNoteData, NotationNoteData]:
@@ -104,7 +104,7 @@ def data_point_to_notation_note_data_pair(
         ),
     )
 
-# %% ../../nbs/08_machine_learning_45.notation.ipynb #43b4545c
+# %% ../../nbs/08_machine_learning_45.notation.ipynb #67174e01
 def notation_note_data_pair_to_data_point(
         origin_notation_data: NotationNoteData,
         relied_notation_data: NotationNoteData,

@@ -13,7 +13,7 @@ __all__ = ['Ui_MainWindow', 'ScrollableMessageBox', 'TrouverGUI', 'initUI', 'sim
            'compile_obsidian_subvault_as_tex_file', 'CompileObsidianSubvaultAsTexThread', 'open_folder_with_tex_output',
            'main']
 
-# %% ../../nbs/09_app_00_gui.ipynb #eff92868
+# %% ../../nbs/09_app_00_gui.ipynb #92d81372
 # import gradio as gr
 
 import glob
@@ -61,11 +61,11 @@ from ..obsidian.vault import all_paths_to_notes_in_vault, VaultNote
 
 # MANUAL_FASTAI_VERSION = "2.7.18"
 
-# %% ../../nbs/09_app_00_gui.ipynb #427efb37
+# %% ../../nbs/09_app_00_gui.ipynb #a8dc0350
 # if __name__ == "__main__":
 #     gradio_app.launch()
 
-# %% ../../nbs/09_app_00_gui.ipynb #3172d972
+# %% ../../nbs/09_app_00_gui.ipynb #f87938b8
 # Uncomment this during development
 # from pyqt6_UI.app import Ui_MainWindow
 
@@ -437,7 +437,7 @@ class Ui_MainWindow(object):
         self.action_disclaimer.setText(_translate("MainWindow", "Disclaimer"))
 
 
-# %% ../../nbs/09_app_00_gui.ipynb #d363d379
+# %% ../../nbs/09_app_00_gui.ipynb #73b9d0a7
 class ScrollableMessageBox(QMessageBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -461,7 +461,7 @@ class ScrollableMessageBox(QMessageBox):
         label.setOpenExternalLinks(True)
         self.content_layout.addWidget(label)
 
-# %% ../../nbs/09_app_00_gui.ipynb #621628f1
+# %% ../../nbs/09_app_00_gui.ipynb #ec5d11ca
 class TrouverGUI(QMainWindow):
     """
     **Attributes**
@@ -599,7 +599,7 @@ mathematician, issues may take significant time to be addressed. </p>
         msg.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
         msg.show()
 
-# %% ../../nbs/09_app_00_gui.ipynb #5cfaa160
+# %% ../../nbs/09_app_00_gui.ipynb #3f40572f
 def initUI(self):
     self.setWindowTitle('Arxiv Downloader')
     # For downloading source
@@ -631,7 +631,7 @@ def initUI(self):
 
 TrouverGUI.initUI = initUI
 
-# %% ../../nbs/09_app_00_gui.ipynb #42267f99
+# %% ../../nbs/09_app_00_gui.ipynb #c8fac07e
 def simple_instructional_message(self, window_title: str, window_text: str):
     """
     Display a simple error message for when specifications by the user do not
@@ -646,7 +646,7 @@ def simple_instructional_message(self, window_title: str, window_text: str):
 
 TrouverGUI.simple_instructional_message = simple_instructional_message
 
-# %% ../../nbs/09_app_00_gui.ipynb #6ccd3684
+# %% ../../nbs/09_app_00_gui.ipynb #5a16a293
 class DownloadThread(QThread):
     progress_update = pyqtSignal(int)
     error_occurred = pyqtSignal(str)  # Add this line
@@ -671,7 +671,7 @@ class DownloadThread(QThread):
         except Exception as e:
             self.error_occurred.emit(str(e))
 
-# %% ../../nbs/09_app_00_gui.ipynb #28b25e2d
+# %% ../../nbs/09_app_00_gui.ipynb #3b0ac885
 def choose_file_or_folder(
         self,
         set_text_method: Callable[[PathLike], None], # The method of `self` that is supposed to be used after the folder is chosen to change the text of a label.
@@ -707,7 +707,7 @@ TrouverGUI.choose_file_or_folder = choose_file_or_folder
 TrouverGUI.choose_source_download_folder = choose_source_download_folder
 TrouverGUI._set_download_folder = _set_download_folder
 
-# %% ../../nbs/09_app_00_gui.ipynb #24f4363a
+# %% ../../nbs/09_app_00_gui.ipynb #f100125a
 def get_folder(text) -> Path|None:
     """
     Get a folder path from some text.
@@ -741,7 +741,7 @@ def _default_dir_for_source_download(self) -> Path:
 TrouverGUI.get_download_folder = get_download_folder
 TrouverGUI._default_dir_for_source_download = _default_dir_for_source_download
 
-# %% ../../nbs/09_app_00_gui.ipynb #b92a3e97
+# %% ../../nbs/09_app_00_gui.ipynb #65e54134
 def download_arxiv_source(self):
     url = self.ui.url_input.text()
     folder = self.get_download_folder()
@@ -760,7 +760,7 @@ def download_arxiv_source(self):
 
 TrouverGUI.download_arxiv_source = download_arxiv_source
 
-# %% ../../nbs/09_app_00_gui.ipynb #59262a1b
+# %% ../../nbs/09_app_00_gui.ipynb #3aaff2d5
 def _no_arxiv_url_or_id_selected_message(self):
     """
     Helper function to `download_arxiv_source`.
@@ -782,7 +782,7 @@ def _no_download_folder_selected_message(self):
 TrouverGUI._no_arxiv_url_or_id_selected_message = _no_arxiv_url_or_id_selected_message
 TrouverGUI._no_download_folder_selected_message = _no_download_folder_selected_message
 
-# %% ../../nbs/09_app_00_gui.ipynb #700dd995
+# %% ../../nbs/09_app_00_gui.ipynb #f10730a7
 def _update_download_source_progress(self, value):
     """
     Update the progress bar for source code download task.
@@ -817,7 +817,7 @@ TrouverGUI._update_download_source_progress = _update_download_source_progress
 TrouverGUI._handle_download_source_error = _handle_download_source_error
 TrouverGUI._after_download_finish = _after_download_finish
 
-# %% ../../nbs/09_app_00_gui.ipynb #6e42fe1b
+# %% ../../nbs/09_app_00_gui.ipynb #46552629
 def open_downloaded_folder(self):
     if self.downloaded_folder and os.path.exists(self.downloaded_folder):
         self.ui.download_progress_label.setText(
@@ -834,7 +834,7 @@ def open_downloaded_folder(self):
 TrouverGUI.open_downloaded_folder = open_downloaded_folder
 
 
-# %% ../../nbs/09_app_00_gui.ipynb #804283dc
+# %% ../../nbs/09_app_00_gui.ipynb #453e7f95
 def _change_main_source_code_file_label(self, file: PathLike):
     file = str(file)
     self.ui.selected_main_source_code_file_label.setText(f'Selected Main Source Code File: {file}')
@@ -849,7 +849,7 @@ TrouverGUI._change_main_source_code_file_label = _change_main_source_code_file_l
 TrouverGUI._change_obsidian_sub_vault_name_text = _change_obsidian_sub_vault_name_text
 TrouverGUI._change_author_names_line_edit_text = _change_author_names_line_edit_text
 
-# %% ../../nbs/09_app_00_gui.ipynb #cd65f510
+# %% ../../nbs/09_app_00_gui.ipynb #a3f6d91a
 def choose_source_code_file(self):
     self.choose_file_or_folder(
         self._change_main_source_code_file_label,
@@ -874,7 +874,7 @@ TrouverGUI.choose_source_code_file = choose_source_code_file
 TrouverGUI.choose_obsidian_subvault_location = choose_obsidian_subvault_location
 TrouverGUI._change_choose_obsidian_subvault_folder_label = _change_choose_obsidian_subvault_folder_label
 
-# %% ../../nbs/09_app_00_gui.ipynb #f7f67b2b
+# %% ../../nbs/09_app_00_gui.ipynb #2b6ef34c
 def _no_latex_source_file_selected_message(self):
     """
     Helper function to `create_obsidian_subvault`.
@@ -916,7 +916,7 @@ TrouverGUI._latex_source_file_does_not_exist = _latex_source_file_does_not_exist
 TrouverGUI._no_subvault_folder_selected_message = _no_subvault_folder_selected_message
 TrouverGUI._no_subvault_name_selected_message = _no_subvault_name_selected_message
 
-# %% ../../nbs/09_app_00_gui.ipynb #793ae1dc
+# %% ../../nbs/09_app_00_gui.ipynb #9ba1b7c7
 class CreateObsidianVaultThread(QThread):
     progress_update = pyqtSignal(int)
     error_occurred = pyqtSignal(str)  # Add this line
@@ -961,7 +961,7 @@ class CreateObsidianVaultThread(QThread):
             self.error_occurred.emit(str(e))
             # raise(e)
 
-# %% ../../nbs/09_app_00_gui.ipynb #27f3164e
+# %% ../../nbs/09_app_00_gui.ipynb #ee5c1035
 def create_obsidian_subvault(self):
     source_file = get_folder(self.ui.selected_main_source_code_file_label.text())
     # self.ui.selected_main_source_code_file_label.text().split(': ')[1]
@@ -997,7 +997,7 @@ def create_obsidian_subvault(self):
 
 TrouverGUI.create_obsidian_subvault = create_obsidian_subvault
 
-# %% ../../nbs/09_app_00_gui.ipynb #96f3d69f
+# %% ../../nbs/09_app_00_gui.ipynb #9f0e9fcb
 def _update_create_obsidian_vault_progress(self, value):
     self.ui.create_obsidian_vault_progress_bar.setValue(value)
     if value == 0:
@@ -1034,7 +1034,7 @@ TrouverGUI._update_create_obsidian_vault_progress = _update_create_obsidian_vaul
 TrouverGUI._handle_create_obsidian_vault_error = _handle_create_obsidian_vault_error
 TrouverGUI._after_create_obsidian_vault_finish = _after_create_obsidian_vault_finish
 
-# %% ../../nbs/09_app_00_gui.ipynb #cc6455f7
+# %% ../../nbs/09_app_00_gui.ipynb #f4526bf5
 def open_created_obsidian_subvault(self):
     if self.created_obsidian_vault and os.path.exists(self.created_obsidian_vault):
         self.ui.create_obsidian_vault_progress_message_label.setText(
@@ -1043,7 +1043,7 @@ def open_created_obsidian_subvault(self):
     return    
 TrouverGUI.open_created_obsidian_subvault = open_created_obsidian_subvault
 
-# %% ../../nbs/09_app_00_gui.ipynb #cb5e5370
+# %% ../../nbs/09_app_00_gui.ipynb #b3e8d065
 def get_prediction_folder(self) -> Path|None:
     return get_folder(self.ui.prediction_folder_label.text())
 
@@ -1146,7 +1146,7 @@ TrouverGUI.predict_on_notes = predict_on_notes
 TrouverGUI._model_exists_in_cache = _model_exists_in_cache
 TrouverGUI.show_confirmation_dialog = show_confirmation_dialog
 
-# %% ../../nbs/09_app_00_gui.ipynb #d0982b83
+# %% ../../nbs/09_app_00_gui.ipynb #5748a3b5
 def _update_prediction_progress(self, value):
     """
     Update the progress bar for predictions on notes.
@@ -1183,7 +1183,7 @@ TrouverGUI._update_prediction_progress = _update_prediction_progress
 TrouverGUI._handle_prediction_error = _handle_prediction_error
 TrouverGUI._after_prediction_finish = _after_prediction_finish
 
-# %% ../../nbs/09_app_00_gui.ipynb #55732229
+# %% ../../nbs/09_app_00_gui.ipynb #4048975c
 class PredictionThread(QThread):
     progress_update = pyqtSignal(int)
     error_occurred = pyqtSignal(str)  # Add this line
@@ -1256,7 +1256,7 @@ class PredictionThread(QThread):
         def_notat_classifier = pipeline('ner', model=model, tokenizer=tokenizer)
         return def_notat_classifier
 
-# %% ../../nbs/09_app_00_gui.ipynb #1fd9a9e3
+# %% ../../nbs/09_app_00_gui.ipynb #7a2f216e
 def from_pretrained_fastai_without_checking_fastai_fastcore_version(
     repo_id: str,
     revision: Optional[str] = None,
@@ -1304,7 +1304,7 @@ def from_pretrained_fastai_without_checking_fastai_fastcore_version(
 
     return load_learner(os.path.join(storage_folder, "model.pkl"))
 
-# %% ../../nbs/09_app_00_gui.ipynb #64447199
+# %% ../../nbs/09_app_00_gui.ipynb #f5f4bf0e
 def open_prediction_folder(self):
     folder = self.get_prediction_folder()
     if folder:
@@ -1324,7 +1324,7 @@ def open_prediction_folder(self):
 
 TrouverGUI.open_prediction_folder = open_prediction_folder
 
-# %% ../../nbs/09_app_00_gui.ipynb #65f84f07
+# %% ../../nbs/09_app_00_gui.ipynb #dea2512a
 def _change_obsidian_subvault_to_compile_label_text(
         self, vault: PathLike):
     self.ui.obsidian_subvault_to_compile_label.setText(
@@ -1346,7 +1346,7 @@ TrouverGUI._change_obsidian_subvault_to_compile_label_text = _change_obsidian_su
 TrouverGUI._change_original_tex_file_label_text = _change_original_tex_file_label_text
 TrouverGUI._change_compiled_tex_output_folder_label_text = _change_compiled_tex_output_folder_label_text
 
-# %% ../../nbs/09_app_00_gui.ipynb #93367c85
+# %% ../../nbs/09_app_00_gui.ipynb #1d0d11cd
 def get_obsidian_subvault_to_compile(self) -> Path|None:
     return get_folder(self.ui.obsidian_subvault_to_compile_label.text())
 
@@ -1385,7 +1385,7 @@ TrouverGUI.choose_original_tex_file = choose_original_tex_file
 TrouverGUI.get_compiled_tex_output_folder = get_compiled_tex_output_folder
 TrouverGUI.choose_compiled_tex_output_folder = choose_compiled_tex_output_folder
 
-# %% ../../nbs/09_app_00_gui.ipynb #e83c6cd2
+# %% ../../nbs/09_app_00_gui.ipynb #0d8fd872
 def compile_obsidian_subvault_as_tex_file(self):
     subvault = self.get_obsidian_subvault_to_compile()
     if not subvault:
@@ -1443,7 +1443,7 @@ def compile_obsidian_subvault_as_tex_file(self):
 
 TrouverGUI.compile_obsidian_subvault_as_tex_file = compile_obsidian_subvault_as_tex_file
 
-# %% ../../nbs/09_app_00_gui.ipynb #4acb1487
+# %% ../../nbs/09_app_00_gui.ipynb #d1529ac5
 class CompileObsidianSubvaultAsTexThread(QThread):
     progress_update = pyqtSignal(int)
     error_occurred = pyqtSignal(str)  # Add this line
@@ -1491,7 +1491,7 @@ class CompileObsidianSubvaultAsTexThread(QThread):
             self.error_occurred.emit(str(e))
             raise(e)
 
-# %% ../../nbs/09_app_00_gui.ipynb #a6d2f21d
+# %% ../../nbs/09_app_00_gui.ipynb #9391d254
 def open_folder_with_tex_output(self):
     if self.folder_with_tex_output and os.path.exists(self.folder_with_tex_output):
         self.ui.compile_tex_from_obsidian_subvault_progress_message_label.setText(
@@ -1504,7 +1504,7 @@ def open_folder_with_tex_output(self):
 
 TrouverGUI.open_folder_with_tex_output = open_folder_with_tex_output
 
-# %% ../../nbs/09_app_00_gui.ipynb #41e85343
+# %% ../../nbs/09_app_00_gui.ipynb #942b3088
 def _update_compile_obsidian_subvault_progress(self, value):
     self.ui.compile_tex_from_obsidian_subvault_progress_bar.setValue(value)
     if value == 0:
@@ -1539,7 +1539,7 @@ TrouverGUI._update_compile_obsidian_subvault_progress = _update_compile_obsidian
 TrouverGUI._handle_compile_obsidian_subvault_error = _handle_compile_obsidian_subvault_error
 TrouverGUI._after_compile_obsidian_subvault_finish = _after_compile_obsidian_subvault_finish
 
-# %% ../../nbs/09_app_00_gui.ipynb #b15b5bf3
+# %% ../../nbs/09_app_00_gui.ipynb #c1e2a2c9
 #|eval: false
 def main():
     app = QApplication(sys.argv)

@@ -5,7 +5,7 @@ __all__ = ['html_tag_str', 'find_lt_symbols_without_space_in_math_mode', 'add_sp
            'escape_lt_symbols_that_do_not_open_html_tags', 'HTMLTagWithIndices', 'StrAndHTMLTagsWithIndices',
            'remove_html_tags_in_text', 'add_HTML_tag_data_to_raw_text']
 
-# %% ../../nbs/01_helper_08.html.ipynb #1a587299
+# %% ../../nbs/01_helper_08.html.ipynb #4161bf6f
 import bs4
 from bs4 import BeautifulSoup
 import random
@@ -16,7 +16,7 @@ from typing import NamedTuple, Optional, Union
 
 from .regex import latex_indices, find_regex_in_text, replace_string_by_indices
 
-# %% ../../nbs/01_helper_08.html.ipynb #ff74b372
+# %% ../../nbs/01_helper_08.html.ipynb #17cf3ade
 def html_tag_str(
         html_tag: bs4.element.Tag
         ) -> str:
@@ -30,7 +30,7 @@ def html_tag_str(
         text_to_return = text_to_return.replace(special_char, replace_with)
     return text_to_return
 
-# %% ../../nbs/01_helper_08.html.ipynb #610a90be
+# %% ../../nbs/01_helper_08.html.ipynb #f202fa6b
 def find_lt_symbols_without_space_in_math_mode(
         text: str
         ) -> list[int]: # The index of  
@@ -49,7 +49,7 @@ def find_lt_symbols_without_space_in_math_mode(
         ])
     return inds_of_lt_without_spaces_after 
 
-# %% ../../nbs/01_helper_08.html.ipynb #30e4d3cb
+# %% ../../nbs/01_helper_08.html.ipynb #20fa9b42
 def add_space_to_lt_symbols_without_space(
         text: str
         ) -> str:
@@ -63,7 +63,7 @@ def add_space_to_lt_symbols_without_space(
         replace_with=['< '] * len(lt_wo_space_inds))
     
 
-# %% ../../nbs/01_helper_08.html.ipynb #bca36e9c
+# %% ../../nbs/01_helper_08.html.ipynb #b7be4daa
 _HTML_TAG_OPEN_PATTERN = re.compile(
     r'</?[a-zA-Z][\w-]*(?:[^<>"\']|"[^"]*"|\'[^\']*\')*?/?>')
 
@@ -101,7 +101,7 @@ def escape_lt_symbols_that_do_not_open_html_tags(
     parts.append(text[pos:])
     return ''.join(parts)
 
-# %% ../../nbs/01_helper_08.html.ipynb #31dc80b0
+# %% ../../nbs/01_helper_08.html.ipynb #b63a3cd1
 class HTMLTagWithIndices(NamedTuple):
     r"""
     A NamedTuple for encapsulating a single `bs4.element.Tag` object along
@@ -120,7 +120,7 @@ class StrAndHTMLTagsWithIndices(NamedTuple):
     tags: list[HTMLTagWithIndices]
 
 
-# %% ../../nbs/01_helper_08.html.ipynb #de62f3b3
+# %% ../../nbs/01_helper_08.html.ipynb #3b5a2c2c
 def remove_html_tags_in_text(
         text: str, # The text in which to remove the HTML tags.
         replace_with_attributes: Optional[Union[str, list[str]]] = None, # Attribute(s) within the HTML tags which should be used to replace the text of the tags. If `None`, then the texts are not replaced with the attributes. If multiple attributes are specified, then only one attribute is used to replace the text for each HTML tag (independently at random of other replacements). Each attribute's text has an equal chance of being selected for replacement. Repeats are ignored.
@@ -205,7 +205,7 @@ def _select_replacement_text(
     selected = random.choice(selection_pool)
     return selected if selected is not None else ""
 
-# %% ../../nbs/01_helper_08.html.ipynb #05f2680c
+# %% ../../nbs/01_helper_08.html.ipynb #f19a9447
 def _process_content(
         parsed_soup: BeautifulSoup,
         replace_with_attributes: set[str],
@@ -238,7 +238,7 @@ def _process_content(
     return position + len(replacement_text)
     
 
-# %% ../../nbs/01_helper_08.html.ipynb #787d2615
+# %% ../../nbs/01_helper_08.html.ipynb #86c4faa2
 def add_HTML_tag_data_to_raw_text(
         text: str, # The text onto which to add HTML tags. This is assumed to contain no HTML tags.
         tags_and_locations: list[tuple[bs4.element.Tag, int, int]] # Each tuple consists of the tag object to add as well as the indices within `text` to. The ranges specified by the tuples are assumed to not overlap with one another.
