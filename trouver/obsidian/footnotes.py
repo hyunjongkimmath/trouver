@@ -5,7 +5,7 @@ __all__ = ['find_footnote_descriptions_in_markdown_text', 'find_footnote_mention
            'remove_footnote_mentions_in_markdown_text', 'embedded_note_of_footnote', 'footnote_is_simple_embedded_note',
            'identify_available_footnote_numbers']
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #f5f3a732
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #fa2affce
 import os
 from pathlib import Path
 import re
@@ -16,7 +16,7 @@ from trouver.obsidian.links import (
 
 from typing import Union
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #39dd6fcd
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #c700f46a
 def find_footnote_descriptions_in_markdown_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is the full substring of a markdown footnote description.
@@ -33,7 +33,7 @@ def find_footnote_descriptions_in_markdown_text(
     """
     return find_regex_in_text(text, pattern=r'\[\^.+?\]:.*')
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #804135d8
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #2414480f
 def find_footnote_mentions_in_markdown_text(
         text: str
         ) -> list[tuple]: # Each tuple is of the form `(a,b)` where `text[a:b]` is a markdown footnote description.
@@ -51,7 +51,7 @@ def find_footnote_mentions_in_markdown_text(
     """
     return find_regex_in_text(text, pattern=r'\[\^[^\[\]]+?\](?!:)')
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #740157b9
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #ef152ad2
 def remove_footnote_mentions_in_markdown_text(
         text: str
         ) -> str:
@@ -61,7 +61,7 @@ def remove_footnote_mentions_in_markdown_text(
     footnote_indices = find_footnote_mentions_in_markdown_text(text)
     return replace_string_by_indices(text, footnote_indices, ['']*len(footnote_indices))
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #92a04aaa
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #e5697dc5
 def embedded_note_of_footnote(
         footnote: str # The full footnote description. May start and end with `'\n'` and other whitespace characters
         ) -> Union[str, None]: # The name of the note of the footnote, if applicable. `None` otherwise.
@@ -78,7 +78,7 @@ def embedded_note_of_footnote(
     else:
         return match.group(1)
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #c98d7e2c
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #e3463fd7
 def footnote_is_simple_embedded_note(
         footnote: str # The full footnote description. May start and end with `'\n'` and other whitespace characters.
         ) -> bool:
@@ -87,7 +87,7 @@ def footnote_is_simple_embedded_note(
     """
     return bool(embedded_note_of_footnote(footnote))
 
-# %% ../../nbs/03_obsidian_60.footnotes.ipynb #276db50c
+# %% ../../nbs/03_obsidian_60.footnotes.ipynb #e03f7de0
 def identify_available_footnote_numbers(
         text: str,
         count: int = 1, # The number of available footnote numbers to obtain

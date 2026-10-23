@@ -4,12 +4,12 @@
 __all__ = ['CHARACTER_ORDERING_LIST', 'DECORATING_CHARACTERS', 'NONEFFECTIVE_CHARACTERS', 'TO_REMOVE', 'TO_UNDERSCORE',
            'TO_SUBSTITUTE', 'latex_to_path_accepted_string']
 
-# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #e3f1ec9b
+# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #3645e4f4
 import re
 
 from pathvalidate import sanitize_filename
 
-# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #5e47c3ac
+# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #96e673d0
 CHARACTER_ORDERING_LIST =\
     ['A', 'a', r'\Alpha', r'\alpha', 'B', 'b', r'\Beta', r'\beta', 'C', 'c', r'\Gamma',
      r'\gamma', 'D', 'd', r'\Delta', r'\delta', 'E', 'e', r'\Epsilon', r'\epsilon',
@@ -26,7 +26,7 @@ DECORATING_CHARACTERS =\
 NONEFFECTIVE_CHARACTERS =\
     ['^', '_', '{', '}', '(', ')', '[', ']']
 
-# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #f43a85f6
+# %% ../../nbs/01_helper_11.path_accepted_string.ipynb #1e15d0fc
 TO_REMOVE = [
     '.', '$', ':', '?', '!', '#', '%', '&',
     '<', '>', '*', '?', '"', '@', '`', '|',  

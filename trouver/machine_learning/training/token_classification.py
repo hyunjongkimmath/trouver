@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['token_labels_for_spans', 'division_feature_tensors', 'score_seam_f1', 'train_token_classifier']
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #a5baa36f
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #b2d73aa3
 from os import PathLike
 from pathlib import Path
 
@@ -12,7 +12,7 @@ from transformers import (AutoModelForTokenClassification,
                                       AutoTokenizer)
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #116b3c5c
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #8786c209
 def token_labels_for_spans(text: str, spans: list[dict], offsets: list[tuple]) -> list[int]:
     """
     Per-token `0/1/-100` labels: 1 on the last non-blank token ending exactly at a seam.
@@ -40,7 +40,7 @@ def token_labels_for_spans(text: str, spans: list[dict], offsets: list[tuple]) -
     return labels
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #b355a25d
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #bade302a
 def division_feature_tensors(rows: list[dict], tokenizer, max_length: int = 512) -> dict:
     """
     Rows → padded `input_ids`/`attention_mask`/`labels` tensors (`-100` pad on labels).
@@ -66,7 +66,7 @@ def division_feature_tensors(rows: list[dict], tokenizer, max_length: int = 512)
             'labels': torch.tensor([l + [-100] * (width - len(l)) for l in labels])}
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #b79e8ad6
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #4706f340
 def score_seam_f1(model, tokenizer, rows: list[dict], max_length: int = 512,
                   batch_size: int = 8) -> dict:
     """
@@ -104,7 +104,7 @@ def score_seam_f1(model, tokenizer, rows: list[dict], max_length: int = 512,
     return {'precision': p, 'recall': rc, 'f1': 2 * p * rc / (p + rc) if p + rc else 0.0}
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #b0f935d2
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #fbf1c1ba
 def _pick_device(device: str = None):
     """`device` string or the best available: cuda → mps → cpu."""
     if device:

@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['remove_double_asterisks_in_markdown_file', 'ProcessNoteError', 'process_standard_information_note']
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #b1179082
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #bf93ef54
 from deprecated import deprecated
 from os import PathLike
 from pathlib import Path, PureWindowsPath, WindowsPath
@@ -15,7 +15,7 @@ from ..obsidian.footnotes import remove_footnote_mentions_in_markdown_text
 from ..obsidian.links import EMBEDDED_PATTERN, remove_links_from_text
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #761edd03
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #a23a2119
 def remove_double_asterisks_in_markdown_file(
         markdown_file: MarkdownFile 
         ) -> None: 
@@ -28,9 +28,10 @@ def remove_double_asterisks_in_markdown_file(
     notations introduced in LaTeX text.
     """
     for part in markdown_file.parts:
-        part['line'] = part['line'].replace('**', '')
+        if '**' in part['line']:
+            part['line'] = part['line'].replace('**', '')
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #bdd2bd78
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #d8e85b2c
 class ProcessNoteError(Exception):
     def __init__(self, markdown_file, message="Error occured when trying to process a note."):
         self.markdown_file = markdown_file
@@ -40,7 +41,7 @@ class ProcessNoteError(Exception):
     def __str__(self):
         return f"{self.message}:\n\n{str(self.markdown_file)}"
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #635979d0
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #dfa9c57f
 # TODO: add functionality to remove footnotes altogether.
 def process_standard_information_note(
         markdown_file: Union[MarkdownFile, str],

@@ -6,7 +6,7 @@ __all__ = ['REGEX_PATTERN_DETECTIONS', 'temp_dict', 'extract_latex_commands', 'e
            'detect_incorrect_latex_commands', 'check_unescaped_dollar', 'math_mode_string_is_syntactically_valid',
            'math_mode_string_has_soft_or_hard_syntax_errors']
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #5d5dded7
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #00df1e3b
 import re
 from typing import Union
 
@@ -18,7 +18,7 @@ from ..regex import latex_indices
 from .core import (
     detect_unbalanced_environments, latex_math_mode_has_soft_syntax_oddities, _detect_backslash_space_curly, _does_not_end_with_script, _has_invalid_left_right_bracket, _has_double_script, _has_unescaped_dollar, _has_double_script_literal, _is_balanced_braces, _is_left_right_balanced)
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #7bb7d5e5
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #3dc960ad
 def extract_latex_commands(
         latex_string: str
         ) -> list[str]:
@@ -123,7 +123,7 @@ def _detect_begin_and_end_environments(
     
     return result
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #0d775996
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #6e9954aa
 # Some arguments that can be used towards `regex_pattern_detecting_command`
 # for some basic latex arguments.
 # Note that the last argument doesn't actually matter, because
@@ -230,7 +230,7 @@ for entry in REGEX_PATTERN_DETECTIONS:
 REGEX_PATTERN_DETECTIONS = temp_dict
 
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #8d2078e4
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #88962e88
 def _argument_detection(group_num: int) -> str:
     r"""
     Helper function to `regex_pattern_detecting_command`, and `_commands_from_def`
@@ -239,7 +239,7 @@ def _argument_detection(group_num: int) -> str:
     """
     return r"\{((?>[^{}]+|\{(?1)\})*)\}".replace("1", str(group_num))
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #015e0219
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #990fad21
 def custom_commands(
         preamble: str, # The preamble of a LaTeX document.
         ) -> list[tuple[str, int, Union[str, None], str]]: # Each tuple consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
@@ -309,7 +309,7 @@ def _commands_from_def(
     return [(match.group(1), 0, None, match.group(2))
             for match in def_regex.finditer(preamble)]
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #17bd01a9
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #bf8143ba
 def regex_pattern_detecting_command(
         command_tuple: tuple[str, int, Union[None, str], str], # Consists of 1. the name of the custom command 2. the number of parameters 3. The default argument if specified or `None` otherwise, and 4. the display text of the command.
         ) -> regex.Pattern:
@@ -340,7 +340,7 @@ def regex_pattern_detecting_command(
 
     
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #e1457ab5
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #c1f540f9
 def regex_pattern_detecting_space_separated_command(
         command_tuple: tuple[str, int, Union[None, str], str]
         ) -> regex.Pattern:
@@ -411,7 +411,7 @@ def regex_pattern_detecting_space_separated_command(
     full_pattern = f'{escaped_command}\\b{optional_arg}\\s*{args_pattern}'
     return regex.compile(full_pattern)
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #3fed701c
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #6c047ee2
 def detect_incorrect_latex_commands(
         latex_string: str,
         ) -> bool:
@@ -444,7 +444,7 @@ def detect_incorrect_latex_commands(
         #     return True
     return False
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #f2df2e91
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #584dde7d
 def check_unescaped_dollar(txt: str) -> bool:
     """Returns True if dollar signs are validly used."""
     if _has_unescaped_dollar(txt):
@@ -456,7 +456,7 @@ def check_unescaped_dollar(txt: str) -> bool:
             return False
     return True
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #d47a0345
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #baf6fb05
 def math_mode_string_is_syntactically_valid(
         text: str,
         ) -> bool:
@@ -496,7 +496,7 @@ def math_mode_string_is_syntactically_valid(
 
 
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #0bd37617
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #0928ea4a
 # def math_mode_string_is_syntactically_clean(
 #         text: str,
 #         ) -> bool:
@@ -511,7 +511,7 @@ def math_mode_string_is_syntactically_valid(
 #     if r'\\' in text:
 #         return False
 
-# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #36df2f35
+# %% ../../../nbs/01_helper_25.latex.macros_and_commands.ipynb #71865816
 def math_mode_string_has_soft_or_hard_syntax_errors(text: str) -> bool:
     return (
         not math_mode_string_is_syntactically_valid(text) or 

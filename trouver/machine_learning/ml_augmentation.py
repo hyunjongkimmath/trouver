@@ -71,7 +71,7 @@ def register_latex_recipe(name: str, column: str,
 register_latex_recipe('latex_robust', 'text', LATEX_SAFE_METHODS)
 register_latex_recipe('latex_noise', 'text', LATEX_NOISY_METHODS)
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #3c8161a4
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #dcc9f479
 def make_strip_newlines_recipe(column: str = 'text') -> Callable:
     """
     Build an `ml_data` row recipe replacing every newline in `row[column]` with a space.
@@ -106,6 +106,6 @@ def register_strip_newlines_recipe(name: str, column: str = 'text',
     return recipe_id
 
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #adfa868f
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #27f3e794
 # The division task trains on the flattened view; eval stays pure (rule R5).
 register_strip_newlines_recipe('division_strip_newlines')
