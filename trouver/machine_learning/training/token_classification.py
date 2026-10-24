@@ -3,16 +3,19 @@
 # %% auto #0
 __all__ = ['token_labels_for_spans', 'division_feature_tensors', 'score_seam_f1', 'train_token_classifier']
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #b2d73aa3
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #e311a448
 from os import PathLike
 from pathlib import Path
 
+import contextlib
+import os
+import time
 import torch
 from transformers import (AutoModelForTokenClassification,
                                       AutoTokenizer)
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #8786c209
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #29ed02d9
 def token_labels_for_spans(text: str, spans: list[dict], offsets: list[tuple]) -> list[int]:
     """
     Per-token `0/1/-100` labels: 1 on the last non-blank token ending exactly at a seam.
@@ -40,7 +43,7 @@ def token_labels_for_spans(text: str, spans: list[dict], offsets: list[tuple]) -
     return labels
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #bade302a
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #cfa896e6
 def division_feature_tensors(rows: list[dict], tokenizer, max_length: int = 512) -> dict:
     """
     Rows → padded `input_ids`/`attention_mask`/`labels` tensors (`-100` pad on labels).
@@ -66,7 +69,7 @@ def division_feature_tensors(rows: list[dict], tokenizer, max_length: int = 512)
             'labels': torch.tensor([l + [-100] * (width - len(l)) for l in labels])}
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #4706f340
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #eb81e623
 def score_seam_f1(model, tokenizer, rows: list[dict], max_length: int = 512,
                   batch_size: int = 8) -> dict:
     """
@@ -88,7 +91,7 @@ def score_seam_f1(model, tokenizer, rows: list[dict], max_length: int = 512,
     for i in range(0, len(rows), batch_size):
         chunk = rows[i:i + batch_size]
         feats = division_feature_tensors(chunk, tokenizer, max_length)
-        with torch.no_grad():
+        with torch.no_grad(), _autocast(model.device):
             preds = model(input_ids=feats['input_ids'].to(model.device),
                           attention_mask=feats['attention_mask'].to(model.device)
                           ).logits.argmax(-1)
@@ -104,7 +107,7 @@ def score_seam_f1(model, tokenizer, rows: list[dict], max_length: int = 512,
     return {'precision': p, 'recall': rc, 'f1': 2 * p * rc / (p + rc) if p + rc else 0.0}
 
 
-# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #fbf1c1ba
+# %% ../../../nbs/08_machine_learning_38.training.token_classification.ipynb #df95021f
 def _pick_device(device: str = None):
     """`device` string or the best available: cuda → mps → cpu."""
     if device:
@@ -116,39 +119,126 @@ def _pick_device(device: str = None):
     return torch.device('cpu')
 
 
-def _fine_tune(model, rows: list[dict], tokenizer, device, epochs: int,
-               batch_size: int, lr: float, max_length: int) -> None:
-    """AdamW mini-batch loop; each batch is padded to its own longest row."""
-    opt = torch.optim.AdamW(model.parameters(), lr=lr)
-    n = len(rows)
+def _batch_order(rows: list[dict], batch_size: int) -> list[list[int]]:
+    """Row indices as batches grouped by similar text length (char-count proxy).
+
+    Similar-length rows keep per-batch padding tiny and, on MPS, cut the number
+    of distinct tensor shapes the caching allocator must keep segments for.
+    """
+    order = sorted(range(len(rows)), key=lambda i: len(rows[i]['text']))
+    return [order[i:i + batch_size] for i in range(0, len(rows), batch_size)]
+
+
+def _autocast(device):
+    """bf16 autocast context on cuda/mps; a no-op context elsewhere."""
+    if device.type in ('cuda', 'mps'):
+        return torch.autocast(device_type=device.type, dtype=torch.bfloat16)
+    return contextlib.nullcontext()
+
+
+def _progress(msg: str) -> None:
+    """Append a timestamped `msg` line to `$TROUVER_PROGRESS_FILE`; no-op if unset."""
+    path = os.environ.get('TROUVER_PROGRESS_FILE')
+    if path:
+        with open(path, 'a') as f:
+            f.write(f"{time.strftime('%H:%M:%S')} {msg}\n")
+
+
+def _eta(elapsed: float, step: int, nb: int, epochs: int, ep: int) -> str:
+    """`'epoch_eta Xm total_eta Ym'` from the mean step speed so far."""
+    sps = step / max(elapsed, 1e-9)
+    return (f'epoch_eta {(nb - step) / sps / 60:.0f}m '
+            f'total_eta {((epochs - ep) * nb + nb - step) / sps / 60:.0f}m')
+
+
+def _epoch_eval_loss(model, rows: list[dict], tokenizer, device, max_length: int,
+                     batch_size: int, cap: int = 256) -> float:
+    """Mean loss over up to `cap` eval rows (no grad + autocast; train mode restored)."""
+    model.eval()
+    tot = n = 0
+    with torch.no_grad():
+        for i in range(0, min(cap, len(rows)), batch_size):
+            mb = {k: v.to(device) for k, v in
+                  division_feature_tensors(rows[i:i + batch_size], tokenizer,
+                                           max_length).items()}
+            with _autocast(device):
+                tot += float(model(**mb).loss)
+            n += 1
     model.train()
-    for _ in range(epochs):
-        for j in torch.randperm(n).split(batch_size):
-            mb = division_feature_tensors([rows[k] for k in j.tolist()],
+    return tot / max(n, 1)
+
+
+def _fine_tune(model, rows: list[dict], tokenizer, device, epochs: int,
+               batch_size: int, lr: float, max_length: int,
+               eval_rows: list[dict] = None, out_dir: PathLike = None) -> None:
+    """AdamW over length-bucketed batches; bf16 autocast off-CPU + MPS cache trims.
+
+    Batch order is reshuffled per epoch from the global RNG (seeded by
+    `train_token_classifier`). Variable-length rows fragment the MPS pool until
+    it OOMs, so every 50 steps on MPS we hand cached segments back.
+
+    Progress sidecar (`$TROUVER_PROGRESS_FILE`, no-op when unset): a settings
+    line at start, one line per 50 steps with loss + eta clocks, and an
+    `eval_loss` line after each epoch when `eval_rows` is given. With
+    `out_dir`, model + tokenizer are also checkpointed to
+    `out_dir/checkpoints/epoch-N` at every epoch boundary (crash insurance).
+    """
+    opt = torch.optim.AdamW(model.parameters(), lr=lr)
+    model.train()
+    _progress(f'start rows={len(rows)} epochs={epochs} batch_size={batch_size} '
+              f'max_length={max_length} lr={lr} device={device.type}')
+    t0 = time.monotonic()
+    for ep in range(1, epochs + 1):
+        batches = _batch_order(rows, batch_size)
+        for step, bi in enumerate(torch.randperm(len(batches)).tolist(), 1):
+            mb = division_feature_tensors([rows[k] for k in batches[bi]],
                                           tokenizer, max_length)
             mb = {k: v.to(device) for k, v in mb.items()}
-            loss = model(**mb).loss
+            with _autocast(device):
+                loss = model(**mb).loss
             opt.zero_grad(); loss.backward(); opt.step()
+            if device.type == 'mps' and step % 50 == 0:
+                torch.mps.empty_cache()
+            if step % 50 == 0:
+                _progress(f'epoch {ep}/{epochs} step {step}/{len(batches)} '
+                          f'loss {loss.item():.4f} '
+                          + _eta(time.monotonic() - t0, step, len(batches), epochs, ep))
+        if eval_rows:
+            _progress(f'epoch {ep}/{epochs} eval_loss '
+                      f'{_epoch_eval_loss(model, eval_rows, tokenizer, device, max_length, batch_size):.4f}')
+        if out_dir: _save_checkpoint(model, tokenizer, out_dir, ep)
 
+
+def _save_checkpoint(model, tokenizer, out_dir: PathLike, epoch: int) -> None:
+    """Save model + tokenizer to `out_dir/checkpoints/epoch-N` and log a line."""
+    d = Path(out_dir) / 'checkpoints' / f'epoch-{epoch}'
+    model.save_pretrained(d); tokenizer.save_pretrained(d)
+    _progress(f'saved checkpoint {d}')
 
 
 def train_token_classifier(rows: list[dict], model_id: str, out_dir: PathLike,
                            eval_rows: list[dict] = None, epochs: int = 3,
                            batch_size: int = 8, lr: float = 2e-5, max_length: int = 512,
-                           device: str = None, seed: int = 0) -> dict:
+                           device: str = None, seed: int = 0,
+                           gradient_checkpointing: bool = False) -> dict:
     """
     Fine-tune `model_id` + 2-class head on division rows; save to `out_dir`; score eval.
 
-    Labels are `{0: 'none', 1: 'split'}`. Rows are tokenized per epoch and
-    each batch padded to its own longest row — no global-width padding, so
-    `max_length` near the model cap costs only RAM for the longest batch.
+    Labels are `{0: 'none', 1: 'split'}`. Rows are grouped into length-bucketed
+    batches padded to their own longest row and trained under bf16 autocast
+    off-CPU (with periodic MPS cache trims) — variable-length rows otherwise
+    fragment the MPS pool until it OOMs well below the machine's real memory.
     Returns `score_seam_f1` on `eval_rows` (pure, by convention) or `None`.
 
     **Parameters**
     - `rows` (*list[dict]*) — Training rows (augmented view recommended; see notebook text).
     - `model_id` (*str*) — Encoder id, e.g. from `model_registry.get_model_id`.
-    - `out_dir` (*PathLike*) — Directory for the saved HF model + tokenizer.
-    - `eval_rows` (*list[dict]*) — Optional rows scored after training (leakage-free by caller).
+    - `out_dir` (*PathLike*) — Directory for the saved HF model + tokenizer;
+      per-epoch crash checkpoints land under its `checkpoints/` subdir.
+    - `gradient_checkpointing` (*bool*) — Recompute activations in backward on
+      cuda/mps (big memory saving, ~25-35% speed cost); no-op on cpu.
+    - `eval_rows` (*list[dict]*) — Optional rows scored after training (leakage-free
+      by caller); also logged as epoch-end `eval_loss` in the progress sidecar.
     - `epochs` (*int*) / `batch_size` (*int*) / `lr` (*float*) — Standard knobs.
     - `max_length` (*int*) — Window cap; must match `score_seam_f1` at eval time.
     - `device` (*str*) — Force a device (`'cpu'`, `'mps'`, `'cuda'`); default = best available.
@@ -160,8 +250,10 @@ def train_token_classifier(rows: list[dict], model_id: str, out_dir: PathLike,
     model = AutoModelForTokenClassification.from_pretrained(
         model_id, num_labels=2, id2label={0: 'none', 1: 'split'},
         label2id={'none': 0, 'split': 1}).to(device)
+    if gradient_checkpointing and device.type in ('cuda', 'mps'):
+        model.gradient_checkpointing_enable()
     _fine_tune(model, rows, tokenizer, device, epochs, batch_size, lr,
-               max_length)
+               max_length, eval_rows, out_dir)
     Path(out_dir).mkdir(parents=True, exist_ok=True)
     model.save_pretrained(out_dir); tokenizer.save_pretrained(out_dir)
     return None if eval_rows is None else score_seam_f1(
