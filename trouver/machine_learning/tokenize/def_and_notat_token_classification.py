@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['convert_double_asterisks_to_html_tags', 'raw_text_with_html_tags_from_markdownfile', 'HTMLData', 'html_data_from_note', 'tokenize_html_data', 'def_or_notat_from_html_tag', 'extract_html_tag_indices_from_marked_text', 'html_data_from_marked_text', 'latex_highlight_parser', 'augment_html_data', 'latex_commands_to_avoid', 'def_and_notat_preds_by_model', 'get_def_and_notat_predictions', 'mark_def_and_notat_predictions', 'predict_and_mark_def_and_notats', 'auto_mark_def_and_notats', 'latex_highlight_formatter', 'DEF_NOTAT_VERIFY_SYSTEM_PROMPT', 'DEF_NOTAT_VERIFY_USER_PROMPT', 'INITIAL_ERROR_MESSAGE', 'ALL_AUDITS_FAILED_STRING', 'AuditResult', 'AuditVoteResult', 'salvage_audit_result', 'run_strict_audit', 'run_audit_voting', 'run_audit_voting_maker']
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #6f2f3eac
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #e428f9da
 from collections.abc import Callable
 import copy
 from itertools import pairwise
@@ -36,7 +36,7 @@ from ...obsidian.vault import VaultNote
 
 
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #35692781
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #0050f418
 def convert_double_asterisks_to_html_tags(
         text: str
         ) -> str:
@@ -67,7 +67,7 @@ def _html_tag_from_double_ast(
     else:
         return f'<b definition="">{no_asts}</b>'
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #7d8b103e
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #71d43060
 def raw_text_with_html_tags_from_markdownfile(
         mf: MarkdownFile,
         vault: PathLike
@@ -82,14 +82,14 @@ def raw_text_with_html_tags_from_markdownfile(
     return convert_double_asterisks_to_html_tags(str(mf))
 
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #8de120e9
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #a39286f6
 class HTMLData(TypedDict):
     note_name: str
     raw_text: str
     tags: list[HTMLTagWithIndices]
     # list[bs4.element.Tag]
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #210d8ed1
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #39fdfa46
 def html_data_from_note(
         note_or_mf: Union[VaultNote, MarkdownFile], # Either a `VaultNote`` object to a note or a `MarkdownFile` object from which to extra html data.
         vault: Optional[PathLike] = None, # If vault to use when processing the `MarkdownFile` objects (if `note_of_mf` is a `VaultNote`, then this `MarkdownFile` object is created from the text of the note), cf. the `process_standard_information_note` function.
@@ -134,7 +134,7 @@ def html_data_from_note(
 
     return HTMLData(note_name=note_name, raw_text=raw_text, tags=tags_and_locations)
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #90350ac0
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #03d91404
 def tokenize_html_data(
         html_locus: HTMLData, # An output of `html_data_from_note`
         tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -298,7 +298,7 @@ def def_or_notat_from_html_tag(
         return "notation"
     return None  # If the HTML tag carries neither definition nor notation data.
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #d4b37e4c
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #e616f69e
 def _calculate_clean_indices_and_create_tags(
         original_text: str,
         markings: list[tuple[str, int, int, dict]]
@@ -339,7 +339,7 @@ def _calculate_clean_indices_and_create_tags(
     
     return "".join(clean_text_parts), results
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #0361bb82
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #24808d6a
 def extract_html_tag_indices_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -352,7 +352,7 @@ def extract_html_tag_indices_from_marked_text(
     _, tags = _calculate_clean_indices_and_create_tags(text, markings)
     return tags
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #8bb715c3
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #a24822b6
 def html_data_from_marked_text(
         text: str, # The text containing custom markings (e.g. "Let [NOT:G] be a [DEF:group]").
         marker_parser: Callable[[str], list[tuple[str, int, int, dict]]] # A function that parses the text and returns a list of tuples. Each tuple should contain: (1) The *inner content* of the marked section, (2) The *start index* of the marking in `text`, (3) The *end index* of the marking in `text`, and (4) A dictionary of *attributes* for the HTML tag.
@@ -366,7 +366,7 @@ def html_data_from_marked_text(
     
     return StrAndHTMLTagsWithIndices(clean_text, tags)
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #71478e37
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #6fee9bb7
 def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
     """
     Parses LaTeX highlighting commands (\\hldef, \\hl, \\hlin, \\hlalign) to identify
@@ -589,7 +589,7 @@ def latex_highlight_parser(text: str) -> list[tuple[str, int, int, dict]]:
         
     # return results
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #9c0a71e2
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #94daf954
 def _split_text_by_html_data_parts(
         # text_tags_and_locations = StrAndHTMLTagsWithIndices
         datapoint: HTMLData
@@ -610,7 +610,7 @@ def _split_text_by_html_data_parts(
             to_return.append((piece, datapoint['tags'][int(i/2)].tag))
     return to_return
 
-# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #5fab27a9
+# %% ../../../nbs/08_machine_learning_15.tokenize.def_and_notat_token_classification.ipynb #151cd469
 def augment_html_data(
         datapoint: HTMLData,
         num_augmentation_sets: int = 1, # Each augmentation set consists of an augmentation with low, medium, and high probability modifications.
@@ -1739,7 +1739,7 @@ def run_strict_audit(
         user_prompt: str = DEF_NOTAT_VERIFY_USER_PROMPT,
         temperature: float = 0.3,
         verbose: bool = False,
-        max_tokens=1024, # Max tokens for 
+        max_tokens: int = 1024,
         ) -> AuditResult:
     """
     Make a client (running on an LLM) audit the definition and notation markings
@@ -1748,6 +1748,15 @@ def run_strict_audit(
     (false positives).
 
     Sends text to the model and forces a JSON response matching AuditResult.
+
+    **Parameters**
+    - `client` (*OpenAI*) — OpenAI-compatible client pointing at the auditing LLM.
+    - `text_to_check` (*str*) — Text whose definition/notation markings are audited.
+    - `system_prompt` (*str*) — Auditor system prompt (defaults to the def/notat rules).
+    - `user_prompt` (*str*) — Instruction prefixed to the text in the user message.
+    - `temperature` (*float*) — Sampling temperature; low is more deterministic.
+    - `verbose` (*bool*) — Accepted for call-site compatibility; unused here.
+    - `max_tokens` (*int*) — Generation cap for the audit response.
     """
     raw_content = ""
     try:
@@ -1758,13 +1767,12 @@ def run_strict_audit(
                 {"role": "user", "content": f"{user_prompt}:\n\n{text_to_check}"},
             ],
             temperature=temperature,  # Low temperature = more deterministic structure
-            max_tokens=1024,
+            max_tokens=max_tokens,
             response_format={
                 "type": "json_schema",
                 "json_schema": {
                     "name": "audit_result",
-                    "strict": True, # Setting this False may allow the model to be longer with its reasoning at the cost of potentially breaking json 
-                    # "strict": False,
+                    "strict": True, # Setting this False may allow the model to be longer with its reasoning at the cost of potentially breaking json
                     "schema": {
                         "type": "object",
                         "properties": {
@@ -1779,10 +1787,7 @@ def run_strict_audit(
             }
         )
 
-        # # 1. Get the raw string (The server GUARANTEES this is valid JSON matching schema)
-        # raw_content = response.choices[0].message.content
-
-        # 1. Get the raw string 
+        # 1. Get the raw string (the server guarantees valid JSON matching the schema)
         message = response.choices[0].message
 
         # Check standard content first, fall back to reasoning_content
@@ -1790,10 +1795,7 @@ def run_strict_audit(
 
         # 2. Parse directly into Pydantic
         result = AuditResult.model_validate_json(raw_content)
-        
         return result
-
-
     except Exception as e:
         return salvage_audit_result(raw_content, str(e))
 

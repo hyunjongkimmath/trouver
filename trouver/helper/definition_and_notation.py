@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['double_asterisk_indices', 'notation_asterisk_indices', 'definition_asterisk_indices', 'defs_and_notats_separations']
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #82222ecb
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #1ecaad52
 from .regex import find_regex_in_text
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #8203edf5
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #8b4e6530
 import re
 
 def _get_bold_indices_with_braces(text):
@@ -106,7 +106,7 @@ def _is_notation(text, start, end):
     return False
 
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #81c0a9ce
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #17f4a411
 # def double_asterisk_indices(
 #         text: str # the str in which to find the indices of double asterisk surrounded text.
 #         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with double asterisks, including the double asterisks.
@@ -188,7 +188,7 @@ def double_asterisk_indices(text: str) -> list[tuple[int, int]]:
 
 
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #a9b524de
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #5d36e1bc
 def notation_asterisk_indices(
         text: str # the str in which to find the indices of notations surrounded by double asterisks.
         ) -> list[tuple[int, int]]: # Each tuple is of the form `(start,end)`, where `text[start:end]` is a part in `text` with LaTeX math mode text with double asterisks, including the double asterisks.
@@ -230,7 +230,7 @@ def definition_asterisk_indices(
         if not _is_notation(text, start, end)
     ]
 
-# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #8665fe86
+# %% ../../nbs/01_helper_07.definition_and_notation.ipynb #26c18942
 def defs_and_notats_separations(
         text: str 
         )-> list[tuple[int, bool]]:

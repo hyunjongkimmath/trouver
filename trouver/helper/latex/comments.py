@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['remove_comments']
 
-# %% ../../../nbs/01_helper_22.latex.comments.ipynb #d38df027
+# %% ../../../nbs/01_helper_22.latex.comments.ipynb #a2b49533
 import re
 
-# %% ../../../nbs/01_helper_22.latex.comments.ipynb #2311f5bd
+# %% ../../../nbs/01_helper_22.latex.comments.ipynb #cb46c3c3
 def remove_comments(text: str) -> str:
     # Find all occurrences of the comment pattern %[^\n]*
     return re.sub(r"%[^\n]*", "", text)

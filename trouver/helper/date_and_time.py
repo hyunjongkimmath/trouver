@@ -3,11 +3,11 @@
 # %% auto #0
 __all__ = ['current_time_formatted_to_minutes']
 
-# %% ../../nbs/01_helper_06.date_and_time.ipynb #49b1faad
+# %% ../../nbs/01_helper_06.date_and_time.ipynb #81a8673a
 import datetime
 from datetime import timezone
 
-# %% ../../nbs/01_helper_06.date_and_time.ipynb #3f11bfb1
+# %% ../../nbs/01_helper_06.date_and_time.ipynb #7222c7f4
 def current_time_formatted_to_minutes(
         ) -> str:
     """Return the current time to minutes.

@@ -212,7 +212,7 @@ The following are some tags that the model is adept at predicting:
 #### 2. Mark definitions and notations introduced in an excerpt of mathematical text.
 
 The model
-[`hyunjongkimmath/def_and_notat_token_classification_model`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model)
+[`hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base)
 attempts to find where exactly definitions and notations are introduced
 in a given excerpt of text. See
 [`machine_learning.tokenize.def_and_notat_token_classification`](machine_learning.tokenize.def_and_notat_token_classification.html)
@@ -270,7 +270,7 @@ and
 [hyunjongkimmath/notation_naming_model](https://huggingface.co/hyunjongkimmath/notation_naming_model)
 attempt to “name” definitions and notations (marked either manually or
 with the
-[`hyunjongkimmath/def_and_notat_token_classification_model`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model)
+[`hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base)
 discussed
 [above](#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text)).
 
@@ -326,7 +326,7 @@ The model
 [hyunjongkimmath/notation_summarizations_model](https://huggingface.co/hyunjongkimmath/notation_summarizations_model)
 attempts to summarize what a notation introduced in a excerpt (marked
 either manually or with the
-[`hyunjongkimmath/def_and_notat_token_classification_model`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model)
+[`hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base`](https://huggingface.co/hyunjongkimmath/def_and_notat_token_classification_model_modernbert_base)
 discussed
 [above](#2-mark-definitions-and-notations-introduced-in-an-excerpt-of-mathematical-text)
 and named with the

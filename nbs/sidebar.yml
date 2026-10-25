@@ -91,7 +91,6 @@ website:
       - 09_app_00_gui.ipynb
       - 10_shortcuts_00.__init__.ipynb
       - 10_shortcuts_05.multiple_notes.ipynb
-      - 24_markdown.obsidian.personal.machine_learning.notation_identification.ipynb
       - 26_markdown.obsidian.personal.machine_learning.tokenize.__init__.ipynb
       - TODO.ipynb
       - how_to.install_trouver.ipynb

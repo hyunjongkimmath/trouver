@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['all_custom_text_for_links_in_vault', 'all_links_in_vault']
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #8a8412ef
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #412415de
 from os import PathLike
 from pathlib import Path
 import re
@@ -13,7 +13,7 @@ from ..helper.files_and_folders import text_from_file
 from .vault import VaultNote, all_paths_to_notes_in_vault
 from .links import ObsidianLink, LinkType, links_from_text, LinkFormatError
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #6fae97a5
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #15a69373
 def all_custom_text_for_links_in_vault(
         note: VaultNote, # The note to find the custom text for.
         vault: PathLike, # The path to the Obsidian vault directory
@@ -69,7 +69,7 @@ def _custom_text_for_links_in_text(
              for start, end in match_ranges]
     return [link.custom_text for link in links]
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #c528bc73
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #013ec0a7
 def all_links_in_vault(
         vault: PathLike, backlinks: bool = False, 
         multiplicities: bool = False) -> dict[str, list[str]]:
