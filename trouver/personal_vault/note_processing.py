@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['remove_double_asterisks_in_markdown_file', 'ProcessNoteError', 'process_standard_information_note']
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #aadf84f3
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #38b9ab7a
 from deprecated import deprecated
 from os import PathLike
 from pathlib import Path, PureWindowsPath, WindowsPath
@@ -15,7 +15,7 @@ from ..obsidian.footnotes import remove_footnote_mentions_in_markdown_text
 from ..obsidian.links import EMBEDDED_PATTERN, remove_links_from_text
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #61825c39
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #62807e1f
 def remove_double_asterisks_in_markdown_file(
         markdown_file: MarkdownFile 
         ) -> None: 
@@ -31,7 +31,7 @@ def remove_double_asterisks_in_markdown_file(
         if '**' in part['line']:
             part['line'] = part['line'].replace('**', '')
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #524386e7
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #4e9f4ae4
 class ProcessNoteError(Exception):
     def __init__(self, markdown_file, message="Error occured when trying to process a note."):
         self.markdown_file = markdown_file
@@ -41,7 +41,7 @@ class ProcessNoteError(Exception):
     def __str__(self):
         return f"{self.message}:\n\n{str(self.markdown_file)}"
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #6539c88c
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #441e191a
 # TODO: add functionality to remove footnotes altogether.
 def process_standard_information_note(
         markdown_file: Union[MarkdownFile, str],
@@ -79,12 +79,15 @@ def process_standard_information_note(
         markdown_file.replace_embedded_links_with_text(vault)
     if remove_block_identifiers:
         markdown_file.remove_block_identifiers()
+    sections_to_remove = set()
     if remove_see_also_section:
-        markdown_file.remove_section('See Also')
+        sections_to_remove.add('See Also')
     if remove_meta_section:
-        markdown_file.remove_section('Meta')
+        sections_to_remove.add('Meta')
     if remove_references_section:
-        markdown_file.remove_section('References')
+        sections_to_remove.add('References')
+    if sections_to_remove:
+        markdown_file._remove_sections(sections_to_remove)
     if remove_double_asterisks:
         remove_double_asterisks_in_markdown_file(markdown_file)
     if remove_html_tags:
@@ -97,16 +100,27 @@ def process_standard_information_note(
             # raise e
     if remove_links: 
         markdown_file.replace_links_with_display_text()
-    if remove_in_line_tags:
-        markdown_file.remove_in_line_tags()
-    if remove_headers:
-        markdown_file.remove_headers()
-    if merge_display_math_mode:
+    use_consolidated_tail = (remove_in_line_tags and remove_headers
+                             and no_double_blank_lines)
+    if use_consolidated_tail:
+        # One pass equivalent to the three individual sweeps below.
+        markdown_file._cleanup_headings_tags_blank_lines()
+    else:
+        if remove_in_line_tags:
+            markdown_file.remove_in_line_tags()
+        if remove_headers:
+            markdown_file.remove_headers()
+    # The standalone merge scan is redundant when the math is also merged
+    # into the preceding text: `merge_display_math_mode_into_preceding_text`
+    # runs the same merge internally.
+    if (merge_display_math_mode
+            and merge_display_math_mode_into_text is None):
         markdown_file.merge_display_math_mode()
     if merge_display_math_mode_into_text:
         markdown_file.merge_display_math_mode_into_preceding_text(
             separator=merge_display_math_mode_into_text)
-    if no_double_blank_lines:
+    if (no_double_blank_lines
+            and not use_consolidated_tail):
         markdown_file.remove_double_blank_lines()
     # print(markdown_file)
     return markdown_file
