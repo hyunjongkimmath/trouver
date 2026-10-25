@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['remove_double_asterisks_in_markdown_file', 'ProcessNoteError', 'process_standard_information_note']
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #38b9ab7a
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #53117413
 from deprecated import deprecated
 from os import PathLike
 from pathlib import Path, PureWindowsPath, WindowsPath
@@ -15,7 +15,7 @@ from ..obsidian.footnotes import remove_footnote_mentions_in_markdown_text
 from ..obsidian.links import EMBEDDED_PATTERN, remove_links_from_text
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #62807e1f
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #b5d0a1e0
 def remove_double_asterisks_in_markdown_file(
         markdown_file: MarkdownFile 
         ) -> None: 
@@ -31,7 +31,7 @@ def remove_double_asterisks_in_markdown_file(
         if '**' in part['line']:
             part['line'] = part['line'].replace('**', '')
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #4e9f4ae4
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #916372ed
 class ProcessNoteError(Exception):
     def __init__(self, markdown_file, message="Error occured when trying to process a note."):
         self.markdown_file = markdown_file
@@ -41,7 +41,7 @@ class ProcessNoteError(Exception):
     def __str__(self):
         return f"{self.message}:\n\n{str(self.markdown_file)}"
 
-# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #441e191a
+# %% ../../nbs/05_personal_vault_25.note_processing.ipynb #8cf6d31b
 # TODO: add functionality to remove footnotes altogether.
 def process_standard_information_note(
         markdown_file: Union[MarkdownFile, str],
@@ -93,11 +93,8 @@ def process_standard_information_note(
     if remove_html_tags:
         try:
             markdown_file.remove_html_tags()
-        except TypeError as e:
-            print('An error occured while trying to remove HTML tags in a MarkdownFile. The following are the (partially processed) contents of the markdown file: ')
-            print(str(markdown_file))
+        except TypeError:
             raise ProcessNoteError(markdown_file)
-            # raise e
     if remove_links: 
         markdown_file.replace_links_with_display_text()
     use_consolidated_tail = (remove_in_line_tags and remove_headers
@@ -122,5 +119,4 @@ def process_standard_information_note(
     if (no_double_blank_lines
             and not use_consolidated_tail):
         markdown_file.remove_double_blank_lines()
-    # print(markdown_file)
     return markdown_file
