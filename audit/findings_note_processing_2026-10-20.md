@@ -6,6 +6,8 @@
 
 The pipeline is ~15 sequential passes over `parts`. Cost is heavily skewed: embedded-link expansion dominates; the rest is repeated scans and O(n·k) delete loops.
 
+**Status (2026-10-24, campaign complete):** N1 ✅ + N6 ✅ shipped (batch 1 — `f00fa30`/`6281e61`; ~8× measured with byte-identical output, `findings_perf_note_processing_2026-10-24.md`). N2 ✅ + N3 ✅ + N4 ✅ shipped (batch 2 — `6e6c86e`; equivalence pinned by test cells T1–T4; honest null result on end-to-end perf, `findings_perf_note_processing_batch2_2026-10-24.md`). N5 kept as-is per its assessment. N7 ✅ resolved (batch 3 — `83509bb`; casing verified against the actual vault: canonical `# See Also` ×115,168 vs one nested `## See also` anomaly → case-sensitive match kept; debug prints dropped and TypeError→`ProcessNoteError` pinned by a test cell).
+
 ---
 
 ## N1 — Embedded-link expansion has no memoization ⚠️ dominant cost
