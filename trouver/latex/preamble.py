@@ -3,76 +3,48 @@
 # %% auto #0
 __all__ = ['divide_preamble', 'replace_inclusion_of_style_file_with_code']
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #72279ef4
+# %% ../../nbs/04_latex_10.preamble.ipynb #2bbd2308
 import re
 from os import PathLike
 from pathlib import Path
 import warnings
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #80481013
+# %% ../../nbs/04_latex_10.preamble.ipynb #435ac179
 def divide_preamble(
+
         text: str, # LaTeX document
+
         document_environment_name: str = "document"
+
         ) -> tuple[str, str]:
+
     """Divide the preamble from the rest of a LaTeX document.
+
     """
+
     begin_environment_str = rf'\begin{{{document_environment_name}}}'
+
     pattern = re.compile(re.escape(begin_environment_str))
-    match = re.search(pattern, text) 
+
+    match = re.search(pattern, text)
+
+    if match is None:
+
+        raise ValueError(
+
+            f"no \\begin{{{document_environment_name}}} found in `text` "
+
+            "(e.g. an \\input fragment without a document environment)")
+
     start_match, end_match = match.span()
+
     return text[:start_match], text[start_match:]
 
+
+
     
 
-# %% ../../nbs/04_latex_10.preamble.ipynb #f8895e68
-# def replace_inclusion_of_style_file_with_code(
-#         document: str,
-#         dir: PathLike # The directory containing the style file.
-#         ) -> str: # The modified document with style file inclusions replaced by their contents.
-#     r"""
-#     Replace style file inclusions in `document` with the code of the style files.
-
-#     This function searches for occurrences of `\usepackage{...}`, `\input{...}`, 
-#     `\import{...}{...}`, `\includefrom{...}{...}`, and `\subincludefrom{...}{...}`
-#     and replaces them with the actual contents of the corresponding `.sty` files, if available.
-
-#     """
-#     def replace_style_file(match):
-#         command = match.group(1)  # Command type
-#         if command in ['import', 'includefrom', 'subincludefrom']:
-#             path = match.group(2)
-#             filename = match.group(3)
-#             file_path = Path(dir) / path / filename
-#         else:
-#             filename = match.group(2)
-#             file_path = Path(dir) / filename
-#         # Ensure we are only processing .sty files
-#         if not file_path.suffix:
-#             file_path = file_path.with_suffix('.sty')
-        
-#         if file_path.suffix != '.sty':
-#             # If it's not a .sty file, return the original command
-#             return match.group(0)
-#         # # Add .sty extension if not already present
-#         # if not file_path.suffix:
-#         #     file_path = file_path.with_suffix('.sty')
-#         try:
-#             # Read and return the contents of the style file
-#             with open(file_path, 'r', encoding='utf-8') as file:
-#                 return f"% Start of included style file: {file_path.name}\n" + file.read() + f"\n% End of included style file: {file_path.name}"
-#         except FileNotFoundError:
-#             # If the file is not found, keep the original command and issue a warning
-#             # if file_path.suffix == '.sty':
-#             #     warnings.warn(f"Style file {file_path} not found. Keeping original command.", UserWarning)
-#             return match.group(0)
-
-#     # Regex pattern to match all relevant commands for style files
-#     pattern = r'\\(usepackage|input)\{([^}]+)\}|\\(import|includefrom|subincludefrom)\{([^}]+)\}\{([^}]+)\}'
-    
-#     # Replace all matches in the document
-#     return re.sub(pattern, replace_style_file, document)
-
-
+# %% ../../nbs/04_latex_10.preamble.ipynb #9761ddb3
 def replace_inclusion_of_style_file_with_code(
         document: str,
         dir: PathLike  # The directory containing the style file.

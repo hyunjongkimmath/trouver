@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['UNTITLED_SECTION_TITLE', 'section_and_subsection_titles_from_latex_parts']
 
-# %% ../../nbs/04_latex_05.folders.ipynb #10d8c370
+# %% ../../nbs/04_latex_05.folders.ipynb #e5c9b7af
 from .divide import divide_latex_text, DividedLatexPart
 
-# %% ../../nbs/04_latex_05.folders.ipynb #18e64769
+# %% ../../nbs/04_latex_05.folders.ipynb #a91b0abd
 def _part_starts_section(
         part: DividedLatexPart):
     """
@@ -14,25 +14,18 @@ def _part_starts_section(
     cf. `divide_latex_text`.
     """
     return part['text'].startswith(r'\section')
-    # node = get_node_from_simple_text(part[1])
-    # return _is_section_node(node)
 
 
 def _part_starts_subsection(
         part: DividedLatexPart):
     """Return `True` if `part` starts a subsection, cf. `divide_latex_text`."""
     return part['text'].startswith(r'\subsection')
-    # node = get_node_from_simple_text(part[1])
-    # return _is_subsection_node(node)
 
-# %% ../../nbs/04_latex_05.folders.ipynb #ca0d8883
+
+# %% ../../nbs/04_latex_05.folders.ipynb #4f8d3cba
 UNTITLED_SECTION_TITLE = 'Untitled Section'
 def section_and_subsection_titles_from_latex_parts(
         parts: list[DividedLatexPart], # An output of `divide_latex_text`
-        # verbose_sections: bool = False, # 
-        # short_subsections: bool = False,
-        # section_name: str = 'section',
-        # subsection_name: str = 'subsection')\
         ) -> list[list[str]]: # Each list corresponds to a section. The first entry of the list is the title of the section and the other entries are the titles of the subsections. 
     """
     Return a list of lists of titles for the sections and subsections in `parts`

@@ -1,0 +1,34 @@
+% Trimmed from latex_full/achter_dcgff/achter_dcgff.tex (arXiv source). Preamble lines
+% 54, 56, 59-62 and the kept body constructs are verbatim; body text between them is
+% trimmed, and the second equation's content is a placeholder. This document declares
+% \numberwithin{equation}{subsection}, so its equation counter (and every theorem-like
+% environment sharing it via [equation]) resets per subsection.
+\documentclass{article}
+
+\renewcommand{\thesubsection}{\ifnum\value{subsection}=0{\arabic{section}}\fi\ifnum\value{subsection}>0{\arabic{section}.\arabic{subsection}}\fi}
+\numberwithin{equation}{subsection}
+
+\newtheorem{theorem}[equation]{Theorem}
+\newtheorem{lemma}[equation]{Lemma}
+\newtheorem{prop}[equation]{Proposition}
+\newtheorem{cor}[equation]{Corollary}
+
+\begin{document}
+
+\section{$\ell$-adic monodromy}
+
+\subsection{Statement}
+
+\begin{theorem}[Katz]\label{katz} Suppose $\calf$ has uniform geometric
+monodromy group $G_\geom$ and arithmetic monodromy group $G$.
+\end{theorem}
+
+\section{Matrices with given fixed space}
+
+\subsection{Symplectic matrices over finite fields}
+
+\begin{equation}
+x^2+y^2=1 \label{unitcircle}
+\end{equation}
+
+\end{document}

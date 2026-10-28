@@ -1,0 +1,71 @@
+% Trimmed from latex_full/kass_wickelgren_ekl/kass_wickelgren_ekl.tex (arXiv source, amsart).
+% Only the \newtheorem block of the preamble (source lines 44-60) and the kept body
+% constructs are verbatim; all other preamble lines and body prose are trimmed. The full
+% source contains no \numberwithin and no \@addtoreset anywhere: the equation counter is
+% GLOBAL in this document, and it has numbered equations both before (source lines 197-236)
+% and after (source line 479ff.) the first \section — real LaTeX numbers them 1, 2, ...
+% across that boundary.
+\documentclass[12pt,letterpaper]{amsart}
+
+\newtheorem*{tmnl}{Main Theorem}
+\newtheorem{tm}{Theorem}
+\newtheorem{pr}[tm]{Proposition}
+\newtheorem{lm}[tm]{Lemma}
+\newtheorem{co}[tm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{df}[tm]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{rmk}[tm]{Remark}
+\newtheorem{expl}[tm]{Example}
+\newtheorem{claim}[equation]{Claim}
+\newtheorem{assumption}[tm]{Assumption}
+\newtheorem{question}[tm]{Question}
+
+\newtheorem{para}[tm]{}
+
+\begin{document}
+
+\begin{equation} %\label{Eqn: SigFormula}
+	\deg_{0}(f) = \text{ the signature of }w_{0}(f)
+\end{equation}
+
+\begin{equation} %\label{Eqn: RankFormula}
+	\deg_{0}(f_{\bbC}) = \text{ the rank of }w_{0}(f).
+\end{equation}
+
+\begin{equation} \label{Eqn: MainThmEqn}
+	\deg^{\bbA^1}_{0}(f) = \text{the stable isomorphism class of $w_{0}(f)$.}
+\end{equation}
+
+\begin{equation} \label{Eqn: PfSketchStep}
+	\sum_{x \in f^{-1}(\overline{y})} \deg_{x}(F) = \sum_{x \in f^{-1}(\overline{y})} w_{x}(F)
+\end{equation}
+
+\begin{equation} \label{Eqn: FirstDeformedFamily}
+	f(x_1, \dots, x_n) + a_1 x_1 + \dots + a_n x_n = t
+\end{equation}
+
+\begin{equation} \label{Eqn: XBifurcatesToNodes}
+	\mu^{\bbA^1}(f) = \sum \#(\text{nodes with henselization $\{ u_1 x_1^2+\dots+u_n x_n^2=0\}$}) \cdot \langle u_1 \dots u_n \rangle \text{ in $\operatorname{GW}(k)$.}
+\end{equation}
+
+\section*{Conventions}
+$k$ denotes a fixed field.
+
+\section{The Grothendieck--Witt class of Eisenbud--Khimshiashvili--Levine} \label{Section: LocalForm}
+
+\begin{equation}\label{purity_in_loc_deg_etale_pt_pf}
+\xymatrix{ U/(U-\{x\}) \ar[rr]^{f\vert_U} && \bbP^n_k / (\bbP^n_k - \{ f(x)\}) \\
+\Th T_x U \ar[rr]^{\Th_f (df(x))} \ar[u]^{\cong}&& \Th T_{f(x)} \bbP^n_k \ar[u]^{\cong}.}
+\end{equation}
+
+\begin{equation}
+\xymatrix{ \bbP^n_k/\bbP^{n-1}_k \ar@/^2pc/[rrrrr]^-{f_x} \ar[r] \ar[rrddd]_{ \bbP^n_k/\bbP^{n-1}_k\wedge \eta }&\bbP^n_k/\bbP^n_k - \{ x\} &\ar[l]^{\cong }U/(U-\{x\}) \ar[rr]^{f\vert_U} && \bbP^n_k / (\bbP^n_k - \{ f(x)\}) & \ar[l]^{\cong}  \bbP^n_k/\bbP^{n-1}_k \ar[dddl]^1\\
+& & \Th T_x U \ar[rr]^{\Th_f (df(x))} \ar[u]^{\cong}&& \Th T_{f(x)} \bbP^n_k \ar[u]^{\cong} &\\
+& &\Th \mathcal{O}^n_{\Spec k(x)} \ar[u]^{\cong} \ar[r] & \ar[r] \ldots& \Th \mathcal{O}^n_{\Spec k} \ar[u]^{\cong} &\\
+& & \bbP^n_k/\bbP^{n-1}_k \wedge \Spec k(x)_+ \ar[u]^{\cong}&& \bbP^n_k/\bbP^{n-1}_k \ar[u]^{\cong} &.}
+\end{equation}
+
+\end{document}
