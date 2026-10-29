@@ -86,7 +86,12 @@ with no warning.
   (outside trouver) still feeds all 204 document-less files to it — file-level skip/log
   belongs there, and see **N14** for the design question behind those inputs.
 - **N6** `_find_labels` (`convert.py:345-359`): duplicate labels silently last-wins, no
-  warning — combined with N3 this misroutes refs with zero signal.
+  warning — combined with N3 this misroutes refs with zero signal. **Fixed 2026-10-28:**
+  a label redefined in a *different* note now issues a `UserWarning` naming the label
+  and both notes (last-wins kept — it matches LaTeX aux-file semantics); repeats within
+  one note stay quiet. Pinned by test cells `n6t1`/`n6t2` in `04_latex_20.convert`.
+  Corpus sanity: `ellenberg_landesman_hsghssgqtfff.tex` (an N3 broken-label file) yields
+  35 warnings over its 350 parts, the first naming `remark:`.
 - **N7** `_replace_includegraphics_with_embedded_links_in_parts` (`convert.py:399-440`):
   the no-extension search loop leaves `filename` stale from a previous match when nothing
   is found (broken `![[base]]` links); matches on basename only (drops subfolder path);
@@ -205,7 +210,7 @@ real documents come out mis-numbered. `mcp_monorepo/servers/tex_component_tools/
 4. **N5/N6/N7/N8/N9** — robustness: `None` guard in `divide_preamble` (**done 2026-10-27**,
    see N5 status; plus design flag N14); cycle guard in `_recursive_reset` + the N13
    parse fix it was fed by (**done 2026-10-28**, see N8/N13 status); duplicate-label
-   warning in `_find_labels`; includegraphics search fix; word-boundary test for
+   warning in `_find_labels` (**done 2026-10-28**, see N6 status); includegraphics search fix; word-boundary test for
    `\swapnumbers`. N4 (ref display text) is a design decision, not a bug fix — flag
    separately.
 5. **P1** — single preamble parse threaded through `divide_latex_text`.
