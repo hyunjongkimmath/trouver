@@ -171,7 +171,7 @@ with no warning.
 | S3 | **Print-only pseudo-tests** (PROGRESS.md F3) | `04_latex_20.convert.ipynb` | testing rule 2 |
 | S4 | **Scaffolding comments** (`# --- ADD THIS LINE ---`) in shipped code | `divide.py:338`, `195-256` | documentation/lifecycle |
 | S5 | Copy-paste docstring ("Return True if…" on a name-returning function) | `_environment_name_of_text` `divide.py:707-714` | documentation |
-| S6 | Dead exports (`_node_numbering` exported, zero live callers; `_numbering_helper` likely unused) | `divide.py:949`, `905` | lifecycle |
+| S6 | **Fixed 2026-10-29** — dead exports (`_node_numbering` exported, zero live callers; `_numbering_helper` likely unused): both verified caller-free outside each other and their test cells (also checked `trouver_plus`/`mcp_monorepo`), so the `#| export` flags were stripped in `04_latex_00.divide` — the functions stay private to the notebook, whose tests keep pinning the recursion; they no longer appear in `divide.py` or its `__all__`. | `divide.py:949`, `905` | lifecycle |
 
 **S1+S2 Status: fixed 2026-10-27** (closes PROGRESS.md F2). `04_latex_00.divide`: 7
 pure-dead cells deleted (commented-out old versions of `get_counter_hierarchy`,
@@ -186,8 +186,8 @@ trailing block inside `_title_for_section_subsection_subsubsection_node`).
 `04_latex_10.preamble`: 48-line commented-out old `replace_inclusion_of_style_file_with_code`
 stripped. `04_latex_05.folders`: 8 unreachable/commented lines removed (post-`return` node
 checks, commented signature params). All three notebooks exec with 0 failing cells; full
-export clean — 0 commented defs and exactly one def per name in the generated files. S6
-remains open (deferred follow-up).
+export clean — 0 commented defs and exactly one def per name in the generated files.
+(S6, deferred from that close-out, fixed 2026-10-29 — see S6 status above.)
 
 ## 3. Performance
 
