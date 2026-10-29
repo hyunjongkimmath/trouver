@@ -134,7 +134,11 @@ with no warning.
   re-verified: `kudo_harashita_scg4sc/main.tex` parses to `('pf', None)` and
   `divide_latex_text` completes (133 parts, no `RecursionError`).
 - **N9** `swap_numbers_invoked` (`divide.py:1267-1275`): substring test — a macro like
-  `\swapnumbersXYZ` false-positives.
+  `\swapnumbersXYZ` false-positives. **Fixed 2026-10-29:** the bare substring test is now
+  a word-boundary regex, `re.search(r'\\swapnumbers(?![a-zA-Z0-9])', preamble)` — a LaTeX
+  command name is the maximal run of letters+digits after `\`, so a longer name like
+  `\swapnumbersXYZ` or `\swapnumbers2` does not count. Pinned by test cell `n9t1` in
+  `04_latex_00.divide`.
 - **N10 (format/reset divergence)** — see §6: global counter values formatted with
   hierarchical prefixes (and vice versa via N1) produce numbers matching neither real
   global nor `\numberwithin` numbering.
@@ -219,9 +223,9 @@ real documents come out mis-numbered. `mcp_monorepo/servers/tex_component_tools/
    see N5 status; plus design flag N14); cycle guard in `_recursive_reset` + the N13
    parse fix it was fed by (**done 2026-10-28**, see N8/N13 status); duplicate-label
    warning in `_find_labels` (**done 2026-10-28**, see N6 status); includegraphics search
-   fix (**done 2026-10-28**, see N7/P2 status); word-boundary test for
-   `\swapnumbers`. N4 (ref display text) is a design decision, not a bug fix — flag
-   separately.
+   fix (**done 2026-10-28**, see N7/P2 status); word-boundary test for `\swapnumbers`
+   (**done 2026-10-29**, see N9 status). N4 (ref display text) is a design decision, not
+   a bug fix — flag separately.
 5. **P1** — single preamble parse threaded through `divide_latex_text`.
 
 ## 6. Reproduction (executed 2026-10-25)
