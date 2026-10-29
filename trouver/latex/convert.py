@@ -6,7 +6,7 @@
 __all__ = ['DEFAULT_NUMBERED_ENVIRONMENTS', 'COMMON_SECTION_TITLES', 'setup_reference_from_latex_parts',
            'convert_notes_to_latex_code']
 
-# %% ../../nbs/04_latex_20.convert.ipynb #a3603a95
+# %% ../../nbs/04_latex_20.convert.ipynb #c458a75e
 import os
 from os import PathLike
 from pathlib import Path
@@ -47,12 +47,12 @@ from ..personal_vault.note_processing import process_standard_information_note
 from ..personal_vault.reference import setup_folder_for_new_reference
 from ..obsidian.vault import VaultNote
 
-# %% ../../nbs/04_latex_20.convert.ipynb #57d5d0bb
+# %% ../../nbs/04_latex_20.convert.ipynb #71132d21
 DEFAULT_NUMBERED_ENVIRONMENTS = ['theorem', 'corollary', 'lemma', 'proposition',
                                  'definition', 'conjecture', 'remark', 'example',
                                  'question']
 
-# %% ../../nbs/04_latex_20.convert.ipynb #317d7f6c
+# %% ../../nbs/04_latex_20.convert.ipynb #863be640
 def _replace_custom_commands_in_parts(
         parts: list[DividedLatexPart],
         custom_commands: list[tuple[str, int, Union[str, None], str]],
@@ -89,7 +89,7 @@ def _replace_custom_commands_in_parts(
 #         for part in parts]
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #965abf28
+# %% ../../nbs/04_latex_20.convert.ipynb #7837114e
 def _adjust_common_section_titles_in_parts(
         parts: list[DividedLatexPart],
         reference_name: str) -> list[DividedLatexPart]:
@@ -132,10 +132,10 @@ def _adjusted_title(
     else:
         return title 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #9c2bb677
+# %% ../../nbs/04_latex_20.convert.ipynb #bb9a132d
 # def _create_links_for_ref_commands(parts: list[tuple[str, str]])
 
-# %% ../../nbs/04_latex_20.convert.ipynb #3c2ae513
+# %% ../../nbs/04_latex_20.convert.ipynb #53be1a5b
 def _make_links_in_index_notes(
         links_to_make: dict[str, dict[str, list[str]]],
         title_numbering_folder_map: dict[str, tuple[str, str]],
@@ -170,7 +170,7 @@ def _make_links_in_index_note_for_section(
     mf.write(section_index_note)
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #2849aba3
+# %% ../../nbs/04_latex_20.convert.ipynb #1a60a61c
 def _note_names_from_part(
         parts: list[DividedLatexPart],
         vault: Path,
@@ -189,7 +189,7 @@ def _note_names_from_part(
         note_names.append(unique_note_name)
     return note_names
 
-# %% ../../nbs/04_latex_20.convert.ipynb #d36695c9
+# %% ../../nbs/04_latex_20.convert.ipynb #ed1e100c
 def _create_part_or_update(
         part: DividedLatexPart,
         title_numbering_folder_map: dict[str, tuple[str, str]],
@@ -295,7 +295,7 @@ def _update_links_to_make(
     
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #4263c5b5
+# %% ../../nbs/04_latex_20.convert.ipynb #67646198
 def _create_notes_from_parts(
         parts: list[DividedLatexPart],
         chapters: list[list[str]],
@@ -328,7 +328,7 @@ def _create_notes_from_parts(
         links_to_make, title_numbering_folder_map, vault,
         reference_folder, reference_name)
 
-# %% ../../nbs/04_latex_20.convert.ipynb #3cc04d86
+# %% ../../nbs/04_latex_20.convert.ipynb #fbb99351
 def _extract_latex_labels(text):
     """
     Helper function to `_find_labels`.
@@ -342,7 +342,7 @@ def _extract_latex_labels(text):
     return [label.strip() for label in labels]  # Strip any remaining whitespace
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #fb3b3d2d
+# %% ../../nbs/04_latex_20.convert.ipynb #3eddb39a
 def _find_labels(
         parts: list[DividedLatexPart],
         note_names: list[str],
@@ -364,7 +364,7 @@ def _find_labels(
     return labels_and_note_names
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #a9a7329f
+# %% ../../nbs/04_latex_20.convert.ipynb #8b943420
 def _add_links_to_refs(
         parts: list[DividedLatexPart],
         labels_and_note_names: dict[str, str]
@@ -386,7 +386,7 @@ def _add_links_to_refs(
     return modified_parts
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #f70316d6
+# %% ../../nbs/04_latex_20.convert.ipynb #900c3d29
 def _create_images_folder(
         image_path: PathLike,
         new_vault: PathLike,
@@ -400,52 +400,88 @@ def _create_images_folder(
         elif item.is_dir():
             shutil.copytree(item, new_images_folder / item.name)
 
-# %% ../../nbs/04_latex_20.convert.ipynb #46acd6aa
+# %% ../../nbs/04_latex_20.convert.ipynb #3ca3450f
+def _index_image_files(image_path: PathLike) -> dict[str, list[str]]: # The keys are the image file names without extensions; the values are the files' paths relative to `image_path`.
+    """Index the image files under `image_path` by file name (without extension).
+
+    Helper function to `_replace_includegraphics_with_embedded_links_in_parts`.
+    """
+    by_base: dict[str, list[str]] = {}
+    for root, dirs, files in os.walk(image_path):
+        for file in files:
+            base, _ = os.path.splitext(file)
+            relpath = Path(root, file).relative_to(image_path).as_posix()
+            by_base.setdefault(base, []).append(relpath)
+    return by_base
+
+
+# %% ../../nbs/04_latex_20.convert.ipynb #9feba421
+def _resolve_includegraphics_target(
+        filename: str,
+        image_index: dict[str, list[str]],
+        ) -> Optional[str]: # The path of the matching image relative to the images folder, or `None` if no file matches.
+    """Resolve a `\includegraphics` argument to an image file in `image_index`.
+
+    A name with an extension is returned as-is. A name without one matches on the
+    file name (any extension), preferring the match in the same subfolder; multiple
+    remaining matches warn and resolve to the first in sorted order, and no match
+    warns and returns `None`.
+
+    Helper function to `_replace_includegraphics_with_embedded_links_in_parts`.
+    """
+    base, ext = os.path.splitext(filename)
+    if ext:
+        return filename
+    candidates = sorted(image_index.get(Path(base).name, []))
+    if not candidates:
+        warnings.warn(f"Image '{filename}' was not found in the images folder; leaving the \\includegraphics as-is.")
+        return None
+    in_same_folder = [c for c in candidates if Path(c).with_suffix('') == Path(base)]
+    if len(in_same_folder) > 1:
+        warnings.warn(f"Multiple images match '{filename}': {', '.join(in_same_folder)}; using '{in_same_folder[0]}'.")
+        return in_same_folder[0]
+    if in_same_folder:
+        return in_same_folder[0]
+    if len(candidates) > 1:
+        warnings.warn(f"Multiple images match '{filename}': {', '.join(candidates)}; using '{candidates[0]}'.")
+    return candidates[0]
+
+
+# %% ../../nbs/04_latex_20.convert.ipynb #ee518e47
 def _replace_includegraphics_with_embedded_links_in_parts(
         parts: list[DividedLatexPart],
         image_path: PathLike,
         ) -> list[DividedLatexPart]:
     r"""
-    A helper function to `setup_reference_from_latex_parts`. 
+    A helper function to `setup_reference_from_latex_parts`.
 
     Replaces invocations of `\includegraphics` with wikistyle embedded links to the
-    images. Searches for the image file's extension within `image_path` if needed.
+    images. Searches for the image file's extension within `image_path` if needed,
+    keeping the subfolder path in the link. An unmatched image is left as-is with a
+    `UserWarning`, and multiple matches warn (the first in sorted order wins).
     Adds double newlines around the embedded link.
     """
-    new_parts: list[DividedLatexPart] = []
     pattern = re.compile(r'\\includegraphics(?:\[.*?\])?{(.*?)}')
+    image_index = _index_image_files(image_path)
 
     def replacement_func(match):
-        filename = match.group(1)
-        base, ext = os.path.splitext(filename)
-        if not ext:
-            # Search for the file with any extension
-            for root, dirs, files in os.walk(image_path):
-                for file in files:
-                    if file.startswith(base + '.'):
-                        filename = file
-                        break
-                if filename != base:
-                    break
-        
-        embedded_link = f'![[{filename}]]'
-        
+        target = _resolve_includegraphics_target(match.group(1), image_index)
+        if target is None:
+            return match.group(0)
         # Always add double newlines around the embedded link
-        return f'\n\n{embedded_link}\n\n'
+        return f'\n\n![[{target}]]\n\n'
 
+    new_parts: list[DividedLatexPart] = []
     for part in parts:
-        replaced_text = re.sub(pattern, replacement_func, part['text'])
-        # Trim leading and trailing whitespace
-        replaced_text = replaced_text.strip()
-        new_part = DividedLatexPart(
+        replaced_text = re.sub(pattern, replacement_func, part['text']).strip()
+        new_parts.append(DividedLatexPart(
             note_title=part['note_title'],
-            text = replaced_text)
-        new_parts.append(new_part)
+            text=replaced_text))
 
     return new_parts
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #c3c972f5
+# %% ../../nbs/04_latex_20.convert.ipynb #2be4e135
 # TODO: test parts without a subsection.
 # TODO: somehow contents before a section are not inclued. Fix this bug.
 # TODO: If section titles are completely empty, e.g. https://arxiv.org/abs/math/0212208,
@@ -564,7 +600,7 @@ def setup_reference_from_latex_parts(
     
 
 
-# %% ../../nbs/04_latex_20.convert.ipynb #3262d1c4
+# %% ../../nbs/04_latex_20.convert.ipynb #ed89860f
 def _highlight_latex_math(latex_str):
     # Case 2: Double dollar signs
     if latex_str.startswith('$$') and latex_str.endswith('$$'):
@@ -590,7 +626,7 @@ def _highlight_latex_math(latex_str):
     # If none of the above cases match, return the original string
     return latex_str
 
-# %% ../../nbs/04_latex_20.convert.ipynb #4c0baee4
+# %% ../../nbs/04_latex_20.convert.ipynb #9929f699
 def convert_notes_to_latex_code(
         notes: list[VaultNote],
         vault: PathLike,

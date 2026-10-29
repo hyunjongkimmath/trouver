@@ -96,6 +96,13 @@ with no warning.
   the no-extension search loop leaves `filename` stale from a previous match when nothing
   is found (broken `![[base]]` links); matches on basename only (drops subfolder path);
   picks arbitrarily among multiple matches; re-walks the image folder per `\includegraphics`.
+  **Fixed 2026-10-28:** the walk is hoisted into `_index_image_files` (once per call —
+  also closes P2) and resolution moved to `_resolve_includegraphics_target`: extensionless
+  names match on basename with a preference for the same subfolder, the wikilink keeps the
+  relative path (`![[figures/fig1.png]]`), no match warns and leaves the original
+  `\includegraphics` as-is (no more broken `![[base]]`), and multiple matches warn and
+  resolve to the first in sorted order. Pinned by test cells `n7t1`–`n7t3` in
+  `04_latex_20.convert`.
 - **N8** `_recursive_reset` (`divide.py:792-799`) / `_is_numberedwithin`
   (`divide.py:553-562`): no cycle guard — any self- or mutual-loop in the reset
   hierarchy recurses to `RecursionError`. **Root cause identified (N13, below):** the
@@ -187,7 +194,8 @@ remains open (deferred follow-up).
   `get_reset_hierarchy` (→ `get_counter_hierarchy` again), `display_names_of_environments`,
   plus a final pass. Compute once, thread the result through.
 - **P2** `_replace_includegraphics…` `os.walk`s the image folder per no-extension
-  `\includegraphics` (see N7).
+  `\includegraphics` (see N7). **Closed 2026-10-28** with the N7 fix: the walk is hoisted
+  into `_index_image_files`, run once per call; per-image resolution is a dict lookup.
 
 ## 4. Test coverage
 
@@ -210,7 +218,8 @@ real documents come out mis-numbered. `mcp_monorepo/servers/tex_component_tools/
 4. **N5/N6/N7/N8/N9** — robustness: `None` guard in `divide_preamble` (**done 2026-10-27**,
    see N5 status; plus design flag N14); cycle guard in `_recursive_reset` + the N13
    parse fix it was fed by (**done 2026-10-28**, see N8/N13 status); duplicate-label
-   warning in `_find_labels` (**done 2026-10-28**, see N6 status); includegraphics search fix; word-boundary test for
+   warning in `_find_labels` (**done 2026-10-28**, see N6 status); includegraphics search
+   fix (**done 2026-10-28**, see N7/P2 status); word-boundary test for
    `\swapnumbers`. N4 (ref display text) is a design decision, not a bug fix — flag
    separately.
 5. **P1** — single preamble parse threaded through `divide_latex_text`.
