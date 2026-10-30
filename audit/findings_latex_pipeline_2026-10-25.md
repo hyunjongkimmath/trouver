@@ -196,7 +196,15 @@ export clean — 0 commented defs and exactly one def per name in the generated 
   `numbered_newtheorems_counters_in_preamble`, `numberwithins_in_preamble`,
   `get_counter_hierarchy` (re-calls both *and* `divide_preamble` directly),
   `get_reset_hierarchy` (→ `get_counter_hierarchy` again), `display_names_of_environments`,
-  plus a final pass. Compute once, thread the result through.
+  plus a final pass. Compute once, thread the result through. **Fixed 2026-10-29** — test-net-first:
+  new cell `p1t1` counts `divide_preamble` calls during one `divide_latex_text` run (red at ~9,
+  green at exactly 1). Fix: the five preamble-parsing exports keep their signatures as thin wrappers
+  over new private cores (`_numbered_newtheorems_counters`, `_numberwithins`, `_counter_hierarchy`,
+  `_children_by_parent`, `_display_names_of_environments`) that take a comment-stripped preamble;
+  `divide_latex_text` now calls `divide_preamble` + `remove_comments` once and threads the result
+  (also drops the dead `explicit_numberwithins` line). One intentional unification: the
+  display-names path now strips comments too, like the other four. Exec gate green (0 error
+  outputs); full export clean — wrappers once each in `divide.py`, cores private (absent).
 - **P2** `_replace_includegraphics…` `os.walk`s the image folder per no-extension
   `\includegraphics` (see N7). **Closed 2026-10-28** with the N7 fix: the walk is hoisted
   into `_index_image_files`, run once per call; per-image resolution is a dict lookup.
@@ -226,7 +234,7 @@ real documents come out mis-numbered. `mcp_monorepo/servers/tex_component_tools/
    fix (**done 2026-10-28**, see N7/P2 status); word-boundary test for `\swapnumbers`
    (**done 2026-10-29**, see N9 status). N4 (ref display text) is a design decision, not
    a bug fix — flag separately.
-5. **P1** — single preamble parse threaded through `divide_latex_text`.
+5. **P1** — single preamble parse threaded through `divide_latex_text` (**done 2026-10-29**, see P1 status).
 
 ## 6. Reproduction (executed 2026-10-25)
 
