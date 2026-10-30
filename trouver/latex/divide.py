@@ -9,7 +9,7 @@ __all__ = ['SECOND_PARAMETER_PATTERN', 'SECOND_PARAMETER_PATTERN_WITH_OPTIONAL_S
            'DividedLatexPart', 'get_node_from_simple_text', 'text_from_node', 'swap_numbers_invoked',
            'divide_latex_text']
 
-# %% ../../nbs/04_latex_00.divide.ipynb #c561054e
+# %% ../../nbs/04_latex_00.divide.ipynb #3a07697f
 from itertools import product
 from os import PathLike
 import re
@@ -30,7 +30,7 @@ from ..helper.latex.comments import remove_comments
 from .formatting import replace_commands_in_latex_document, replace_input_and_include, custom_commands
 from .preamble import divide_preamble, replace_inclusion_of_style_file_with_code
 
-# %% ../../nbs/04_latex_00.divide.ipynb #fc034ea3
+# %% ../../nbs/04_latex_00.divide.ipynb #47504cb6
 # matches `\newtheorem{theorem}{Theorem}`, `\newtheorem{proposition}[theorem]{Proposition}`
 # does not match `\newtheorem{theorem}{Theorem}[Section]`
 
@@ -93,7 +93,7 @@ ENVIRONMENT_PATTERN = regex.compile(
         r'\{((?>[^{}]+|\{(?1)\})*)\}',
         regex.MULTILINE)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #6e92db8f
+# %% ../../nbs/04_latex_00.divide.ipynb #db8e9a2b
 class NoDocumentNodeError(Exception):
     """Exception raised when a LatexEnvironmentNode corresponding to the document 
     environment is expected in a LaTeX string, but no such node exists.
@@ -109,7 +109,7 @@ class NoDocumentNodeError(Exception):
             f"The following text does not contain a document environment:\n{text}")
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #8c07060a
+# %% ../../nbs/04_latex_00.divide.ipynb #71ebe75d
 def find_document_node(
         text: str, # LaTeX str
         document_environment_name: str = "document" # The name of the document environment.
@@ -128,7 +128,7 @@ def find_document_node(
             return node
     raise NoDocumentNodeError(text)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #6e0069b7
+# %% ../../nbs/04_latex_00.divide.ipynb #1d0044e7
 def environment_names_used(
         text: str # LaTeX document
         ) -> set[str]: # The set of all environment names used in the main document.
@@ -139,7 +139,7 @@ def environment_names_used(
     return {node.environmentname for node in document_node.nodelist
             if node.isNodeType(LatexEnvironmentNode)}        
 
-# %% ../../nbs/04_latex_00.divide.ipynb #be3db73a
+# %% ../../nbs/04_latex_00.divide.ipynb #43c66704
 def _search_counters_by_pattern(
         preamble: str,
         newtheorem_regex: re.Pattern, # This is supposed to be a regex that detects and captures parameters of `\newtheorem` commands.
@@ -159,7 +159,7 @@ def _search_counters_by_pattern(
         counters[env_name] = counter
     return counters
 
-# %% ../../nbs/04_latex_00.divide.ipynb #2562e07b
+# %% ../../nbs/04_latex_00.divide.ipynb #ab20eec2
 def _article_is_amsart_or_article(
         preamble: str # The preamble with no comments
         ):
@@ -168,7 +168,7 @@ def _article_is_amsart_or_article(
     """
     return bool(re.search(r'\\documentclass\s*(\[\s*(.*?)\s*\])?\s*\{\s*(amsart|article)\}', preamble))
 
-# %% ../../nbs/04_latex_00.divide.ipynb #6cde6b0f
+# %% ../../nbs/04_latex_00.divide.ipynb #49b5e05d
 def _combine_second_and_third_paramter_results(preamble):
     """
     Inspect invocations of the `\newtheorem` command in the preamble,
@@ -235,7 +235,7 @@ def _newenvironment_counters(preamble: str) -> dict[str, tuple[str, None]]:
     return counters
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #ec146bf2
+# %% ../../nbs/04_latex_00.divide.ipynb #9fd8c33a
 def numbered_newtheorems_counters_in_preamble(
         document: str, # The LaTeX document
         add_equation_counter: Optional[bool] = None, # Determines whether or not the `equation` environment will have a counter added when a `newthoerem` command for the `equation` environment is not explicitly invoked in the preamble. If `None`, then the counter is added if the article is of class `amsart` or `article`. If `True`, then the counter is added. If `False`, then the counter is not added.
@@ -279,7 +279,7 @@ def numbered_newtheorems_counters_in_preamble(
     return _numbered_newtheorems_counters(remove_comments(preamble), add_equation_counter)
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #a1f594d7
+# %% ../../nbs/04_latex_00.divide.ipynb #f638d43a
 def numberwithins_in_preamble(
         document: str # The LaTeX document
     ) -> dict[str, str]: # The keys are the first arguments of `numberwithin` invocations and the values ar ethe second arguments of `numberwithin` invocations.
@@ -296,7 +296,7 @@ def numberwithins_in_preamble(
     return _numberwithins(remove_comments(preamble))
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #efb77759
+# %% ../../nbs/04_latex_00.divide.ipynb #3fcf0528
 def get_counter_hierarchy(document: str) -> dict[str, str]:
     """Builds a map of child_counter -> parent_counter from the preamble declarations.
 
@@ -308,14 +308,14 @@ def get_counter_hierarchy(document: str) -> dict[str, str]:
     return _counter_hierarchy(remove_comments(preamble))
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #6036b4bd
+# %% ../../nbs/04_latex_00.divide.ipynb #eb0f4493
 def get_reset_hierarchy(document: str) -> dict[str, list[str]]:
     """Builds a map of parent_counter -> list_of_child_counters for resetting."""
     preamble, _ = divide_preamble(document)
     return _children_by_parent(_counter_hierarchy(remove_comments(preamble)))
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #ea46d277
+# %% ../../nbs/04_latex_00.divide.ipynb #e77a57f3
 def get_formatted_number(
         env_or_counter: str, 
         counters: dict[str, int], 
@@ -341,7 +341,7 @@ def get_formatted_number(
     
     return str(current_val)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #ab76dc2c
+# %% ../../nbs/04_latex_00.divide.ipynb #6a3b6b46
 def _search_display_names_by_pattern(
         preamble: str,
         newtheorem_regex: re.Pattern,
@@ -357,7 +357,7 @@ def _search_display_names_by_pattern(
         display_names[env_name] = display_name
     return display_names
 
-# %% ../../nbs/04_latex_00.divide.ipynb #70affdf8
+# %% ../../nbs/04_latex_00.divide.ipynb #9fdc43df
 def display_names_of_environments(
         document: str # The LaTeX document
         ) -> dict[str, str]:  
@@ -380,7 +380,7 @@ def display_names_of_environments(
     return _display_names_of_environments(remove_comments(preamble))
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #52a00ff8
+# %% ../../nbs/04_latex_00.divide.ipynb #61635ead
 class DividedLatexPart(TypedDict):
     """
     Encapsulates a part divided from a latex document. Represents an entry within the list outputted by `divide_latex_text`.
@@ -388,7 +388,7 @@ class DividedLatexPart(TypedDict):
     note_title: str # often encapsulates the note type (i.e. section/subsection/display text of a theorem-like environment) along with the numbering. Sometimes `title` is just a number, which means that `text` is not of a `\section` or `\subsection` command and not of a theorem-like environment.
     text: str  # `text` is the text of the part
 
-# %% ../../nbs/04_latex_00.divide.ipynb #e56ab3ea
+# %% ../../nbs/04_latex_00.divide.ipynb #aecb4533
 def _setup_counters(
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         ) -> dict[str, int]:
@@ -430,7 +430,7 @@ def _setup_counters(
     counters[''] = 0
     return counters
 
-# %% ../../nbs/04_latex_00.divide.ipynb #39eaaab2
+# %% ../../nbs/04_latex_00.divide.ipynb #5ff88fda
 def _setup_numberwithins(
         explicit_numberwithins: dict[str, str],
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]],
@@ -462,7 +462,7 @@ def _setup_numberwithins(
             
     return numberwithins 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #5f268e07
+# %% ../../nbs/04_latex_00.divide.ipynb #153aa1c1
 def _is_numberedwithin(
         counter_1, counter_2, numberwithins: dict[str, str]
         ) -> bool:
@@ -474,7 +474,7 @@ def _is_numberedwithin(
     return _is_numberedwithin(
         numberwithins[counter_1], counter_2, numberwithins)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #0983b05c
+# %% ../../nbs/04_latex_00.divide.ipynb #76ddcc22
 def _setup_all_numberwithins(explicit_numberwithins, numbertheorem_counters):
     """
     Ensures that parent_counter -> [child_counter1, child_counter2]
@@ -502,7 +502,7 @@ def _setup_all_numberwithins(explicit_numberwithins, numbertheorem_counters):
     return all_withins
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #88923d80
+# %% ../../nbs/04_latex_00.divide.ipynb #211c091e
 def _unnumbered_environments(
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]], # An output of `numbered_newtheorems_counters_in_preamble`
         display_names: dict[str, str]) -> set[str]:
@@ -516,7 +516,7 @@ def _unnumbered_environments(
 
     
 
-# %% ../../nbs/04_latex_00.divide.ipynb #3e1805f7
+# %% ../../nbs/04_latex_00.divide.ipynb #38b2e8a9
 def _section_title(
         text: str
         ) -> tuple[bool, str]: # The bool is `True` if the section/subsection is numbered (i.e. is `section` or `subsection` as opposed to `section*` or `subsection*`). The `str` is the title of the section or subsection
@@ -538,7 +538,7 @@ def _section_title(
     title = regex_search.group(2)
     return is_numbered, title
 
-# %% ../../nbs/04_latex_00.divide.ipynb #5ed47682
+# %% ../../nbs/04_latex_00.divide.ipynb #6b6bdc9b
 def _is_section_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode)
             and node.macroname == 'section')
@@ -588,11 +588,11 @@ def _environment_name_of_text(text: str):
     match = regex.match(ENVIRONMENT_PATTERN, text.lstrip())
     return match.group(1)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #0fe214f6
+# %% ../../nbs/04_latex_00.divide.ipynb #2633859f
 def _is_part_node(node: LatexNode):
     return (node.isNodeType(LatexMacroNode) and node.macroname == 'part')
 
-# %% ../../nbs/04_latex_00.divide.ipynb #f1f7e7ca
+# %% ../../nbs/04_latex_00.divide.ipynb #c16dc972
 def _is_numbered(
         node: LatexNode,
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]]
@@ -624,7 +624,7 @@ def _is_numbered(
         
     return False
 
-# %% ../../nbs/04_latex_00.divide.ipynb #b32963ed
+# %% ../../nbs/04_latex_00.divide.ipynb #058f8be2
 def get_node_from_simple_text(
         text: str) -> LatexNode:
     """Return the (first) `LatexNode` object from a str."""
@@ -634,7 +634,7 @@ def get_node_from_simple_text(
 
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #d497d5f7
+# %% ../../nbs/04_latex_00.divide.ipynb #7f2e3d0f
 def text_from_node(
         node: LatexNode) -> str:
     """Return the str representing `node`."""
@@ -649,7 +649,7 @@ def text_from_node(
     #     return full_text
     # return LatexNodes2Text().node_to_text(node)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #10a34139
+# %% ../../nbs/04_latex_00.divide.ipynb #cc4831a9
 def _recursive_reset(counter_name, counters, all_numberwithins, _seen=None):
     """Resets all descendant counters in the hierarchy."""
     if _seen is None:
@@ -664,7 +664,7 @@ def _recursive_reset(counter_name, counters, all_numberwithins, _seen=None):
             # Continue down the tree (e.g., section -> subsection -> subsubsection)
             _recursive_reset(child, counters, all_numberwithins, _seen)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #43a120ba
+# %% ../../nbs/04_latex_00.divide.ipynb #6f865c5d
 def _change_counters(
         node,
         counters,
@@ -709,7 +709,7 @@ def _change_counters(
     #     _recursive_reset(counter, counters, all_numberwithins)
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #2fa846b1
+# %% ../../nbs/04_latex_00.divide.ipynb #3ce5e882
 def _subsubnodes(
         subnode,
         ) -> list[LatexNode]: 
@@ -721,7 +721,7 @@ def _subsubnodes(
         return []
     return subnode.nodelist
 
-# %% ../../nbs/04_latex_00.divide.ipynb #7242a834
+# %% ../../nbs/04_latex_00.divide.ipynb #d6b0d271
 def _update_counter_for_subsubnodes(
         subnode,
         counters,
@@ -739,7 +739,7 @@ def _update_counter_for_subsubnodes(
        _change_counters(subsubnode, counters, numbertheorem_counters, all_numberwithins)
             
 
-# %% ../../nbs/04_latex_00.divide.ipynb #3c9308ba
+# %% ../../nbs/04_latex_00.divide.ipynb #28eda2f1
 def _change_counters_antecedently(
         node,
         counters,
@@ -767,7 +767,7 @@ def _change_counters_antecedently(
 
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #1011b19a
+# %% ../../nbs/04_latex_00.divide.ipynb #7f387845
 def _build_number_string(curr, counters, numberwithins):
     """Recursive helper to climb from subsubsection -> subsection -> section -> part."""
     current_val = counters.get(curr, 0)
@@ -779,7 +779,7 @@ def _build_number_string(curr, counters, numberwithins):
     
     return str(current_val)
 
-# %% ../../nbs/04_latex_00.divide.ipynb #6a7bf0b9
+# %% ../../nbs/04_latex_00.divide.ipynb #794ae329
 def _title_for_section_subsection_subsubsection_node(
         node: LatexNode,
         counters: dict[str, int],
@@ -800,7 +800,7 @@ def _title_for_section_subsection_subsubsection_node(
     return f"{numbering}. {title}"
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #618a546d
+# %% ../../nbs/04_latex_00.divide.ipynb #cf398226
 def _title_for_environment_node(
         node: LatexEnvironmentNode,
         numbertheorem_counters: dict[str, tuple[str, Union[str, None]]],
@@ -822,7 +822,7 @@ def _title_for_environment_node(
     else:
         return f"{display_name} {numbering}."
 
-# %% ../../nbs/04_latex_00.divide.ipynb #5bdf784a
+# %% ../../nbs/04_latex_00.divide.ipynb #d37fce1a
 def _title(
         node: LatexNode,
         numbertheorem_counters: dict[str, str],
@@ -875,7 +875,7 @@ def swap_numbers_invoked(
     return re.search(r'\\swapnumbers(?![a-zA-Z0-9])', preamble) is not None
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #fe528d10
+# %% ../../nbs/04_latex_00.divide.ipynb #8eb06c9a
 def _node_warrants_own_part(
         node, environments_to_not_divide_along: list[str],
         accumulation: str, parts: list[tuple[str, str]]) -> bool:
@@ -894,7 +894,7 @@ def _node_warrants_own_part(
         return True
     return node.environmentname not in environments_to_not_divide_along
 
-# %% ../../nbs/04_latex_00.divide.ipynb #d08c30be
+# %% ../../nbs/04_latex_00.divide.ipynb #3937d2c4
 def _node_is_proof_immediately_following_a_theorem_like_environment(
         node, accumulation, parts, display_names) -> bool:
     """Return `True` if `node` is that of a proof environment that immediately
@@ -940,7 +940,7 @@ def _node_is_nonspecial_following_a_sectionlike_node(
     # return _text_is_of_section_like_node(parts[-1]["text"])
     
 
-# %% ../../nbs/04_latex_00.divide.ipynb #9b6cfece
+# %% ../../nbs/04_latex_00.divide.ipynb #61d4a11c
 def _process_node(
         node,
         environments_to_not_divide_along: list[str],
@@ -993,7 +993,7 @@ def _process_node(
 
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #1c77279e
+# %% ../../nbs/04_latex_00.divide.ipynb #2913807f
 def _append_non_environment_accumulation_to_parts_if_non_empty(
         accumulation: str,
         counters,
@@ -1010,7 +1010,7 @@ def _append_non_environment_accumulation_to_parts_if_non_empty(
         return accumulation.strip()
 
 
-# %% ../../nbs/04_latex_00.divide.ipynb #b48c19b4
+# %% ../../nbs/04_latex_00.divide.ipynb #84057759
 DEFAULT_ENVIRONMENTS_TO_NOT_DIVIDE_ALONG = [
     'align', 'align*', 'center', 'diagram', 'displaymath', 'displaymath*', 'enumerate', 'eqnarray', 'eqnarray*',
     'equation', 'equation*', 'gather', 'gather*', 'itemize', 'label',

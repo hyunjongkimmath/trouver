@@ -71,7 +71,12 @@ cleanup.
 display text stays the literal `\ref{…}`. No LaTeX compiler exists anywhere in the
 project, so note bodies never show actual numbers; only part titles carry computed
 counters. Undefined labels (defined in a missing `\input` file) are silently left as-is
-with no warning.
+with no warning. **Decided 2026-10-29 (owner): keep as-is.** The link target's note
+title carries the resolved numbering — divide computes counter state and bakes it into
+each part title, and `_find_labels` maps labels to those titled notes — so a ref is
+navigable to its numbered destination even though the inline display text stays raw.
+Accepted residual: refs on unnumbered/untitled parts (`…_UNTITLED_SECTION`) carry no
+number, and the visible `\ref{…}` text is cosmetic ugliness only.
 
 **Other correctness bugs:**
 - **N5** `divide_preamble` (`preamble.py:13-23`): `match.span()` with no `None` check —
@@ -160,7 +165,15 @@ with no warning.
   produce garbage (no preamble → no counter definitions). Options: (a) leave it — walker
   skips/logs non-document files; (b) expand `\input`/`\include` into the main file before
   dividing (one document per paper, matching how LaTeX compiles them), which also fixes
-  N4's "label defined in a missing `\input` file" case for refs. Owner decision.
+  N4's "label defined in a missing `\input` file" case for refs. **Decided 2026-10-30
+  (owner): option (c) — divide preamble-less files with an empty preamble.** No document
+  environment → the whole file is body, preamble = empty; fragments divide into their own
+  notes and content completeness is restored without any expansion machinery. `find_main_latex_file`
+  is unaffected (it scans file contents directly). Accepted residuals: fragment parts carry
+  no numbering (no counter definitions) and cross-file `\ref`s don't resolve — same class
+  of cosmetic residual as N4; the loud `ValueError` canary for truncated/corrupt files is
+  dropped by design (a fragment and a broken file are indistinguishable). Option (b) stays
+  on the shelf if numbering/refs fidelity across multi-file papers ever matters in practice.
 
 ## 2. Standards violations (per `_nbdev_development/specs/CODING_STANDARDS/`)
 
@@ -232,8 +245,9 @@ real documents come out mis-numbered. `mcp_monorepo/servers/tex_component_tools/
    parse fix it was fed by (**done 2026-10-28**, see N8/N13 status); duplicate-label
    warning in `_find_labels` (**done 2026-10-28**, see N6 status); includegraphics search
    fix (**done 2026-10-28**, see N7/P2 status); word-boundary test for `\swapnumbers`
-   (**done 2026-10-29**, see N9 status). N4 (ref display text) is a design decision, not
-   a bug fix — flag separately.
+   (**done 2026-10-29**, see N9 status). N4 (ref display text): **decided 2026-10-29
+   (owner) — keep as-is** (see N4 status; the link target's note title carries the
+   resolved numbering).
 5. **P1** — single preamble parse threaded through `divide_latex_text` (**done 2026-10-29**, see P1 status).
 
 ## 6. Reproduction (executed 2026-10-25)
