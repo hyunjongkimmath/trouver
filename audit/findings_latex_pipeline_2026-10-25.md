@@ -7,6 +7,11 @@ corpus data side (`latex_full`). Motivating complaint: running the latex setup o
 yields "numberings not being correct". Line numbers cite the generated `trouver/latex/*.py`
 as of 2026-10-25 (source of truth: the `nbs/04_latex_*` notebooks).
 
+**Close-out 2026-10-30:** every finding is resolved — N1–N3, N5–N13 fixed, S1–S6 and
+P1–P2 shipped, N4 (keep raw ref display text) and N14 (option c: preamble-less files
+divide as body-only) decided by the owner. This file is frozen evidence; it stays in
+`audit/` in place.
+
 ## 1. Correctness — why numbering comes out wrong on real documents
 
 **N1 (main suspect): equation counter forced to reset per section.**
