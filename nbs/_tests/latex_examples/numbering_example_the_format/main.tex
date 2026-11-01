@@ -1,0 +1,23 @@
+% Provenance: minimal model of the \renewcommand{\thetheo}{\Alph{theo}}
+% redefinition in kudo et al., which pdflatex renders as "Theorem A", ...
+
+\documentclass{article}
+
+\newtheorem{theo}{Theorem}
+\renewcommand{\thetheo}{\Alph{theo}}
+
+\begin{document}
+\section{One}
+\begin{theo}
+First theorem.
+\end{theo}
+
+\begin{theo}
+Second theorem.
+\end{theo}
+
+\section{Two}
+\begin{theo}
+Third theorem.
+\end{theo}
+\end{document}

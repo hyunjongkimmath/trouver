@@ -1,0 +1,25 @@
+% Provenance: minimal model of the discarded \if 0 ... \fi blocks in kudo et al.
+% (section3.tex, main.tex), which pdflatex skips entirely.
+
+\documentclass{article}
+
+\newtheorem{thm}{Theorem}[section]
+
+\begin{document}
+\section{Live One}
+\begin{thm}
+A live theorem.
+\end{thm}
+
+\if 0
+\section{Dead Section}
+\begin{thm}
+A dead theorem that must not be numbered.
+\end{thm}
+\fi
+
+\section{Live Two}
+\begin{thm}
+Numbered as if the dead block never existed.
+\end{thm}
+\end{document}
