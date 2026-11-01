@@ -1,0 +1,3 @@
+# Index
+
+- [[target_note]]
