@@ -105,7 +105,7 @@ One-line summary.
 Optional: More details if necessary.
 
 **Parameters**
-- `x` (*str*) — The input.
+- `x` - `str`: The input.
 
 **Returns**
 ... (only when the return is non-obvious).
