@@ -4,11 +4,11 @@
 __all__ = ['find_regex_in_text', 'separate_indices_from_str', 'replace_string_by_indices', 'latex_indices',
            'inline_latex_indices']
 
-# %% ../../nbs/01_helper_04.regex.ipynb #eb56f392
+# %% ../../nbs/01_helper_04.regex.ipynb #0aa09ca9
 import re
 from typing import Pattern, Sequence, Union
 
-# %% ../../nbs/01_helper_04.regex.ipynb #fd7d5a37
+# %% ../../nbs/01_helper_04.regex.ipynb #44b938dd
 def find_regex_in_text(
         text: str, # Text in which to find regex patter
         pattern: str | Pattern[str] # The regex pattern
@@ -22,7 +22,7 @@ def find_regex_in_text(
     # print(matches)
     return [match.span() for match in matches]
 
-# %% ../../nbs/01_helper_04.regex.ipynb #dfa3542d
+# %% ../../nbs/01_helper_04.regex.ipynb #e0ba6d7c
 def separate_indices_from_str(
         text: str,
         indices: list[tuple[int, int]] # The indices for substrings in `text` to separate.
@@ -45,7 +45,7 @@ def separate_indices_from_str(
     parts.append(text[last_pair[1]:])
     return parts
 
-# %% ../../nbs/01_helper_04.regex.ipynb #8e7ec6ef
+# %% ../../nbs/01_helper_04.regex.ipynb #2eb17672
 def replace_string_by_indices(
         string: str, # String in which to make replacemenets 
         replace_ranges: Sequence[Union[Sequence[int], int]], # A list of lists/tuples of int's or a single list/tuple of int's. Each 
@@ -57,13 +57,13 @@ def replace_string_by_indices(
 
     **Parameters**
 
-    - ``string`` - `str`
-    - ``replace_ranges`` - `Sequence[Sequence[int] | int]`
+    - `string` - `str`
+    - `replace_ranges` - `Sequence[Sequence[int] | int]`
         - Either a list of lists/tuples of one or two int's. A list/tuple
         ``[a,b]`` or ``(a,b)`` means that ``string[a:b]`` is to be replaced.
         ``[a]`` or ``(a)`` means that ``string[a:]`` is to be replaced. The ranges should
         not overlap and should be arranged in chronological order.
-    - ``replace_with`` - `Sequence[str] | str`
+    - `replace_with` - `Sequence[str] | str`
         - The str's which will replace the parts represented by 
         ``replace_ranges``. ``replace_ranges`` and ``replace_with`` must be
         both lists or both not lists. If they are lists, they must be of 
@@ -110,7 +110,7 @@ def _str_parts(string, replace_ranges, replace_with):
     str_parts.append(string[unreplaced_start_index:])
     return str_parts
 
-# %% ../../nbs/01_helper_04.regex.ipynb #b6d129de
+# %% ../../nbs/01_helper_04.regex.ipynb #2242c8d9
 def latex_indices(
         text: str,
         ) -> list[tuple[int, int]]:
@@ -121,7 +121,7 @@ def latex_indices(
     
     **Parameters**
 
-    - text - str
+    - `text` - `str`
 
     **Returns**
 
@@ -149,7 +149,7 @@ def inline_latex_indices(
     
     **Parameters**
 
-    - text - str
+    - `text` - `str`
 
     **Returns**
 
@@ -174,5 +174,5 @@ def inline_latex_indices(
 #     pattern = re.compile(r"(?<!\\)\$\$.*?(?<!\\)\$\$|(?<!\\)\$.*?(?<!\\)\$", re.DOTALL)
 #     return find_regex_in_text(text, pattern)
 
-# %% ../../nbs/01_helper_04.regex.ipynb #3c56df23
+# %% ../../nbs/01_helper_04.regex.ipynb #5b33aac1
 #| export

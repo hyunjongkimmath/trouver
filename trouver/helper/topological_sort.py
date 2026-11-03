@@ -4,12 +4,12 @@
 __all__ = ['containing_string_priority', 'default_str_comparison', 'natsort_comparison', 'graph_for_topological_sort',
            'dict_with_keys_topologically_sorted']
 
-# %% ../../nbs/01_helper_12.topological_sort.ipynb #b1714bad
+# %% ../../nbs/01_helper_12.topological_sort.ipynb #67adaa0f
 from collections import OrderedDict
 from collections.abc import Iterable
 from typing import Callable
 
-# %% ../../nbs/01_helper_12.topological_sort.ipynb #a23c94c1
+# %% ../../nbs/01_helper_12.topological_sort.ipynb #e4b13669
 def containing_string_priority(str1: str, str2: str) -> int:
     """Returns 1, 0, -1 depending on whether one string contains the other.
     
@@ -17,8 +17,8 @@ def containing_string_priority(str1: str, str2: str) -> int:
     "contains" finite etale cover.
     
     **Parameters**
-    - str1 - str
-    - str2 - str
+    - `str1` - `str`
+    - `str2` - `str`
     """
     if str2 in str1:
         return -1
@@ -33,8 +33,8 @@ def default_str_comparison(str1: str, str2: str) -> int:
     """
     
     **Parameters**
-    - str1 - str
-    - str2 - str
+    - `str1` - `str`
+    - `str2` - `str`
     """
     if str1 > str2:
         return 1
@@ -48,8 +48,8 @@ def natsort_comparison(str1: str, str2: str) -> int:
     """
     
     **Parameters**
-    - str1 - str
-    - str2 - str
+    - `str1` - `str`
+    - `str2` - `str`
     """
     if str1 == str2:
         return 0
@@ -60,13 +60,13 @@ def natsort_comparison(str1: str, str2: str) -> int:
     else:
         return 1
 
-# %% ../../nbs/01_helper_12.topological_sort.ipynb #4e3550a6
+# %% ../../nbs/01_helper_12.topological_sort.ipynb #9b2a6eb0
 def graph_for_topological_sort(
         items_to_sort: Iterable[str],
         key_order: Callable[[str, str], int]) -> dict[str, set[str]]:
     """
     **Parameters**
-    - items_to_sort - Iterable[str]
+    - `items_to_sort` - `Iterable[str]`
     - key_order: Callable[[str, str], int]
         - Comparing str1 against str2 results in a positive number if
         str1 is "greater" than str2 (i.e. str1 is of a later priority)
@@ -90,7 +90,7 @@ def graph_for_topological_sort(
             graph[key_1].add(key_2)
     return graph
 
-# %% ../../nbs/01_helper_12.topological_sort.ipynb #7bcb7436
+# %% ../../nbs/01_helper_12.topological_sort.ipynb #f103dea4
 def dict_with_keys_topologically_sorted(
         dict_to_sort: dict[str],
         key_order: Callable[[str, str], int],
@@ -99,12 +99,12 @@ def dict_with_keys_topologically_sorted(
     the specified key order.
     
     **Parameters**
-    - dict_to_sort - dict[str]
+    - `dict_to_sort` - `dict[str]`
         - The dict whose keys need to be ordered.
     - key_order
         - The comparison function on the keys of `dict_to_sort`. Defaults to
         the key function for the comparison ``containing_string_priority``.
-    - reverse - bool
+    - `reverse` - `bool`
         - Defaults to `False`
         
     **Returns**

@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['all_custom_text_for_links_in_vault', 'all_links_in_vault']
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #412415de
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #cd9ce1e5
 from os import PathLike
 from pathlib import Path
 import re
@@ -13,7 +13,7 @@ from ..helper.files_and_folders import text_from_file
 from .vault import VaultNote, all_paths_to_notes_in_vault
 from .links import ObsidianLink, LinkType, links_from_text, LinkFormatError
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #15a69373
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #d54d7456
 def all_custom_text_for_links_in_vault(
         note: VaultNote, # The note to find the custom text for.
         vault: PathLike, # The path to the Obsidian vault directory
@@ -55,8 +55,8 @@ def _custom_text_for_links_in_text(
     """Helper function for finding custom text for links in a single file.
     
     **Parameters**
-    - text - str
-    - regex_object - re.Pattern
+    - `text` - `str`
+    - `regex_object` - `re.Pattern`
         - An object returned with the `re.compile` function. Matches
         wikilinks and markdown links.
         
@@ -69,7 +69,7 @@ def _custom_text_for_links_in_text(
              for start, end in match_ranges]
     return [link.custom_text for link in links]
 
-# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #013ec0a7
+# %% ../../nbs/03_obsidian_70.vault_and_links.ipynb #b080c0d5
 def all_links_in_vault(
         vault: PathLike, backlinks: bool = False, 
         multiplicities: bool = False) -> dict[str, list[str]]:
@@ -80,12 +80,12 @@ def all_links_in_vault(
     so that this does not happen.
     
     **Parameters**
-    - vault - PathLike
-    - backlinks - bool
+    - `vault` - `PathLike`
+    - `backlinks` - `bool`
         - If `True`, then keeps track of the links in each note.
         If `False`, then keeps track of the backlinks in each note,
         i.e. which other notes link to each note. Defaults to `False`.
-    - multiplicties - bool
+    - `multiplicties` - `bool`
         - If `True`, then keeps track of multiple links to the same note
         for each note. Otherwise, only keeps track of whether or not
         a note links to a(nother) note. Defaults to `False`.

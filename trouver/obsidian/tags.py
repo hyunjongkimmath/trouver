@@ -3,20 +3,20 @@
 # %% auto #0
 __all__ = ['to_tag_str', 'tag_without_hashtag', 'tag_is_auto_tag', 'strip_auto_from_tag']
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #134154d2
+# %% ../../nbs/03_obsidian_30.tags.ipynb #0b1b92c0
 def to_tag_str(tag_name):
     return f'#{tag_name}'
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #f45522a7
+# %% ../../nbs/03_obsidian_30.tags.ipynb #c1376154
 def tag_without_hashtag(tag):
     return tag[1:] if tag.startswith('#') else tag
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #e10fc331
+# %% ../../nbs/03_obsidian_30.tags.ipynb #ef63e8df
 def tag_is_auto_tag(tag):
     tag = tag_without_hashtag(tag)
     return tag.startswith('_auto/')
 
-# %% ../../nbs/03_obsidian_30.tags.ipynb #ec7e3a36
+# %% ../../nbs/03_obsidian_30.tags.ipynb #95c53e2c
 def strip_auto_from_tag(tag, with_hash_tag: bool = True) -> str:
     """Returns the tag without the `'_auto/'` prefix.
     
@@ -24,8 +24,8 @@ def strip_auto_from_tag(tag, with_hash_tag: bool = True) -> str:
     have the `'_auto/'` prefix to begin with.
     
     **Parameters**
-    - tag - str
-    - with_has_tag - bool
+    - `tag` - `str`
+    - `with_has_tag` - `bool`
         - If `True`, returns a str with a hash tag `'#'` in front.
         Defaults to `True`.
     """
