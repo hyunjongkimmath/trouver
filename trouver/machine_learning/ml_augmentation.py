@@ -42,8 +42,8 @@ def make_latex_recipe(column: str, methods: list[tuple[Callable, float]]) -> Cal
     dataset is regenerable from (pure dataset, recipe id, seed).
 
     **Parameters**
-    - `column` (*str*) — The row column holding the LaTeX text to mutate.
-    - `methods` (*list[tuple[Callable, float]]*) — `(method, p)` pairs, e.g. `LATEX_SAFE_METHODS`.
+    - `column` - `str`: The row column holding the LaTeX text to mutate.
+    - `methods` - `list[tuple[Callable, float]]`: `(method, p)` pairs, e.g. `LATEX_SAFE_METHODS`.
     """
     def recipe(row: dict, rng) -> dict:
         funcs = [lambda x, m=m, p=p: m(x, p=p, rng=rng) for m, p in methods]
@@ -58,10 +58,10 @@ def register_latex_recipe(name: str, column: str,
     Build a LaTeX recipe with `make_latex_recipe` and register it as `<name>_v<version>`.
 
     **Parameters**
-    - `name` (*str*) — Recipe name, e.g. `'latex_robust'`.
-    - `column` (*str*) — Row column to mutate.
-    - `methods` (*list[tuple[Callable, float]]*) — `(method, p)` pairs.
-    - `version` (*int*) — Bump when the method list or probabilities change.
+    - `name` - `str`: Recipe name, e.g. `'latex_robust'`.
+    - `column` - `str`: Row column to mutate.
+    - `methods` - `list[tuple[Callable, float]]`: `(method, p)` pairs.
+    - `version` - `int`: Bump when the method list or probabilities change.
     """
     recipe_id = f'{name}_v{version}'
     AUGMENTATION_RECIPES[recipe_id] = make_latex_recipe(column, methods)
@@ -73,7 +73,7 @@ def register_latex_recipe(name: str, column: str,
 register_latex_recipe('latex_robust', 'text', LATEX_SAFE_METHODS)
 register_latex_recipe('latex_noise', 'text', LATEX_NOISY_METHODS)
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #156ffb50
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #47fa5f3e
 def strip_newlines_text(text: str) -> str:
     """
     Replace every newline in `text` with a space — the division view transform.
@@ -85,7 +85,7 @@ def strip_newlines_text(text: str) -> str:
     zero-width span offsets stay valid untouched.
 
     **Parameters**
-    - `text` (*str*) — Text to flatten.
+    - `text` - `str`: Text to flatten.
     """
     return text.replace('\n', ' ')
 
@@ -101,7 +101,7 @@ def make_strip_newlines_recipe(column: str = 'text') -> Callable:
     apply `strip_newlines_text` to note text at inference so views match.
 
     **Parameters**
-    - `column` (*str*) — The row column holding the text to flatten.
+    - `column` - `str`: The row column holding the text to flatten.
     """
     def recipe(row: dict, rng) -> dict:
         row[column] = strip_newlines_text(row[column])
@@ -115,20 +115,20 @@ def register_strip_newlines_recipe(name: str, column: str = 'text',
     Build a newline-strip recipe with `make_strip_newlines_recipe` and register it as `<name>_v<version>`.
 
     **Parameters**
-    - `name` (*str*) — Recipe name, e.g. `'division_strip_newlines'`.
-    - `column` (*str*) — Row column to flatten.
-    - `version` (*int*) — Bump when the transform changes.
+    - `name` - `str`: Recipe name, e.g. `'division_strip_newlines'`.
+    - `column` - `str`: Row column to flatten.
+    - `version` - `int`: Bump when the transform changes.
     """
     recipe_id = f'{name}_v{version}'
     AUGMENTATION_RECIPES[recipe_id] = make_strip_newlines_recipe(column)
     return recipe_id
 
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #31472463
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #06fb31c0
 # The division task trains on the flattened view; eval stays pure (rule R5).
 register_strip_newlines_recipe('division_strip_newlines')
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #78565569
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #3c981470
 import difflib
 
 
@@ -144,9 +144,9 @@ def remap_spans(old_text: str, new_text: str, spans: list[dict]) -> list[dict] |
     offset (`j2 == j1` for consecutive opcodes).
 
     **Parameters**
-    - `old_text` (*str*) — Text before the edit.
-    - `new_text` (*str*) — Text after the edit.
-    - `spans` (*list[dict]*) — Zero-width spans in old-text coordinates.
+    - `old_text` - `str`: Text before the edit.
+    - `new_text` - `str`: Text after the edit.
+    - `spans` - `list[dict]`: Zero-width spans in old-text coordinates.
     """
     if old_text == new_text:
         return [dict(s) for s in spans]
@@ -186,9 +186,9 @@ def make_span_aware_latex_recipe(column: str, methods: list[tuple[Callable, floa
     almost no rows are lost.
 
     **Parameters**
-    - `column` (*str*) — Row column holding the LaTeX text.
-    - `methods` (*list[tuple[Callable, float]]*) — `(method, p)` pairs, e.g. `LATEX_SAFE_METHODS`.
-    - `spans_column` (*str*) — Row column holding zero-width spans to remap.
+    - `column` - `str`: Row column holding the LaTeX text.
+    - `methods` - `list[tuple[Callable, float]]`: `(method, p)` pairs, e.g. `LATEX_SAFE_METHODS`.
+    - `spans_column` - `str`: Row column holding zero-width spans to remap.
     """
     def recipe(row: dict, rng) -> dict:
         row[column], row[spans_column] = _apply_methods(
@@ -196,13 +196,13 @@ def make_span_aware_latex_recipe(column: str, methods: list[tuple[Callable, floa
         return row
     return recipe
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #130600a1
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #8b8f5192
 def compose_recipes(*recipes: Callable) -> Callable:
     """
     Apply row recipes left to right; a `None` from any of them drops the row.
 
     **Parameters**
-    - `recipes` (*Callable*) — Row recipes, each `fn(row, rng) -> dict | None`.
+    - `recipes` - `Callable`: Row recipes, each `fn(row, rng) -> dict | None`.
     """
     def recipe(row: dict, rng) -> dict:
         for r in recipes:
@@ -220,16 +220,16 @@ def register_span_aware_latex_recipe(name: str, column: str = 'text',
     Build a span-aware LaTeX recipe with `make_span_aware_latex_recipe` and register it as `<name>_v<version>`.
 
     **Parameters**
-    - `name` (*str*) — Recipe name, e.g. `'division_latex_robust'`.
-    - `column` (*str*) — Row column to mutate.
-    - `methods` (*list[tuple[Callable, float]]*) — `(method, p)` pairs.
-    - `version` (*int*) — Bump when the method list or probabilities change.
+    - `name` - `str`: Recipe name, e.g. `'division_latex_robust'`.
+    - `column` - `str`: Row column to mutate.
+    - `methods` - `list[tuple[Callable, float]]`: `(method, p)` pairs.
+    - `version` - `int`: Bump when the method list or probabilities change.
     """
     recipe_id = f'{name}_v{version}'
     AUGMENTATION_RECIPES[recipe_id] = make_span_aware_latex_recipe(column, methods)
     return recipe_id
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #46d28743
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #6260cfb0
 # Division rows train on the stripped view with latex noise applied first (on pure
 # text, seam offsets remapped per method); eval stays pure (rule R5).
 AUGMENTATION_RECIPES['division_latex_robust_v1'] = compose_recipes(
@@ -237,7 +237,7 @@ AUGMENTATION_RECIPES['division_latex_robust_v1'] = compose_recipes(
 AUGMENTATION_RECIPES['division_latex_noise_v1'] = compose_recipes(
     make_span_aware_latex_recipe('text', LATEX_NOISY_METHODS), make_strip_newlines_recipe())
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #2cf1f72a
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #60dd78b1
 def make_tiered_latex_recipe(column: str, base_methods: list[tuple[Callable, float]],
                              high_only_methods: list[tuple[Callable, float]] = (),
                              tier_weights: tuple = ((0.5, 0.40), (1.0, 0.35), (2.0, 0.25)),
@@ -252,11 +252,11 @@ def make_tiered_latex_recipe(column: str, base_methods: list[tuple[Callable, flo
     at every intensity, and the whole recipe stays regenerable from (row, seed).
 
     **Parameters**
-    - `column` (*str*) — Row column holding the LaTeX text.
-    - `base_methods` (*list[tuple[Callable, float]]*) — Methods active at every tier.
-    - `high_only_methods` (*list[tuple[Callable, float]]*) — Methods only at tiers with multiplier > 1.
-    - `tier_weights` (*tuple*) — `(multiplier, weight)` lottery; weights need not sum to 1.
-    - `spans_column` (*str*) — Row column holding zero-width spans to remap.
+    - `column` - `str`: Row column holding the LaTeX text.
+    - `base_methods` - `list[tuple[Callable, float]]`: Methods active at every tier.
+    - `high_only_methods` - `list[tuple[Callable, float]]`: Methods only at tiers with multiplier > 1.
+    - `tier_weights` - `tuple`: `(multiplier, weight)` lottery; weights need not sum to 1.
+    - `spans_column` - `str`: Row column holding zero-width spans to remap.
     """
     mults = [m for m, _ in tier_weights]
     weights = [w for _, w in tier_weights]
@@ -271,7 +271,7 @@ def make_tiered_latex_recipe(column: str, base_methods: list[tuple[Callable, flo
         return row
     return recipe
 
-# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #1aa0b919
+# %% ../../nbs/08_machine_learning_32.ml_augmentation.ipynb #37fef6f1
 # Division-tuned v2: char/Greek noise in the base tier (zero-width position labels
 # survive them); word/command deletion — the only seam-context removers — high tier only.
 DIVISION_V2_METHODS: list[tuple[Callable, float]] = [

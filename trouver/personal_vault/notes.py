@@ -25,9 +25,9 @@ def notes_linked_in_note(
     """Returns a list or dict of `VaultNote`s linked by a specified note.
 
     **Parameters**
-    - `list_note` - VaultNote: The note whose outgoing links to collect.
-    - `as_dict` - bool: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
-    - `link_map` - dict[str, list[str]] | None: Precomputed map of note name → linked note names (e.g. from `all_links_in_vault()`); when given, the note's text is not re-read. Building one reads the whole vault, so only pass it when you already have it or will query many notes. In list form, order follows the map (which keeps none), not the text order. Default `None`.
+    - `list_note` - `VaultNote`: The note whose outgoing links to collect.
+    - `as_dict` - `bool`: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
+    - `link_map` - `dict[str, list[str]] | None`: Precomputed map of note name → linked note names (e.g. from `all_links_in_vault()`); when given, the note's text is not re-read. Building one reads the whole vault, so only pass it when you already have it or will query many notes. In list form, order follows the map (which keeps none), not the text order. Default `None`.
 
     **Returns**
     Dict of note name → `VaultNote`, or a list of `VaultNote`s (see `as_dict`).
@@ -50,9 +50,9 @@ def notes_linked_in_notes_linked_in_note(
     """Returns the `VaultNote`s linked by the notes linked by a given note.
 
     **Parameters**
-    - `list_note` - VaultNote: The note whose second-degree links to collect.
-    - `as_dict` - bool: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
-    - `link_map` - dict[str, list[str]] | None: Precomputed map of note name → linked note names; when given, no note text is re-read (see `notes_linked_in_note` for when that pays off and for the ordering caveat). Default `None`.
+    - `list_note` - `VaultNote`: The note whose second-degree links to collect.
+    - `as_dict` - `bool`: If `True`, returns a dict keyed by note name; a list otherwise. Default `True`.
+    - `link_map` - `dict[str, list[str]] | None`: Precomputed map of note name → linked note names; when given, no note text is re-read (see `notes_linked_in_note` for when that pays off and for the ordering caveat). Default `None`.
 
     **Returns**
     Dict of note name → `VaultNote`, or a list of `VaultNote`s (see `as_dict`).

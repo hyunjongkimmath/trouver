@@ -7,7 +7,7 @@ __all__ = ['bulleted_links_of_type_in_section', 'links_to_common_terms_notes_in_
            'create_info_notes_and_link_to_index', 'create_generic_info_notes_and_link_to_index',
            'index_note_of_a_directory', 'index_note_of_note']
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #fc632c12
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #bab216dd
 import glob
 import os
 from os import PathLike
@@ -35,7 +35,7 @@ from trouver.obsidian.vault import (
 )
 
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #80c54678
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #9b96c55b
 # TODO: deal with the possibility that the link points to a note that does not exist.
 # TODO: reformat
 def bulleted_links_of_type_in_section(
@@ -46,11 +46,11 @@ def bulleted_links_of_type_in_section(
     listed in the specified section of the standard information note.
     
     **Parameters**
-    - `info_note` - VaultNote
+    - `info_note` - `VaultNote`
         - Name of the information note.
-    - `vault` - PathLike
+    - `vault` - `PathLike`
         - Path to the vault directory.
-    - `section` - str
+    - `section` - `str`
         - Title of the section
     - `note_type` - ``trove.personal_vault.note_type.PersonalNoteTypeEnum`` or `None`
         - The type of the notes to include in the list. If `None`, then
@@ -91,15 +91,15 @@ def bulleted_links_of_type_in_section(
         #     list_of_note_names_of_type.append(link_object)
     return list_of_note_links_of_type
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #2e982840
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #a4fca090
 def links_to_common_terms_notes_in_see_also_section(
         info_note: VaultNote, vault: PathLike) -> list[str]:
     """Returns a list of names of common terms notes listed in the
     `See Also` section of the standard information note.
     
     **Parameters**
-    - `info_note` - VaultNote
-    - `vault` - Pathlike
+    - `info_note` - `VaultNote`
+    - `vault` - `Pathlike`
         - Path to the vault directory.
         
     **Returns**
@@ -110,7 +110,7 @@ def links_to_common_terms_notes_in_see_also_section(
         info_note, vault, section="See Also",
         note_type=PersonalNoteTypeEnum.COMMON_TERMS_NOTE)
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #4971b7d4
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #f1f1b977
 # TODO: reformat
 def main_content(note: VaultNote) -> str:
     """The main content of the standard information note.
@@ -133,14 +133,14 @@ def main_content(note: VaultNote) -> str:
     return(str(new_mf))
     
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #47bbb92b
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #0fe60745
 def reference_notes_in_references_section_of_information_note(
         note: VaultNote) -> list[ObsidianLink]:
     """Returns a list of ``ObsidianLink`` objects corresponding to
     reference notes in the "References" section of the information note.
     
     **Parameters**
-    - `note` - VaultNote
+    - `note` - `VaultNote`
         - A standard information note
     
     **Returns**
@@ -164,7 +164,7 @@ def reference_of_information_note(note: VaultNote) -> Optional[VaultNote]:
     of the information note.
 
     **Parameters**
-    - `note` - VaultNote
+    - `note` - `VaultNote`
         - A standard information note
 
     **Returns**
@@ -187,7 +187,7 @@ def reference_of_information_note(note: VaultNote) -> Optional[VaultNote]:
     return VaultNote(note.vault, name=first_link.file_name, update_cache=False)
 
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #8c46a8bf
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #11b6f35c
 def citation_location_string(
         citation_location: tuple[str, int]
         ):
@@ -208,7 +208,7 @@ def citation_location_string(
     else:
         return ''
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #c9baf8db
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #c2f896d1
 def fill_info_note_with_template(
         vn: VaultNote,
         template: VaultNote, 
@@ -228,7 +228,7 @@ def fill_info_note_with_template(
         in the note's reference text the note's information originates from,
         e.g. the label might be the str 'Theorem 1.2.3' and the page number
         might be the int 85.
-    - `content` - str
+    - `content` - `str`
         - Content to add to the note. Defaults to the empty str.
     - `tags_to_add` - str or list of str or tuple of str or `None`
         - Each str is just the name of the tag without the leading hashtag.
@@ -254,7 +254,7 @@ def fill_info_note_with_template(
         mf.insert_line(line_num-1, {'line': content, 'type': MarkdownLineEnum.DEFAULT})
     mf.write(vn)
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #e613151c
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #52e0f7a8
 # TODO: reformat
 def link_info_notes_to_index(
         info_notes, index_note: VaultNote, citation_locations: tuple=(),
@@ -286,7 +286,7 @@ def link_info_notes_to_index(
              'type': MarkdownLineEnum.UNORDERED_LIST})
     index_mf.write(index_note)
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #441fec0d
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #b3151064
 # TODO: reformat
 def create_info_notes_and_link_to_index(
         to_create: list[VaultNote],
@@ -305,12 +305,12 @@ def create_info_notes_and_link_to_index(
     - `to_create` - list of ``VaultNote``.
     - `template` - ``VaultNote``
     - `index_note` - ``VaultNote``
-    - `citation_locations` - list of 2-tuples or empty tuples 
+    - `citation_locations` - `list of 2-tuples or empty tuples`
         - Each tuple consists of a label str and a page number indicating where
         in the note's reference text the note's information originates from,
         e.g. the label might be the str 'Theorem 1.2.3' and the page number
         might be the int 85. This list must be of the same length as `to_create`.
-    - `content_to_add` - list of str
+    - `content_to_add` - `list of str`
         - Each str is the content to be added for each note in `to_create`. 
         Defaults to the empty list, in which case no content is added.
     - `tags_to_add` - str or list of str or tuple of str or `None`
@@ -327,7 +327,7 @@ def create_info_notes_and_link_to_index(
         fill_info_note_with_template(vn, template, citation_location, content, tags_to_add)
     link_info_notes_to_index(to_create, index_note, citation_locations, insert_blank_line=True)
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #1c93c626
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #d25f54f8
 # TODO: reformat
 def create_generic_info_notes_and_link_to_index(
         reference:str, count:int, vault, subdirectory, 
@@ -339,16 +339,16 @@ def create_generic_info_notes_and_link_to_index(
     starts with 0.
     
     **Parameters**
-    - `reference` - str
+    - `reference` - `str`
         - The name of the reference. This will be part of the generic
         note names.
-    - `count` - int
+    - `count` - `int`
         - The number of generic info notes to create.
-    - `vault` - Pathlike
-    - `subdirectory` - Pathlike
+    - `vault` - `Pathlike`
+    - `subdirectory` - `Pathlike`
         - The subdirectory in `vault` to create the notes in.
-    - `template` - VaultNote
-    - `index_note` - VaultNote
+    - `template` - `VaultNote`
+    - `index_note` - `VaultNote`
     - tags_to_add - str or list of str or tuple of str or `None`
         - Each str is just the name of the tag without the leading hashtag.
         Defaults to `None`, in which case no tags are added.
@@ -370,7 +370,7 @@ def create_generic_info_notes_and_link_to_index(
         
     
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #136497de
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #bdc03fcf
 def index_note_of_a_directory(
         vault: PathLike,
         directory: PathLike # Relative to `vault`
@@ -399,7 +399,7 @@ def index_note_of_a_directory(
     else:
         return None
 
-# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #995e3dcd
+# %% ../../nbs/05_personal_vault_20.information_notes.ipynb #28ba96c6
 def index_note_of_note(
         note: VaultNote # An information note or an index note
         ) -> Union[VaultNote, None]: # The index note which indexes `note`. If no such index note exists (in either the same directory as or the immediate parent directory of the note), then `None` is returned. In particular, `None` is returned if `note` is the root index note of the vault.

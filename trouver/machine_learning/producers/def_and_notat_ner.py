@@ -42,8 +42,8 @@ def html_data_to_ner_row(html_data: HTMLData,
     filtering by the flag is the consumer's choice (`keep_verified_spans`).
 
     **Parameters**
-    - `html_data` (*HTMLData*) — One output of `html_data_from_note`.
-    - `label_from_tag` (*Callable*) — Tag → label-name function; `None` means the tag carries no relevant label. Defaults to `def_or_notat_from_html_tag`.
+    - `html_data` - `HTMLData`: One output of `html_data_from_note`.
+    - `label_from_tag` - `Callable`: Tag → label-name function; `None` means the tag carries no relevant label. Defaults to `def_or_notat_from_html_tag`.
     """
     spans = [{'start': start, 'end': end, 'label': label,
               'verified': bool(str(tag.attrs.get(label, '')).strip())}
@@ -66,7 +66,7 @@ def keep_verified_spans(rows: list[dict]) -> list[dict]:
     which trained admitted notes' unlabeled text as `O`-labeled tokens.
 
     **Parameters**
-    - `rows` (*list[dict]*) — Rows produced by `produce_def_and_notat_ner_rows`.
+    - `rows` - `list[dict]`: Rows produced by `produce_def_and_notat_ner_rows`.
     """
     return [{**row, 'spans': [s for s in row['spans'] if s['verified']]} for row in rows]
 
@@ -91,7 +91,7 @@ def produce_def_and_notat_ner_rows(notes: Iterable[VaultNote]) -> list[dict]:
     embeds inline as empty text, so warm the cache before producing.
 
     **Parameters**
-    - `notes` (*Iterable[VaultNote]*) — The notes to extract from.
+    - `notes` - `Iterable[VaultNote]`: The notes to extract from.
     """
     rows = []
     for note in notes:
@@ -108,8 +108,8 @@ def save_def_and_notat_ner_dataset(rows: list[dict], root: PathLike) -> Path:
     Write `rows` (from `produce_def_and_notat_ner_rows`) as the canonical JSONL dataset; return its path.
 
     **Parameters**
-    - `rows` (*list[dict]*) — Produced rows.
-    - `root` (*PathLike*) — Usually the vault directory; writes `_ml_data/def_and_notat_ner_v1/def_and_notat_ner.jsonl`.
+    - `rows` - `list[dict]`: Produced rows.
+    - `root` - `PathLike`: Usually the vault directory; writes `_ml_data/def_and_notat_ner_v1/def_and_notat_ner.jsonl`.
     """
     path = dataset_dir(root, DEF_AND_NOTAT_NER_SCHEMA) / 'def_and_notat_ner.jsonl'
     save_rows(rows, path)

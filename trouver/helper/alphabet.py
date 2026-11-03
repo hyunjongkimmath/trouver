@@ -3,10 +3,10 @@
 # %% auto #0
 __all__ = ['alphabet_to_alphabet_group', 'alphabet_or_latex_command_to_alphabet', 'alphabet_or_latex_command_to_alphabet_group']
 
-# %% ../../nbs/01_helper_05.alphabet.ipynb #4c92ed49
+# %% ../../nbs/01_helper_05.alphabet.ipynb #aeeb88a6
 from .constants import ALPHABET_TO_ALPHABET_GROUP_DICT
 
-# %% ../../nbs/01_helper_05.alphabet.ipynb #47b49224
+# %% ../../nbs/01_helper_05.alphabet.ipynb #f62ac25d
 def alphabet_to_alphabet_group(character: str) -> str:
     """
     Returns the alphabet group for a given character based on the vault configuration.
@@ -15,7 +15,7 @@ def alphabet_to_alphabet_group(character: str) -> str:
     Typically, this groups the alphabet into ranges like A-E, F-J, etc.
     
     **Parameters**
-    - `character` - str: A single character (e.g., 'a', 'B'). 
+    - `character` - `str`: A single character (e.g., 'a', 'B'). 
       Case-insensitive.
     
     **Returns**
@@ -37,7 +37,7 @@ def alphabet_or_latex_command_to_alphabet(character: str) -> str:
     for symbols (e.g., converting `\\alpha` to 'A').
     
     **Parameters**
-    - `character` - str: A character or LaTeX command string.
+    - `character` - `str`: A character or LaTeX command string.
     
     **Returns**
     - `str`: The corresponding alphabet character.
@@ -53,7 +53,7 @@ def alphabet_or_latex_command_to_alphabet_group(character: str) -> str:
     and `alphabet_to_alphabet_group`.
     
     **Parameters**
-    - `character` - str: A character or LaTeX command.
+    - `character` - `str`: A character or LaTeX command.
     
     **Returns**
     - `str` or `None`: The alphabet group (e.g., "A-E") or None if unresolved.

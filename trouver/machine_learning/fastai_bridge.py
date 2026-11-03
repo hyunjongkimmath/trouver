@@ -42,8 +42,8 @@ def load_fastai_learner(path: PathLike, cpu: bool = True):
     module never requires it.
 
     **Parameters**
-    - `path` (*PathLike*) — The `.pkl` written by fastai's `save`.
-    - `cpu` (*bool*) — Load onto CPU (default; these learners are inference-only).
+    - `path` - `PathLike`: The `.pkl` written by fastai's `save`.
+    - `cpu` - `bool`: Load onto CPU (default; these learners are inference-only).
     """
     path = Path(path)
     if not path.exists():

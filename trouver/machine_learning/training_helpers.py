@@ -41,9 +41,9 @@ def align_labels_to_tokens(examples: dict, tokenizer, label_all_tokens: bool = T
     `label_all_tokens=False`) become `-100`, the `CrossEntropyLoss` ignore index.
 
     **Parameters**
-    - `examples` (*dict*) — Batch with `'tokens'` and `'ner_tags'` columns.
+    - `examples` - `dict`: Batch with `'tokens'` and `'ner_tags'` columns.
     - `tokenizer` — A fast (word-piece) HF tokenizer.
-    - `label_all_tokens` (*bool*) — Label every subword of a word, not just its first.
+    - `label_all_tokens` - `bool`: Label every subword of a word, not just its first.
     """
     tokenized_inputs = tokenizer(examples['tokens'], truncation=True, is_split_into_words=True)
     tokenized_inputs['labels'] = [
@@ -62,7 +62,7 @@ def seqeval_compute_metrics(label_list: list, metric=None):
     so importing this module never requires it).
 
     **Parameters**
-    - `label_list` (*list*) — Id-to-label list, e.g. `['O', 'B-definition', ...]`.
+    - `label_list` - `list`: Id-to-label list, e.g. `['O', 'B-definition', ...]`.
     - `metric` — Object with `.compute(predictions=..., references=...)`; injectable for tests.
     """
     if metric is None:
@@ -87,7 +87,7 @@ def classification_compute_metrics(threshold: float = 0.5):
     in pure numpy so it needs no metric packages.
 
     **Parameters**
-    - `threshold` (*float*) — Sigmoid cut-off for a positive prediction.
+    - `threshold` - `float`: Sigmoid cut-off for a positive prediction.
     """
     def compute_metrics(eval_preds):
         probs = 1 / (1 + np.exp(-np.asarray(eval_preds.predictions, dtype=float)))
@@ -156,7 +156,7 @@ def load_math_tokens(tokenizer, token_file: PathLike) -> int:
 
     **Parameters**
     - `tokenizer` — HF tokenizer to extend.
-    - `token_file` (*PathLike*) — Newline-separated token list.
+    - `token_file` - `PathLike`: Newline-separated token list.
 
     **Returns**
     Number of tokens actually added (already-known tokens are skipped by the tokenizer).

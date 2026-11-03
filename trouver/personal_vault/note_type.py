@@ -3,7 +3,7 @@
 # %% auto #0
 __all__ = ['PersonalNoteTypeEnum', 'type_of_note', 'note_is_of_type', 'NoteTypeError', 'assert_note_is_of_type']
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #e687663f
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #c4c88b40
 from enum import Enum, auto
 from typing import Optional
 import warnings
@@ -12,13 +12,13 @@ from trouver.obsidian.vault import (
     VaultNote, NoteDoesNotExistError
 )
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #fbf602ab
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #84125e5e
 def _is_index_note(vault_note: VaultNote) -> bool:
     """Returns `True` if the markdown file is determined to
     be an index note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -36,7 +36,7 @@ def _is_index_of_notation_note(vault_note: VaultNote) -> bool:
     be an index of notation note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -56,7 +56,7 @@ def _is_standard_information_note(vault_note: VaultNote) -> bool:
     is a standard information note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -91,7 +91,7 @@ def _is_notation_note(vault_note: VaultNote) -> bool:
     be a notation note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -111,7 +111,7 @@ def _is_premise_note(vault_note: VaultNote) -> bool:
     be a premise note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -129,7 +129,7 @@ def _is_common_terms_note(vault_note: VaultNote) -> bool:
     be a common terms note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -146,7 +146,7 @@ def _is_template_note(vault_note: VaultNote):
     be a template note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -174,7 +174,7 @@ def _is_mathematician_note(vault_note: VaultNote):
     be a mathematician note.
 
     **Parameters**
-    - `vault_note` - VaultNote
+    - `vault_note` - `VaultNote`
     
     **Returns**
     - `bool`
@@ -203,7 +203,7 @@ def _is_reference_note(vault_note: VaultNote):
 def _is_glossary_note(vault_note: VaultNote):
     return vault_note.name.startswith('_glossary')
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #132529ca
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #6bd35d7b
 class PersonalNoteTypeEnum(Enum):
     """
     An Enum class for note types in my Obsidian math vault
@@ -242,7 +242,7 @@ PersonalNoteTypeEnum._type_method_dict = {
     PersonalNoteTypeEnum.GLOSSARY_NOTE: _is_glossary_note
 }
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #697f3cbc
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #83672c67
 def type_of_note(
         vault_note: VaultNote
         ) -> PersonalNoteTypeEnum:
@@ -265,7 +265,7 @@ def type_of_note(
         if type_function(vault_note):
             return note_type
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #3d3aaed0
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #62d6f2f0
 def note_is_of_type(
         vault_note: VaultNote,
         note_type: Optional[PersonalNoteTypeEnum] # The type of note. If `None`, then any type of note; in this case, returns whether or not the note exists.
@@ -287,7 +287,7 @@ def note_is_of_type(
         return False
     return type_of_note(vault_note) == note_type if note_type else True
 
-# %% ../../nbs/05_personal_vault_19.note_type.ipynb #5e57f474
+# %% ../../nbs/05_personal_vault_19.note_type.ipynb #026e63c7
 class NoteTypeError(ValueError):
     """Exception raised when the type of note is not of the expected type.
     

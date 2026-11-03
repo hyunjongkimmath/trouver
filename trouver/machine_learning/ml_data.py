@@ -39,10 +39,10 @@ class DatasetSchema:
     Pin the columns and version of one ML training dataset.
 
     **Parameters**
-    - `name` (*str*) — Dataset name, e.g. `'note_type'`; also the path component.
-    - `version` (*int*) — Schema version; bump whenever columns change so old and new generations coexist on disk.
-    - `required_columns` (*tuple*) — Columns every row must have (include `PROVENANCE_COLUMN`).
-    - `optional_columns` (*tuple*) — Columns a row may carry.
+    - `name` - `str`: Dataset name, e.g. `'note_type'`; also the path component.
+    - `version` - `int`: Schema version; bump whenever columns change so old and new generations coexist on disk.
+    - `required_columns` - `tuple`: Columns every row must have (include `PROVENANCE_COLUMN`).
+    - `optional_columns` - `tuple`: Columns a row may carry.
     """
     name: str
     version: int
@@ -58,8 +58,8 @@ class DatasetSchema:
         the storage format, not a column each producer must declare.
 
         **Parameters**
-        - `rows` (*list[dict]*) — Rows as produced by a producer (or read back by `load_rows`).
-        - `allow_extra` (*bool*) — Permit columns beyond those pinned here.
+        - `rows` - `list[dict]`: Rows as produced by a producer (or read back by `load_rows`).
+        - `allow_extra` - `bool`: Permit columns beyond those pinned here.
         """
         if not rows:
             return
@@ -81,8 +81,8 @@ def dataset_dir(root: PathLike, schema: DatasetSchema) -> Path:
     code that loads it, not by a dated path string.
 
     **Parameters**
-    - `root` (*PathLike*) — Usually the vault directory.
-    - `schema` (*DatasetSchema*) — The dataset whose directory is wanted.
+    - `root` - `PathLike`: Usually the vault directory.
+    - `schema` - `DatasetSchema`: The dataset whose directory is wanted.
     """
     return Path(root) / ML_DATA_DIR_NAME / f'{schema.name}_v{schema.version}'
 
@@ -96,8 +96,8 @@ def save_rows(rows: list[dict], path: PathLike) -> None:
     `Dataset` with `Dataset.from_list` at the consumer's choice.
 
     **Parameters**
-    - `rows` (*list[dict]*) — Rows to write.
-    - `path` (*PathLike*) — Destination `.jsonl` file.
+    - `rows` - `list[dict]`: Rows to write.
+    - `path` - `PathLike`: Destination `.jsonl` file.
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -117,9 +117,9 @@ def load_rows(path: PathLike, schema: DatasetSchema = None, require_pure: bool =
     frozen eval sets and `augment_dataset` inputs pass this flag (R5).
 
     **Parameters**
-    - `path` (*PathLike*) — A `.jsonl` file written by `save_rows`.
-    - `schema` (*DatasetSchema*) — Contract to validate the rows against.
-    - `require_pure` (*bool*) — Refuse augmented rows; a missing label counts as pure.
+    - `path` - `PathLike`: A `.jsonl` file written by `save_rows`.
+    - `schema` - `DatasetSchema`: Contract to validate the rows against.
+    - `require_pure` - `bool`: Refuse augmented rows; a missing label counts as pure.
     """
     with open(path, 'r', encoding='utf-8') as f:
         rows = [json.loads(line) for line in f if line.strip()]
@@ -145,8 +145,8 @@ def register_augmentation_recipe(name: str, version: int = 1):
     from (pure dataset, recipe, seed).
 
     **Parameters**
-    - `name` (*str*) — Recipe name, e.g. `'latex_typo'`.
-    - `version` (*int*) — Bump when the algorithm changes; old ids keep resolving to old code paths only if kept registered.
+    - `name` - `str`: Recipe name, e.g. `'latex_typo'`.
+    - `version` - `int`: Bump when the algorithm changes; old ids keep resolving to old code paths only if kept registered.
     """
     def decorator(fn: Callable) -> Callable:
         AUGMENTATION_RECIPES[f'{name}_v{version}'] = fn
@@ -159,7 +159,7 @@ def get_augmentation_recipe(recipe_id: str) -> Callable:
     Return the recipe registered as `recipe_id`, failing with the list of known recipes.
 
     **Parameters**
-    - `recipe_id` (*str*) — Key of `AUGMENTATION_RECIPES`, e.g. `'latex_typo_v1'`.
+    - `recipe_id` - `str`: Key of `AUGMENTATION_RECIPES`, e.g. `'latex_typo_v1'`.
     """
     if recipe_id not in AUGMENTATION_RECIPES:
         raise KeyError(f'Unknown augmentation recipe {recipe_id!r}; known: {sorted(AUGMENTATION_RECIPES)}.')
@@ -174,9 +174,9 @@ def augmented_dataset_dir(root: PathLike, schema: DatasetSchema, recipe_id: str)
     never be mistaken for the pure one at the path level (R5).
 
     **Parameters**
-    - `root` (*PathLike*) — Usually the vault directory.
-    - `schema` (*DatasetSchema*) — Schema of the underlying pure dataset.
-    - `recipe_id` (*str*) — Key of `AUGMENTATION_RECIPES`, e.g. `'latex_typo_v1'`.
+    - `root` - `PathLike`: Usually the vault directory.
+    - `schema` - `DatasetSchema`: Schema of the underlying pure dataset.
+    - `recipe_id` - `str`: Key of `AUGMENTATION_RECIPES`, e.g. `'latex_typo_v1'`.
     """
     return Path(root) / ML_DATA_DIR_NAME / f'{schema.name}_aug-{recipe_id}_v{schema.version}'
 
@@ -194,11 +194,11 @@ def augment_dataset(
     result is regenerable from (pure dataset, recipe, seed) alone.
 
     **Parameters**
-    - `root` (*PathLike*) — Vault root holding `_ml_data/`.
-    - `schema` (*DatasetSchema*) — Schema of the pure dataset.
-    - `recipe_id` (*str*) — Key of `AUGMENTATION_RECIPES`.
-    - `seed` (*int*) — Seed for the recipe RNG (regenerability).
-    - `validate` (*Callable*) — Optional `fn(original, augmented) -> bool` guard; rows it rejects are dropped (e.g. a LaTeX-preservation check).
+    - `root` - `PathLike`: Vault root holding `_ml_data/`.
+    - `schema` - `DatasetSchema`: Schema of the pure dataset.
+    - `recipe_id` - `str`: Key of `AUGMENTATION_RECIPES`.
+    - `seed` - `int`: Seed for the recipe RNG (regenerability).
+    - `validate` - `Callable`: Optional `fn(original, augmented) -> bool` guard; rows it rejects are dropped (e.g. a LaTeX-preservation check).
     """
     recipe = get_augmentation_recipe(recipe_id)
     rows = load_rows(dataset_dir(root, schema) / f'{schema.name}.jsonl', schema=schema, require_pure=True)
@@ -224,8 +224,8 @@ def load_training_rows(*paths: PathLike, schema: DatasetSchema = None) -> list[d
     is argument order, so runs stay deterministic.
 
     **Parameters**
-    - `paths` (*PathLike*) — `.jsonl` files from `dataset_dir`/`augmented_dataset_dir`, in the order they should be concatenated.
-    - `schema` (*DatasetSchema*) — Contract every file's rows are validated against.
+    - `paths` - `PathLike`: `.jsonl` files from `dataset_dir`/`augmented_dataset_dir`, in the order they should be concatenated.
+    - `schema` - `DatasetSchema`: Contract every file's rows are validated against.
     """
     rows = []
     for path in paths:
@@ -244,8 +244,8 @@ def save_csv(rows: list[dict], path: PathLike) -> None:
     round-tripping types.
 
     **Parameters**
-    - `rows` (*list[dict]*) — Rows to write; the first row fixes the column order.
-    - `path` (*PathLike*) — Destination `.csv` file.
+    - `rows` - `list[dict]`: Rows to write; the first row fixes the column order.
+    - `path` - `PathLike`: Destination `.csv` file.
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -266,8 +266,8 @@ def load_csv(path: PathLike, schema: DatasetSchema = None) -> list[dict]:
     Read a `save_csv` file back (all values as strings), validating against `schema` if given.
 
     **Parameters**
-    - `path` (*PathLike*) — A `.csv` file written by `save_csv`.
-    - `schema` (*DatasetSchema*) — Contract to validate the rows against.
+    - `path` - `PathLike`: A `.csv` file written by `save_csv`.
+    - `schema` - `DatasetSchema`: Contract to validate the rows against.
     """
     with open(path, 'r', encoding='utf-8', newline='') as f:
         rows = list(csv.DictReader(f))
@@ -284,8 +284,8 @@ def as_hf_dataset(source, schema: DatasetSchema = None):
     the GUI to check a schema — never pulls training dependencies (R6).
 
     **Parameters**
-    - `source` (*list[dict] | PathLike*) — Rows in memory, or a `.jsonl` file written by `save_rows`.
-    - `schema` (*DatasetSchema*) — Contract to validate file rows against.
+    - `source` - `list[dict] | PathLike`: Rows in memory, or a `.jsonl` file written by `save_rows`.
+    - `schema` - `DatasetSchema`: Contract to validate file rows against.
     """
     from datasets import Dataset
     rows = source if isinstance(source, list) else load_rows(source, schema=schema)
@@ -298,8 +298,8 @@ def from_hf_dataset(ds, path: PathLike, schema: DatasetSchema = None) -> None:
 
     **Parameters**
     - `ds` — A Hugging Face `Dataset` (anything iterable of dicts).
-    - `path` (*PathLike*) — Destination `.jsonl` file.
-    - `schema` (*DatasetSchema*) — Contract to validate the rows against before writing.
+    - `path` - `PathLike`: Destination `.jsonl` file.
+    - `schema` - `DatasetSchema`: Contract to validate the rows against before writing.
     """
     rows = [dict(row) for row in ds]
     if schema is not None:

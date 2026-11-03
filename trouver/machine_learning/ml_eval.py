@@ -41,10 +41,10 @@ def freeze_eval_set(rows: list[dict], root: PathLike, schema: DatasetSchema, for
     before any baseline referenced it.
 
     **Parameters**
-    - `rows` (*list[dict]*) — Pure eval rows, already split out from training data by note name.
-    - `root` (*PathLike*) — Vault/dataset root holding `_ml_data/`.
-    - `schema` (*DatasetSchema*) — The task's dataset schema.
-    - `force` (*bool*) — Replace an existing frozen set (discouraged; see summary).
+    - `rows` - `list[dict]`: Pure eval rows, already split out from training data by note name.
+    - `root` - `PathLike`: Vault/dataset root holding `_ml_data/`.
+    - `schema` - `DatasetSchema`: The task's dataset schema.
+    - `force` - `bool`: Replace an existing frozen set (discouraged; see summary).
     """
     for row in rows:
         label = row.get(AUGMENTATION_COLUMN, PURE_LABEL)
@@ -75,8 +75,8 @@ def check_split_leakage(eval_rows: list[dict], *row_lists: list[dict]) -> None:
     found in a published metric it costs trust.
 
     **Parameters**
-    - `eval_rows` (*list[dict]*) — The frozen eval set.
-    - `row_lists` (*list[dict]*) — Any number of training row lists to check against.
+    - `eval_rows` - `list[dict]`: The frozen eval set.
+    - `row_lists` - `list[dict]`: Any number of training row lists to check against.
     """
     eval_notes = {r[PROVENANCE_COLUMN] for r in eval_rows}
     for i, rows in enumerate(row_lists):
@@ -99,11 +99,11 @@ def save_baseline(root: PathLike, task: str, model_id: str, metrics: dict, datas
     can always be replayed against the numbers it was actually made with.
 
     **Parameters**
-    - `root` (*PathLike*) — Vault/dataset root holding `_ml_data/`.
-    - `task` (*str*) — Task key, e.g. `'def_notat_ner'` (registry naming).
-    - `model_id` (*str*) — HF repo id or artifact path the metrics were measured with.
-    - `metrics` (*dict*) — `{metric_name: float}` exactly as the gate should compare it.
-    - `dataset` (*str*) — Frozen eval set id (e.g. `'def_notat_eval_v1'`) the run used.
+    - `root` - `PathLike`: Vault/dataset root holding `_ml_data/`.
+    - `task` - `str`: Task key, e.g. `'def_notat_ner'` (registry naming).
+    - `model_id` - `str`: HF repo id or artifact path the metrics were measured with.
+    - `metrics` - `dict`: `{metric_name: float}` exactly as the gate should compare it.
+    - `dataset` - `str`: Frozen eval set id (e.g. `'def_notat_eval_v1'`) the run used.
     """
     record = {'date': date.today().isoformat(), 'task': task, 'model_id': model_id,
               'dataset': dataset, 'metrics': dict(metrics)}
@@ -133,9 +133,9 @@ def compare_to_baseline(metrics: dict, baseline_metrics: dict, epsilon: float = 
     measuring sticks is not a gate, it is noise.
 
     **Parameters**
-    - `metrics` (*dict*) — `{name: float}` from the candidate run.
-    - `baseline_metrics` (*dict*) — `{name: float}` from the baseline record.
-    - `epsilon` (*float*) — Tolerance subtracted from each baseline value.
+    - `metrics` - `dict`: `{name: float}` from the candidate run.
+    - `baseline_metrics` - `dict`: `{name: float}` from the baseline record.
+    - `epsilon` - `float`: Tolerance subtracted from each baseline value.
     """
     missing = sorted(set(baseline_metrics) - set(metrics))
     if missing:
@@ -158,9 +158,9 @@ def run_eval(eval_rows: list[dict], predict_fn: Callable, metric_fn: Callable) -
     `transformers`/`fastai`/network so it imports and tests anywhere.
 
     **Parameters**
-    - `eval_rows` (*list[dict]*) — Frozen pure rows (from `load_eval_rows`).
-    - `predict_fn` (*Callable*) — `predict_fn(rows) -> list`, one prediction per row, same order.
-    - `metric_fn` (*Callable*) — `metric_fn(rows, predictions) -> dict[str, float]`; wrap `training_helpers` metrics or an exact-match score here.
+    - `eval_rows` - `list[dict]`: Frozen pure rows (from `load_eval_rows`).
+    - `predict_fn` - `Callable`: `predict_fn(rows) -> list`, one prediction per row, same order.
+    - `metric_fn` - `Callable`: `metric_fn(rows, predictions) -> dict[str, float]`; wrap `training_helpers` metrics or an exact-match score here.
     """
     predictions = predict_fn(eval_rows)
     if len(predictions) != len(eval_rows):

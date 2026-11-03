@@ -35,8 +35,8 @@ def get_model_id(task: str, legacy: bool = False) -> str:
     working for rollback and for comparing generations on frozen evals.
 
     **Parameters**
-    - `task` (*str*) — A key of `MODEL_IDS` (e.g. `'def_notat_ner'`).
-    - `legacy` (*bool*) — Return the superseded artifact instead.
+    - `task` - `str`: A key of `MODEL_IDS` (e.g. `'def_notat_ner'`).
+    - `legacy` - `bool`: Return the superseded artifact instead.
     """
     registry = LEGACY_MODEL_IDS if legacy else MODEL_IDS
     if task not in registry:

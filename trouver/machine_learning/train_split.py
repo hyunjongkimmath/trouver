@@ -17,8 +17,8 @@ def get_stable_hash_modulo(identifier: str, modulo: int = 100) -> int:
     restart.
 
     **Parameters**
-    - `identifier` (*str*) — The string to hash (e.g. a note name).
-    - `modulo` (*int*) — Size of the residue space.
+    - `identifier` - `str`: The string to hash (e.g. a note name).
+    - `modulo` - `int`: Size of the residue space.
     """
     clean_id = identifier.strip().lower()
     return int(hashlib.md5(clean_id.encode('utf-8')).hexdigest(), 16) % modulo
@@ -38,9 +38,9 @@ def split_list_consistently(
     on the same identifiers agree on which items are held out.
 
     **Parameters**
-    - `items` (*list*) — The items to split.
-    - `key` (*Callable*) — Maps an item to its stable identifier.
-    - `valid_percentage` (*int*) — Percentage of the residue space reserved for validation.
+    - `items` - `list`: The items to split.
+    - `key` - `Callable`: Maps an item to its stable identifier.
+    - `valid_percentage` - `int`: Percentage of the residue space reserved for validation.
     """
     valid_set = [i for i in items if get_stable_hash_modulo(key(i)) < valid_percentage]
     train_set = [i for i in items if get_stable_hash_modulo(key(i)) >= valid_percentage]
