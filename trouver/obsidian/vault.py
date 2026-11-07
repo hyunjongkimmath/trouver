@@ -3,9 +3,12 @@
 # %% auto #0
 __all__ = ['NoteNotUniqueError', 'NoteDoesNotExistError', 'NoteNotFoundInCacheError', 'NotePathIsNotIdentifiedError', 'path_to_obs_id', 'all_paths_to_notes_in_vault', 'all_note_paths_by_name', 'note_path_by_name', 'note_name_unique', 'note_name_from_path', 'VaultNote', 'test_function']
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #bbfcbe08
+# %% ../../nbs/03_obsidian_01.vault.ipynb #3d7ed170
 from pathlib import Path
 import os
+import shutil
+import subprocess
+import warnings
 from os import PathLike
 from typing import Optional, Sequence, Union
 
@@ -16,7 +19,7 @@ from trouver.helper.files_and_folders import (
 )
 from .links import ObsidianLink, LinkType, replace_links_in_text
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #056124b5
+# %% ../../nbs/03_obsidian_01.vault.ipynb #6ad0067a
 class NoteNotUniqueError(FileNotFoundError):
     """
     A `NoteNotUniqueError` is raised when a `VaultNote` is specified
@@ -41,7 +44,7 @@ class NoteNotUniqueError(FileNotFoundError):
             f'The name points to the following files: {notes}')
 
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #e3768840
+# %% ../../nbs/03_obsidian_01.vault.ipynb #8f585dcc
 class NoteDoesNotExistError(FileNotFoundError):
     """
     A `NoteDoesNotExistError` is raised when a `VaultNote` is specified
@@ -62,7 +65,7 @@ class NoteDoesNotExistError(FileNotFoundError):
             f' erroneously end with `.md`, e.g. pass `this_is_a_note`'
             f' instead of `this_is_a_note.md`.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #740c3603
+# %% ../../nbs/03_obsidian_01.vault.ipynb #9fe51705
 class NoteNotFoundInCacheError(RuntimeError):
     """
     A `NoteNotFoundInCacheError` is raised when a path corresponding to a
@@ -83,7 +86,7 @@ class NoteNotFoundInCacheError(RuntimeError):
             f' instead of `this_is_a_note.md`.')
     
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #eef7a6bf
+# %% ../../nbs/03_obsidian_01.vault.ipynb #e63fc6ec
 class NotePathIsNotIdentifiedError(RuntimeError):
     """
     A `NotePathIsNotIdentifiedError` is raised when the `rel_path` attribute of a
@@ -103,7 +106,7 @@ class NotePathIsNotIdentifiedError(RuntimeError):
                    f' `VaultNote` object is {note.vault} and the name of the object'
                    f' is {note.name}.')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #8020d401
+# %% ../../nbs/03_obsidian_01.vault.ipynb #4585c539
 def path_to_obs_id(
         rel_path: PathLike # A path representation the path of an Obsidian note relative to its vault. This does not have to be an existing path.
         ) -> str: # The obsidian url of the hypothetical note within its vault. Note that this does not end with the file extension `.md`.
@@ -117,7 +120,7 @@ def path_to_obs_id(
     path_without_extension = path_no_ext(rel_path)
     return path_without_extension.replace('\\', '/')
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #ed6519e9
+# %% ../../nbs/03_obsidian_01.vault.ipynb #80c248e8
 def all_paths_to_notes_in_vault(
         vault: PathLike,
         as_dict: bool = False
@@ -154,7 +157,7 @@ def all_paths_to_notes_in_vault(
     # else:
     #     return paths
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #825c5881
+# %% ../../nbs/03_obsidian_01.vault.ipynb #5a1aea13
 def all_note_paths_by_name(
         name: str,  # Name of the note(s) to find
         vault: PathLike,  # The path to the Obsidian vault directory
@@ -175,7 +178,7 @@ def all_note_paths_by_name(
     all_notes_of_name = list(all_notes_of_name)
     return [note_path.relative_to(vault) for note_path in all_notes_of_name]
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #e946130e
+# %% ../../nbs/03_obsidian_01.vault.ipynb #2fdb55d8
 # TODO: include examples of `hints` parameter.
 def note_path_by_name(
         name: str, # The path to the Obsidian vault directory.
@@ -216,7 +219,7 @@ def note_path_by_name(
             return search_results[0]
     raise NoteDoesNotExistError.from_note_name(name)
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #aa07aeec
+# %% ../../nbs/03_obsidian_01.vault.ipynb #7a1d8da4
 def note_name_unique(
         name: str, # Name of the note.
         vault: PathLike # Path to the vault.
@@ -226,7 +229,7 @@ def note_name_unique(
     """
     return len(all_note_paths_by_name(name, vault)) == 1
 
-# %% ../../nbs/03_obsidian_01.vault.ipynb #6e1bdbd5
+# %% ../../nbs/03_obsidian_01.vault.ipynb #b81572aa
 def note_name_from_path(
         note_path: str # The path of the note. The note does not need to exist.
         ) -> str: # The name of the note.
@@ -689,6 +692,56 @@ def move_to_folder(self: VaultNote,
     """
     self.move_to(Path(rel_dir) / f'{self.name}.md')
 
+# %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #rg0pathfn
+def _ripgrep_path() -> Optional[Path]: # Path to the ripgrep executable, or `None` if not found.
+    r"""Return the path to the ripgrep (`rg`) executable, or `None` if it
+    is not available.
+
+    Resolution order: the `TROUVER_RG_PATH` environment variable (for
+    machines where ripgrep is installed but not on `PATH`), then a `rg`
+    lookup on `PATH`. Re-resolved on every call so installing ripgrep
+    (or setting `TROUVER_RG_PATH`) takes effect without a restart.
+    """
+    env_path = os.environ.get('TROUVER_RG_PATH')
+    if env_path and os.path.isfile(env_path):
+        return Path(env_path)
+    found = shutil.which('rg')
+    return Path(found) if found is not None else None
+
+# %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #rg0litfn
+# Vault size at or above which falling back to a full scan is slow
+# enough (tens of seconds) that the missing-ripgrep warning is worth
+# its noise; smaller vaults fall back silently.
+_RIPGREP_FALLBACK_WARN_SIZE = 2000
+
+def _note_paths_containing_literal(
+        needle: str, # The literal text to search for.
+        vault: PathLike # The vault in which to search.
+        ) -> Optional[list[Path]]: # Vault-relative paths of the `.md` files containing `needle`, or `None` if ripgrep is unavailable or the search failed.
+    r"""Return the vault-relative paths of Markdown notes whose text
+    contains `needle` as a literal substring, using ripgrep.
+
+    Returns `None` when ripgrep is unavailable or fails, so callers can
+    fall back to scanning every note themselves. `--hidden --no-ignore`
+    keeps the searched set a superset of `VaultNote.cache`, which an
+    unrestricted `os.walk` builds (gitignored and hidden notes included);
+    `-l --fixed-strings` is a literal files-with-matches pass; NUL-separated
+    output (`-0`) keeps exotic file names parseable.
+    """
+    rg = _ripgrep_path()
+    if rg is None:
+        return None
+    cmd = [str(rg), '--hidden', '--no-ignore', '--no-messages', '-0',
+           '-l', '--fixed-strings', '-g', '*.md', '--', needle, '.']
+    try:
+        result = subprocess.run(cmd, capture_output=True, cwd=str(vault))
+    except OSError:
+        return None
+    if result.returncode not in (0, 1): # 0/1 mean hits/no-hits; others failed.
+        return None
+    output = result.stdout.decode('utf-8', errors='replace')
+    return [Path(line) for line in output.split('\0') if line]
+
 # %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #8830213c
 def _replace_links_all_styles(
         text: str, # The text in which to replace links.
@@ -718,6 +771,35 @@ def _replace_links_all_styles(
             text, pattern, new_link_name=replacement)
     return text
 
+def _replace_links_in_note_paths(
+        vault: PathLike, # The vault.
+        rel_paths: Sequence[PathLike], # Candidate notes to inspect, relative to `vault`.
+        old_name: str, # The name that linked-to notes referred to before the rename.
+        new_name: str # The new name to point links at.
+        ) -> None:
+    r"""Rewrite every wikilink- and markdown-style link to `old_name`
+    into `new_name` in each of `rel_paths`.
+
+    Notes whose text lacks `old_name` as a substring are skipped before
+    the regex passes (no link pattern can match without it), so callers
+    may pass any superset of the truly referencing notes.
+    """
+    for rel_path in rel_paths:
+        other_note = VaultNote(vault=vault, rel_path=rel_path)
+        if not other_note.exists():
+            continue
+        original_text = other_note.text()
+        # Every link pattern contains `old_name` literally, so a note
+        # without the substring cannot reference the renamed note and
+        # needs no regex passes. (See `_replace_links_all_styles`.)
+        if old_name not in original_text:
+            continue
+        text = _replace_links_all_styles(original_text, old_name, new_name)
+        if text == original_text:
+            continue
+        with open(other_note.path(), 'w', encoding='utf-8') as file:
+            file.write(text)
+
 @patch
 def rename(
         self: VaultNote,
@@ -740,29 +822,34 @@ def rename(
     the regex replacement passes are skipped for notes that do not contain
     `old_name` as a substring -- no link pattern can match without it.
 
+    When ripgrep is available (see `_ripgrep_path`), only the notes whose
+    text contains `old_name` are read; otherwise every cached note is
+    scanned, with a one-time warning when the vault is large enough for
+    that scan to be slow (see `_RIPGREP_FALLBACK_WARN_SIZE`). Both routes
+    produce identical results, since every link to `old_name` contains it
+    as a substring.
+
     """
     old_name = self.name
     parent_dir = Path(os.path.dirname(self.rel_path))
     self.move_to(parent_dir / f'{new_name}.md')
     if not replace_links_in_vault:
         return
-    for paths in self.__class__.cache[str(self.vault)].values():
-        for path in paths:
-            other_note = VaultNote(vault=self.vault, rel_path=path)
-            if not other_note.exists():
-                continue
-            original_text = other_note.text()
-            # Every link pattern contains `old_name` literally, so a note
-            # without the substring cannot reference the renamed note and
-            # needs no regex passes. (See `_replace_links_all_styles`.)
-            if old_name not in original_text:
-                continue
-            text = _replace_links_all_styles(original_text, old_name, new_name)
-            if text == original_text:
-                continue
-            with open(other_note.path(), 'w', encoding='utf-8') as file:
-                file.write(text)
-
+    candidates = _note_paths_containing_literal(old_name, self.vault)
+    if candidates is None: # No ripgrep -> scan every cached note.
+        candidates = [path for paths in
+                      self.__class__.cache[str(self.vault)].values()
+                      for path in paths]
+        if len(candidates) >= _RIPGREP_FALLBACK_WARN_SIZE:
+            warnings.warn(
+                f'`VaultNote.rename` is scanning all {len(candidates)} '
+                'notes to find links to rewrite because ripgrep (`rg`) '
+                'was not found. Install it (e.g. `winget install '
+                'BurntSushi.ripgrep.MSVC`, then restart running apps) or '
+                'set `TROUVER_RG_PATH` for a several-fold speedup.',
+                stacklevel=2)
+    _replace_links_in_note_paths(
+        self.vault, candidates, old_name, new_name)
 
 # %% ../../nbs/03_obsidian_10.vault_file_crud.ipynb #5dd06e7f
 @patch(cls_method=True)

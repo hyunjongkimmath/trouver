@@ -43,6 +43,7 @@ Detailed notebook structure, naming conventions, cell flags, testing patterns, a
 - **Python >= 3.12** (pyproject.toml)
 - Install: `pip install -e ".[dev]"` from `Python/trouver/`
 - Key deps: fastai, sentence-transformers, transformers, PyQt6, weaviate-client, instructor, openai, lmstudio, numpy<2.0
+- **Optional external tool: [ripgrep](https://github.com/BurntSushi/ripgrep)** (`rg`) — accelerates vault-wide literal searches (`VaultNote.rename` reads only the notes containing the old name instead of every note; ~159k-note vault: ~17 s vs ~60–85 s). Resolution: `TROUVER_RG_PATH` env var → `rg` on `PATH`; absent/failed → identical-behavior full-scan fallback, with a one-time stderr `UserWarning` (never stdout — the plugin bridge speaks JSON there) when the scan covers ≥2000 notes. Install: `winget install BurntSushi.ripgrep.MSVC` (restart already-running apps — Obsidian, VS Code — so they pick up the new `PATH`).
 
 ## ML Models
 
